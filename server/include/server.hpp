@@ -2,7 +2,7 @@
 #define SERVER_H
 #include <winsock2.h>
 
-#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "WS2_32.lib")
 
 #define MAX_CLIENTS 8
 
