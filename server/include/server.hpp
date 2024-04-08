@@ -5,11 +5,13 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #elif defined __APPLE__
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
+#include <pthread.h>
 #endif
 
 #pragma comment(lib, "ws2_32.lib")
@@ -25,6 +27,8 @@ class Server {
 #endif
 
    private:
+    static void* receive(void*);
+
    public:
     Server();
     ~Server();

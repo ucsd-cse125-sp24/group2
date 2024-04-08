@@ -2,5 +2,6 @@
 *.swp
 *.o
 *.exe
+Client
 Server
 .vscode

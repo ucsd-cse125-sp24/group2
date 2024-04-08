@@ -41,33 +41,45 @@ int Server::init() {
     }
 
     printf("Now listening...\n");
+    while (1) {
+        struct sockaddr_in client_sin;
+        int addr_len = sizeof(client_sin);
+        int client_sock = accept(sock, (struct sockaddr *)&client_sin, (socklen_t *)&addr_len);
+        if (client_sock < 0) {
+            perror("accept failed");
+            return -1;
+        }
+        printf("Client (%s) connected on port %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
 
-    struct sockaddr_in client_sin;
-    int addr_len = sizeof(client_sin);
-    int client_sock = accept(sock, (struct sockaddr *)&client_sin, (socklen_t *)&addr_len);
-    if (client_sock < 0) {
-        perror("accept failed");
-        return -1;
+        pthread_t thread;
+        int res = pthread_create(&thread, NULL, receive, &client_sock);
     }
 
+    return 0;
+}
+
+void *Server::receive(void *params) {
+    int *client_sock = (int *)params;
     char buffer[4096];
     int expected_data_len = sizeof(buffer);
 
-    int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-    if (read_bytes == 0) {
-        // connection is closed
-    } else if (read_bytes < 0) {  // error
-        perror("recv failed");
-    } else {
-        printf("Received %d bytes from client\n", read_bytes);
-        printf("%.*s\n", read_bytes, buffer);
+    while (1) {
+        int read_bytes = recv(*client_sock, buffer, expected_data_len, 0);
+        if (read_bytes == 0) {  // Connection was closed
+            return NULL;
+        } else if (read_bytes < 0) {  // error
+#ifdef _WIN32
+            closesocket(client_sock);
+#elif defined __APPLE__
+            close(*client_sock);
+#endif
+            perror("recv failed");
+            return NULL;
+        } else {
+            printf("Received %d bytes from client\n", read_bytes);
+            printf("%.*s\n", read_bytes, buffer);
+        }
     }
 
-#ifdef _WIN32
-    closesocket(client_sock);
-#elif defined __APPLE__
-    close(client_sock);
-#endif
-
-    return 0;
+    return NULL;
 }
