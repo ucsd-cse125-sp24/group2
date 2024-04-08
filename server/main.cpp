@@ -13,13 +13,7 @@
 using namespace std;
 volatile int running = 0;
 void* tick(void*);
-void handler(int signum) {
-    running = 0;
-}
-
 int main(int argc, char** argv) {
-    signal(SIGINT, handler);
-
     Server server;
     pthread_t main_thread;
 
@@ -53,6 +47,7 @@ void* tick(void* params) {
         // TODO handle input
         // TODO update game state
         // TODO send updated state
+        printf("Tick %lu\n", tick);
 
         // Wait for end of tick
         auto time_to_sleep = next_tick_time - chrono::steady_clock::now();
