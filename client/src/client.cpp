@@ -55,7 +55,12 @@ void Client::init() {
     */
 
     while (1) {
+        #ifdef _WIN32
+        Sleep(1000);
+        #else
         sleep(1);
+        #endif
+
         printf("Client still alive\n");
     }
 }

@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 #include <stdio.h>
+#include <pthread.h>
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -11,7 +12,6 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string.h>
-#include <pthread.h>
 #endif
 
 #pragma comment(lib, "ws2_32.lib")

@@ -12,6 +12,7 @@
 #include <string.h>
 #endif
 
+using namespace std;
 class Client {
 #ifdef _WIN32
     WSADATA wsa_data;

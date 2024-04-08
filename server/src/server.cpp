@@ -14,7 +14,7 @@ int Server::init() {
     int res;
     res = WSAStartup(MAKEWORD(2, 2), &wsa_data);
     if (res != 0) {
-        perror("WSAStartup failed\n");
+        perror("WSAStartup failed");
     }
 #endif
 
@@ -69,7 +69,7 @@ void *Server::receive(void *params) {
             return NULL;
         } else if (read_bytes < 0) {  // error
 #ifdef _WIN32
-            closesocket(client_sock);
+            closesocket(*client_sock);
 #elif defined __APPLE__
             close(*client_sock);
 #endif
