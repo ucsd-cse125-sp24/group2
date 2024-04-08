@@ -1,5 +1,7 @@
 # Group2Good Project
+
 ## Environment Setup Instructions
+
 1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 2. Launch WSL
 3. Install mingw-w64 by running `sudo apt-get install mingw-w64`
