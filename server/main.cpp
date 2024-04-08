@@ -56,6 +56,8 @@ void* tick(void* params) {
                 (time_t)(chrono::duration_cast<chrono::seconds>(time_to_sleep).count()),
                 (long)(chrono::duration_cast<chrono::nanoseconds>(time_to_sleep % chrono::seconds(1)).count())};
             nanosleep(&t, NULL);
+        } else {
+            printf("Server is running behind!\n");
         }
     }
 
