@@ -19,6 +19,7 @@
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
+using namespace std;
 class Server {
     int max_clients;
     int num_connected_clients;

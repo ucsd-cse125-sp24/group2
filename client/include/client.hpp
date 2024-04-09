@@ -1,6 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 #include <stdio.h>
+#include <vector>
+#include <iostream>
 #ifdef _WIN32
 #include <winsock2.h>
 #else
@@ -9,7 +11,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <string.h>
+#include <string>
 #endif
 
 using namespace std;

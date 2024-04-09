@@ -38,29 +38,34 @@ void Client::init() {
         perror("connection failed");
     }
 
-    char *data_addr = "hello, world";
-    int data_len = 12;
-
-    int sent_bytes = send(sock, data_addr, data_len, 0);
-    if (sent_bytes < 0) {
-        perror("send failed");
-    }
-
-    /*
-    #ifdef _WIN32
-        closesocket(sock);
-    #else
-        close(sock);
-    #endif
-    */
-
+    int data_len;
+    string input;
+    char buf[4096];
     while (1) {
-        #ifdef _WIN32
-        Sleep(1000);
-        #else
-        sleep(1);
-        #endif
+        memset(buf, 0, 4096);
+        cout << "> ";
+        cin >> input;  // get user input
+        data_len = input.length();
+        int sent_bytes = send(sock, &input[0], data_len, 0);
+        if (sent_bytes < 0) {
+            perror("send failed");
+        }
 
-        printf("Client still alive\n");
+        int read_bytes = recv(sock, &buf[0], 4096, 0);
+        if (read_bytes == 0) {  // Connection was closed
+            printf("Connection was closed\n");
+            return;
+        } else if (read_bytes < 0) {  // error
+#ifdef _WIN32
+            closesocket(sock);
+#elif defined __APPLE__
+            close(sock);
+#endif
+            perror("recv failed");
+            return;
+        } else {
+            printf("Received %d bytes from server\n", read_bytes);
+            printf("%.*s\n", read_bytes, &buf[0]);
+        }
     }
 }

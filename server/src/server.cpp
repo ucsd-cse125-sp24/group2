@@ -64,7 +64,7 @@ void *Server::receive(void *params) {
     int expected_data_len = sizeof(buffer);
 
     while (1) {
-        int read_bytes = recv(*client_sock, buffer, expected_data_len, 0);
+        int read_bytes = recv(*client_sock, &buffer, expected_data_len, 0);
         if (read_bytes == 0) {  // Connection was closed
             return NULL;
         } else if (read_bytes < 0) {  // error
@@ -78,7 +78,14 @@ void *Server::receive(void *params) {
         } else {
             printf("Received %d bytes from client\n", read_bytes);
             printf("%.*s\n", read_bytes, buffer);
+            int sent_bytes = send(*client_sock, &buffer, read_bytes, 0);
+            if (sent_bytes < 0) {
+                perror("send failed");
+                return NULL;
+            }
         }
+
+        memset(buffer, 0, 4096);
     }
 
     return NULL;
