@@ -11,15 +11,17 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <string.h>
+#include <string>
+#include <glm/glm.hpp>
 #endif
+
+#include "player.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
-using namespace std;
 class Server {
     int max_clients;
     int num_connected_clients;
@@ -28,7 +30,9 @@ class Server {
 #endif
 
    private:
+    Player player;
     static void* receive(void*);
+    void handle_packet(void*);
 
    public:
     Server();

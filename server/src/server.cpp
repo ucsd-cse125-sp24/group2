@@ -90,3 +90,14 @@ void *Server::receive(void *params) {
 
     return NULL;
 }
+
+void Server::handle_packet(void *packet) {
+    std::string *cmd = new std::string((char *)packet);
+    if (cmd->compare("forward")) {
+    } else if (cmd->compare("back")) {
+    } else if (cmd->compare("left")) {
+    } else if (cmd->compare("right")) {
+    }
+
+    delete cmd;
+}

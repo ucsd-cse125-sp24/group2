@@ -10,12 +10,18 @@
 #include <sched.h>
 #include <pthread.h>
 
+#include "game_manager.hpp"
+
 using namespace std;
 volatile int running = 0;
+GameManager manager;
 void* tick(void*);
 int main(int argc, char** argv) {
     Server server;
     pthread_t main_thread;
+
+    Player p;
+    manager.register_entity(&p);
 
     running = 1;
     int res = pthread_create(&main_thread, NULL, tick, NULL);
@@ -46,6 +52,7 @@ void* tick(void* params) {
         chrono::time_point<chrono::steady_clock> next_tick_time = start_time + tick * chrono::microseconds(TICK_RATE_USEC);
         // TODO handle input
         // TODO update game state
+        manager.update();
         // TODO send updated state
 
         // Wait for end of tick
