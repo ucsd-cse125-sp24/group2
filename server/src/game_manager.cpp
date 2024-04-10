@@ -6,6 +6,14 @@ void GameManager::update() {
     }
 }
 
+void GameManager::send_state() {
+    //perror("not implemented");
+    return;
+
+    for (int i = 0; i < entities.size(); i++) {
+    }
+}
+
 void GameManager::register_entity(Entity* e) {
     entities.push_back(e);
 }

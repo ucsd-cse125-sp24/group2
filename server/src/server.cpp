@@ -49,46 +49,28 @@ int Server::init() {
             perror("accept failed");
             return -1;
         }
+        
         printf("Client (%s) connected on port %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
+        int i = 0;
+        for (i = 0; i < MAX_CLIENTS; i++) {
+            // Find first free slot
+            if (clients.find(i) != clients.end()) continue;
 
-        pthread_t thread;
-        int res = pthread_create(&thread, NULL, receive, &client_sock);
+            Client* client_info = new Client(i, client_sock, client_sin);
+            clients[i] = client_info;
+
+            printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, clients.size(), MAX_CLIENTS);
+            client_info->init();
+
+            break;
+        }
+
+        if (i == MAX_CLIENTS) {
+            perror("Server is full");
+        }
     }
 
     return 0;
-}
-
-void *Server::receive(void *params) {
-    int *client_sock = (int *)params;
-    char buffer[4096];
-    int expected_data_len = sizeof(buffer);
-
-    while (1) {
-        int read_bytes = recv(*client_sock, &buffer, expected_data_len, 0);
-        if (read_bytes == 0) {  // Connection was closed
-            return NULL;
-        } else if (read_bytes < 0) {  // error
-#ifdef _WIN32
-            closesocket(*client_sock);
-#elif defined __APPLE__
-            close(*client_sock);
-#endif
-            perror("recv failed");
-            return NULL;
-        } else {
-            printf("Received %d bytes from client\n", read_bytes);
-            printf("%.*s\n", read_bytes, buffer);
-            int sent_bytes = send(*client_sock, &buffer, read_bytes, 0);
-            if (sent_bytes < 0) {
-                perror("send failed");
-                return NULL;
-            }
-        }
-
-        memset(buffer, 0, 4096);
-    }
-
-    return NULL;
 }
 
 void Server::handle_packet(void *packet) {
