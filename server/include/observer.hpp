@@ -1,0 +1,2 @@
+#include <vector>
+struct StaticObserver {};

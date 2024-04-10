@@ -1,5 +1,5 @@
-#ifndef CLIENT_INFO_H
-#define CLIENT_INFO_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include <stdio.h>
 #include <string>
@@ -10,15 +10,17 @@
 #endif
 
 #include <pthread.h>
+#include "player.hpp"
 
 class Client {
     private:
-        void handle_packet(void* packet);
         static void* receive(void*);
     public:
+        Player* p;
         int id;
         int sockfd;
         struct sockaddr_in sockaddr;
+        void handle_packet(void* packet);
         Client(int id, int sockfd, struct sockaddr_in& sockaddr) {
             this->id = id;
             this->sockaddr = sockaddr;
@@ -27,4 +29,4 @@ class Client {
         void init();
 };
 
-#endif // CLIENT_INFO_H
+#endif // CLIENT_H

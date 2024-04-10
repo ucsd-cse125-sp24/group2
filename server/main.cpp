@@ -1,6 +1,5 @@
 #define TICK_RATE_USEC 33333
 
-#include "server.hpp"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,17 +9,13 @@
 #include <sched.h>
 #include <pthread.h>
 
-#include "game_manager.hpp"
+#include "network_manager.hpp"
 
 using namespace std;
 volatile int running = 0;
 void* tick(void*);
 int main(int argc, char** argv) {
-    Server server;
     pthread_t main_thread;
-
-    //Player p;
-    //GameManager::instance().register_entity(&p);
 
     running = 1;
     int res = pthread_create(&main_thread, NULL, tick, NULL);
@@ -29,7 +24,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    server.init();
+    NetworkManager::instance().init();
 }
 
 void* tick(void* params) {
@@ -51,9 +46,9 @@ void* tick(void* params) {
         chrono::time_point<chrono::steady_clock> next_tick_time = start_time + tick * chrono::microseconds(TICK_RATE_USEC);
         // TODO handle input
         // TODO update game state
-        GameManager::instance().update();
+        NetworkManager::instance().update();
         // TODO send updated state
-        GameManager::instance().send_state();
+        NetworkManager::instance().send_state();
 
         // Wait for end of tick
         auto time_to_sleep = next_tick_time - chrono::steady_clock::now();

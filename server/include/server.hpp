@@ -16,7 +16,6 @@
 #include <glm/glm.hpp>
 #endif
 
-#include "player.hpp"
 #include "client.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -25,21 +24,18 @@
 #define SERVER_PORT 25565
 
 class Server {
-    int num_connected_clients;
 #ifdef _WIN32
-    WSADATA wsa_data;
+    static WSADATA wsa_data;
 #endif
 
    private:
-    Player player;
-    std::map<int, Client*> clients;
+    static std::map<int, Client*> clients;
     static void* receive(void*);
-    void handle_packet(void*);
 
    public:
-    Server();
-    ~Server();
-    int init();
-    int send(void*);
+    static int init();
+    static int teardown();
+    static int send(int, void*, int);
 };
+
 #endif  // SERVER_H

@@ -1,8 +1,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
+#include "glm/glm.hpp"
 class Entity {
-    int network_id;
    public:
+    int network_id;
+    glm::vec3 position;
     virtual void update() = 0;
 };
 

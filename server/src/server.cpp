@@ -1,18 +1,18 @@
 #include "server.hpp"
 
-Server::Server() {
-}
-
-Server::~Server() {
+std::map<int, Client*> Server::clients;
+WSADATA Server::wsa_data;
+int Server::teardown() {
 #ifdef _WIN32
     WSACleanup();
 #endif
+    return 0;
 }
 
 int Server::init() {
 #ifdef _WIN32
     int res;
-    res = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+    res = WSAStartup(MAKEWORD(2, 2), &Server::wsa_data);
     if (res != 0) {
         perror("WSAStartup failed");
     }
@@ -54,13 +54,17 @@ int Server::init() {
         int i = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {
             // Find first free slot
-            if (clients.find(i) != clients.end()) continue;
+            if (Server::clients.find(i) != Server::clients.end()) continue;
 
-            Client* client_info = new Client(i, client_sock, client_sin);
-            clients[i] = client_info;
+            Client* client = new Client(i, client_sock, client_sin);
+            Server::clients[i] = client;
+            client->init();
 
-            printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, clients.size(), MAX_CLIENTS);
-            client_info->init();
+            //NetworkManager::instance().register_entity(&(*client->p));
+            printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, Server::clients.size(), MAX_CLIENTS);
+
+            pthread_t thread;
+            int res = pthread_create(&thread, NULL, receive, client);
 
             break;
         }
@@ -73,13 +77,42 @@ int Server::init() {
     return 0;
 }
 
-void Server::handle_packet(void *packet) {
-    std::string *cmd = new std::string((char *)packet);
-    if (cmd->compare("forward")) {
-    } else if (cmd->compare("back")) {
-    } else if (cmd->compare("left")) {
-    } else if (cmd->compare("right")) {
+void* Server::receive(void* params) {
+    Client* client = (Client*) (params);
+    char buffer[4096];
+    int expected_data_len = sizeof(buffer);
+
+    while (1) {
+        int read_bytes = recv(client->sockfd, (char*) &buffer, expected_data_len, 0);
+        if (read_bytes == 0) {  // Connection was closed
+            return NULL;
+        } else if (read_bytes < 0) {  // error
+#ifdef _WIN32
+            closesocket(client->sockfd);
+#elif defined __APPLE__
+            close(*client_sock);
+#endif
+            perror("recv failed");
+            return NULL;
+        } else {
+            printf("Received %d bytes from client %d\n", read_bytes, client->id);
+            printf("%.*s\n", read_bytes, buffer);
+
+            client->handle_packet(buffer);
+        }
+
+        memset(buffer, 0, 4096);
     }
 
-    delete cmd;
+    return 0;
+}
+
+int Server::send(int client_id, void* data, int data_len) {
+    char* buffer = (char*) data;
+    int sent_bytes = ::send(Server::clients[client_id]->sockfd, (const char*) &buffer, data_len, 0);
+    if (sent_bytes < 0) {
+        perror("send failed");
+        return NULL;
+    }
+
 }
