@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "core.h"
 
+#include "Mover.h"
+
 class Window {
 public:
     // Window Properties
@@ -13,7 +15,10 @@ public:
     static const char* windowTitle;
 
     // Objects to render
-    static Cube* cube;
+    // static Cube* cube;
+
+    // Added by me
+    static Mover* mover;
 
     // Shader Program
     static GLuint shaderProgram;

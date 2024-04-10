@@ -6,7 +6,10 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-Cube* Window::cube;
+// Cube* Window::cube;
+
+// Added by me:
+Mover* Window::mover;
 
 // Camera Properties
 Camera* Cam;
@@ -34,15 +37,18 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects() {
     // Create a cube
-    cube = new Cube();
+    // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+
+    mover = new Mover();
 
     return true;
 }
 
 void Window::cleanUp() {
     // Deallcoate the objects.
-    delete cube;
+    // delete cube;
+    if (mover) delete mover;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -108,6 +114,8 @@ void Window::idleCallback() {
 
     //spins cube
     //cube->update();
+
+    mover->Update(0.0); // not using deltaTime argument for now
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -115,7 +123,7 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+    mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
 
     // Gets events, including input such as keyboard and mouse or window resizing.
     glfwPollEvents();
@@ -141,21 +149,25 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             case GLFW_KEY_W:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin forward!" << std::endl;
+                mover->position += glm::vec3(0,0,-0.2);
                 break;
 
             case GLFW_KEY_A:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin left!" << std::endl;
+                mover->position += glm::vec3(-0.2,0,0);
                 break;
 
             case GLFW_KEY_S:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin back!" << std::endl;
+                mover->position += glm::vec3(0,0,0.2);
                 break;
 
             case GLFW_KEY_D:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin right!" << std::endl;
+                mover->position += glm::vec3(0.2,0,0);
                 break;
 
             default:
