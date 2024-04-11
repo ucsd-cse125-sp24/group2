@@ -108,6 +108,11 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 }
 
 // update and draw functions
+float deltaTime = 0.01;
+
+float currentTime = glfwGetTime();
+float accumulator = 0.0;
+
 void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
@@ -115,7 +120,18 @@ void Window::idleCallback() {
     //spins cube
     //cube->update();
 
-    mover->Update(1 / 300.0f); // not using deltaTime argument for now
+    float newTime = glfwGetTime();
+    float frameTime = newTime - currentTime;
+    currentTime = newTime;
+
+    accumulator += frameTime;
+
+    while (accumulator >= deltaTime) {
+        mover->UpdatePhysics(deltaTime);
+        accumulator -= deltaTime;
+    }
+
+    // mover->Update(1 / 300.0f); // not using deltaTime argument for now
 }
 
 void Window::displayCallback(GLFWwindow* window) {
