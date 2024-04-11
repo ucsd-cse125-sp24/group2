@@ -5,8 +5,8 @@
 
 Mover::Mover() {
     position = glm::vec3(0);
-    velocityHeading = glm::vec3(0,0,-1);
-    speed = 0;
+    velocityHeading = glm::vec3(0);
+    speed = 0.2;
 
     cube = new Cube(glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0.5, 0.5, 0.5));
 }
@@ -20,7 +20,11 @@ void Mover::Update(float deltaTime) {
 }
 
 void Mover::UpdatePhysics(float deltaTime) {
-    position += velocityHeading * speed;
+    glm::vec3 normalizedVelocityHeading = velocityHeading;
+    if (velocityHeading != glm::vec3(0)) {
+        normalizedVelocityHeading = glm::normalize(velocityHeading);
+    }
+    position += normalizedVelocityHeading * speed;
 }
 
 void Mover::Draw(glm::mat4 view, GLuint shaderProgram) {

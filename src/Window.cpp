@@ -115,7 +115,7 @@ void Window::idleCallback() {
     //spins cube
     //cube->update();
 
-    mover->Update(0.0); // not using deltaTime argument for now
+    mover->Update(1 / 300.0f); // not using deltaTime argument for now
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -144,37 +144,6 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
      */
 
     // Check for a key press.
-    if (action == GLFW_REPEAT) {
-        switch (key) {
-            case GLFW_KEY_W:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin forward!" << std::endl;
-                mover->position += glm::vec3(0,0,-0.2);
-                break;
-
-            case GLFW_KEY_A:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin left!" << std::endl;
-                mover->position += glm::vec3(-0.2,0,0);
-                break;
-
-            case GLFW_KEY_S:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin back!" << std::endl;
-                mover->position += glm::vec3(0,0,0.2);
-                break;
-
-            case GLFW_KEY_D:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin right!" << std::endl;
-                mover->position += glm::vec3(0.2,0,0);
-                break;
-
-            default:
-                break;
-        }
-    }
-    
     if (action == GLFW_PRESS) {
         switch (key) {
             case GLFW_KEY_ESCAPE:
@@ -184,6 +153,61 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 
             case GLFW_KEY_R:
                 resetCamera();
+                break;
+
+            case GLFW_KEY_W:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Movin forward!" << std::endl;
+                mover->velocityHeading += glm::vec3(0,0,-1);
+                break;
+
+            case GLFW_KEY_A:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Movin left!" << std::endl;
+                mover->velocityHeading += glm::vec3(-1,0,0);
+                break;
+
+            case GLFW_KEY_S:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Movin back!" << std::endl;
+                mover->velocityHeading += glm::vec3(0,0,1);
+                break;
+
+            case GLFW_KEY_D:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Movin right!" << std::endl;
+                mover->velocityHeading += glm::vec3(1,0,0);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    if (action == GLFW_RELEASE) {
+        switch (key) {
+            case GLFW_KEY_W:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Stopping forward!" << std::endl;
+                mover->velocityHeading -= glm::vec3(0,0,-1);
+                break;
+
+            case GLFW_KEY_A:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Stopping left!" << std::endl;
+                mover->velocityHeading -= glm::vec3(-1,0,0);
+                break;
+
+            case GLFW_KEY_S:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Stopping back!" << std::endl;
+                mover->velocityHeading -= glm::vec3(0,0,1);
+                break;
+
+            case GLFW_KEY_D:
+                // Close the window. This causes the program to also terminate.
+                std::cout << "Stopping right!" << std::endl;
+                mover->velocityHeading -= glm::vec3(1,0,0);
                 break;
 
             default:
