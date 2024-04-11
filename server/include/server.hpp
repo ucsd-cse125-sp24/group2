@@ -17,6 +17,7 @@
 #endif
 
 #include "client.hpp"
+#include "network_manager.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -29,10 +30,10 @@ class Server {
 #endif
 
    private:
-    static std::map<int, Client*> clients;
     static void* receive(void*);
 
    public:
+    static std::map<int, Client*> clients;
     static int init();
     static int teardown();
     static int send(int, void*, int);

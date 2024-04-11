@@ -6,9 +6,7 @@
 class Player : public Entity {
    public:
     glm::vec2 inputs;
-    virtual void update() {
-        position += glm::vec3(inputs.x, 0, inputs.y);
-    }
+    virtual void update() override;
 };
 
-#endif // PLAYER_H
+#endif  // PLAYER_H

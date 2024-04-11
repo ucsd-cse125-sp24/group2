@@ -7,8 +7,8 @@ INCFLAGS = -I./include
 LDFLAGS = -L./lib
 
 RM = /bin/rm -f
-Server: main.o server.o network_manager.o client.o
-	$(CC) -o Server client.o server.o main.o network_manager.o $(LDFLAGS) $(CFLAGS) $(INCFLAGS)
+Server: main.o server.o network_manager.o client.o player.o
+	$(CC) -o Server client.o server.o main.o network_manager.o player.o $(LDFLAGS) $(CFLAGS) $(INCFLAGS)
 main.o: main.cpp
 	$(CC) $(INCFLAGS) $(CFLAGS) -c main.cpp
 server.o: src/server.cpp
@@ -17,5 +17,7 @@ network_manager.o: src/network_manager.cpp
 	$(CC) $(INCFLAGS) $(CFLAGS) -c src/network_manager.cpp
 client.o: src/client.cpp
 	$(CC) $(INCFLAGS) $(CFLAGS) -c src/client.cpp
+player.o: src/player.cpp
+	$(CC) $(INCFLAGS) $(CFLAGS) -c src/player.cpp
 clean:
 	$(RM) *.o Server.exe

@@ -24,6 +24,7 @@ class Client {
     Client();
     ~Client();
     void init();
+    static void* receive(void*);
 };
 
 #endif  // CLIENT_H

@@ -4,7 +4,6 @@ void Client::init() {
     p = new Player;
 }
 
-
 void Client::handle_packet(void *packet) {
     std::string *cmd = new std::string((char *)packet);
     if (cmd->compare("forward") == 0) {

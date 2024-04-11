@@ -4,12 +4,14 @@
 #include <string>
 #include <stack>
 #include <stdio.h>
+#ifdef _WIN32
 #include <winsock2.h>
+#else
+#include <sys/socket.h>
+#include <netinet/in.h>
+#endif
 
 #include "entity.hpp"
-#include "server.hpp"
-#include "client.hpp"
-#include "observer.hpp"
 class NetworkManager {
     std::vector<Entity*> entities;
     static std::stack<int> freelist;
@@ -25,4 +27,4 @@ class NetworkManager {
     }
 };
 
-#endif // NETWORK_MANAGER_H
+#endif  // NETWORK_MANAGER_H

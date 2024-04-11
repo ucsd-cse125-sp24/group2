@@ -1,7 +1,10 @@
 #include "server.hpp"
+#include <iostream>
 
 std::map<int, Client*> Server::clients;
+#ifdef _WIN32
 WSADATA Server::wsa_data;
+#endif
 int Server::teardown() {
 #ifdef _WIN32
     WSACleanup();
@@ -30,7 +33,7 @@ int Server::init() {
     sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(SERVER_PORT);
 
-    if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+    if (bind(sock, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
         perror("bind failed");
         return 1;
     }
@@ -44,12 +47,12 @@ int Server::init() {
     while (1) {
         struct sockaddr_in client_sin;
         int addr_len = sizeof(client_sin);
-        int client_sock = accept(sock, (struct sockaddr *)&client_sin, (socklen_t *)&addr_len);
+        int client_sock = accept(sock, (struct sockaddr*)&client_sin, (socklen_t*)&addr_len);
         if (client_sock < 0) {
             perror("accept failed");
             return -1;
         }
-        
+
         printf("Client (%s) connected on port %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
         int i = 0;
         for (i = 0; i < MAX_CLIENTS; i++) {
@@ -60,11 +63,11 @@ int Server::init() {
             Server::clients[i] = client;
             client->init();
 
-            //NetworkManager::instance().register_entity(&(*client->p));
+            NetworkManager::instance().register_entity(&(*client->p));
             printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, Server::clients.size(), MAX_CLIENTS);
 
             pthread_t thread;
-            int res = pthread_create(&thread, NULL, receive, client);
+            int res = pthread_create(&thread, NULL, Server::receive, client);
 
             break;
         }
@@ -78,19 +81,19 @@ int Server::init() {
 }
 
 void* Server::receive(void* params) {
-    Client* client = (Client*) (params);
+    Client* client = (Client*)(params);
     char buffer[4096];
     int expected_data_len = sizeof(buffer);
 
     while (1) {
-        int read_bytes = recv(client->sockfd, (char*) &buffer, expected_data_len, 0);
+        int read_bytes = recv(client->sockfd, (char*)&buffer, expected_data_len, 0);
         if (read_bytes == 0) {  // Connection was closed
             return NULL;
         } else if (read_bytes < 0) {  // error
 #ifdef _WIN32
             closesocket(client->sockfd);
 #elif defined __APPLE__
-            close(*client_sock);
+            close(client->sockfd);
 #endif
             perror("recv failed");
             return NULL;
@@ -108,11 +111,10 @@ void* Server::receive(void* params) {
 }
 
 int Server::send(int client_id, void* data, int data_len) {
-    char* buffer = (char*) data;
-    int sent_bytes = ::send(Server::clients[client_id]->sockfd, (const char*) &buffer, data_len, 0);
+    char* buffer = (char*)data;
+    int sent_bytes = ::send(Server::clients[client_id]->sockfd, (const unsigned char*)buffer, data_len, 0);
     if (sent_bytes < 0) {
         perror("send failed");
         return NULL;
     }
-
 }

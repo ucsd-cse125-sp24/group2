@@ -1,4 +1,10 @@
 #include "client.hpp"
+#include <glm/glm.hpp>
+#include <iomanip>
+union FloatUnion {
+    uint32_t i;
+    float f;
+} num;
 
 Client::Client() {
 }
@@ -34,9 +40,12 @@ void Client::init() {
     sin.sin_addr.s_addr = inet_addr("127.0.0.1");
     sin.sin_port = htons(25565);
 
-    if (connect(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+    if (connect(sock, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
         perror("connection failed");
     }
+
+    pthread_t thread;
+    pthread_create(&thread, NULL, receive, &sock);
 
     int data_len;
     string input;
@@ -50,11 +59,17 @@ void Client::init() {
         if (sent_bytes < 0) {
             perror("send failed");
         }
+    }
+}
 
-        int read_bytes = recv(sock, &buf[0], 4096, 0);
+void* Client::receive(void* params) {
+    int sock = *((int*)params);
+    uint8_t buf[4096];
+    while (1) {
+        int read_bytes = recv(sock, buf, 4096, 0);
         if (read_bytes == 0) {  // Connection was closed
             printf("Connection was closed\n");
-            return;
+            return NULL;
         } else if (read_bytes < 0) {  // error
 #ifdef _WIN32
             closesocket(sock);
@@ -62,10 +77,27 @@ void Client::init() {
             close(sock);
 #endif
             perror("recv failed");
-            return;
+            return NULL;
         } else {
             printf("Received %d bytes from server\n", read_bytes);
-            printf("%.*s\n", read_bytes, &buf[0]);
+            uint32_t tmp;
+            memcpy(&tmp, buf, 4);
+            num.i = ntohl(tmp);
+            float x = num.f;
+
+            memcpy(&tmp, buf + 4, 4);
+            num.i = ntohl(tmp);
+            float y = num.f;
+
+            memcpy(&tmp, buf + 8, 4);
+            num.i = ntohl(tmp);
+            float z = num.f;
+
+            printf("(%g, %g, %g)\n", x, y, z);
         }
+
+        memset(buf, 0, 4096);
     }
+
+    return NULL;
 }
