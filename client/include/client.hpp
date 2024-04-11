@@ -1,5 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
+
 #include <stdio.h>
 #include <vector>
 #include <iostream>
@@ -24,7 +25,7 @@ class Client {
     Client();
     ~Client();
     void init();
-    static void* receive(void*);
+    static void receive(int);
 };
 
 #endif  // CLIENT_H

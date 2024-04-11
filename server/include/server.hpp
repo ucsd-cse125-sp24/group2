@@ -10,8 +10,6 @@
 #include "client.hpp"
 #include "network_manager.hpp"
 
-#pragma comment(lib, "ws2_32.lib")
-
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 

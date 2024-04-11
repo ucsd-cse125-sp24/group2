@@ -1,6 +1,8 @@
 #include "client.hpp"
 #include <glm/glm.hpp>
 #include <iomanip>
+#include <thread>
+
 union FloatUnion {
     uint32_t i;
     float f;
@@ -44,8 +46,11 @@ void Client::init() {
         perror("connection failed");
     }
 
+    /*
     pthread_t thread;
     pthread_create(&thread, NULL, receive, &sock);
+    */
+    std::thread(receive, sock).detach();
 
     int data_len;
     string input;
@@ -62,14 +67,13 @@ void Client::init() {
     }
 }
 
-void* Client::receive(void* params) {
-    int sock = *((int*)params);
+void Client::receive(int sock) {
     uint8_t buf[4096];
     while (1) {
-        int read_bytes = recv(sock, buf, 4096, 0);
+        int read_bytes = recv(sock, (char*) buf, 4096, 0);
         if (read_bytes == 0) {  // Connection was closed
             printf("Connection was closed\n");
-            return NULL;
+            return;
         } else if (read_bytes < 0) {  // error
 #ifdef _WIN32
             closesocket(sock);
@@ -77,7 +81,7 @@ void* Client::receive(void* params) {
             close(sock);
 #endif
             perror("recv failed");
-            return NULL;
+            return;
         } else {
             printf("Received %d bytes from server\n", read_bytes);
             uint32_t tmp;
@@ -99,5 +103,5 @@ void* Client::receive(void* params) {
         memset(buf, 0, 4096);
     }
 
-    return NULL;
+    return;
 }

@@ -1,8 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#pragma comment(lib, "ws2_32")
-
 #include <stdio.h>
 #include <string>
 

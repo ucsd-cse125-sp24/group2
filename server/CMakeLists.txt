@@ -17,3 +17,4 @@ set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 target_include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
+target_link_libraries(server ws2_32)

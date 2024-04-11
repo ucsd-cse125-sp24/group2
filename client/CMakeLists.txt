@@ -14,3 +14,4 @@ set(CLIENT_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 target_include_directories(client PRIVATE "${CLIENT_INCLUDE_DIRECTORIES}")
+target_link_libraries(client ws2_32)
