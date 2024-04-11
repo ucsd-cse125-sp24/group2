@@ -1,15 +1,11 @@
 #ifndef NETWORK_MANAGER_H
 #define NETWORK_MANAGER_H
 #include <vector>
-#include <string>
+#include <cstring>
 #include <stack>
 #include <stdio.h>
-#ifdef _WIN32
 #include <winsock2.h>
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#endif
+#include <ws2tcpip.h>
 
 #include "entity.hpp"
 class NetworkManager {

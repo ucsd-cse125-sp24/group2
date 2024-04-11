@@ -1,18 +1,15 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#pragma comment(lib, "ws2_32")
+
 #include <stdio.h>
 #include <string>
 
-#ifdef _WIN32
 #include <winsock2.h>
+#include <windows.h>
 #include <ws2tcpip.h>
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#endif
 
-#include <pthread.h>
 #include "player.hpp"
 
 class Client {

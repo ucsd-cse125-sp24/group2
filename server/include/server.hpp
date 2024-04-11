@@ -1,20 +1,11 @@
 #ifndef SERVER_H
 #define SERVER_H
 #include <stdio.h>
-#include <pthread.h>
 #include <map>
 #include <string>
-#ifdef _WIN32
+#include <thread>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#elif defined __APPLE__
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <glm/glm.hpp>
-#endif
 
 #include "client.hpp"
 #include "network_manager.hpp"
@@ -30,7 +21,7 @@ class Server {
 #endif
 
    private:
-    static void* receive(void*);
+    static void receive(Client*);
 
    public:
     static std::map<int, Client*> clients;

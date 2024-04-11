@@ -6,36 +6,27 @@
 #include <iostream>
 #include <time.h>
 #include <chrono>
-#include <sched.h>
-#include <pthread.h>
+#include <thread>
 
 #include "network_manager.hpp"
 
 using namespace std;
 volatile int running = 0;
-void* tick(void*);
+void tick(void);
 int main(int argc, char** argv) {
-    pthread_t main_thread;
-
     running = 1;
-    int res = pthread_create(&main_thread, NULL, tick, NULL);
-    if (res != 0) {
-        perror("Failed to create thread");
-        return 1;
-    }
+    std::thread(tick).detach();
 
     NetworkManager::instance().init();
 }
 
-void* tick(void* params) {
+void tick() {
     // Set realtime scheduling
+    /*
     const struct sched_param p = {
         .sched_priority = sched_get_priority_max(SCHED_FIFO)};
-#ifdef __APPLE__
-    setpriority(PRIO_PROCESS, 0, PRIO_MIN);
-#else
     sched_setscheduler(0, SCHED_FIFO, &p);
-#endif
+    */
 
     unsigned long tick = 0;
 
@@ -53,14 +44,12 @@ void* tick(void* params) {
         // Wait for end of tick
         auto time_to_sleep = next_tick_time - chrono::steady_clock::now();
         if (time_to_sleep.count() > 0) {
-            const struct timespec t = {
-                (time_t)(chrono::duration_cast<chrono::seconds>(time_to_sleep).count()),
-                (long)(chrono::duration_cast<chrono::nanoseconds>(time_to_sleep % chrono::seconds(1)).count())};
-            nanosleep(&t, NULL);
+            long t = (long)(chrono::duration_cast<chrono::milliseconds>(time_to_sleep % chrono::seconds(1)).count());
+            Sleep(t);
         } else {
             printf("Server is running behind!\n");
         }
     }
 
-    return 0;
+    return;
 }

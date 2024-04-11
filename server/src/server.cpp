@@ -2,26 +2,20 @@
 #include <iostream>
 
 std::map<int, Client*> Server::clients;
-#ifdef _WIN32
 WSADATA Server::wsa_data;
-#endif
 int Server::teardown() {
-#ifdef _WIN32
     WSACleanup();
-#endif
     return 0;
 }
 
 int Server::init() {
-#ifdef _WIN32
     int res;
     res = WSAStartup(MAKEWORD(2, 2), &Server::wsa_data);
     if (res != 0) {
         perror("WSAStartup failed");
     }
-#endif
 
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket() failed");
         return 1;
@@ -66,8 +60,8 @@ int Server::init() {
             NetworkManager::instance().register_entity(&(*client->p));
             printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, Server::clients.size(), MAX_CLIENTS);
 
-            pthread_t thread;
-            int res = pthread_create(&thread, NULL, Server::receive, client);
+            std::thread(Server::receive, client).detach();
+            //int res = pthread_create(&thread, NULL, Server::receive, client);
 
             break;
         }
@@ -80,23 +74,18 @@ int Server::init() {
     return 0;
 }
 
-void* Server::receive(void* params) {
-    Client* client = (Client*)(params);
+void Server::receive(Client* client) {
     char buffer[4096];
     int expected_data_len = sizeof(buffer);
 
     while (1) {
         int read_bytes = recv(client->sockfd, (char*)&buffer, expected_data_len, 0);
         if (read_bytes == 0) {  // Connection was closed
-            return NULL;
+            return;
         } else if (read_bytes < 0) {  // error
-#ifdef _WIN32
             closesocket(client->sockfd);
-#elif defined __APPLE__
-            close(client->sockfd);
-#endif
             perror("recv failed");
-            return NULL;
+            return;
         } else {
             printf("Received %d bytes from client %d\n", read_bytes, client->id);
             printf("%.*s\n", read_bytes, buffer);
@@ -106,13 +95,11 @@ void* Server::receive(void* params) {
 
         memset(buffer, 0, 4096);
     }
-
-    return 0;
 }
 
 int Server::send(int client_id, void* data, int data_len) {
     char* buffer = (char*)data;
-    int sent_bytes = ::send(Server::clients[client_id]->sockfd, (const unsigned char*)buffer, data_len, 0);
+    int sent_bytes = ::send(Server::clients[client_id]->sockfd, (const char*)buffer, data_len, 0);
     if (sent_bytes < 0) {
         perror("send failed");
         return NULL;
