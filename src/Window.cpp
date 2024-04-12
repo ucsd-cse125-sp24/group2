@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Client.h"
 
 // Window Properties
 int Window::width;
@@ -7,6 +8,7 @@ const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
 // Cube* Window::cube;
+Client client;
 
 // Added by me:
 Mover* Window::mover;
@@ -23,6 +25,9 @@ GLuint Window::shaderProgram;
 
 // Constructors and desctructors
 bool Window::initializeProgram() {
+    // FIXME migrate networked client initialization outside of this
+    client.init();
+
     // Create a shader program with a vertex shader and a fragment shader.
     shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 
@@ -158,6 +163,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
     /*
      * TODO: Modify below to add your key callbacks.
      */
+    char buf[4];
 
     // Check for a key press.
     if (action == GLFW_PRESS) {
@@ -174,25 +180,29 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             case GLFW_KEY_W:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin forward!" << std::endl;
-                mover->velocityHeading += glm::vec3(0,0,-1);
+                //mover->velocityHeading += glm::vec3(0,0,-1);
+                buf[0] = 1;
                 break;
 
             case GLFW_KEY_A:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin left!" << std::endl;
-                mover->velocityHeading += glm::vec3(-1,0,0);
+                //mover->velocityHeading += glm::vec3(-1,0,0);
+                buf[1] = 1;
                 break;
 
             case GLFW_KEY_S:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin back!" << std::endl;
-                mover->velocityHeading += glm::vec3(0,0,1);
+                //mover->velocityHeading += glm::vec3(0,0,1);
+                buf[2] = 1;
                 break;
 
             case GLFW_KEY_D:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin right!" << std::endl;
-                mover->velocityHeading += glm::vec3(1,0,0);
+                //mover->velocityHeading += glm::vec3(1,0,0);
+                buf[3] = 1;
                 break;
 
             default:
@@ -205,31 +215,37 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             case GLFW_KEY_W:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping forward!" << std::endl;
-                mover->velocityHeading -= glm::vec3(0,0,-1);
+                //mover->velocityHeading -= glm::vec3(0,0,-1);
+                buf[0] = 0;
                 break;
 
             case GLFW_KEY_A:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping left!" << std::endl;
-                mover->velocityHeading -= glm::vec3(-1,0,0);
+                //mover->velocityHeading -= glm::vec3(-1,0,0);
+                buf[1] = 0;
                 break;
 
             case GLFW_KEY_S:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping back!" << std::endl;
-                mover->velocityHeading -= glm::vec3(0,0,1);
+                //mover->velocityHeading -= glm::vec3(0,0,1);
+                buf[2] = 0;
                 break;
 
             case GLFW_KEY_D:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping right!" << std::endl;
-                mover->velocityHeading -= glm::vec3(1,0,0);
+                //mover->velocityHeading -= glm::vec3(1,0,0);
+                buf[3] = 0;
                 break;
 
             default:
                 break;
         }
     }
+
+    client.send(buf, 4);
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods) {

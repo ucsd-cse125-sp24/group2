@@ -11,6 +11,7 @@ set(
     src/Shader.cpp
     src/Tokenizer.cpp
     src/Window.cpp
+    src/Client.cpp
     # 125-Starter
     src/Mover.cpp
 )
@@ -24,6 +25,7 @@ set(
     include/Shader.h
     include/Tokenizer.h
     include/Window.h
+    include/Client.h
     # 125-Starter
     include/Mover.h
 )
@@ -46,6 +48,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32s.lib glfw3)
+target_link_libraries(${PROJECT_NAME} ws2_32)
 
 # Move assets to .exe
 add_custom_target(CopyShaders ALL
