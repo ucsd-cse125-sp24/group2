@@ -3,25 +3,21 @@
 
 #include <stdio.h>
 #include <string>
-
-#include <winsock2.h>
+#include "psocket.hpp"
 
 #include "Player.hpp"
 
 class Client {
-private:
+   private:
     static void* receive(void*);
 
-public:
+   public:
     Player* p;
     int id;
-    int sockfd;
+    Socket* clientsock;
     struct sockaddr_in sockaddr;
     void handle_packet(void* packet);
-    Client(int id, int sockfd, struct sockaddr_in& sockaddr) {
-        this->id = id;
-        this->sockaddr = sockaddr;
-        this->sockfd = sockfd;
+    Client(int id, Socket* clientsock, struct sockaddr_in& sockaddr) : id(id), clientsock(clientsock), sockaddr(sockaddr) {
     }
     void init();
 };

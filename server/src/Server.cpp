@@ -1,24 +1,17 @@
 #include "Server.hpp"
-#include <ws2tcpip.h>
 
 #include <iostream>
-#include  <iomanip>
+#include <iomanip>
 
 std::map<int, Client*> Server::clients;
-WSADATA Server::wsa_data;
+Socket Server::psocket;
 int Server::teardown() {
-    WSACleanup();
     return 0;
 }
 
 int Server::init() {
-    int res;
-    res = WSAStartup(MAKEWORD(2, 2), &Server::wsa_data);
-    if (res != 0) {
-        perror("WSAStartup failed");
-    }
+    int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
 
-    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket() failed");
         return 1;
@@ -30,12 +23,12 @@ int Server::init() {
     sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(SERVER_PORT);
 
-    if (bind(sock, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
+    if (!psocket.bind((struct sockaddr*)&sin, sizeof(sin))) {
         perror("bind failed");
         return 1;
     }
 
-    if (listen(sock, MAX_CLIENTS) < 0) {
+    if (!psocket.listen(MAX_CLIENTS)) {
         perror("listen failed");
         return 1;
     }
@@ -44,8 +37,8 @@ int Server::init() {
     while (1) {
         struct sockaddr_in client_sin;
         int addr_len = sizeof(client_sin);
-        int client_sock = accept(sock, (struct sockaddr*)&client_sin, (socklen_t*)&addr_len);
-        if (client_sock < 0) {
+        Socket* client_sock = psocket.accept((struct sockaddr*)&client_sin, (socklen_t*)&addr_len);
+        if (client_sock->getFD() < 0) {
             perror("accept failed");
             return -1;
         }
@@ -64,7 +57,7 @@ int Server::init() {
             printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, Server::clients.size(), MAX_CLIENTS);
 
             std::thread(Server::receive, client).detach();
-            //int res = pthread_create(&thread, NULL, Server::receive, client);
+            // int res = pthread_create(&thread, NULL, Server::receive, client);
 
             break;
         }
@@ -82,11 +75,11 @@ void Server::receive(Client* client) {
     int expected_data_len = sizeof(buffer);
 
     while (1) {
-        int read_bytes = recv(client->sockfd, (char*)&buffer, expected_data_len, 0);
+        int read_bytes = client->clientsock->recv((char*)&buffer, expected_data_len, 0);
         if (read_bytes == 0) {  // Connection was closed
             return;
         } else if (read_bytes < 0) {  // error
-            closesocket(client->sockfd);
+            psocket.close();
             perror("recv failed");
             return;
         } else {
@@ -101,10 +94,10 @@ void Server::receive(Client* client) {
 
 int Server::send(int client_id, const char* data, const int data_len) {
     for (int i = 0; i < data_len; i++) {
-        std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)(((uint8_t*) data)[i]) << " ";
+        std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)(((uint8_t*)data)[i]) << " ";
     }
     std::cout << std::endl;
-    int sent_bytes = ::send(Server::clients[client_id]->sockfd, data, data_len, 0);
+    int sent_bytes = clients[client_id]->clientsock->send(data, data_len, 0);
     if (sent_bytes < 0) {
         printf("failed to send\n");
         return 1;

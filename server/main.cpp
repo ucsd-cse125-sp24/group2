@@ -7,7 +7,9 @@
 #include <time.h>
 #include <chrono>
 #include <thread>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 #include "NetworkManager.hpp"
 
@@ -45,8 +47,15 @@ void tick() {
         // Wait for end of tick
         auto time_to_sleep = next_tick_time - chrono::steady_clock::now();
         if (time_to_sleep.count() > 0) {
+#ifdef _WIN32
             long t = (long)(chrono::duration_cast<chrono::milliseconds>(time_to_sleep % chrono::seconds(1)).count());
             Sleep(t);
+#else
+            const struct timespec t = {
+                (time_t)(chrono::duration_cast<chrono::seconds>(time_to_sleep).count()),
+                (long)(chrono::duration_cast<chrono::nanoseconds>(time_to_sleep % chrono::seconds(1)).count())};
+            nanosleep(&t, NULL);
+#endif
         } else {
             printf("Server is running behind!\n");
         }

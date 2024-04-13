@@ -4,23 +4,20 @@
 #include <map>
 #include <string>
 #include <thread>
-#include <winsock2.h>
 
 #include "Client.hpp"
 #include "NetworkManager.hpp"
+#include "psocket.hpp"
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
 class Server {
-#ifdef _WIN32
-    static WSADATA wsa_data;
-#endif
-
-   private:
+private:
+    static Socket psocket;
     static void receive(Client*);
 
-   public:
+public:
     static std::map<int, Client*> clients;
     static int init();
     static int teardown();

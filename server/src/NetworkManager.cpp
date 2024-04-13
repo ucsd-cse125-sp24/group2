@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <string>
 #include <stdio.h>
-#include <winsock2.h>
 
 #include "Server.hpp"
 
@@ -43,7 +42,7 @@ void NetworkManager::send_state() {
             memcpy(buf + 8, &tmpl, sizeof(uint32_t));
             // printf("(%g, %g, %d)\n", tmp.x, tmp.y, tmpl);
 
-            Server::send(it.first, (const char*) buf, 12);
+            Server::send(it.first, (const char*)buf, 12);
         }
     }
 }
