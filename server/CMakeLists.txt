@@ -14,8 +14,6 @@ set(SERVER_SOURCES
     )
 
 
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-
 add_executable(server "${SERVER_SOURCES}")
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
@@ -25,9 +23,8 @@ include_directories(
     "../include/"
     )
 
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
+  set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
   target_link_libraries(server PUBLIC ws2_32)
   target_link_libraries(server PRIVATE pthread)
 else()
