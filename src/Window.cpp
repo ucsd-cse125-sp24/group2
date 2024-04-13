@@ -12,7 +12,7 @@ Client client;
 
 // Added by me:
 Mover* Window::mover;
-    uint8_t buf[4];
+uint8_t buf[4];
 
 // Camera Properties
 Camera* Cam;
@@ -71,6 +71,12 @@ GLFWwindow* Window::createWindow(int width, int height) {
 
     // 4x antialiasing.
     glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     // Create the GLFW window.
     GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
@@ -78,7 +84,6 @@ GLFWwindow* Window::createWindow(int width, int height) {
     // Check if the window could not be created.
     if (!window) {
         std::cerr << "Failed to open GLFW window." << std::endl;
-        glfwTerminate();
         return NULL;
     }
 
@@ -124,8 +129,8 @@ void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
 
-    //spins cube
-    //cube->update();
+    // spins cube
+    // cube->update();
 
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
@@ -181,28 +186,28 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             case GLFW_KEY_W:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin forward!" << std::endl;
-                //mover->velocityHeading += glm::vec3(0,0,-1);
+                // mover->velocityHeading += glm::vec3(0,0,-1);
                 buf[0] = 1;
                 break;
 
             case GLFW_KEY_A:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin left!" << std::endl;
-                //mover->velocityHeading += glm::vec3(-1,0,0);
+                // mover->velocityHeading += glm::vec3(-1,0,0);
                 buf[1] = 1;
                 break;
 
             case GLFW_KEY_S:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin back!" << std::endl;
-                //mover->velocityHeading += glm::vec3(0,0,1);
+                // mover->velocityHeading += glm::vec3(0,0,1);
                 buf[2] = 1;
                 break;
 
             case GLFW_KEY_D:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Movin right!" << std::endl;
-                //mover->velocityHeading += glm::vec3(1,0,0);
+                // mover->velocityHeading += glm::vec3(1,0,0);
                 buf[3] = 1;
                 break;
 
@@ -216,28 +221,28 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
             case GLFW_KEY_W:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping forward!" << std::endl;
-                //mover->velocityHeading -= glm::vec3(0,0,-1);
+                // mover->velocityHeading -= glm::vec3(0,0,-1);
                 buf[0] = 0;
                 break;
 
             case GLFW_KEY_A:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping left!" << std::endl;
-                //mover->velocityHeading -= glm::vec3(-1,0,0);
+                // mover->velocityHeading -= glm::vec3(-1,0,0);
                 buf[1] = 0;
                 break;
 
             case GLFW_KEY_S:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping back!" << std::endl;
-                //mover->velocityHeading -= glm::vec3(0,0,1);
+                // mover->velocityHeading -= glm::vec3(0,0,1);
                 buf[2] = 0;
                 break;
 
             case GLFW_KEY_D:
                 // Close the window. This causes the program to also terminate.
                 std::cout << "Stopping right!" << std::endl;
-                //mover->velocityHeading -= glm::vec3(1,0,0);
+                // mover->velocityHeading -= glm::vec3(1,0,0);
                 buf[3] = 0;
                 break;
 
@@ -246,7 +251,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
         }
     }
 
-    client.send((const char*) buf, 4);
+    client.send((const char*)buf, 4);
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods) {

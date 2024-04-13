@@ -1,6 +1,6 @@
 #include "Client.h"
 #include <stdio.h>
-#include <thread>
+#include <pthread.h>
 #include <iostream>
 #include <iomanip>
 #include <glm/gtx/string_cast.hpp>
@@ -10,15 +10,9 @@ union FloatUnion {
     uint32_t l;
 } num;
 void Client::init(Mover* m) {
-    int res;
-    res = WSAStartup(MAKEWORD(2, 2), &wsa_data);
-    if (res != 0) {
-        printf("WSAStartup failed\n");
-        return;
-    }
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == INVALID_SOCKET) {
+    this->m = m;
+    int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
         printf("failed to create socket\n");
         return;
     }
@@ -29,25 +23,28 @@ void Client::init(Mover* m) {
     sin.sin_addr.s_addr = inet_addr("127.0.0.1");
     sin.sin_port = htons(25565);
 
-    if (connect(sock, (struct sockaddr*)&sin, sizeof(sin)) < 0) {
+    if (!psocket.connect((struct sockaddr*)&sin, sizeof(sin))) {
         perror("connection failed");
+        return;
     }
 
-    std::thread(receive, sock, m).detach();
+    pthread_t thread;
+    int res = pthread_create(&thread, NULL, Client::receive, this);
 }
 
-void Client::receive(SOCKET sock, Mover* m) {
-    uint8_t buf[4096];
+void* Client::receive(void* params) {
+    Client* client = (Client*)params;
+    char buf[4096];
     int read_bytes;
     do {
-        read_bytes = recv(sock, (char*) &buf, 4096, 0);
+        read_bytes = client->psocket.recv(buf, 4096, 0);
         if (read_bytes > 0) {
             for (int i = 0; i < read_bytes; i++) {
                 std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)buf[i] << " ";
             }
             std::cout << std::endl;
             printf("received %d bytes from server\n", read_bytes);
-            
+
             uint32_t tmp;
             memcpy(&tmp, buf, 4);
             num.l = ntohl(tmp);
@@ -62,7 +59,7 @@ void Client::receive(SOCKET sock, Mover* m) {
             float z = num.f;
 
             glm::vec3 pos = glm::vec3(x, y, z);
-            m->position = pos;
+            client->m->position = pos;
 
             // TODO process data
         } else if (read_bytes < 0) {
@@ -70,14 +67,11 @@ void Client::receive(SOCKET sock, Mover* m) {
         } else {
             printf("disconnected\n");
         }
-    }
-    while (read_bytes > 0);
-
-    closesocket(sock);
+    } while (read_bytes > 0);
 }
 
 void Client::send(const char* buf, int data_len) {
-    int sent_bytes = ::send(sock, buf, data_len, 0);
+    int sent_bytes = psocket.send(buf, data_len, 0);
     if (sent_bytes < 0) {
         printf("failed to send\n");
     }

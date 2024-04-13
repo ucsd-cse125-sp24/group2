@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(menv)
 
@@ -47,8 +49,14 @@ link_directories(
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32s.lib glfw3)
-target_link_libraries(${PROJECT_NAME} ws2_32)
+if (CMAKE_SYSTEM_NAME MATCHES OSX)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
+else()
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32)
+    target_link_libraries(${PROJECT_NAME} ws2_32)
+endif()
 
 # Move assets to .exe
 add_custom_target(CopyShaders ALL
