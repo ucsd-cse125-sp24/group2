@@ -6,7 +6,7 @@ set(CMAKE_C_COMPILER   x86_64-w64-mingw32-gcc)
 set(CMAKE_CXX_COMPILER "x86_64-w64-mingw32-g++")
 
 # where is the target environment located
-set(CMAKE_FIND_ROOT_PATH /usr/local/Cellar/mingw-w64/11.0.1/toolchain-x86_64/mingw/)
+set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32/)
 
 # adjust the default behavior of the FIND_XXX() commands:
 # search programs in the host environment
