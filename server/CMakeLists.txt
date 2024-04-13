@@ -4,7 +4,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(server)
 
-
 # Server config
 set(SERVER_SOURCES 
     src/Client.cpp
@@ -23,9 +22,11 @@ include_directories(
     "../include/"
     )
 
-if (WIN32)
-  find_library(WINSOCK2 ws2_32)
-  target_link_libraries(server PUBLIC ${WINSOCK2})
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+
+if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
+  target_link_libraries(server PUBLIC ws2_32)
+  target_link_libraries(server PRIVATE pthread)
 else()
   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "server.app")
 endif()
