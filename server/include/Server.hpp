@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <map>
 #include <string>
-#include <thread>
 
 #include "Client.hpp"
 #include "NetworkManager.hpp"
@@ -15,7 +14,7 @@
 class Server {
 private:
     static Socket psocket;
-    static void receive(Client*);
+    static void* receive(void*);
 
 public:
     static std::map<int, Client*> clients;

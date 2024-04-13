@@ -9,3 +9,4 @@ server/server
 *.exe
 cmake_install.cmake
 Makefile
+*.dll

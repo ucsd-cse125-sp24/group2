@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <pthread.h>
 
 std::map<int, Client*> Server::clients;
 Socket Server::psocket;
@@ -56,8 +57,10 @@ int Server::init() {
             NetworkManager::instance().register_entity(&(*client->p));
             printf("Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i, Server::clients.size(), MAX_CLIENTS);
 
-            std::thread(Server::receive, client).detach();
-            // int res = pthread_create(&thread, NULL, Server::receive, client);
+            //std::thread(Server::receive, client).detach();
+            pthread_t thread;
+            int res = pthread_create(&thread, NULL, Server::receive, client);
+
 
             break;
         }
@@ -70,18 +73,19 @@ int Server::init() {
     return 0;
 }
 
-void Server::receive(Client* client) {
+void* Server::receive(void* params) {
+    Client* client = (Client*) params;
     uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
 
     while (1) {
         int read_bytes = client->clientsock->recv((char*)&buffer, expected_data_len, 0);
         if (read_bytes == 0) {  // Connection was closed
-            return;
+            return NULL;
         } else if (read_bytes < 0) {  // error
             psocket.close();
             perror("recv failed");
-            return;
+            return NULL;
         } else {
             printf("Received %d bytes from client %d\n", read_bytes, client->id);
 
@@ -90,6 +94,7 @@ void Server::receive(Client* client) {
 
         memset(buffer, 0, 4096);
     }
+    return NULL;
 }
 
 int Server::send(int client_id, const char* data, const int data_len) {

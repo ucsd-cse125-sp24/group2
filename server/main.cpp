@@ -6,7 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <chrono>
-#include <thread>
+#include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -15,15 +15,17 @@
 
 using namespace std;
 volatile int running = 0;
-void tick(void);
+static void* tick(void*);
 int main(int argc, char** argv) {
     running = 1;
-    std::thread(tick).detach();
+    //std::thread(tick).detach();
+    pthread_t thread;
+    pthread_create(&thread, NULL, tick, NULL);
 
     NetworkManager::instance().init();
 }
 
-void tick() {
+void* tick(void*) {
     // Set realtime scheduling
     /*
     const struct sched_param p = {
@@ -61,5 +63,5 @@ void tick() {
         }
     }
 
-    return;
+    return NULL;
 }
