@@ -33,7 +33,6 @@ set(
 )
 
 # Require GL
-find_package(OpenGL REQUIRED)
 
 # Add include directories
 include_directories(
@@ -54,8 +53,9 @@ if (CMAKE_SYSTEM_NAME MATCHES OSX)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
 else()
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32)
-    target_link_libraries(${PROJECT_NAME} ws2_32)
+    set(CMAKE_EXE_LINKER_FLAGS "--static")
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32 gdi32)
+    target_link_libraries(${PROJECT_NAME} pthread ws2_32)
 endif()
 
 # Move assets to .exe

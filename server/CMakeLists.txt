@@ -24,7 +24,7 @@ include_directories(
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
-  set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+  set(CMAKE_EXE_LINKER_FLAGS "--static")
   target_link_libraries(server PUBLIC ws2_32)
   target_link_libraries(server PRIVATE pthread)
 else()
