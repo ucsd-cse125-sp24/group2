@@ -20,7 +20,7 @@ set(SERVER_INCLUDE_DIRECTORIES
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(
-    "../include/"
+    "../common/"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)

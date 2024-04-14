@@ -37,6 +37,7 @@ set(
 # Add include directories
 include_directories(
     include
+    ../common
 )
 
 # Add library directories
@@ -65,6 +66,3 @@ add_custom_target(CopyShaders ALL
 	"${CMAKE_BINARY_DIR}/shaders"
 )
 add_dependencies(menv CopyShaders)
-
-# Server configuration
-add_subdirectory(server)
