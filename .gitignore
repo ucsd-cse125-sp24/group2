@@ -1,1 +1,14 @@
 .DS_Store
+.vs/
+.vscode/
+build
+CMakeFiles
+CMakeCache.txt
+*.swp
+server/server
+*.exe
+cmake_install.cmake
+Makefile
+*.dll
+*.app
+**/CopyOfCMakeCache.txt
