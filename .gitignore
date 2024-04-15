@@ -12,3 +12,4 @@ Makefile
 *.dll
 *.app
 **/CopyOfCMakeCache.txt
+*.o

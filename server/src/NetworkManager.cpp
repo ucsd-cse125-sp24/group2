@@ -24,6 +24,7 @@ void NetworkManager::update() {
 void NetworkManager::send_state() {
     uint8_t buf[12];
     for (int i = 0; i < entities.size(); i++) {
+        int toRemove = -1;
         for (const auto& it : Server::clients) {
             memset(buf, 0, 12);
             auto tmp = entities[i]->position;
@@ -42,7 +43,12 @@ void NetworkManager::send_state() {
             memcpy(buf + 8, &tmpl, sizeof(uint32_t));
             // printf("(%g, %g, %d)\n", tmp.x, tmp.y, tmpl);
 
-            Server::send(it.first, (const char*)buf, 12);
+            if (Server::send(it.first, (const char*)buf, 12) > 0) {
+                toRemove = it.second->id;
+            }
+        }
+        if (toRemove > -1) {
+            Server::clients.erase(toRemove);
         }
     }
 }

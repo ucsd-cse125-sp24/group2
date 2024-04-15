@@ -15,26 +15,16 @@
 
 using namespace std;
 volatile int running = 0;
-static void* tick(void*);
+static void* start_server(void*);
 int main(int argc, char** argv) {
     running = 1;
-    //std::thread(tick).detach();
+
+    // Start server
     pthread_t thread;
-    pthread_create(&thread, NULL, tick, NULL);
+    pthread_create(&thread, NULL, start_server, NULL);
 
-    NetworkManager::instance().init();
-}
-
-void* tick(void*) {
-    // Set realtime scheduling
-    /*
-    const struct sched_param p = {
-        .sched_priority = sched_get_priority_max(SCHED_FIFO)};
-    sched_setscheduler(0, SCHED_FIFO, &p);
-    */
-
+    // Main game loops
     unsigned long tick = 0;
-
     auto start_time = chrono::steady_clock::now();
     while (running) {
         chrono::time_point<chrono::steady_clock> new_time = chrono::steady_clock::now();
@@ -63,5 +53,8 @@ void* tick(void*) {
         }
     }
 
-    return NULL;
+}
+
+void* start_server(void*) {
+    NetworkManager::instance().init();
 }

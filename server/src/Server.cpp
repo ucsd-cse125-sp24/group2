@@ -73,6 +73,7 @@ int Server::init() {
     return 0;
 }
 
+// multi-threaded
 void* Server::receive(void* params) {
     Client* client = (Client*) params;
     uint8_t buffer[4096];
@@ -83,7 +84,7 @@ void* Server::receive(void* params) {
         if (read_bytes == 0) {  // Connection was closed
             return NULL;
         } else if (read_bytes < 0) {  // error
-            psocket.close();
+            client->clientsock->close();
             perror("recv failed");
             return NULL;
         } else {
