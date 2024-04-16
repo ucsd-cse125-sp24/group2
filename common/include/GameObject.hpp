@@ -8,20 +8,12 @@
 
 
 class GameObject {
-
-public:
     std::vector<Component> components;
 
+public:
     GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
-    
-    class Transform : Component {
-    public:
-        Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
-        glm::vec3 pos;
-        glm::vec3 rot;
-        glm::vec3 scale;
-    };
+    void addComponent(Component comp) { components.push_back(comp); }
 };
 
 #endif // GAME_OBJECT_H

@@ -4,7 +4,8 @@
 #include <string>
 
 
-class Component {
+class IComponent {
+public:
     bool sendMessage(std::string topic, void* value);
     bool notify(void* value);
     bool subscribe(std::string topic);
