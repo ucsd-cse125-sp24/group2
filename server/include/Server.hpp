@@ -13,14 +13,15 @@
 
 class Server {
 private:
-    static Socket psocket;
-    static void* receive(void*);
+    std::map<int, Client*> clients;
+    Socket psocket;
+    void receive(Client* client);
 
 public:
-    static std::map<int, Client*> clients;
-    static int init();
-    static int teardown();
-    static int send(int, const char*, int);
+    void start();
+    int teardown();
+    int send(int, const char*, int);
+    std::vector<Client*>* get_clients();
 };
 
 #endif  // SERVER_H

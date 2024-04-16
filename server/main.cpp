@@ -6,7 +6,6 @@
 #include <iostream>
 #include <time.h>
 #include <chrono>
-#include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -15,13 +14,11 @@
 
 using namespace std;
 volatile int running = 0;
-static void* start_server(void*);
 int main(int argc, char** argv) {
     running = 1;
 
     // Start server
-    pthread_t thread;
-    pthread_create(&thread, NULL, start_server, NULL);
+    NetworkManager::instance().init();
 
     // Main game loops
     unsigned long tick = 0;
@@ -53,8 +50,4 @@ int main(int argc, char** argv) {
         }
     }
 
-}
-
-void* start_server(void*) {
-    NetworkManager::instance().init();
 }

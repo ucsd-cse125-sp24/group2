@@ -1,18 +1,20 @@
 #include "NetworkManager.hpp"
 
-#include <iostream>
 #include <iomanip>
-#include <string>
+#include <iostream>
 #include <stdio.h>
+#include <string>
+#include <thread>
 
 #include "Server.hpp"
 
+Server server;
 union FloatUnion {
     float f;
     uint32_t l;
 } num;
-void NetworkManager::init() {
-    Server::init();
+void NetworkManager::init() { 
+    std::thread(&Server::start, &server).detach();
 }
 
 void NetworkManager::update() {
@@ -24,8 +26,8 @@ void NetworkManager::update() {
 void NetworkManager::send_state() {
     uint8_t buf[12];
     for (int i = 0; i < entities.size(); i++) {
-        int toRemove = -1;
-        for (const auto& it : Server::clients) {
+        std::vector<Client*>* clients = server.get_clients();
+        for (const auto& it : *clients) {
             memset(buf, 0, 12);
             auto tmp = entities[i]->position;
 
@@ -41,18 +43,10 @@ void NetworkManager::send_state() {
             num.f = tmp.z;
             tmpl = htonl(num.l);
             memcpy(buf + 8, &tmpl, sizeof(uint32_t));
-            // printf("(%g, %g, %d)\n", tmp.x, tmp.y, tmpl);
-
-            if (Server::send(it.first, (const char*)buf, 12) > 0) {
-                toRemove = it.second->id;
-            }
+            server.send(it->id, (const char*)buf, 12);
         }
-        if (toRemove > -1) {
-            Server::clients.erase(toRemove);
-        }
+        delete clients;
     }
 }
 
-void NetworkManager::register_entity(Entity* e) {
-    entities.push_back(e);
-}
+void NetworkManager::register_entity(Entity* e) { entities.push_back(e); }

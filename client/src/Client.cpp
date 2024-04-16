@@ -60,6 +60,7 @@ void* Client::receive(void* params) {
             float z = num.f;
 
             glm::vec3* pos = new glm::vec3(x, y, z);
+
             // TODO Handle packet
             std::lock_guard<std::mutex> lock(client->mutex);
             if (client->receive_event) {
