@@ -4,6 +4,7 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
+#include "Client.h"
 
 #include "Mover.h"
 
@@ -24,7 +25,8 @@ public:
     static GLuint shaderProgram;
 
     // Act as Constructors and desctructors
-    static bool initializeProgram();
+    // FIXME decouple client creation and window creation
+    static bool initializeProgram(Client& client);
     static bool initializeObjects();
     static void cleanUp();
 

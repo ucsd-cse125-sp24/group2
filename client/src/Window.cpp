@@ -1,5 +1,4 @@
 #include "Window.h"
-#include "Client.h"
 
 // Window Properties
 int Window::width;
@@ -8,7 +7,7 @@ const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
 // Cube* Window::cube;
-Client client;
+Client* client;
 
 // Added by me:
 Mover* Window::mover;
@@ -25,8 +24,8 @@ int MouseX, MouseY;
 GLuint Window::shaderProgram;
 
 // Constructors and desctructors
-bool Window::initializeProgram() {
-    // FIXME migrate networked client initialization outside of this
+bool Window::initializeProgram(Client& c) {
+    client = &c;
     memset(buf, 0, 4);
 
     // Create a shader program with a vertex shader and a fragment shader.
@@ -45,9 +44,7 @@ bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-
     mover = new Mover();
-    client.init(mover);
 
     return true;
 }
@@ -251,7 +248,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
         }
     }
 
-    client.send((const char*)buf, 4);
+    client->send((const char*)buf, 4);
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods) {

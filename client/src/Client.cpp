@@ -1,16 +1,16 @@
 #include "Client.h"
-#include <stdio.h>
-#include <pthread.h>
-#include <iostream>
-#include <iomanip>
 #include <glm/gtx/string_cast.hpp>
+#include <iomanip>
+#include <iostream>
+#include <pthread.h>
+#include <stdio.h>
 
 union FloatUnion {
     float f;
     uint32_t l;
 } num;
-void Client::init(Mover* m) {
-    this->m = m;
+
+void Client::connect(const char* ip, uint16_t port) {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         printf("failed to create socket\n");
@@ -20,9 +20,10 @@ void Client::init(Mover* m) {
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = inet_addr("127.0.0.1");
-    sin.sin_port = htons(25565);
+    sin.sin_addr.s_addr = inet_addr(ip);
+    sin.sin_port = htons(port);
 
+    // connect to server
     if (!psocket.connect((struct sockaddr*)&sin, sizeof(sin))) {
         perror("connection failed");
         return;
@@ -58,10 +59,13 @@ void* Client::receive(void* params) {
             num.l = ntohl(tmp);
             float z = num.f;
 
-            glm::vec3 pos = glm::vec3(x, y, z);
-            client->m->position = pos;
+            glm::vec3* pos = new glm::vec3(x, y, z);
+            // TODO Handle packet
+            std::lock_guard<std::mutex> lock(client->mutex);
+            if (client->receive_event) {
+                client->receive_event(pos);
+            }
 
-            // TODO process data
         } else if (read_bytes < 0) {
             printf("error in receive\n");
         } else {
@@ -75,4 +79,9 @@ void Client::send(const char* buf, int data_len) {
     if (sent_bytes < 0) {
         printf("failed to send\n");
     }
+}
+
+void Client::setCallback(const ReceiveHandler& callback) {
+    std::lock_guard<std::mutex> lock(mutex);
+    receive_event = callback;
 }
