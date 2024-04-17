@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <thread>
+#include <functional>
 
 #include "Server.hpp"
 
@@ -13,7 +14,8 @@ union FloatUnion {
     float f;
     uint32_t l;
 } num;
-void NetworkManager::init() { 
+void NetworkManager::init() {
+    server.set_callback([this](void* pkt) { handle_packet(pkt); });
     std::thread(&Server::start, &server).detach();
 }
 
@@ -47,6 +49,16 @@ void NetworkManager::send_state() {
         }
         delete clients;
     }
+}
+
+void NetworkManager::handle_packet(void* pkt) {
+    // FIXME free pkt
+    uint8_t* packet = (uint8_t*)pkt;
+    (*server.get_clients())[0]->p->inputs.x =
+        (float)packet[3] - (float)packet[1];
+    (*server.get_clients())[0]->p->inputs.y =
+        (float)packet[0] - (float)packet[2];
+    std::cout << std::endl;
 }
 
 void NetworkManager::register_entity(Entity* e) { entities.push_back(e); }

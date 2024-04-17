@@ -16,7 +16,6 @@ public:
     int id;
     Socket* clientsock;
     struct sockaddr_in sockaddr;
-    void handle_packet(void* packet);
     Client(int id, Socket* clientsock, struct sockaddr_in& sockaddr)
         : id(id), clientsock(clientsock), sockaddr(sockaddr) {}
     void init();
