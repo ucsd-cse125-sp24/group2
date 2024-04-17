@@ -53,4 +53,5 @@ If you've compiled for Mac, remove the CMake cache first by running `rm -rf CMak
 4. If the program compiles, there is no further action needed, and there's a good chance the program will compile on a native Windows machine. You will be unable to run the generated `server.exe` executable, but in theory, you would be able to copy the .exe file to a Windows machine and it will run.
 
 \* _What's up with --toolchain?_
-The --toolchain flag tells CMake to use the OSX toolchain with our custom toolchain file, tc-osx.cmake, where it will use clang and clang++ to compile the files, with the libraries and frameworks specified in the toolchain file.
+
+The --toolchain flag tells CMake to use the specified toolchain with our custom toolchain file, for example, tc-osx.cmake, where it will use clang and clang++ to compile the files, with the libraries and frameworks specified in the toolchain file. Each environment has its own toolchain: for compiling on Windows: tc-winwin.cmake; for compiling on Mac with a Windows target: tc-macwin.cmake; for compiling on Mac with a Mac target: tc-osx.cmake
