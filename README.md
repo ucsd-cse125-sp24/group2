@@ -27,7 +27,7 @@ The following environment was tested on a MacBook Pro (2019) environment version
 
 ### Mac Environment Setup
 
-1. Ensure you have [XCode Tools version 12.3](https://developer.apple.com/download/all/) installed. You'll need an Apple Developer account. This is ot get access to the OpenGL framework and framework headers.
+1. Ensure you have [XCode Tools version 12.3](https://developer.apple.com/download/all/) installed. You'll need an Apple Developer account. This is to get access to the OpenGL framework and framework headers.
 2. Install _glew_ with `brew install glew`
 3. Install _MinGW_ with `brew install mingw-w64`
 4. Install _CMake_ with `brew install cmake`
