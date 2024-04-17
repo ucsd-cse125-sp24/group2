@@ -10,5 +10,6 @@ server/server
 cmake_install.cmake
 Makefile
 *.dll
+*.a
 *.app
 **/CopyOfCMakeCache.txt
