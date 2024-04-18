@@ -15,21 +15,13 @@
 #include <vector>
 #endif
 
-// enum type{
-//     keypress,
-//     inc_update
-// };
-// TODO: need to include information about player class / instrument
-// TODO: can we assume it sends in order? what are the error conditions? if wrong type, error? read next of that type? how to handle??
-// TODO: for now, print error and skip
-
 class Packet {
 #ifdef _WIN32
     WSADATA wsa_data;
 #endif
 
    public:
-    std::vector<int32_t> buffer;
+    std::vector<u_int8_t> buffer;
     //int buffer_position;
     //type packet_type;
 
