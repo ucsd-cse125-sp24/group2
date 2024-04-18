@@ -1,37 +1,34 @@
 #ifndef SERVER_H
 #define SERVER_H
 #include <stdio.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#elif defined __APPLE__
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
-#include <pthread.h>
-#endif
+#include <map>
+#include <string>
+#include <mutex>
+#include <functional>
 
-#pragma comment(lib, "ws2_32.lib")
+#include "Client.hpp"
+#include "NetworkManager.hpp"
+#include "psocket.hpp"
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
+typedef std::function<void(void*)> ReceiveHandler;
 class Server {
-    int max_clients;
-    int num_connected_clients;
-#ifdef _WIN32
-    WSADATA wsa_data;
-#endif
+private:
+    std::mutex _mutex;
+    std::mutex handler_mutex;
+    std::map<int, Client*> clients;
+    Socket psocket;
+    void receive(Client* client);
+    ReceiveHandler receive_event = nullptr;
 
-   private:
-    static void* receive(void*);
+public:
+    void start();
+    int teardown();
+    int send(int, const char*, int);
+    std::vector<Client*>* get_clients();
+    void set_callback(const ReceiveHandler& handler);
+}; // SERVER_H
 
-   public:
-    Server();
-    ~Server();
-    int init();
-};
-#endif  // SERVER_H
+#endif // SERVER_H

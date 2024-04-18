@@ -1,27 +1,20 @@
-#include "server.hpp"
+#include "Server.hpp"
 
-Server::Server() {
-}
+#include <iomanip>
+#include <iostream>
+#include <thread>
 
-Server::~Server() {
-#ifdef _WIN32
-    WSACleanup();
-#endif
-}
 
-int Server::init() {
-#ifdef _WIN32
-    int res;
-    res = WSAStartup(MAKEWORD(2, 2), &wsa_data);
-    if (res != 0) {
-        perror("WSAStartup failed\n");
-    }
-#endif
+int Server::teardown() { return 0; }
 
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+// FIXME rare chance that server crashes silently on client disconnect
+// likely due to segfault
+void Server::start() {
+    int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
+
     if (sock < 0) {
         perror("socket() failed");
-        return 1;
+        return;
     }
 
     struct sockaddr_in sin;
@@ -30,56 +23,117 @@ int Server::init() {
     sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(SERVER_PORT);
 
-    if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+    if (!psocket.bind((struct sockaddr*)&sin, sizeof(sin))) {
         perror("bind failed");
-        return 1;
+        return;
     }
 
-    if (listen(sock, MAX_CLIENTS) < 0) {
+    if (!psocket.listen(MAX_CLIENTS)) {
         perror("listen failed");
-        return 1;
+        return;
     }
 
-    printf("Now listening...\n");
+    printf("Now listening on port %d\n", SERVER_PORT);
     while (1) {
         struct sockaddr_in client_sin;
         int addr_len = sizeof(client_sin);
-        int client_sock = accept(sock, (struct sockaddr *)&client_sin, (socklen_t *)&addr_len);
-        if (client_sock < 0) {
+        Socket* client_sock = psocket.accept((struct sockaddr*)&client_sin,
+                                             (socklen_t*)&addr_len);
+        if (client_sock->getFD() < 0) {
             perror("accept failed");
-            return -1;
+            return;
         }
-        printf("Client (%s) connected on port %d\n", inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
 
-        pthread_t thread;
-        int res = pthread_create(&thread, NULL, receive, &client_sock);
+        printf("Incoming connection from %s:%d\n",
+               inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
+        int i = 0;
+        std::unique_lock<std::mutex> lock(_mutex);
+        for (; i < MAX_CLIENTS; i++) {
+            // Find first free slot
+            if (clients.find(i) != clients.end())
+                continue;
+
+            // TODO create new clients outside and only assign client ids as
+            // "slots" instead of creating new client objects
+            Client* client = new Client(i, client_sock, client_sin);
+            clients[i] = client;
+            client->init();
+
+            NetworkManager::instance().register_entity(&(*client->p));
+            printf(
+                "Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n",
+                inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
+                Server::clients.size(), MAX_CLIENTS);
+
+            std::thread(&Server::receive, this, client).detach();
+
+            break;
+        }
+        lock.unlock();
+
+        if (i == MAX_CLIENTS) {
+            perror("Server is full");
+        }
     }
-
-    return 0;
 }
 
-void *Server::receive(void *params) {
-    int *client_sock = (int *)params;
-    char buffer[4096];
+std::vector<Client*>* Server::get_clients() {
+    std::vector<Client*>* res = new std::vector<Client*>();
+    std::lock_guard<std::mutex> lock(_mutex);
+    for (auto it : clients) {
+        res->push_back(it.second);
+    }
+    return res;
+}
+
+// multi-threaded
+void Server::receive(Client* client) {
+    uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
 
     while (1) {
-        int read_bytes = recv(*client_sock, buffer, expected_data_len, 0);
-        if (read_bytes == 0) {  // Connection was closed
-            return NULL;
-        } else if (read_bytes < 0) {  // error
-#ifdef _WIN32
-            closesocket(client_sock);
-#elif defined __APPLE__
-            close(*client_sock);
-#endif
-            perror("recv failed");
-            return NULL;
+        int read_bytes =
+            client->clientsock->recv((char*)&buffer, expected_data_len, 0);
+        if (read_bytes == 0) { // Connection was closed
+            std::lock_guard<std::mutex> lock(_mutex);
+            clients.erase(client->id);
+            std::cout << "Client " << client->id << " disconnected."
+                      << std::endl;
+            delete client;
+            return;
+        } else if (read_bytes < 0) { // error
+            std::lock_guard<std::mutex> lock(_mutex);
+            clients.erase(client->id);
+            std::cout << "recv failed" << std::endl;
+            std::cout << "Client " << client->id << " disconnected."
+                      << std::endl;
+            delete client;
+            return;
         } else {
-            printf("Received %d bytes from client\n", read_bytes);
-            printf("%.*s\n", read_bytes, buffer);
-        }
-    }
+            printf("Received %d bytes from client %d\n", read_bytes,
+                   client->id);
 
-    return NULL;
+            // do we need this?
+            std::lock_guard<std::mutex> lock(handler_mutex);
+            if (receive_event) {
+                receive_event(buffer);
+            }
+        }
+
+        memset(buffer, 0, 4096);
+    }
+}
+
+void Server::set_callback(const ReceiveHandler& handler) {
+    std::lock_guard<std::mutex> lock(handler_mutex);
+    receive_event = handler;
+}
+
+int Server::send(int client_id, const char* data, const int data_len) {
+    int sent_bytes = clients[client_id]->clientsock->send(data, data_len, 0);
+    if (sent_bytes < 0) {
+        printf("failed to send\n");
+        return 1;
+    }
+    return 0;
 }
