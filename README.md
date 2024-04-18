@@ -1,4 +1,9 @@
-## Notes
+# Group2Good Project
 
-- This code is made to be ran on a Windows machine
-- To run the code properly, make sure to copy and paste the /build/shaders folder into the /build/Debug folder
+## Environment Setup Instructions
+
+1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+2. Launch WSL
+3. Install mingw-w64 by running `sudo apt-get install mingw-w64`
+4. Add the mingw g++ compiler environment variable by running `export CC=x86_64-w64-mingw32-g++`, and/or add it to your `.bashrc`.
+5. You can now run `make` to build the projects.
