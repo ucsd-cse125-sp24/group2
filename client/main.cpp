@@ -35,20 +35,20 @@ void setup_opengl_settings() {
 void print_versions() {
     // Get info of GPU and supported OpenGL version.
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version supported: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "OpenGL version supported: " << glGetString(GL_VERSION)
+              << std::endl;
 
     // If the shading language symbol is defined.
 #ifdef GL_SHADING_LANGUAGE_VERSION
-    std::cout << "Supported GLSL version is: " << glGetString(GL_SHADING_LANGUAGE_VERSION)
-              << std::endl;
+    std::cout << "Supported GLSL version is: "
+              << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
 }
 
 int main(void) {
     Client client;
-    client.setCallback([](void* params) {
-        Window::mover->position = *((glm::vec3*)params);
-    });
+    client.setCallback(
+        [](void* params) { Window::mover->position = *((glm::vec3*)params); });
 
     // Create the GLFW window.
     GLFWwindow* window = Window::createWindow(800, 600);
