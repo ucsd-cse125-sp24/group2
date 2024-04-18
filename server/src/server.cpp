@@ -4,7 +4,6 @@
 #include <iostream>
 #include <thread>
 
-
 int Server::teardown() { return 0; }
 
 // FIXME rare chance that server crashes silently on client disconnect
@@ -129,8 +128,11 @@ void Server::set_callback(const ReceiveHandler& handler) {
     receive_event = handler;
 }
 
-int Server::send(int client_id, const char* data, const int data_len) {
-    int sent_bytes = clients[client_id]->clientsock->send(data, data_len, 0);
+// TODO send packet
+int Server::send(int client_id, Packet* pkt) {
+    uint8_t* data = new uint8_t[pkt->size()];
+    int sent_bytes =
+        clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
     if (sent_bytes < 0) {
         printf("failed to send\n");
         return 1;

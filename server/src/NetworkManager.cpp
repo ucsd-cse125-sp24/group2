@@ -54,22 +54,30 @@ void NetworkManager::send_state() {
     for (int i = 0; i < entities.size(); i++) {
         std::vector<Client*>* clients = server.get_clients();
         for (const auto& it : *clients) {
+            // Write packet type
+            Packet* packet = new Packet();
+            packet->write_int(0);
+
             memset(buf, 0, 12);
             auto tmp = entities[i]->position;
 
             uint32_t tmpl;
             num.f = tmp.x;
             tmpl = htonl(num.l);
-            memcpy(buf, &tmpl, sizeof(uint32_t));
+            packet->write_int(tmpl);
+            // memcpy(buf, &tmpl, sizeof(uint32_t));
 
             num.f = tmp.y;
             tmpl = htonl(num.l);
-            memcpy(buf + 4, &tmpl, sizeof(uint32_t));
+            // memcpy(buf + 4, &tmpl, sizeof(uint32_t));
+            packet->write_int(tmpl);
 
             num.f = tmp.z;
             tmpl = htonl(num.l);
-            memcpy(buf + 8, &tmpl, sizeof(uint32_t));
-            server.send(it->id, (const char*)buf, 12);
+            // memcpy(buf + 8, &tmpl, sizeof(uint32_t));
+            packet->write_int(tmpl);
+
+            server.send(it->id, packet);
         }
         delete clients;
     }

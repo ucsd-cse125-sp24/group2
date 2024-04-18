@@ -9,6 +9,7 @@
 #include "Client.hpp"
 #include "NetworkManager.hpp"
 #include "psocket.hpp"
+#include "Packet.hpp"
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
@@ -26,7 +27,7 @@ private:
 public:
     void start();
     int teardown();
-    int send(int, const char*, int);
+    int send(int, Packet*);
     std::vector<Client*>* get_clients();
     void set_callback(const ReceiveHandler& handler);
 }; // SERVER_H

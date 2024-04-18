@@ -27,3 +27,9 @@ void Packet::write(uint8_t* data, int len) {
         i++;
     }
 }
+
+void Packet::write_int(int data) { buffer.push_back(htonl(data)); }
+
+uint8_t* Packet::getBytes() { return &buffer[0]; }
+
+int Packet::size() { return buffer.size(); }

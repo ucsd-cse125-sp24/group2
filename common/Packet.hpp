@@ -21,6 +21,7 @@ public:
     glm::vec3 read_vec3(glm::vec3*);
 
     uint8_t* getBytes();
+    int size();
 };
 
 #endif // PACKET_H
