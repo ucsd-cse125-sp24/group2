@@ -19,6 +19,24 @@ void NetworkManager::init() {
     std::thread(&Server::start, &server).detach();
 }
 
+void NetworkManager::process_input() {
+    std::lock_guard<std::mutex> lock(_mutex);
+    while (!message_queue.empty()) {
+        std::cout << "dequeued a packet. size: " << message_queue.size()
+                  << std::endl;
+        // TODO interpret packets
+        // TODO call appropriate handler
+        // but for now, we do this to set input manually
+
+        uint8_t* packet = message_queue.front();
+        message_queue.pop_front();
+        (*server.get_clients())[0]->p->inputs.x =
+            (float)packet[3] - (float)packet[1];
+        (*server.get_clients())[0]->p->inputs.y =
+            (float)packet[0] - (float)packet[2];
+    }
+}
+
 void NetworkManager::update() {
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->update();
@@ -51,14 +69,14 @@ void NetworkManager::send_state() {
     }
 }
 
+// thread-safe
 void NetworkManager::handle_packet(void* pkt) {
-    // FIXME free pkt
-    uint8_t* packet = (uint8_t*)pkt;
-    (*server.get_clients())[0]->p->inputs.x =
-        (float)packet[3] - (float)packet[1];
-    (*server.get_clients())[0]->p->inputs.y =
-        (float)packet[0] - (float)packet[2];
-    std::cout << std::endl;
+    // Create new packet from received data
+    uint8_t* packet = new uint8_t[4];
+    memcpy(packet, pkt, 4);
+
+    std::lock_guard<std::mutex> lock(_mutex);
+    message_queue.push_back(packet);
 }
 
 void NetworkManager::register_entity(Entity* e) { entities.push_back(e); }

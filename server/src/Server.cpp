@@ -2,14 +2,13 @@
 
 #include <iomanip>
 #include <iostream>
-#include <mutex>
 #include <thread>
 
-std::mutex _mutex;
-std::mutex handler_mutex;
 
 int Server::teardown() { return 0; }
 
+// FIXME rare chance that server crashes silently on client disconnect
+// likely due to segfault
 void Server::start() {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
 
@@ -114,9 +113,9 @@ void Server::receive(Client* client) {
             printf("Received %d bytes from client %d\n", read_bytes,
                    client->id);
 
+            // do we need this?
             std::lock_guard<std::mutex> lock(handler_mutex);
             if (receive_event) {
-                // FIXME make a copy of buffer
                 receive_event(buffer);
             }
         }

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <map>
 #include <string>
+#include <mutex>
 #include <functional>
 
 #include "Client.hpp"
@@ -15,6 +16,8 @@
 typedef std::function<void(void*)> ReceiveHandler;
 class Server {
 private:
+    std::mutex _mutex;
+    std::mutex handler_mutex;
     std::map<int, Client*> clients;
     Socket psocket;
     void receive(Client* client);

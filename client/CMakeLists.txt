@@ -50,12 +50,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
+    target_link_libraries(${PROJECT_NAME} glew glfw)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
 else()
     set(CMAKE_EXE_LINKER_FLAGS "--static")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32 gdi32)
+    target_link_libraries(${PROJECT_NAME} glew32 glfw3 opengl32 gdi32)
     target_link_libraries(${PROJECT_NAME} pthread ws2_32)
 endif()
 
