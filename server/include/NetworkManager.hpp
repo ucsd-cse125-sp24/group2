@@ -4,7 +4,7 @@
 #include <stack>
 #include <deque>
 #include <mutex>
-
+#include "Packet.hpp"
 #include "Entity.hpp"
 class NetworkManager {
     std::vector<Entity*> entities;
@@ -12,8 +12,7 @@ class NetworkManager {
 
 private:
     std::mutex _mutex;
-    // TODO change to Packet*
-    std::deque<uint8_t*> message_queue;
+    std::deque<Packet*> message_queue;
 
 public:
     void init();

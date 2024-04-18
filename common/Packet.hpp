@@ -1,24 +1,24 @@
 #ifndef PACKET_H
 #define PACKET_H
 #include "glm/glm.hpp"
-#include <vector>
+#include <deque>
 
 class Packet {
-public:
-    std::vector<uint8_t> buffer;
-    // int buffer_position;
-    // type packet_type;
+private:
+    std::deque<uint8_t> buffer;
 
+public:
     Packet();
     ~Packet();
+    void write(uint8_t*, int);
     void write_byte(char data);
     void write_int(int data);
     void write_double(double data);
     void write_vec3(glm::vec3 data);
-    char read_byte();
-    int read_int();
-    double read_double();
-    glm::vec3 read_vec3();
+    int read_byte(char*);
+    int read_int(int*);
+    int read_double(double*);
+    glm::vec3 read_vec3(glm::vec3*);
 
     uint8_t* getBytes();
 };

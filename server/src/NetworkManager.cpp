@@ -24,16 +24,22 @@ void NetworkManager::process_input() {
     while (!message_queue.empty()) {
         std::cout << "dequeued a packet. size: " << message_queue.size()
                   << std::endl;
-        // TODO interpret packets
-        // TODO call appropriate handler
-        // but for now, we do this to set input manually
-
-        uint8_t* packet = message_queue.front();
+        Packet* packet = message_queue.front();
         message_queue.pop_front();
+
+        // TODO call appropriate handler based on packet type
+        int packet_type;
+        packet->read_int(&packet_type);
+
+        // but for now, we do this to set input manually
+        char input[4];
+        for (int i = 0; i < 4; i++) {
+            packet->read_byte(&input[i]);
+        }
         (*server.get_clients())[0]->p->inputs.x =
-            (float)packet[3] - (float)packet[1];
+            (float)input[3] - (float)input[1];
         (*server.get_clients())[0]->p->inputs.y =
-            (float)packet[0] - (float)packet[2];
+            (float)input[0] - (float)input[2];
     }
 }
 
@@ -69,11 +75,12 @@ void NetworkManager::send_state() {
     }
 }
 
+// FIXME handle incomplete packets or multiple packets per send() call
 // thread-safe
 void NetworkManager::handle_packet(void* pkt) {
     // Create new packet from received data
-    uint8_t* packet = new uint8_t[4];
-    memcpy(packet, pkt, 4);
+    Packet* packet = new Packet();
+    packet->write((uint8_t*)pkt, 4);
 
     std::lock_guard<std::mutex> lock(_mutex);
     message_queue.push_back(packet);
