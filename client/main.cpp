@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Client.h"
 #include "core.h"
+#include <glm/gtx/string_cast.hpp>
 
 void error_callback(int error, const char* description) {
     // Print error.

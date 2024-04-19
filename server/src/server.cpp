@@ -92,7 +92,7 @@ void Server::receive(Client* client) {
 
     while (1) {
         int read_bytes =
-            client->clientsock->recv((char*)&buffer, expected_data_len, 0);
+            client->clientsock->recv((char*)buffer, expected_data_len, 0);
         if (read_bytes == 0) { // Connection was closed
             std::lock_guard<std::mutex> lock(_mutex);
             clients.erase(client->id);
@@ -111,7 +111,6 @@ void Server::receive(Client* client) {
         } else {
             printf("Received %d bytes from client %d\n", read_bytes,
                    client->id);
-
             // do we need this?
             std::lock_guard<std::mutex> lock(handler_mutex);
             if (receive_event) {
@@ -130,9 +129,9 @@ void Server::set_callback(const ReceiveHandler& handler) {
 
 // TODO send packet
 int Server::send(int client_id, Packet* pkt) {
-    uint8_t* data = new uint8_t[pkt->size()];
     int sent_bytes =
         clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
+    delete pkt;
     if (sent_bytes < 0) {
         printf("failed to send\n");
         return 1;

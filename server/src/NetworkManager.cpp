@@ -22,8 +22,6 @@ void NetworkManager::init() {
 void NetworkManager::process_input() {
     std::lock_guard<std::mutex> lock(_mutex);
     while (!message_queue.empty()) {
-        std::cout << "dequeued a packet. size: " << message_queue.size()
-                  << std::endl;
         Packet* packet = message_queue.front();
         message_queue.pop_front();
 
@@ -58,24 +56,27 @@ void NetworkManager::send_state() {
             Packet* packet = new Packet();
             packet->write_int(0);
 
-            memset(buf, 0, 12);
             auto tmp = entities[i]->position;
 
             uint32_t tmpl;
             num.f = tmp.x;
-            tmpl = htonl(num.l);
-            packet->write_int(tmpl);
+            packet->write_int(num.l);
             // memcpy(buf, &tmpl, sizeof(uint32_t));
 
             num.f = tmp.y;
-            tmpl = htonl(num.l);
             // memcpy(buf + 4, &tmpl, sizeof(uint32_t));
-            packet->write_int(tmpl);
+            packet->write_int(num.l);
 
             num.f = tmp.z;
-            tmpl = htonl(num.l);
-            // memcpy(buf + 8, &tmpl, sizeof(uint32_t));
-            packet->write_int(tmpl);
+            packet->write_int(num.l);
+            /*
+            auto t = packet->getBytes();
+            for (int i = 0; i < packet->size(); i++) {
+                std::cout << std::setfill('0') << std::setw(2) << std::hex
+                          << (int)t[i] << " ";
+            }
+            std::cout << std::endl;
+            */
 
             server.send(it->id, packet);
         }
@@ -88,7 +89,7 @@ void NetworkManager::send_state() {
 void NetworkManager::handle_packet(void* pkt) {
     // Create new packet from received data
     Packet* packet = new Packet();
-    packet->write((uint8_t*)pkt, 4);
+    packet->write((uint8_t*)pkt, 8);
 
     std::lock_guard<std::mutex> lock(_mutex);
     message_queue.push_back(packet);

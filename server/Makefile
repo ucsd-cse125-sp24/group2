@@ -129,6 +129,30 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
+Users/shane/code/src/cse125/common/Packet.obj: Users/shane/code/src/cse125/common/Packet.cpp.obj
+.PHONY : Users/shane/code/src/cse125/common/Packet.obj
+
+# target to build an object file
+Users/shane/code/src/cse125/common/Packet.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.obj
+.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.obj
+
+Users/shane/code/src/cse125/common/Packet.i: Users/shane/code/src/cse125/common/Packet.cpp.i
+.PHONY : Users/shane/code/src/cse125/common/Packet.i
+
+# target to preprocess a source file
+Users/shane/code/src/cse125/common/Packet.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.i
+.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.i
+
+Users/shane/code/src/cse125/common/Packet.s: Users/shane/code/src/cse125/common/Packet.cpp.s
+.PHONY : Users/shane/code/src/cse125/common/Packet.s
+
+# target to generate assembly for a file
+Users/shane/code/src/cse125/common/Packet.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.s
+.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -201,30 +225,6 @@ src/NetworkManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/NetworkManager.cpp.s
 .PHONY : src/NetworkManager.cpp.s
 
-src/Packet.obj: src/Packet.cpp.obj
-.PHONY : src/Packet.obj
-
-# target to build an object file
-src/Packet.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Packet.cpp.obj
-.PHONY : src/Packet.cpp.obj
-
-src/Packet.i: src/Packet.cpp.i
-.PHONY : src/Packet.i
-
-# target to preprocess a source file
-src/Packet.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Packet.cpp.i
-.PHONY : src/Packet.cpp.i
-
-src/Packet.s: src/Packet.cpp.s
-.PHONY : src/Packet.s
-
-# target to generate assembly for a file
-src/Packet.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Packet.cpp.s
-.PHONY : src/Packet.cpp.s
-
 src/Player.obj: src/Player.cpp.obj
 .PHONY : src/Player.obj
 
@@ -282,6 +282,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
+	@echo "... Users/shane/code/src/cse125/common/Packet.obj"
+	@echo "... Users/shane/code/src/cse125/common/Packet.i"
+	@echo "... Users/shane/code/src/cse125/common/Packet.s"
 	@echo "... main.obj"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -291,9 +294,6 @@ help:
 	@echo "... src/NetworkManager.obj"
 	@echo "... src/NetworkManager.i"
 	@echo "... src/NetworkManager.s"
-	@echo "... src/Packet.obj"
-	@echo "... src/Packet.i"
-	@echo "... src/Packet.s"
 	@echo "... src/Player.obj"
 	@echo "... src/Player.i"
 	@echo "... src/Player.s"

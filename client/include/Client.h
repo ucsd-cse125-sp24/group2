@@ -4,6 +4,7 @@
 #include "psocket.hpp"
 #include <functional>
 #include <mutex>
+#include "Packet.hpp"
 
 typedef std::function<void(void*)> ReceiveHandler;
 class Client {
@@ -13,7 +14,7 @@ public:
     Socket psocket;
     void connect(const char*, uint16_t);
     static void* receive(void*);
-    void send(const char*, int);
+    void send(Packet*);
     ReceiveHandler receive_event = nullptr;
     void setCallback(const ReceiveHandler& callback);
 };

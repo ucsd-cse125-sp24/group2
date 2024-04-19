@@ -16,6 +16,7 @@ set(
     src/Client.cpp
     # 125-Starter
     src/Mover.cpp
+    ../common/Packet.cpp
 )
 
 # Add header files
