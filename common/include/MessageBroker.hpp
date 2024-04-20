@@ -8,13 +8,16 @@
 #include <unordered_set>
 #include <iostream>
 
+class IComponent;
+
+
 class MessageBroker {
-    std::unordered_map<std::string, std::unordered_set<IComponent>> topicToSubsMap; // Should we map topics to sets instead? Are duplicates a concern?
+    std::unordered_map<std::string, std::unordered_set<IComponent*>> topicToSubsMap; // Should we map topics to sets instead? Are duplicates a concern?
 
 public:
     void broadcast(std::string topic, void* value);
-    void addSub(IComponent newSub, std::string topic);
-    void removeSub(IComponent sub, std::string topic);
+    void addSub(IComponent* newSub, std::string topic);
+    void removeSub(IComponent* sub, std::string topic);
 };
 
 
@@ -29,17 +32,17 @@ void MessageBroker::broadcast(std::string topic, void* value) {
         return;
     }
 
-    std::unordered_set<IComponent> subscribers = topicToSubsMap[topic];
-    for (IComponent sub : subscribers)
-        sub.receive(value);
+    std::unordered_set<IComponent*> subscribers = topicToSubsMap[topic];
+    for (IComponent* sub : subscribers)
+        sub->receive(value);
 }
 
 /**
  * Adds an IComponent to topic
 */
-void MessageBroker::addSub(IComponent newSub, std::string topic) {
+void MessageBroker::addSub(IComponent* newSub, std::string topic) {
     if (topicToSubsMap.find(topic) == topicToSubsMap.end()) {  // if this is a new topic
-        std::unordered_set<IComponent> subscribers;
+        std::unordered_set<IComponent*> subscribers;
         subscribers.insert(newSub);
         topicToSubsMap.emplace(topic, subscribers);          
     } else {  // otherwise
@@ -50,7 +53,7 @@ void MessageBroker::addSub(IComponent newSub, std::string topic) {
 /**
  * Removes an IComponent from topic
 */
-void MessageBroker::removeSub(IComponent sub, std::string topic) {
+void MessageBroker::removeSub(IComponent* sub, std::string topic) {
     if (topicToSubsMap.find(topic) == topicToSubsMap.end()) {
         std::cerr << "No such topic to removeSub from." << std::endl;
         return;
