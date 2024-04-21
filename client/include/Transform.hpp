@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "../glm/glm.hpp"
+#include "core.h"
 #include "Component.hpp"
 
 
@@ -23,20 +23,6 @@ public:
     void setRot(glm::vec3 inputRot) { rot = inputRot; }
     void setScale(glm::vec3 inputScale) { scale = inputScale; }
 };
-
-
-// FUNCTION DEFINITIONS
-
-Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale) {
-    this->pos = pos;
-    this->rot = rot;
-    this->scale = scale;
-}
-
-void Transform::receive(void* value) {
-    glm::vec3* newPosition = reinterpret_cast<glm::vec3*>(value);
-    setPos(*newPosition);
-}
 
 
 #endif // TRANSFORM_H

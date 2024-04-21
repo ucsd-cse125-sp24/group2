@@ -60,6 +60,17 @@ int main(void) {
     // Initialize objects/pointers for rendering; exit if initialization fails.
     if (!Window::initializeObjects()) exit(EXIT_FAILURE);
 
+
+    // ======= TEST CODE ======= //
+
+    GameObject* testObj = new GameObject(glm::vec3(), glm::vec3(), glm::vec3());
+    // TODO: Want to be able to get data from testObj's transform component, but can't do that since it's stored in a vector of IComponents. Options are doing dynamic casting, or inheritance, and I am not sure which is more feasible
+    // 
+    // std::cout << glm::to_string(trans->getPos()) << std::endl;
+
+    // ======= TEST CODE ======= //
+
+
     // Loop while GLFW window should stay open.
     while (!glfwWindowShouldClose(window)) {
         // Main render display callback. Rendering of objects is done here.

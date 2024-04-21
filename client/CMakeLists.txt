@@ -16,6 +16,11 @@ set(
     src/Client.cpp
     # 125-Starter
     src/Mover.cpp
+    # Testing
+    src/Component.cpp
+    src/GameObject.cpp
+    src/MessageBroker.cpp
+    src/Transform.cpp
 )
 
 # Add header files
@@ -30,6 +35,11 @@ set(
     include/Client.h
     # 125-Starter
     include/Mover.h
+    # Testing
+    include/Component.hpp
+    include/GameObject.hpp
+    include/MessageBroker.hpp
+    include/Transform.hpp
 )
 
 # Require GL
