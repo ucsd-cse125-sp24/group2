@@ -4,7 +4,6 @@
 #include <iostream>
 #include <thread>
 
-
 int Server::teardown() { return 0; }
 
 // FIXME rare chance that server crashes silently on client disconnect
@@ -32,8 +31,13 @@ void Server::start() {
         perror("listen failed");
         return;
     }
-
     printf("Now listening on port %d\n", SERVER_PORT);
+
+    // Populate clients
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        clients[i] = new Client(i);
+    }
+
     while (1) {
         struct sockaddr_in client_sin;
         int addr_len = sizeof(client_sin);
@@ -50,22 +54,20 @@ void Server::start() {
         std::unique_lock<std::mutex> lock(_mutex);
         for (; i < MAX_CLIENTS; i++) {
             // Find first free slot
-            if (clients.find(i) != clients.end())
+            if (clients[i]->clientsock != nullptr)
                 continue;
 
-            // TODO create new clients outside and only assign client ids as
-            // "slots" instead of creating new client objects
-            Client* client = new Client(i, client_sock, client_sin);
-            clients[i] = client;
-            client->init();
+            clients[i]->clientsock = client_sock;
+            clients[i]->init();
 
-            NetworkManager::instance().register_entity(&(*client->p));
+            NetworkManager::instance().register_entity(clients[i]->p);
+            // FIXME track server capacity in a not-dumb way
             printf(
                 "Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n",
                 inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
                 Server::clients.size(), MAX_CLIENTS);
 
-            std::thread(&Server::receive, this, client).detach();
+            std::thread(&Server::receive, this, clients[i]).detach();
 
             break;
         }
@@ -93,26 +95,26 @@ void Server::receive(Client* client) {
 
     while (1) {
         int read_bytes =
-            client->clientsock->recv((char*)&buffer, expected_data_len, 0);
+            client->clientsock->recv((char*)buffer, expected_data_len, 0);
         if (read_bytes == 0) { // Connection was closed
             std::lock_guard<std::mutex> lock(_mutex);
-            clients.erase(client->id);
+            // TODO have network manager handle disconnect events
+            NetworkManager::instance().unregister_entity(client->p);
+            client->disconnect();
             std::cout << "Client " << client->id << " disconnected."
                       << std::endl;
-            delete client;
             return;
         } else if (read_bytes < 0) { // error
             std::lock_guard<std::mutex> lock(_mutex);
-            clients.erase(client->id);
+            NetworkManager::instance().unregister_entity(client->p);
+            client->disconnect();
             std::cout << "recv failed" << std::endl;
             std::cout << "Client " << client->id << " disconnected."
                       << std::endl;
-            delete client;
             return;
         } else {
             printf("Received %d bytes from client %d\n", read_bytes,
                    client->id);
-
             // do we need this?
             std::lock_guard<std::mutex> lock(handler_mutex);
             if (receive_event) {
@@ -129,8 +131,16 @@ void Server::set_callback(const ReceiveHandler& handler) {
     receive_event = handler;
 }
 
-int Server::send(int client_id, const char* data, const int data_len) {
-    int sent_bytes = clients[client_id]->clientsock->send(data, data_len, 0);
+int Server::send(int client_id, Packet* pkt) {
+    // FIXME might not be thread-safe?
+    if (clients[client_id]->clientsock == nullptr) {
+        printf("failed to send\n");
+        return 1;
+    }
+
+    int sent_bytes =
+        clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
+    delete pkt;
     if (sent_bytes < 0) {
         printf("failed to send\n");
         return 1;

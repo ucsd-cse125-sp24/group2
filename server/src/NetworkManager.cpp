@@ -52,6 +52,9 @@ void NetworkManager::send_state() {
     for (int i = 0; i < entities.size(); i++) {
         std::vector<Client*>* clients = server.get_clients();
         for (const auto& it : *clients) {
+            if (it->clientsock == nullptr)
+                continue;
+
             // Write packet type
             Packet* packet = new Packet();
             packet->write_int(0);
@@ -96,3 +99,8 @@ void NetworkManager::handle_packet(void* pkt) {
 }
 
 void NetworkManager::register_entity(Entity* e) { entities.push_back(e); }
+
+void NetworkManager::unregister_entity(Entity* e) {
+    entities.erase(std::remove(entities.begin(), entities.end(), e),
+                   entities.end());
+}

@@ -16,9 +16,9 @@ public:
     int id;
     Socket* clientsock;
     struct sockaddr_in sockaddr;
-    Client(int id, Socket* clientsock, struct sockaddr_in& sockaddr)
-        : id(id), clientsock(clientsock), sockaddr(sockaddr) {}
+    Client(int id) : id(id) {}
     void init();
+    void disconnect();
 };
 
 #endif // CLIENT_H

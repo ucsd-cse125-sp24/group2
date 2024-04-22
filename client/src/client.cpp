@@ -4,7 +4,6 @@
 #include <iostream>
 #include <pthread.h>
 #include <stdio.h>
-#include "Packet.hpp"
 
 union FloatUnion {
     float f;
@@ -41,45 +40,32 @@ void* Client::receive(void* params) {
     do {
         read_bytes = client->psocket.recv(buf, 4096, 0);
         if (read_bytes > 0) {
-            printf("received %d bytes from server\n", read_bytes);
-
-            // FIXME create way to accept multiple packets
-            Packet* packet = new Packet();
-            packet->write((uint8_t*) buf, read_bytes);
-
-            /*
-            auto t = packet->getBytes();
             for (int i = 0; i < read_bytes; i++) {
-                std::cout << std::setfill('0') << std::setw(2) << std::hex
-                          << (int)t[i] << " ";
+                std::cout << std::setfill('0') << std::setw(2) << std::hex << (int)buf[i] << " ";
             }
             std::cout << std::endl;
-            */
-            // TODO handle packets with a handler, but for now we hard-code
-            int packet_type;
-            packet->read_int(&packet_type);
+            printf("received %d bytes from server\n", read_bytes);
 
             uint32_t tmp;
-            packet->read_int((int*)&tmp);
-            num.l = tmp;
+            memcpy(&tmp, buf, 4);
+            num.l = ntohl(tmp);
             float x = num.f;
 
-            packet->read_int((int*)&tmp);
-            num.l = tmp;
+            memcpy(&tmp, buf + 4, 4);
+            num.l = ntohl(tmp);
             float y = num.f;
 
-            packet->read_int((int*)&tmp);
-            num.l = tmp;
+            memcpy(&tmp, buf + 8, 4);
+            num.l = ntohl(tmp);
             float z = num.f;
 
             glm::vec3* pos = new glm::vec3(x, y, z);
 
+            // TODO Handle packet
             std::lock_guard<std::mutex> lock(client->mutex);
             if (client->receive_event) {
                 client->receive_event(pos);
             }
-
-            delete packet;
 
         } else if (read_bytes < 0) {
             printf("error in receive\n");
@@ -89,8 +75,8 @@ void* Client::receive(void* params) {
     } while (read_bytes > 0);
 }
 
-void Client::send(Packet* packet) {
-    int sent_bytes = psocket.send(packet->getBytes(), packet->size(), 0);
+void Client::send(const char* buf, int data_len) {
+    int sent_bytes = psocket.send(buf, data_len, 0);
     if (sent_bytes < 0) {
         printf("failed to send\n");
     }

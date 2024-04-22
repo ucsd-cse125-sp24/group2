@@ -26,7 +26,7 @@ private:
 public:
     void start();
     int teardown();
-    int send(int, const char*, int);
+    int send(int, Packet*);
     std::vector<Client*>* get_clients();
     void set_callback(const ReceiveHandler& handler);
 }; // SERVER_H

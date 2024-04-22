@@ -20,6 +20,7 @@ public:
     void send_state();
     void process_input();
     void register_entity(Entity*);
+    void unregister_entity(Entity*);
     void handle_packet(void*);
     static NetworkManager& instance() {
         static NetworkManager s;
