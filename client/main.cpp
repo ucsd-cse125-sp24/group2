@@ -64,9 +64,15 @@ int main(void) {
     // ======= TEST CODE ======= //
 
     GameObject* testObj = new GameObject(glm::vec3(), glm::vec3(), glm::vec3());
-    // TODO: Want to be able to get data from testObj's transform component, but can't do that since it's stored in a vector of IComponents. Options are doing dynamic casting, or inheritance, and I am not sure which is more feasible
-    // 
-    // std::cout << glm::to_string(trans->getPos()) << std::endl;
+    testObj->components[0]->subscribe("position");
+    GameObject* testObj2 = new GameObject(glm::vec3(), glm::vec3(), glm::vec3());
+    
+    std::cout << testObj->components[0]->toString() << std::endl;
+
+    glm::vec3* newPos = new glm::vec3(420);
+    testObj2->components[0]->sendMessage("position", newPos);
+
+    std::cout << testObj->components[0]->toString() << std::endl;
 
     // ======= TEST CODE ======= //
 

@@ -14,6 +14,7 @@ public:
     Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
     void receive(void* value);
+    std::string toString();
     
     glm::vec3 getPos() { return pos; }
     glm::vec3 getRot() { return rot; }

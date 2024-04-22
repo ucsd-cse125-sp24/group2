@@ -21,3 +21,7 @@ void IComponent::subscribe(std::string topic) {
 void IComponent::unsub(std::string topic) {
     MessageBroker::instance().removeSub(this, topic);
 }
+
+std::string IComponent::toString() {
+    return "ERROR: IComponent::toString() should be overriden";
+}
