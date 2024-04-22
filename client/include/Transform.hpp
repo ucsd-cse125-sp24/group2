@@ -4,6 +4,11 @@
 #include "core.h"
 #include "Component.hpp"
 
+struct TransformVectors {
+    glm::vec3 pos;
+    glm::vec3 rot;
+    glm::vec3 scale;
+};
 
 class Transform : public IComponent {
     glm::vec3 pos;
@@ -13,7 +18,7 @@ class Transform : public IComponent {
 public:
     Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
 
-    void receive(void* value);
+    void receive(Topic topic, void* value);
     std::string toString();
     
     glm::vec3 getPos() { return pos; }

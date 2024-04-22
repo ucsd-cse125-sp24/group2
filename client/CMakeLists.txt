@@ -21,6 +21,7 @@ set(
     src/GameObject.cpp
     src/MessageBroker.cpp
     src/Transform.cpp
+    src/TestEntity.cpp
 )
 
 # Add header files
@@ -40,6 +41,7 @@ set(
     include/GameObject.hpp
     include/MessageBroker.hpp
     include/Transform.hpp
+    include/TestEntity.hpp
 )
 
 # Require GL

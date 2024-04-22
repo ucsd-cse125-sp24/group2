@@ -5,20 +5,20 @@
 
 
 // FUNCTION DEFINITIONS
-void IComponent::receive(void* value) {
+void IComponent::receive(Topic topic, void* value) {
     std::cerr << "IComponent::recieve() should not be overriden, not called" << std::endl;
     return;
 }
 
-void IComponent::sendMessage(std::string topic, void* value) {
+void IComponent::sendMessage(Topic topic, void* value) {
     MessageBroker::instance().broadcast(topic, value);
 }
 
-void IComponent::subscribe(std::string topic) {
+void IComponent::subscribe(Topic topic) {
     MessageBroker::instance().addSub(this, topic);
 }
 
-void IComponent::unsub(std::string topic) {
+void IComponent::unsub(Topic topic) {
     MessageBroker::instance().removeSub(this, topic);
 }
 

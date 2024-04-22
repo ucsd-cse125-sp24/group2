@@ -5,6 +5,11 @@
 
 // FUNCTION DEFINITIONS
 
+GameObject::GameObject() {
+    Transform* transform = new Transform(glm::vec3(), glm::vec3(), glm::vec3());
+    addComponent(transform);
+}
+
 GameObject::GameObject(glm::vec3 pos = glm::vec3(), glm::vec3 rot = glm::vec3(), glm::vec3 scale = glm::vec3()) {
     Transform* transform = new Transform(pos, rot, scale);
     addComponent(transform);

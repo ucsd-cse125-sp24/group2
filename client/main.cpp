@@ -1,6 +1,10 @@
 #include "Window.h"
 #include "core.h"
 
+#include "include/MessageBroker.hpp"
+#include "include/GameObject.hpp"
+#include "include/TestEntity.hpp"
+
 void error_callback(int error, const char* description) {
     // Print error.
     std::cerr << description << std::endl;
@@ -63,16 +67,19 @@ int main(void) {
 
     // ======= TEST CODE ======= //
 
-    GameObject* testObj = new GameObject(glm::vec3(), glm::vec3(), glm::vec3());
-    testObj->components[0]->subscribe("position");
+    TestEntity* testEntity = new TestEntity();
     GameObject* testObj2 = new GameObject(glm::vec3(), glm::vec3(), glm::vec3());
     
-    std::cout << testObj->components[0]->toString() << std::endl;
+    std::cout << testEntity->components[0]->toString() << std::endl;
 
     glm::vec3* newPos = new glm::vec3(420);
-    testObj2->components[0]->sendMessage("position", newPos);
+    glm::vec3* newRot = new glm::vec3(1337);
+    glm::vec3* newScale = new glm::vec3(1738);
+    testObj2->components[0]->sendMessage(testPosition, newPos);
+    testObj2->components[0]->sendMessage(testRotation, newRot);
+    testObj2->components[0]->sendMessage(testScale, newScale);
 
-    std::cout << testObj->components[0]->toString() << std::endl;
+    std::cout << testEntity->components[0]->toString() << std::endl;
 
     // ======= TEST CODE ======= //
 

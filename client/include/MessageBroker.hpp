@@ -12,14 +12,19 @@
 class IComponent;
 
 
-class MessageBroker {
-    std::unordered_map<std::string, std::unordered_set<IComponent*>> topicToSubsMap;
+// Topic enumerated list, add to this if you want to make a new topic
 
+enum Topic { testPosition, testRotation, testScale };
+
+// MessageBroker Singleton
+
+class MessageBroker {
+    std::unordered_map<Topic, std::unordered_set<IComponent*>> topicToSubsMap;
 
 public:
-    void broadcast(std::string topic, void* value);
-    void addSub(IComponent* newSub, std::string topic);
-    void removeSub(IComponent* sub, std::string topic);
+    void broadcast(Topic topic, void* value);
+    void addSub(IComponent* newSub, Topic topic);
+    void removeSub(IComponent* sub, Topic topic);
     
     static MessageBroker& instance() {
         static MessageBroker s;

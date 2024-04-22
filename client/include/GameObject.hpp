@@ -14,6 +14,7 @@ class GameObject {
 public:
     std::vector<IComponent*> components; // should be in private
 
+    GameObject();
     GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
     ~GameObject();
 
