@@ -2,6 +2,7 @@
 #define COMPONENT_H
 
 #include <string>
+#include "Topic.hpp"
 #include "MessageBroker.hpp"
 
 class IComponent {

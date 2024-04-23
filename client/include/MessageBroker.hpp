@@ -8,13 +8,10 @@
 #include <string>
 #include <unordered_set>
 #include <iostream>
+#include "Topic.hpp"
 
 class IComponent;
 
-
-// Topic enumerated list, add to this if you want to make a new topic
-
-enum Topic { testPosition, testRotation, testScale };
 
 // MessageBroker Singleton
 

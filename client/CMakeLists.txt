@@ -42,6 +42,7 @@ set(
     include/MessageBroker.hpp
     include/Transform.hpp
     include/TestEntity.hpp
+    include/Topic.hpp
 )
 
 # Require GL
