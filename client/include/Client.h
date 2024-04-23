@@ -6,7 +6,7 @@
 #include <mutex>
 #include "Packet.hpp"
 
-typedef std::function<void(void*)> ReceiveHandler;
+typedef std::function<void(Packet*)> ReceiveHandler;
 class Client {
 private:
 public:

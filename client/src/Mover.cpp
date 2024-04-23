@@ -1,21 +1,16 @@
 #include "Mover.h"
 
-
 Mover::Mover() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
 
-    cube = new Cube(glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0.5, 0.5, 0.5));
+    // cube = new Cube(glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0.5, 0.5, 0.5));
 }
 
-Mover::~Mover() {
-    delete cube;
-}
+Mover::~Mover() { delete cube; }
 
-void Mover::Update(float deltaTime) {
-    UpdatePhysics(deltaTime);
-}
+void Mover::Update(float deltaTime) { UpdatePhysics(deltaTime); }
 
 void Mover::UpdatePhysics(float deltaTime) {
     glm::vec3 normalizedVelocityHeading = velocityHeading;

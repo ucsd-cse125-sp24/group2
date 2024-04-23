@@ -1,4 +1,6 @@
 #include "Window.h"
+#include "GameManager.hpp"
+#include <glm/gtx/string_cast.hpp>
 
 // Window Properties
 int Window::width;
@@ -10,7 +12,6 @@ const char* Window::windowTitle = "Model Environment";
 Client* client;
 
 // Added by me:
-Mover* Window::mover;
 uint8_t buf[4];
 
 // Camera Properties
@@ -44,16 +45,13 @@ bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-    mover = new Mover();
 
     return true;
 }
 
 void Window::cleanUp() {
-    // Deallcoate the objects.
+    // Deallocate the objects.
     // delete cube;
-    if (mover)
-        delete mover;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -138,7 +136,7 @@ void Window::idleCallback() {
     accumulator += frameTime;
 
     while (accumulator >= deltaTime) {
-        mover->UpdatePhysics(deltaTime);
+        // TODO physics update for prediction
         accumulator -= deltaTime;
     }
 
@@ -150,7 +148,13 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // TODO draw object
+    // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    for (auto kv : GameManager::instance().players) {
+        // kv.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+        std::cout << "Player " << kv.second->id << ": "
+                  << glm::to_string(kv.second->mover->position) << std::endl;
+    }
 
     // Gets events, including input such as keyboard and mouse or window
     // resizing.
@@ -253,7 +257,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action,
     }
 
     Packet* packet = new Packet();
-    packet->write_int(0);
+    packet->write_int((int)PacketType::PLAYER_INPUT);
     for (int i = 0; i < 4; i++) {
         packet->write_byte(buf[i]);
     }

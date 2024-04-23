@@ -13,7 +13,7 @@
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
-typedef std::function<void(void*)> ReceiveHandler;
+typedef std::function<void(int, void*)> ReceiveHandler;
 class Server {
 private:
     std::mutex _mutex;

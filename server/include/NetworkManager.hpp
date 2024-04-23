@@ -12,16 +12,17 @@ class NetworkManager {
 
 private:
     std::mutex _mutex;
-    std::deque<Packet*> message_queue;
+    std::deque<std::pair<int, Packet*>> message_queue;
 
 public:
+    static int next_network_id;
     void init();
     void update();
     void send_state();
     void process_input();
     void register_entity(Entity*);
     void unregister_entity(Entity*);
-    void handle_packet(void*);
+    void handle_packet(int, void*);
     static NetworkManager& instance() {
         static NetworkManager s;
         return s;

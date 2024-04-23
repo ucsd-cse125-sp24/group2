@@ -18,9 +18,6 @@ public:
     // Objects to render
     // static Cube* cube;
 
-    // Added by me
-    static Mover* mover;
-
     // Shader Program
     static GLuint shaderProgram;
 

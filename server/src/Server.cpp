@@ -118,7 +118,7 @@ void Server::receive(Client* client) {
             // do we need this?
             std::lock_guard<std::mutex> lock(handler_mutex);
             if (receive_event) {
-                receive_event(buffer);
+                receive_event(client->id, buffer);
             }
         }
 

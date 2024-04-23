@@ -17,6 +17,7 @@ set(
     # 125-Starter
     src/Mover.cpp
     ../common/Packet.cpp
+    src/GameManager.cpp
 )
 
 # Add header files
@@ -31,6 +32,8 @@ set(
     include/Client.h
     # 125-Starter
     include/Mover.h
+    include/GameManager.hpp
+    include/PlayerManager.hpp
 )
 
 # Require GL

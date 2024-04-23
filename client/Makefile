@@ -262,6 +262,30 @@ src/Cube.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/menv.dir/build.make CMakeFiles/menv.dir/src/Cube.cpp.s
 .PHONY : src/Cube.cpp.s
 
+src/GameManager.obj: src/GameManager.cpp.obj
+.PHONY : src/GameManager.obj
+
+# target to build an object file
+src/GameManager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/menv.dir/build.make CMakeFiles/menv.dir/src/GameManager.cpp.obj
+.PHONY : src/GameManager.cpp.obj
+
+src/GameManager.i: src/GameManager.cpp.i
+.PHONY : src/GameManager.i
+
+# target to preprocess a source file
+src/GameManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/menv.dir/build.make CMakeFiles/menv.dir/src/GameManager.cpp.i
+.PHONY : src/GameManager.cpp.i
+
+src/GameManager.s: src/GameManager.cpp.s
+.PHONY : src/GameManager.s
+
+# target to generate assembly for a file
+src/GameManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/menv.dir/build.make CMakeFiles/menv.dir/src/GameManager.cpp.s
+.PHONY : src/GameManager.cpp.s
+
 src/Mover.obj: src/Mover.cpp.obj
 .PHONY : src/Mover.obj
 
@@ -383,6 +407,9 @@ help:
 	@echo "... src/Cube.obj"
 	@echo "... src/Cube.i"
 	@echo "... src/Cube.s"
+	@echo "... src/GameManager.obj"
+	@echo "... src/GameManager.i"
+	@echo "... src/GameManager.s"
 	@echo "... src/Mover.obj"
 	@echo "... src/Mover.i"
 	@echo "... src/Mover.s"

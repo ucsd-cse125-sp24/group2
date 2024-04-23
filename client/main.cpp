@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Client.h"
 #include "core.h"
+#include "GameManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 
 void error_callback(int error, const char* description) {
@@ -49,7 +50,7 @@ void print_versions() {
 int main(void) {
     Client client;
     client.setCallback(
-        [](void* params) { Window::mover->position = *((glm::vec3*)params); });
+        [](Packet* params) { GameManager::instance().handle_packet(params); });
 
     // Create the GLFW window.
     GLFWwindow* window = Window::createWindow(800, 600);
