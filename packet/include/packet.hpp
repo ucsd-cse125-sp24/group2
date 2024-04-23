@@ -16,27 +16,26 @@
 #endif
 
 class Packet {
-#ifdef _WIN32
-    WSADATA wsa_data;
-#endif
 
    public:
     std::vector<u_int8_t> buffer;
-    //int buffer_position;
-    //type packet_type;
 
     Packet();
     ~Packet();
     void write_byte(char data);
     void write_int(int data);
+    void write_float(float data);
     void write_double(double data);
     void write_vec3(glm::vec3 data);
-    char read_byte();
-    int read_int();
-    double read_double();
-    glm::vec3 read_vec3();
 
-    int32_t* getBytes();
+    // return -1 if error, else return size
+    int read_byte(char* dest);
+    int read_int(int* dest);
+    int read_float(float* dest);
+    int read_double(double* dest);
+    int read_vec3(glm::vec3* dest);
+
+    u_int8_t* getBytes();
 };
 
 #endif  // PACKET_H
