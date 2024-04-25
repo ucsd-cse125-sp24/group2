@@ -1,6 +1,6 @@
 #ifndef PACKET_H
 #define PACKET_H
-#include "glm/glm.hpp"
+#include "../glm/glm.hpp"
 #include <deque>
 
 enum class PacketType { PLAYER_POSITION, PLAYER_INPUT };

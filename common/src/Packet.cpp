@@ -1,4 +1,8 @@
-#include "Packet.hpp"
+#include "../include/Packet.hpp"
+
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
 
 Packet::Packet() {}
 Packet::~Packet() {}

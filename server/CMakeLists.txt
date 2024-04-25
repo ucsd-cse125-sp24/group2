@@ -10,7 +10,7 @@ set(SERVER_SOURCES
     src/NetworkManager.cpp
     src/Player.cpp
     src/Server.cpp
-    ../common/Packet.cpp
+    ../common/src/Packet.cpp
     main.cpp
     )
 

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <map>
 #include "PlayerManager.hpp"
-#include "Packet.hpp"
+#include "../../common/include/Packet.hpp"
 class GameManager {
 
 public:
