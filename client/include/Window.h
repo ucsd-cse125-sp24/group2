@@ -4,8 +4,8 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
-
 #include "Mover.h"
+#include "Model.h"
 
 class Window {
 public:
@@ -19,6 +19,7 @@ public:
 
     // Added by me
     static Mover* mover;
+    static Model* model;
 
     // Shader Program
     static GLuint shaderProgram;

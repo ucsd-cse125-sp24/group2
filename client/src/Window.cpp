@@ -1,3 +1,4 @@
+#include "core.h"
 #include "Window.h"
 #include "Client.h"
 
@@ -9,6 +10,7 @@ const char* Window::windowTitle = "Model Environment";
 // Objects to render
 // Cube* Window::cube;
 Client client;
+Model* Window::model;
 
 // Added by me:
 Mover* Window::mover;
@@ -48,6 +50,7 @@ bool Window::initializeObjects() {
 
     mover = new Mover();
     client.init(mover);
+    model = new Model("../assets/donut-042524-02/donut-042524-02.gltf");
 
     return true;
 }
@@ -151,7 +154,8 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    model->draw(Cam->GetViewProjectMtx(), shaderProgram);
 
     // Gets events, including input such as keyboard and mouse or window resizing.
     glfwPollEvents();

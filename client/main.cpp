@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "core.h"
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 void error_callback(int error, const char* description) {
     // Print error.
     std::cerr << description << std::endl;

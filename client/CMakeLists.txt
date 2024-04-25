@@ -14,6 +14,11 @@ set(
     src/Tokenizer.cpp
     src/Window.cpp
     src/Client.cpp
+
+    # graphics
+    src/Model.cpp
+    src/Mesh.cpp
+
     # 125-Starter
     src/Mover.cpp
 )
@@ -28,6 +33,11 @@ set(
     include/Tokenizer.h
     include/Window.h
     include/Client.h
+
+    # graphics
+    include/stb_image.h
+    include/Mesh.h
+    include/Model.h
     # 125-Starter
     include/Mover.h
 )
@@ -39,7 +49,7 @@ include_directories(
     include
     ../common
 )
-
+find_package(assimp REQUIRED)
 # Add library directories
 link_directories(
     lib
@@ -50,6 +60,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)
+    target_link_libraries(${PROJECT_NAME} assimp)
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
