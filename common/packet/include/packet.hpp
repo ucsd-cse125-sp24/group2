@@ -3,25 +3,14 @@
 #include <stdio.h>
 #include <iostream>
 #include "glm/glm.hpp"
-#ifdef _WIN32
-#include <winsock2.h>
-#else
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <unistd.h>
 #include <string.h>
-#include <vector>
-#endif
+#include <deque>
 
 class Packet {
 
    public:
-    std::vector<u_int8_t> buffer;
+    std::deque<u_int8_t> buffer;
 
-    Packet();
-    ~Packet();
     void write_byte(char data);
     void write_int(int data);
     void write_float(float data);

@@ -3,7 +3,7 @@
 /**
  * Packet class
  * Write and Read - byte, int, float, double, glm::vec3
- * Read returns -1 on error, size of data read otherwise
+ * Read returns -1 on error, size of data read (in bytes) otherwise
  * 
  * Note: currently no support for checking if read in the wrong order
  *      or if read type mismatches from original written value
@@ -20,17 +20,9 @@ union Union64 {
     u_int64_t l;
 } union64;
 
-Packet::Packet() {
-    this->buffer = std::vector<u_int8_t>();
-}
-
-Packet::~Packet() {
-    this->buffer = std::vector<u_int8_t>();
-}
-
 void Packet::write_byte(char data){
     u_int8_t toAdd = u_int8_t(data);
-    this->buffer.push_back(toAdd);
+    buffer.push_back(toAdd);
 }
 
 // 32 bits
@@ -48,14 +40,14 @@ void Packet::write_int(int data){
     byte_array[3] = bytes;
 
 
-    this->buffer.push_back(byte_array[0]);
-    this->buffer.push_back(byte_array[1]);
-    this->buffer.push_back(byte_array[2]);
-    this->buffer.push_back(byte_array[3]);*/
+    buffer.push_back(byte_array[0]);
+    buffer.push_back(byte_array[1]);
+    buffer.push_back(byte_array[2]);
+    buffer.push_back(byte_array[3]);*/
 
     // store 4 bytes in the buffer
     for(int i = 1; i <= 4; i++){
-        this->buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
+        buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
     }
 
 }
@@ -68,7 +60,7 @@ void Packet::write_float(float data){
 
     // store 4 bytes in the buffer
     for(int i = 1; i <= 4; i++){
-        this->buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
+        buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
     }
 
 }
@@ -107,7 +99,7 @@ void Packet::write_double(double data){
     // store 8 bytes in the buffer
     for(int i = 1; i <= 8; i++){
         u_int8_t toWrite = (u_int8_t)(bytes >> 8*(8-i));
-        this->buffer.push_back(toWrite);
+        buffer.push_back(toWrite);
     }
 }
 
@@ -121,29 +113,29 @@ void Packet::write_vec3(glm::vec3 data){
 }
 
 int Packet::read_byte(char* dest){
-    if(this->buffer.size() == 0){
+    if(buffer.size() == 0){
         return -1;
     }
 
-    u_int8_t readElem = this->buffer.front();
-    this->buffer.erase(this->buffer.begin());
+    u_int8_t readElem = buffer.front();
+    buffer.pop_front();
     *dest = char(readElem);
     
-    return 1;
+    return sizeof(char);
 }
 
 int Packet::read_int(int* dest){
-    int int8_per_int = 4;
+    int byte_per_int = sizeof(int);
 
-    if(this->buffer.size() < int8_per_int){
+    if(buffer.size() < byte_per_int){
         return -1;
     }
 
     // read 4 bytes from the buffer
-    u_int32_t readData[int8_per_int];
-    for(int i = 0; i < int8_per_int; i++){
-        readData[i] = this->buffer.front();
-        this->buffer.erase(this->buffer.begin());
+    u_int32_t readData[byte_per_int];
+    for(int i = 0; i < byte_per_int; i++){
+        readData[i] = buffer.front();
+        buffer.pop_front();
     }
 
     // reconstruct u_int32
@@ -152,21 +144,21 @@ int Packet::read_int(int* dest){
 
     *dest = static_cast<int>(i32); // convert to int
 
-    return int8_per_int * 8;
+    return byte_per_int;
 }
 
 int Packet::read_float(float* dest){
-    int int8_per_float = 4;
+    int byte_per_float = sizeof(float);
 
-    if(this->buffer.size() < int8_per_float){
+    if(buffer.size() < byte_per_float){
         return -1;
     }
 
     // read 4 bytes from the buffer
-    u_int32_t readData[int8_per_float];
-    for(int i = 0; i < int8_per_float; i++){
-        readData[i] = this->buffer.front();
-        this->buffer.erase(this->buffer.begin());
+    u_int32_t readData[byte_per_float];
+    for(int i = 0; i < byte_per_float; i++){
+        readData[i] = buffer.front();
+        buffer.pop_front();
     }
 
     // reconstruct u_int32
@@ -177,22 +169,22 @@ int Packet::read_float(float* dest){
     union32.l = i32;
     *dest = (float)union32.f;
 
-    return int8_per_float * 8;
+    return byte_per_float;
 }
 
 // credit: https://codereview.stackexchange.com/questions/2607/combining-two-32-bit-integers-into-one-64-bit-integer
 int Packet::read_double(double* dest){ // use unsigned long long
-    int int8_per_double = 8;
+    int byte_per_double = sizeof(double);
 
-    if(this->buffer.size() < int8_per_double){
+    if(buffer.size() < byte_per_double){
         return -1;
     }
 
     // read 8 bytes from the buffer
-    u_int64_t readData[int8_per_double]; // u_int64 instead of u_int8 so shifts don't overflow
-    for(int i = 0; i < int8_per_double; i++){
-        readData[i] = this->buffer.front();
-        this->buffer.erase(this->buffer.begin());
+    u_int64_t readData[byte_per_double]; // u_int64 instead of u_int8 so shifts don't overflow
+    for(int i = 0; i < byte_per_double; i++){
+        readData[i] = buffer.front();
+        buffer.pop_front();
     }
 
     // reconstruct u_int64
@@ -203,7 +195,7 @@ int Packet::read_double(double* dest){ // use unsigned long long
     union64.l = i64;
     *dest = union64.f;
 
-    return int8_per_double * 8;
+    return byte_per_double;
 }
 
 int Packet::read_vec3(glm::vec3* dest){
@@ -222,18 +214,12 @@ int Packet::read_vec3(glm::vec3* dest){
     // reconstruct vector
     *dest = glm::vec3(x, y, z);
 
-    return 32*3;
+    return sizeof(float)*3;
 }
 
-
-
 u_int8_t* Packet::getBytes() {
-    u_int8_t* byte_array = (u_int8_t*)malloc(this->buffer.size() * sizeof(u_int8_t));
-    int i = 0;
-
-    for(u_int8_t b : this->buffer){
-       byte_array[i++] = b;
-    }
+    uint8_t* byte_array = new uint8_t[buffer.size()];
+    memcpy(byte_array, &buffer[0], buffer.size());
 
     return byte_array;
 }

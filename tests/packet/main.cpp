@@ -4,7 +4,7 @@
 #include <iostream>
 /**
  * Run these tests:
- * cd to group2/common/packet directory
+ * cd to group2/tests/packet directory
  * 'make'
  * './Packet'
 */
@@ -15,7 +15,7 @@ using namespace std;
  * Simple tests: write and read back byte, double, float, int, and glm::vec3
 */
 void basic_tests(Packet packet){
-        char c = 'a';
+    char c = 'a';
     double d = 3.456;
     float f = 6.45;
     int i = 2;
