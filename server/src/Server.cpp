@@ -139,7 +139,7 @@ int Server::send(int client_id, Packet* pkt) {
     }
 
     int sent_bytes =
-        clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
+        clients[client_id]->clientsock->send((const char*)(pkt->getBytes()), pkt->size(), 0);
     delete pkt;
     if (sent_bytes < 0) {
         printf("failed to send\n");

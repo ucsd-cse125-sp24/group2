@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <thread>
+#include <algorithm>
 #include <functional>
 
 #include "Server.hpp"

@@ -4,7 +4,7 @@
 #include <stack>
 #include <deque>
 #include <mutex>
-#include "Packet.hpp"
+#include "../../common/include/Packet.hpp"
 #include "Entity.hpp"
 class NetworkManager {
     std::vector<Entity*> entities;
