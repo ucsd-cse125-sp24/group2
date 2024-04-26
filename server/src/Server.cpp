@@ -57,11 +57,14 @@ void Server::start() {
             if (clients[i]->clientsock != nullptr)
                 continue;
 
+            // FIXME move player initialization and registration out
             clients[i]->clientsock = client_sock;
             clients[i]->init();
 
-            NetworkManager::instance().register_entity(clients[i]->p);
-            // FIXME track server capacity in a not-dumb way
+            on_client_joined(i);
+
+            // NetworkManager::instance().register_entity(clients[i]->p);
+            // TODO track server capacity in a not-dumb way
             printf(
                 "Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n",
                 inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
@@ -99,14 +102,14 @@ void Server::receive(Client* client) {
         if (read_bytes == 0) { // Connection was closed
             std::lock_guard<std::mutex> lock(_mutex);
             // TODO have network manager handle disconnect events
-            NetworkManager::instance().unregister_entity(client->p);
+            // NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
             std::cout << "Client " << client->id << " disconnected."
                       << std::endl;
             return;
         } else if (read_bytes < 0) { // error
             std::lock_guard<std::mutex> lock(_mutex);
-            NetworkManager::instance().unregister_entity(client->p);
+            // NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
             std::cout << "recv failed" << std::endl;
             std::cout << "Client " << client->id << " disconnected."
@@ -115,20 +118,13 @@ void Server::receive(Client* client) {
         } else {
             printf("Received %d bytes from client %d\n", read_bytes,
                    client->id);
-            // do we need this?
-            std::lock_guard<std::mutex> lock(handler_mutex);
-            if (receive_event) {
-                receive_event(client->id, buffer);
-            }
+            uint8_t* recvd_bytes = new uint8_t[read_bytes];
+            memcpy(recvd_bytes, buffer, read_bytes);
+            on_message_received(client->id, recvd_bytes);
         }
 
         memset(buffer, 0, 4096);
     }
-}
-
-void Server::set_callback(const ReceiveHandler& handler) {
-    std::lock_guard<std::mutex> lock(handler_mutex);
-    receive_event = handler;
 }
 
 int Server::send(int client_id, Packet* pkt) {

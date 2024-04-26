@@ -31,9 +31,7 @@ int main(int argc, char** argv) {
             start_time + tick * chrono::microseconds(TICK_RATE_USEC);
         // TODO handle input
         NetworkManager::instance().process_input();
-        // TODO update game state
         NetworkManager::instance().update();
-        // TODO send updated state
         NetworkManager::instance().send_state();
 
         // Wait for end of tick

@@ -201,6 +201,30 @@ src/Client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Client.cpp.s
 .PHONY : src/Client.cpp.s
 
+src/Entity.obj: src/Entity.cpp.obj
+.PHONY : src/Entity.obj
+
+# target to build an object file
+src/Entity.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Entity.cpp.obj
+.PHONY : src/Entity.cpp.obj
+
+src/Entity.i: src/Entity.cpp.i
+.PHONY : src/Entity.i
+
+# target to preprocess a source file
+src/Entity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Entity.cpp.i
+.PHONY : src/Entity.cpp.i
+
+src/Entity.s: src/Entity.cpp.s
+.PHONY : src/Entity.s
+
+# target to generate assembly for a file
+src/Entity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Entity.cpp.s
+.PHONY : src/Entity.cpp.s
+
 src/NetworkManager.obj: src/NetworkManager.cpp.obj
 .PHONY : src/NetworkManager.obj
 
@@ -249,6 +273,30 @@ src/Player.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Player.cpp.s
 .PHONY : src/Player.cpp.s
 
+src/Scene.obj: src/Scene.cpp.obj
+.PHONY : src/Scene.obj
+
+# target to build an object file
+src/Scene.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Scene.cpp.obj
+.PHONY : src/Scene.cpp.obj
+
+src/Scene.i: src/Scene.cpp.i
+.PHONY : src/Scene.i
+
+# target to preprocess a source file
+src/Scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Scene.cpp.i
+.PHONY : src/Scene.cpp.i
+
+src/Scene.s: src/Scene.cpp.s
+.PHONY : src/Scene.s
+
+# target to generate assembly for a file
+src/Scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Scene.cpp.s
+.PHONY : src/Scene.cpp.s
+
 src/Server.obj: src/Server.cpp.obj
 .PHONY : src/Server.obj
 
@@ -291,12 +339,18 @@ help:
 	@echo "... src/Client.obj"
 	@echo "... src/Client.i"
 	@echo "... src/Client.s"
+	@echo "... src/Entity.obj"
+	@echo "... src/Entity.i"
+	@echo "... src/Entity.s"
 	@echo "... src/NetworkManager.obj"
 	@echo "... src/NetworkManager.i"
 	@echo "... src/NetworkManager.s"
 	@echo "... src/Player.obj"
 	@echo "... src/Player.i"
 	@echo "... src/Player.s"
+	@echo "... src/Scene.obj"
+	@echo "... src/Scene.i"
+	@echo "... src/Scene.s"
 	@echo "... src/Server.obj"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"

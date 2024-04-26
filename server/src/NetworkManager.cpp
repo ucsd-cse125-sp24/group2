@@ -8,16 +8,28 @@
 #include <functional>
 
 #include "Server.hpp"
+#include "Scene.hpp"
 
 int NetworkManager::next_network_id = 0;
 Server server;
+Scene scene;
 union FloatUnion {
     float f;
     uint32_t l;
 } num;
 void NetworkManager::init() {
-    server.set_callback(
-        [this](int client_id, void* pkt) { handle_packet(client_id, pkt); });
+    server.set_message_received_callback([this](const EventArgs* e) {
+        MessageReceivedEventArgs* args = (MessageReceivedEventArgs*)e;
+        handle_packet(args->fromClient, args->buffer);
+    });
+    server.set_client_joined_callback([this](const EventArgs* e) {
+        ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
+        Player* p = new Player();
+        // TODO set control over player
+        server.clients[args->clientId]->p = p;
+        scene.add_object(p);
+        networkObjects.push_back(p);
+    });
     std::thread(&Server::start, &server).detach();
 }
 
@@ -29,60 +41,53 @@ void NetworkManager::process_input() {
         int client_id = msg.first;
         Packet* packet = msg.second;
 
-        // TODO call appropriate handler based on packet type
-        PacketType packet_type;
-        packet->read_int((int*)&packet_type);
+        // TODO create handlers for each packet type
+        int packet_type;
+        /*
+        for (int i = 0; i < 8; i++) {
+            std::cout << std::setfill('0') << std::setw(2) << std::hex
+                      << (int)packet->getBytes()[i] << " ";
+        }
+        std::cout << std::endl;
+        */
+        packet->read_int(&packet_type);
 
         // but for now, we do this to set input manually
-        char input[4];
-        for (int i = 0; i < 4; i++) {
-            packet->read_byte(&input[i]);
+        switch ((PacketType)packet_type) {
+        case PacketType::PLAYER_INPUT:
+            char input[4];
+            for (int i = 0; i < 4; i++) {
+                packet->read_byte(&input[i]);
+            }
+            (*server.get_clients())[client_id]->p->inputs.x =
+                (float)input[3] - (float)input[1];
+            (*server.get_clients())[client_id]->p->inputs.y =
+                (float)input[0] - (float)input[2];
+            break;
+        default:
+            break;
         }
-        (*server.get_clients())[client_id]->p->inputs.x =
-            (float)input[3] - (float)input[1];
-        (*server.get_clients())[client_id]->p->inputs.y =
-            (float)input[0] - (float)input[2];
     }
 }
 
-void NetworkManager::update() {
-    for (int i = 0; i < entities.size(); i++) {
-        entities[i]->update();
-    }
-}
+void NetworkManager::update() { scene.update(); }
 
-// TODO send all networked entities
+// TODO send state of all networked entities
 void NetworkManager::send_state() {
     uint8_t buf[12];
 
     std::vector<Client*>* clients = server.get_clients();
-    // For some player p
+    // Send all states to clients
     for (const auto& it0 : *clients) {
+        // Skip disconnected clients
         if (it0->clientsock == nullptr)
             continue;
-        // Send player p's position to all clients
-        for (const auto& it : *clients) {
-            if (it->clientsock == nullptr)
-                continue;
 
-            // Write packet type
-            Packet* packet = new Packet();
-            packet->write_int((int)PacketType::PLAYER_POSITION);
-
-            // Write player id
-            packet->write_int(it0->id);
-
-            // Write player position
-            auto tmp = it0->p->position;
-            uint32_t tmpl;
-            num.f = tmp.x;
-            packet->write_int(num.l);
-            num.f = tmp.y;
-            packet->write_int(num.l);
-            num.f = tmp.z;
-            packet->write_int(num.l);
-
-            server.send(it->id, packet);
+        for (const auto& obj : networkObjects) {
+            Packet* p = new Packet();
+            p->write_int((int)PacketType::PLAYER_POSITION);
+            obj->serialize(p);
+            server.send(it0->id, p);
         }
     }
 }
@@ -96,14 +101,4 @@ void NetworkManager::handle_packet(int client_id, void* pkt) {
 
     std::lock_guard<std::mutex> lock(_mutex);
     message_queue.push_back(std::pair<int, Packet*>(client_id, packet));
-}
-
-void NetworkManager::register_entity(Entity* e) {
-    e->network_id = next_network_id++;
-    entities.push_back(e);
-}
-
-void NetworkManager::unregister_entity(Entity* e) {
-    entities.erase(std::remove(entities.begin(), entities.end(), e),
-                   entities.end());
 }

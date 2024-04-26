@@ -6,8 +6,9 @@
 #include <mutex>
 #include "Packet.hpp"
 #include "Entity.hpp"
+#include "NetworkObject.hpp"
 class NetworkManager {
-    std::vector<Entity*> entities;
+    std::vector<NetworkObject*> networkObjects;
     static std::stack<int> freelist;
 
 private:

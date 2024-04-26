@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include <deque>
 
-enum class PacketType { PLAYER_POSITION, PLAYER_INPUT };
+enum class PacketType { PLAYER_POSITION, PLAYER_INPUT, PLAYER_ATTACK };
 class Packet {
 private:
     std::deque<uint8_t> buffer;
@@ -16,6 +16,7 @@ public:
     void write_int(int data);
     void write_double(double data);
     void write_vec3(glm::vec3 data);
+    void write_float(float data);
     int read_byte(char*);
     int read_int(int*);
     int read_double(double*);

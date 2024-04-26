@@ -150,11 +150,13 @@ void Window::displayCallback(GLFWwindow* window) {
     // Render the object.
     // TODO draw object
     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    /*
     for (auto kv : GameManager::instance().players) {
         // kv.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
         std::cout << "Player " << kv.second->id << ": "
                   << glm::to_string(kv.second->mover->position) << std::endl;
     }
+    */
 
     // Gets events, including input such as keyboard and mouse or window
     // resizing.

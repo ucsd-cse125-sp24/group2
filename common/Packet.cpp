@@ -1,5 +1,10 @@
 #include "Packet.hpp"
 
+union Union32 {
+    float f;
+    int i;
+    uint32_t l;
+} union32;
 Packet::Packet() {}
 Packet::~Packet() {}
 
@@ -47,6 +52,15 @@ void Packet::write_int(int data) {
     buffer.push_back((tmp >> 16) & 0xFF);
     buffer.push_back((tmp >> 8) & 0xFF);
     buffer.push_back((tmp) & 0xFF);
+}
+
+void Packet::write_vec3(glm::vec3 data) {
+    union32.f = data.x;
+    write_int(union32.l);
+    union32.f = data.y;
+    write_int(union32.l);
+    union32.f = data.z;
+    write_int(union32.l);
 }
 
 uint8_t* Packet::getBytes() { return &buffer[0]; }
