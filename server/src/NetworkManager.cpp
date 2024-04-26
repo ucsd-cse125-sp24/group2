@@ -25,7 +25,6 @@ void NetworkManager::init() {
     server.set_client_joined_callback([this](const EventArgs* e) {
         ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
         Player* p = new Player();
-        // TODO set control over player
         server.clients[args->clientId]->p = p;
         scene.add_object(p);
         networkObjects.push_back(p);

@@ -11,6 +11,7 @@ set(SERVER_SOURCES
     src/Player.cpp
     src/Server.cpp
     ../common/Packet.cpp
+    ../common/NetworkObject.cpp
     main.cpp
     src/Entity.cpp
     src/Scene.cpp

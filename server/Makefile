@@ -129,6 +129,30 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
+Users/shane/code/src/cse125/common/NetworkObject.obj: Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.obj
+
+# target to build an object file
+Users/shane/code/src/cse125/common/NetworkObject.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
+
+Users/shane/code/src/cse125/common/NetworkObject.i: Users/shane/code/src/cse125/common/NetworkObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.i
+
+# target to preprocess a source file
+Users/shane/code/src/cse125/common/NetworkObject.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.i
+
+Users/shane/code/src/cse125/common/NetworkObject.s: Users/shane/code/src/cse125/common/NetworkObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.s
+
+# target to generate assembly for a file
+Users/shane/code/src/cse125/common/NetworkObject.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.s
+
 Users/shane/code/src/cse125/common/Packet.obj: Users/shane/code/src/cse125/common/Packet.cpp.obj
 .PHONY : Users/shane/code/src/cse125/common/Packet.obj
 
@@ -330,6 +354,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
+	@echo "... Users/shane/code/src/cse125/common/NetworkObject.obj"
+	@echo "... Users/shane/code/src/cse125/common/NetworkObject.i"
+	@echo "... Users/shane/code/src/cse125/common/NetworkObject.s"
 	@echo "... Users/shane/code/src/cse125/common/Packet.obj"
 	@echo "... Users/shane/code/src/cse125/common/Packet.i"
 	@echo "... Users/shane/code/src/cse125/common/Packet.s"
