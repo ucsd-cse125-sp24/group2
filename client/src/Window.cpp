@@ -11,6 +11,8 @@ const char* Window::windowTitle = "Model Environment";
 // Cube* Window::cube;
 Client client;
 Model* Window::model;
+AnimationPlayer* Window::player;
+AnimationClip* Window::clip;
 
 // Added by me:
 Mover* Window::mover;
@@ -50,8 +52,9 @@ bool Window::initializeObjects() {
 
     mover = new Mover();
     client.init(mover);
-    model = new Model("../assets/donut-042524-02/donut-042524-02.gltf");
-
+    model = new Model("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    clip = new AnimationClip("../assets/male_basic_walk_30_frames_loop/scene.gltf", model);
+    player = new AnimationPlayer(clip);
     return true;
 }
 
@@ -125,7 +128,7 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 // update and draw functions
 float deltaTime = 0.01;
 
-float currentTime = glfwGetTime();
+float currentTime = 0.0;
 float accumulator = 0.0;
 
 void Window::idleCallback() {
@@ -138,14 +141,13 @@ void Window::idleCallback() {
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-
+    player->update(frameTime);
     accumulator += frameTime;
 
     while (accumulator >= deltaTime) {
         mover->UpdatePhysics(deltaTime);
         accumulator -= deltaTime;
     }
-
     // mover->Update(1 / 300.0f); // not using deltaTime argument for now
 }
 
@@ -156,7 +158,14 @@ void Window::displayCallback(GLFWwindow* window) {
     // Render the object.
     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     model->draw(Cam->GetViewProjectMtx(), shaderProgram);
-
+    auto transforms = player->getFinalBoneMatrices();
+    for(int i = 0; i < transforms.size(); i++) {
+        // if(i == 50) {
+        //     std::cout<<"matrix: " << glm::to_string(transforms[i]) << std::endl;
+        // }
+        glUseProgram(shaderProgram);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
+    }
     // Gets events, including input such as keyboard and mouse or window resizing.
     glfwPollEvents();
     // Swap buffers.

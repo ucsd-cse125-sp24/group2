@@ -2,6 +2,8 @@
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) : vertices(vertices), indices(indices), textures(textures){
     modelMtx = glm::mat4(1.0f);
+    // modelMtx = glm::rotate(modelMtx, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    // modelMtx = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f));
     color = glm::vec3(1.0f, 0.95f, 0.1f);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -33,6 +35,12 @@ void Mesh::binding() {
     // vertex texture coords
     glEnableVertexAttribArray(2);	
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    // vertex bone ids
+    glEnableVertexAttribArray(3);
+    glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, boneIDs));
+    // vertex bone weights
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, weights));
 }   
 
 void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {

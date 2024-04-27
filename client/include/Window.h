@@ -6,6 +6,8 @@
 #include "core.h"
 #include "Mover.h"
 #include "Model.h"
+#include "AnimationPlayer.h"
+#include "AnimationClip.h"
 
 class Window {
 public:
@@ -20,6 +22,8 @@ public:
     // Added by me
     static Mover* mover;
     static Model* model;
+    static AnimationPlayer* player;
+    static AnimationClip* clip;
 
     // Shader Program
     static GLuint shaderProgram;

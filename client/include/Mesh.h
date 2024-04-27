@@ -5,6 +5,15 @@
 #include <vector>
 
 #define MAX_BONE_INFLUENCE 4
+struct BoneInfo
+{
+    /*id is index in finalBoneMatrices*/
+    int id;
+
+    // the inverse bind matrix
+    glm::mat4 offsetMtx;
+
+};
 
 struct Vertex {
     // position

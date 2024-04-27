@@ -8,6 +8,9 @@ Model::Model(std::string path) {
     loadModel(path);
 }
 
+void Model::update(float dt) {
+}
+
 void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     for(int i = 0; i < meshes.size(); i++) {
         meshes[i].draw(viewProjMtx, shader);
@@ -24,6 +27,7 @@ void Model::loadModel(std::string path) {
     } else {
         std::cout << "SUCCESS::ASSIMP:: LOADING FILE " << std::endl;
     }
+    std::cout<<"meshes count: " << scene->mNumMeshes<<std::endl;
     directory = path.substr(0, path.find_last_of('/'));
 
     processNode(scene->mRootNode, scene);
@@ -47,6 +51,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     // setting vertices
     for(int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
+        setVertexBoneDataToDefault(vertex);
         vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
         // std::cout<<"position: "<<vertex.position.x<<" "<<vertex.position.y<<" "<<vertex.position.z<<std::endl;
         if(mesh->mNormals) {
@@ -82,6 +87,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     }
+    extractBoneWeightForVertices(vertices, mesh, scene);
+
     return Mesh(vertices, indices, textures);
 
 }
@@ -106,7 +113,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
             texture.id = textureFromFile(str.C_Str(), this->directory);
             // std::cout<<"texture id: "<<texture.id<<std::endl;
             texture.type = typeName;
-            std::cout<<"typename: "<< typeName<<std::endl; 
+            // std::cout<<"typename: "<< typeName<<std::endl; 
             texture.path = str.C_Str();
             textures.push_back(texture);
             textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
@@ -118,7 +125,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
 unsigned int Model::textureFromFile(const char *path, const std::string &directory) {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
-    std::cout<<"filename: "<<filename<<std::endl;
+    // std::cout<<"filename: "<<filename<<std::endl;
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -150,4 +157,58 @@ unsigned int Model::textureFromFile(const char *path, const std::string &directo
     }
     // std::cout<<"texture id: "<<textureID<<std::endl;
     return textureID;
+}
+
+void Model::setVertexBoneDataToDefault(Vertex& vertex) {
+    for(int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+        vertex.boneIDs[i] = -1;
+        vertex.weights[i] = 0.0f;
+    }
+}
+
+void Model::SetVertexBoneData(Vertex& vertex, int boneID, float weight) {
+    for(int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+        if(vertex.boneIDs[i] < 0) {
+            vertex.boneIDs[i] = boneID;
+            vertex.weights[i] = weight;
+            return;
+        }
+    }
+}
+
+void Model::extractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene) {
+    for(int i = 0; i < mesh->mNumBones; i++) {
+        int boneId = -1;
+        std::string boneName = mesh->mBones[i]->mName.C_Str();
+        if(boneInfoMap.find(boneName) == boneInfoMap.end()) {
+            BoneInfo newBoneInfo;
+            newBoneInfo.id = boneCounter;
+            newBoneInfo.offsetMtx = Helper::ConvertMatrixToGLMFormat(mesh->mBones[i]->mOffsetMatrix);
+            boneId = boneCounter;
+            boneCounter++;
+            boneInfoMap[boneName] = newBoneInfo;
+        } else {
+            boneId = boneInfoMap[boneName].id;
+        }
+        assert(boneId != -1);
+        auto weights = mesh->mBones[i]->mWeights;
+        int numWeights = mesh->mBones[i]->mNumWeights;
+        for(int j = 0; j < numWeights; j++) {
+            int vertexId = weights[j].mVertexId;
+            float weight = weights[j].mWeight;
+            SetVertexBoneData(vertices[vertexId], boneId, weight);
+        }
+    }
+}
+
+int Model::getBoneCount() const {
+    return boneCounter;
+}
+
+std::map<std::string, BoneInfo>& Model::getBoneInfoMap() {
+    return boneInfoMap;
+}
+
+void Model::addBoneCount() {
+    boneCounter++;
 }

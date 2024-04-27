@@ -18,6 +18,9 @@ set(
     # graphics
     src/Model.cpp
     src/Mesh.cpp
+    src/AnimationClip.cpp
+    src/AnimationPlayer.cpp
+    src/Bone.cpp
 
     # 125-Starter
     src/Mover.cpp
@@ -38,6 +41,9 @@ set(
     include/stb_image.h
     include/Mesh.h
     include/Model.h
+    include/AnimationClip.h
+    include/AnimationPlayer.h
+    include/Bone.h
     # 125-Starter
     include/Mover.h
 )
