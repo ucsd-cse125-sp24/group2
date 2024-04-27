@@ -1,7 +1,5 @@
 #ifndef PACKET_H
 #define PACKET_H
-#include <stdio.h>
-#include <iostream>
 #include "glm/glm.hpp"
 #include <string.h>
 #include <deque>
@@ -9,7 +7,7 @@
 class Packet {
 
    public:
-    std::deque<u_int8_t> buffer;
+    std::deque<uint8_t> buffer;
 
     void write_byte(char data);
     void write_int(int data);
@@ -24,7 +22,7 @@ class Packet {
     int read_double(double* dest);
     int read_vec3(glm::vec3* dest);
 
-    u_int8_t* getBytes();
+    uint8_t* getBytes();
 };
 
 #endif  // PACKET_H

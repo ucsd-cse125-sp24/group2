@@ -12,28 +12,27 @@
 union Union32 {
     float f;
     int i;
-    u_int32_t l;
+    uint32_t l;
 } union32;
 
 union Union64 {
     double f;
-    u_int64_t l;
+    uint64_t l;
 } union64;
 
 void Packet::write_byte(char data){
-    u_int8_t toAdd = u_int8_t(data);
-    buffer.push_back(toAdd);
+    buffer.push_back(uint8_t(data));
 }
 
 // 32 bits
 // ref: https://stackoverflow.com/questions/6499183/converting-a-uint32-value-into-a-uint8-array4
 void Packet::write_int(int data){
     union32.i = data;
-    u_int32_t bytes = union32.l;
+    uint32_t bytes = union32.l;
     bytes = htonl(bytes);
 
     /* Equivalent code:
-    u_int8_t byte_array[4];
+    uint8_t byte_array[4];
     byte_array[0] = bytes >> 24;
     byte_array[1] = bytes >> 16;
     byte_array[2] = bytes >>  8;
@@ -47,7 +46,7 @@ void Packet::write_int(int data){
 
     // store 4 bytes in the buffer
     for(int i = 1; i <= 4; i++){
-        buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
+        buffer.push_back((uint8_t)(bytes >> 8*(4-i)));
     }
 
 }
@@ -55,23 +54,23 @@ void Packet::write_int(int data){
 // 32 bits
 void Packet::write_float(float data){
     union32.f = data;
-    u_int32_t bytes = union32.l;
+    uint32_t bytes = union32.l;
     bytes = htonl(bytes);
 
     // store 4 bytes in the buffer
     for(int i = 1; i <= 4; i++){
-        buffer.push_back((u_int8_t)(bytes >> 8*(4-i)));
+        buffer.push_back((uint8_t)(bytes >> 8*(4-i)));
     }
 
 }
 
 // ref: https://stackoverflow.com/questions/809902/64-bit-ntohl-in-c
 // ntoh function for 64 bit input
-u_int64_t
-ntoh64(const u_int64_t *input)
+uint64_t
+ntoh64(const uint64_t *input)
 {
-    u_int64_t rval;
-    u_int8_t *data = (u_int8_t *)&rval;
+    uint64_t rval;
+    uint8_t *data = (uint8_t *)&rval;
 
     data[0] = *input >> 56;
     data[1] = *input >> 48;
@@ -88,17 +87,13 @@ ntoh64(const u_int64_t *input)
 // 64 bits
 void Packet::write_double(double data){
     union64.f = data;
-    u_int64_t bytes = union64.l;
-
-    //std::cout << "double is: " << data << " u_int64 is: " << bytes;
+    uint64_t bytes = union64.l;
 
     bytes = ntoh64(&bytes);
 
-    //std::cout << " sending: " << bytes << std::endl;
-
     // store 8 bytes in the buffer
     for(int i = 1; i <= 8; i++){
-        u_int8_t toWrite = (u_int8_t)(bytes >> 8*(8-i));
+        uint8_t toWrite = (uint8_t)(bytes >> 8*(8-i));
         buffer.push_back(toWrite);
     }
 }
@@ -117,7 +112,7 @@ int Packet::read_byte(char* dest){
         return -1;
     }
 
-    u_int8_t readElem = buffer.front();
+    uint8_t readElem = buffer.front();
     buffer.pop_front();
     *dest = char(readElem);
     
@@ -132,14 +127,14 @@ int Packet::read_int(int* dest){
     }
 
     // read 4 bytes from the buffer
-    u_int32_t readData[byte_per_int];
+    uint32_t readData[byte_per_int];
     for(int i = 0; i < byte_per_int; i++){
         readData[i] = buffer.front();
         buffer.pop_front();
     }
 
-    // reconstruct u_int32
-    u_int32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) | (readData[0] << 24);
+    // reconstruct uint32
+    uint32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) | (readData[0] << 24);
     i32 = ntohl(i32);
 
     *dest = static_cast<int>(i32); // convert to int
@@ -155,14 +150,14 @@ int Packet::read_float(float* dest){
     }
 
     // read 4 bytes from the buffer
-    u_int32_t readData[byte_per_float];
+    uint32_t readData[byte_per_float];
     for(int i = 0; i < byte_per_float; i++){
         readData[i] = buffer.front();
         buffer.pop_front();
     }
 
-    // reconstruct u_int32
-    u_int32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) | (readData[0] << 24);
+    // reconstruct uint32
+    uint32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) | (readData[0] << 24);
     i32 = ntohl(i32);
 
     // convert to float
@@ -181,14 +176,14 @@ int Packet::read_double(double* dest){ // use unsigned long long
     }
 
     // read 8 bytes from the buffer
-    u_int64_t readData[byte_per_double]; // u_int64 instead of u_int8 so shifts don't overflow
+    uint64_t readData[byte_per_double]; // uint64 instead of uint8 so shifts don't overflow
     for(int i = 0; i < byte_per_double; i++){
         readData[i] = buffer.front();
         buffer.pop_front();
     }
 
-    // reconstruct u_int64
-    u_int64_t i64 = readData[7] | (readData[6] << 8) | (readData[5] << 16) | (readData[4] << 24) | (readData[3] << 32) | (readData[2] << 40) | (readData[1] << 48) |  (readData[0] << 56);
+    // reconstruct uint64
+    uint64_t i64 = readData[7] | (readData[6] << 8) | (readData[5] << 16) | (readData[4] << 24) | (readData[3] << 32) | (readData[2] << 40) | (readData[1] << 48) |  (readData[0] << 56);
 
     // convert to double
     i64 = ntoh64(&i64);
@@ -217,7 +212,7 @@ int Packet::read_vec3(glm::vec3* dest){
     return sizeof(float)*3;
 }
 
-u_int8_t* Packet::getBytes() {
+uint8_t* Packet::getBytes() {
     uint8_t* byte_array = new uint8_t[buffer.size()];
     memcpy(byte_array, &buffer[0], buffer.size());
 
