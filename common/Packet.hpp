@@ -2,6 +2,9 @@
 #define PACKET_H
 #include "glm/glm.hpp"
 #include <deque>
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
 
 enum class PacketType { PLAYER_POSITION, PLAYER_INPUT };
 class Packet {

@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <functional>
+#include <algorithm>
 
 #include "Server.hpp"
 
