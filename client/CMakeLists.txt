@@ -16,6 +16,7 @@ set(
     src/Client.cpp
     # 125-Starter
     src/Mover.cpp
+    src/InputManager.cpp
 )
 
 # Add header files
@@ -30,6 +31,7 @@ set(
     include/Client.h
     # 125-Starter
     include/Mover.h
+    include/InputManager.h
 )
 
 # Require GL

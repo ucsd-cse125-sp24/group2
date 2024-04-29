@@ -14,6 +14,11 @@ Mover::~Mover() {
 }
 
 void Mover::Update(float deltaTime) {
+    buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
+    buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
+    buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
+    buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
+    std::cout<<"buf[0]: "<<buf[0]<<std::endl;
     UpdatePhysics(deltaTime);
 }
 

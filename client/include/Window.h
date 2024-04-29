@@ -4,6 +4,7 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
+#include "InputManager.h"
 
 #include "Mover.h"
 

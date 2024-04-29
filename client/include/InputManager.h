@@ -1,10 +1,14 @@
 #pragma once
-#include "Window.h"
+#include "core.h"
+#include <unordered_map>
 
 class InputManager {
 public:
-    InputManager();
-    InputManager(GLFWwindow* window);
+    static bool isKeyPressed(int key);
+    static void setUpCallback(GLFWwindow* window);
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void setDefaultKeys();
 private:
-    GLFWwindow* window;
+    static std::unordered_map<int, bool> keys;
+    // static GLFWwindow* window;
 };
