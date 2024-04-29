@@ -3,7 +3,12 @@
 #include "glm/glm.hpp"
 #include <deque>
 
-enum class PacketType { PLAYER_POSITION, PLAYER_INPUT, PLAYER_ATTACK };
+enum class PacketType {
+    PLAYER_POSITION,
+    PLAYER_INPUT,
+    PLAYER_ATTACK,
+    STATE_UPDATE
+};
 class Packet {
 private:
     std::deque<uint8_t> buffer;

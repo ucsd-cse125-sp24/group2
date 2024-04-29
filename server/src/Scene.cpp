@@ -8,6 +8,7 @@ void Scene::update() {
 
 void Scene::add_object(Entity* e) { entities.push_back(e); }
 
+// TODO: Update client states when object is removed
 void Scene::remove_object(Entity* e) {
     entities.erase(std::remove(entities.begin(), entities.end(), e),
                    entities.end());

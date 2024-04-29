@@ -10,7 +10,8 @@
 #include "Server.hpp"
 #include "Scene.hpp"
 
-int NetworkManager::next_network_id = 0;
+#define MAX_NETWORK_OBJECTS 4096
+
 Server server;
 Scene scene;
 union FloatUnion {
@@ -24,8 +25,11 @@ void NetworkManager::init() {
     });
     server.set_client_joined_callback([this](const EventArgs* e) {
         ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
+
+        // Give client control over player
         Player* p = new Player();
         server.clients[args->clientId]->p = p;
+        // Create player model
         scene.add_object(p);
         networkObjects.push_back(p);
     });
@@ -77,17 +81,20 @@ void NetworkManager::send_state() {
 
     std::vector<Client*>* clients = server.get_clients();
     // Send all states to clients
-    for (const auto& it0 : *clients) {
+    for (const auto& client : *clients) {
         // Skip disconnected clients
-        if (it0->clientsock == nullptr)
+        if (client->clientsock == nullptr)
             continue;
 
+        // Serialize all network objects into single state update
+        Packet* updates = new Packet();
+        updates->write_int((int)PacketType::STATE_UPDATE);
+        updates->write_int(networkObjects.size());
         for (const auto& obj : networkObjects) {
-            Packet* p = new Packet();
-            p->write_int((int)PacketType::PLAYER_POSITION);
-            obj->serialize(p);
-            server.send(it0->id, p);
+            client->track_object(obj);
+            obj->serialize(updates);
         }
+        server.send(client->id, updates);
     }
 }
 
