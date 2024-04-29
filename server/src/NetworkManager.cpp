@@ -21,6 +21,12 @@ union FloatUnion {
 
 void NetworkManager::init() {
     // Setup event handlers
+    /* Can alternatively use lambda, like this:
+        server.set_client_joined_callack([this](const EventArgs* a) {
+            ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)a;
+            ...
+        });
+    */
     auto msg_received_callback = std::bind(&NetworkManager::on_message_received,
                                            this, std::placeholders::_1);
     server.set_message_received_callback(msg_received_callback);
