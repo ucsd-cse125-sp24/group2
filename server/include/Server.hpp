@@ -17,8 +17,6 @@
 class Server {
 private:
     std::mutex _mutex;
-    std::mutex message_received_mutex;
-    std::mutex client_joined_mutex;
     Socket psocket;
     void receive(Client* client);
     EventHandler<MessageReceivedEventArgs> message_received;

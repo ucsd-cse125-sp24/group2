@@ -18,21 +18,17 @@ union FloatUnion {
     float f;
     uint32_t l;
 } num;
-void NetworkManager::init() {
-    server.set_message_received_callback([this](const EventArgs* e) {
-        MessageReceivedEventArgs* args = (MessageReceivedEventArgs*)e;
-        handle_packet(args->fromClient, args->buffer);
-    });
-    server.set_client_joined_callback([this](const EventArgs* e) {
-        ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
 
-        // Give client control over player
-        Player* p = new Player();
-        server.clients[args->clientId]->p = p;
-        // Create player model
-        scene.add_object(p);
-        networkObjects.push_back(p);
-    });
+void NetworkManager::init() {
+    // Setup event handlers
+    auto msg_received_callback = std::bind(&NetworkManager::on_message_received,
+                                           this, std::placeholders::_1);
+    server.set_message_received_callback(msg_received_callback);
+    auto client_joined_callback = std::bind(&NetworkManager::on_client_joined,
+                                            this, std::placeholders::_1);
+    server.set_client_joined_callback(client_joined_callback);
+
+    // Start server
     std::thread(&Server::start, &server).detach();
 }
 
@@ -107,4 +103,20 @@ void NetworkManager::handle_packet(int client_id, void* pkt) {
 
     std::lock_guard<std::mutex> lock(_mutex);
     message_queue.push_back(std::pair<int, Packet*>(client_id, packet));
+}
+
+void NetworkManager::on_message_received(const EventArgs* e) {
+    MessageReceivedEventArgs* args = (MessageReceivedEventArgs*)e;
+    handle_packet(args->fromClient, args->buffer);
+}
+
+void NetworkManager::on_client_joined(const EventArgs* e) {
+    ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
+
+    // Give client control over player
+    Player* p = new Player();
+    server.clients[args->clientId]->p = p;
+    // Create player model
+    scene.add_object(p);
+    networkObjects.push_back(p);
 }

@@ -7,6 +7,7 @@
 #include "Packet.hpp"
 #include "Entity.hpp"
 #include "NetworkObject.hpp"
+#include "EventArgs.hpp"
 class NetworkManager {
     std::vector<NetworkObject*> networkObjects;
 
@@ -20,6 +21,8 @@ public:
     void send_state();
     void process_input();
     void handle_packet(int, void*);
+    void on_message_received(const EventArgs* e);
+    void on_client_joined(const EventArgs* e);
     static NetworkManager& instance() {
         static NetworkManager s;
         return s;

@@ -26,7 +26,21 @@ public:
         callbacks.push_back(h);
     }
 
-    // TODO override -= for unsubscribe
+    // If a handler tries to remove itself while being invoked, everything will
+    // crash due to the mutex
+    inline void operator-=(const Action& h) {
+        std::lock_guard<std::mutex> lock(m);
+        // std::find(callbacks.begin(), callbacks.end(), h);
+        auto it = std::find_if(callbacks.begin(), callbacks.end(),
+                               [&](const Action& func) {
+                                   return func.target<void(EventArgs*)>() ==
+                                          h.target<void(EventArgs*)>();
+                               });
+
+        if (it != callbacks.end()) {
+            callbacks.erase(it);
+        }
+    }
 };
 
 #endif

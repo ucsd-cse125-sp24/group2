@@ -18,4 +18,10 @@ typedef struct ClientJoinedEventArgs : public EventArgs {
 
     ClientJoinedEventArgs(int clientId) : clientId(clientId) {}
 } ClientJoinedEventArgs;
+
+typedef struct ObjectEventArgs : public EventArgs {
+    Entity* e;
+
+    ObjectEventArgs(Entity* e) : e(e) {}
+} ObjectEventArgs;
 #endif
