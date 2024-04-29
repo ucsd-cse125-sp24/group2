@@ -3,6 +3,7 @@
 #include "core.h"
 #include "Helper.h"
 #include <iostream>
+#include <vector>
 
 struct KeyPosition
 {
