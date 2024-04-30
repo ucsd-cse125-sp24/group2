@@ -59,7 +59,6 @@ include_directories(
     include
     ../common
 )
-find_package(assimp REQUIRED)
 # Add library directories
 link_directories(
     lib
@@ -70,7 +69,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)
-    target_link_libraries(${PROJECT_NAME} assimp)
+    target_link_libraries(${PROJECT_NAME} assimp.5)
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")

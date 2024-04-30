@@ -7,7 +7,6 @@
 #include "GameManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 
-
 void error_callback(int error, const char* description) {
     // Print error.
     std::cerr << description << std::endl;
@@ -53,8 +52,6 @@ void print_versions() {
 
 int main(void) {
     Client client;
-    client.setCallback(
-        [](Packet* params) { GameManager::instance().handle_packet(params); });
 
     // Create the GLFW window.
     GLFWwindow* window = Window::createWindow(800, 600);
@@ -75,6 +72,10 @@ int main(void) {
     if (!Window::initializeObjects())
         exit(EXIT_FAILURE);
 
+    client.setCallback([window](Packet* params) {
+        glfwMakeContextCurrent(window);
+        GameManager::instance().handle_packet(params);
+    });
     client.connect("127.0.0.1", 25565);
 
     // Loop while GLFW window should stay open.

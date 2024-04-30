@@ -47,7 +47,8 @@ bool Window::initializeObjects() {
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
     // playerManager = new PlayerManager();
-    // playerManager->mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    // playerManager->mover = new
+    // Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
     return true;
 }
 
@@ -133,9 +134,9 @@ void Window::idleCallback() {
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-    playerManager->mover->Update(frameTime);
-    // player->update(frameTime);
-    // accumulator += frameTime;
+    // playerManager->mover->Update(frameTime);
+    //  player->update(frameTime);
+    //  accumulator += frameTime;
 
     // while (accumulator >= deltaTime) {
     //     mover->UpdatePhysics(deltaTime);
@@ -149,20 +150,21 @@ void Window::displayCallback(GLFWwindow* window) {
 
     // Render the object.
     for (auto it : GameManager::instance().players) {
-        std::cout<<it.second->mover->speed<<std::endl;
-        // it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+        it.second->mover->Update(deltaTime);
+        it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }
     // playerManager->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-//     // TODO draw object
-//     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-//     for (auto kv : GameManager::instance().players) {
-//         // kv.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-//         std::cout << "Player " << kv.second->id << ": "
-//                   << glm::to_string(kv.second->mover->position) << std::endl;
-//     }
+    //     // TODO draw object
+    //     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    //     for (auto kv : GameManager::instance().players) {
+    //         // kv.second->mover->Draw(Cam->GetViewProjectMtx(),
+    //         shaderProgram); std::cout << "Player " << kv.second->id << ": "
+    //                   << glm::to_string(kv.second->mover->position) <<
+    //                   std::endl;
+    //     }
 
-//     // Gets events, including input such as keyboard and mouse or window
-//     // resizing.
+    //     // Gets events, including input such as keyboard and mouse or window
+    //     // resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
