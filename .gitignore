@@ -1,17 +1,26 @@
+# editor configs
 .DS_Store
 .vs/
 .vscode/
+*.swp
+
+# build files
+*.exe
 build
+server/server
+
+# libraries
+*.dll
+*.a
+*.dylib
+*.app
+
+# cmake
+**/CopyOfCMakeCache.txt
 CMakeFiles
 CMakeCache.txt
-*.swp
-server/server
-*.exe
 cmake_install.cmake
+
 Makefile
-*.dll
-*.app
-**/CopyOfCMakeCache.txt
-*.o
-client/Makefile
-server/Makefile
+
+
