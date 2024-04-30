@@ -107,6 +107,15 @@ void Packet::write_vec3(glm::vec3 data){
     write_float(data.z);
 }
 
+// store w, x, y, z (constructor order)
+void Packet::write_quat(glm::quat data){
+    // write each element of the data vector
+    write_float(data.w);
+    write_float(data.x);
+    write_float(data.y);
+    write_float(data.z);
+}
+
 int Packet::read_byte(char* dest){
     if(buffer.size() == 0){
         return -1;
@@ -210,6 +219,28 @@ int Packet::read_vec3(glm::vec3* dest){
     *dest = glm::vec3(x, y, z);
 
     return sizeof(float)*3;
+}
+
+int Packet::read_quat(glm::quat* dest){
+    float w, x, y, z;
+    // read each element of the vector, error checking size based on return val.
+    if(read_float(&w) == -1){
+        return -1;
+    }
+    if(read_float(&x) == -1){
+        return -1;
+    }
+    if(read_float(&y) == -1){
+        return -1;
+    }
+    if(read_float(&z) == -1){
+        return -1;
+    }
+
+    // reconstruct quaternion
+    *dest = glm::quat(w, x, y, z);
+
+    return sizeof(float)*4;
 }
 
 uint8_t* Packet::getBytes() {

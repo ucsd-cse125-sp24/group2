@@ -20,6 +20,7 @@ void basic_tests(Packet packet){
     float f = 6.45;
     int i = 2;
     glm::vec3 v = glm::vec3(1.2, 7.8, 0.9);
+    glm::quat q = glm::quat(8.1, 0.3, 9.7, 5.4);
 
     cout << "---------- Starting Basic Packet Tests ----------" << endl;
     packet.write_byte(c);
@@ -32,6 +33,8 @@ void basic_tests(Packet packet){
     cout << "write int: " << i << endl;
     packet.write_vec3(v);
     cout << "write vector: (" << v.x << ", " << v.y << ", " << v.z << ")" << endl;
+    packet.write_quat(q);
+    cout << "write quaternion: (" << q.w << ", " << q.x  << ", " << q.y << ", " << q.z << ")" << endl;
 
     // reset variables (avoid false passes)
     c = '1';
@@ -39,6 +42,7 @@ void basic_tests(Packet packet){
     f = 0.01;
     i = 1;
     v = glm::vec3(0.0, 0.1, 0.0);
+    q = glm::quat(0.1, 0.0, 0.0, 1.0);
     cout << endl;
 
     packet.read_byte(&c);
@@ -51,6 +55,8 @@ void basic_tests(Packet packet){
     cout << "read int: " << i << endl;
     packet.read_vec3(&v);
     cout << "read vector: (" << v.x << ", " << v.y << ", " << v.z << ")" << endl;
+    packet.read_quat(&q);
+    cout << "read quaternion: (" << q.w << ", " << q.x  << ", " << q.y << ", " << q.z << ")" << endl;
 }
 
 /**
