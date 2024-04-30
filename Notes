@@ -1,0 +1,33 @@
+// enum type{
+//     keypress,
+//     inc_update
+// };
+// TODO: need to include information about player class / instrument
+// TODO: can we assume it sends in order? what are the error conditions? if wrong type, error? read next of that type? how to handle??
+// TODO: for now, print error and skip
+
+evanhansen@MacBook-Pro-3 ~ % ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/evanhansen/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/evanhansen/.ssh/id_rsa
+Your public key has been saved in /Users/evanhansen/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:I5FRDu3JzqSgr8/nUCh7hMwO2u0Akd+0pdEHsAJLqbk evanhansen@MacBook-Pro-3.local
+The key's randomart image is:
++---[RSA 3072]----+
+|... ..+o.        |
+|.=   o *.        |
+|=.. + =oo.       |
+|o= =.* o=        |
+|o.*.*.o=S        |
+|E=.= ...o.       |
+|. =.+            |
+|   =...          |
+|  .o+o.          |
++----[SHA256]-----+
+
+
+    // TODO: check that reading packets is thread-safe?
+    // htonl(long) -> type stays intact in the network -> little endian on network, but host could be either
