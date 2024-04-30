@@ -48,7 +48,7 @@ void Server::start() {
             return;
         }
 
-        printf("Incoming connection from %s:%d\n",
+        printf("[SERVER] Incoming connection from %s:%d\n",
                inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
         int i = 0;
         std::unique_lock<std::mutex> lock(_mutex);
@@ -65,10 +65,10 @@ void Server::start() {
 
             // NetworkManager::instance().register_entity(clients[i]->p);
             // TODO track server capacity in a not-dumb way
-            printf(
-                "Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n",
-                inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
-                Server::clients.size(), MAX_CLIENTS);
+            printf("[SERVER] Client (%s:%d) was assigned id %d. Server "
+                   "capacity: %d / %d\n",
+                   inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
+                   Server::clients.size(), MAX_CLIENTS);
 
             std::thread(&Server::receive, this, clients[i]).detach();
 
@@ -77,7 +77,7 @@ void Server::start() {
         lock.unlock();
 
         if (i == MAX_CLIENTS) {
-            perror("Server is full");
+            perror("[SERVER] Server is full");
         }
     }
 }
@@ -104,19 +104,19 @@ void Server::receive(Client* client) {
             // TODO have network manager handle disconnect events
             // NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
-            std::cout << "Client " << client->id << " disconnected."
+            std::cout << "[SERVER] Client " << client->id << " disconnected."
                       << std::endl;
             return;
         } else if (read_bytes < 0) { // error
             std::lock_guard<std::mutex> lock(_mutex);
             // NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
-            std::cout << "recv failed" << std::endl;
-            std::cout << "Client " << client->id << " disconnected."
+            std::cout << "[SERVER] recv failed" << std::endl;
+            std::cout << "[SERVER] Client " << client->id << " disconnected."
                       << std::endl;
             return;
         } else {
-            printf("Received %d bytes from client %d\n", read_bytes,
+            printf("[SERVER] Received %d bytes from client %d\n", read_bytes,
                    client->id);
             uint8_t* recvd_bytes = new uint8_t[read_bytes];
             memcpy(recvd_bytes, buffer, read_bytes);
@@ -130,7 +130,7 @@ void Server::receive(Client* client) {
 int Server::send(int client_id, Packet* pkt) {
     // FIXME might not be thread-safe?
     if (clients[client_id]->clientsock == nullptr) {
-        printf("failed to send\n");
+        printf("[SERVER] failed to send\n");
         return 1;
     }
 
@@ -138,7 +138,7 @@ int Server::send(int client_id, Packet* pkt) {
         clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
     delete pkt;
     if (sent_bytes < 0) {
-        printf("failed to send\n");
+        printf("[SERVER] failed to send\n");
         return 1;
     }
     return 0;

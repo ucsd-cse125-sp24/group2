@@ -8,7 +8,7 @@
 void Client::connect(const char* ip, uint16_t port) {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
-        printf("failed to create socket\n");
+        printf("[CLIENT] failed to create socket\n");
         return;
     }
 
@@ -20,7 +20,7 @@ void Client::connect(const char* ip, uint16_t port) {
 
     // connect to server
     if (!psocket.connect((struct sockaddr*)&sin, sizeof(sin))) {
-        perror("connection failed");
+        perror("[CLIENT] connection failed");
         return;
     }
 
@@ -40,7 +40,7 @@ void* Client::receive(void* params) {
                           << (int)buf[i] << " ";
             }
             std::cout << std::endl;
-            printf("received %d bytes from server\n", read_bytes);
+            printf("[CLIENT] received %d bytes from server\n", read_bytes);
 
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);
@@ -51,9 +51,9 @@ void* Client::receive(void* params) {
             }
 
         } else if (read_bytes < 0) {
-            printf("error in receive\n");
+            printf("[CLIENT] error in receive\n");
         } else {
-            printf("disconnected\n");
+            printf("[CLIENT] disconnected\n");
         }
     } while (read_bytes > 0);
 }
@@ -61,7 +61,7 @@ void* Client::receive(void* params) {
 void Client::send(Packet* pkt) {
     int sent_bytes = psocket.send(pkt->getBytes(), pkt->size(), 0);
     if (sent_bytes < 0) {
-        printf("failed to send\n");
+        printf("[CLIENT] failed to send\n");
     }
 }
 

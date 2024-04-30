@@ -4,7 +4,7 @@
 
 struct NetworkObjectState {
     enum StatusFlags : uint8_t {
-        UNUSED = 0,
+        UNUSED = 0, // for object pooling
         ON_SERVER = 1,
         ON_CLIENT = 2,
         AWAITING_DESTRUCTION = 4,

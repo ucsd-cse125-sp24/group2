@@ -9,8 +9,6 @@
 #include "NetworkObject.hpp"
 #include "EventArgs.hpp"
 class NetworkManager {
-    std::vector<NetworkObject*> networkObjects;
-
 private:
     std::mutex _mutex;
     std::deque<std::pair<int, Packet*>> message_queue;

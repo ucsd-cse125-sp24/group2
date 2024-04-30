@@ -34,6 +34,17 @@ void NetworkManager::init() {
                                             this, std::placeholders::_1);
     server.set_client_joined_callback(client_joined_callback);
 
+    // Register listener for object added
+    scene.object_added += [this](EventArgs* e) {
+        ObjectEventArgs* args = (ObjectEventArgs*)e;
+
+        for (auto it : *server.get_clients()) {
+            it->track_object(args->e);
+        }
+    };
+    scene.object_removed +=
+        [this](EventArgs* e) { ObjectEventArgs* args = (ObjectEventArgs*)e; };
+
     // Start server
     std::thread(&Server::start, &server).detach();
 }
@@ -48,13 +59,6 @@ void NetworkManager::process_input() {
 
         // TODO create handlers for each packet type
         int packet_type;
-        /*
-        for (int i = 0; i < 8; i++) {
-            std::cout << std::setfill('0') << std::setw(2) << std::hex
-                      << (int)packet->getBytes()[i] << " ";
-        }
-        std::cout << std::endl;
-        */
         packet->read_int(&packet_type);
 
         // but for now, we do this to set input manually
@@ -88,12 +92,11 @@ void NetworkManager::send_state() {
         if (client->clientsock == nullptr)
             continue;
 
-        // Serialize all network objects into single state update
+        // Serialize all network objects into single state update packet
         Packet* updates = new Packet();
         updates->write_int((int)PacketType::STATE_UPDATE);
-        updates->write_int(networkObjects.size());
-        for (const auto& obj : networkObjects) {
-            client->track_object(obj);
+        updates->write_int(scene.entities.size());
+        for (const auto& obj : scene.entities) {
             obj->serialize(updates);
         }
         server.send(client->id, updates);
@@ -124,5 +127,4 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     server.clients[args->clientId]->p = p;
     // Create player model
     scene.add_object(p);
-    networkObjects.push_back(p);
 }

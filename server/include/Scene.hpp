@@ -6,11 +6,9 @@
 #include "Event.hpp"
 
 class Scene {
-private:
+public:
     EventHandler<ObjectEventArgs> object_removed;
     EventHandler<ObjectEventArgs> object_added;
-
-public:
     std::vector<Entity*> entities;
     void add_object(Entity*);
     void remove_object(Entity*);
