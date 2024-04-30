@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <map>
 #include <string>
+#include <mutex>
+#include <functional>
 
 #include "Client.hpp"
 #include "NetworkManager.hpp"
@@ -11,16 +13,22 @@
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
 
+typedef std::function<void(int, void*)> ReceiveHandler;
 class Server {
 private:
-    static Socket psocket;
-    static void* receive(void*);
+    std::mutex _mutex;
+    std::mutex handler_mutex;
+    std::map<int, Client*> clients;
+    Socket psocket;
+    void receive(Client* client);
+    ReceiveHandler receive_event = nullptr;
 
 public:
-    static std::map<int, Client*> clients;
-    static int init();
-    static int teardown();
-    static int send(int, const char*, int);
-};
+    void start();
+    int teardown();
+    int send(int, Packet*);
+    std::vector<Client*>* get_clients();
+    void set_callback(const ReceiveHandler& handler);
+}; // SERVER_H
 
-#endif  // SERVER_H
+#endif // SERVER_H

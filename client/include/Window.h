@@ -4,11 +4,8 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
-#include "Mover.h"
-#include "Model.h"
-#include "AnimationPlayer.h"
-#include "AnimationClip.h"
-
+#include "PlayerManager.hpp"
+#include "Client.h"
 class Window {
 public:
     // Window Properties
@@ -20,18 +17,14 @@ public:
     // static Cube* cube;
 
     // Added by me
-    static Mover* mover;
-    static Model* model;
-    // static AnimationPlayer* player;
-    // static AnimationClip* clip;
-
-    static Model* model2;
+    static PlayerManager* playerManager;
 
     // Shader Program
     static GLuint shaderProgram;
 
     // Act as Constructors and desctructors
-    static bool initializeProgram();
+    // FIXME decouple client creation and window creation
+    static bool initializeProgram(Client& client);
     static bool initializeObjects();
     static void cleanUp();
 

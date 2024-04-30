@@ -1,25 +1,26 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "psocket.hpp"
 #include <stdio.h>
 #include <string>
-#include "psocket.hpp"
 
 #include "Player.hpp"
 
 class Client {
-   private:
+private:
     static void* receive(void*);
 
-   public:
+public:
     Player* p;
     int id;
     Socket* clientsock;
     struct sockaddr_in sockaddr;
-    void handle_packet(void* packet);
-    Client(int id, Socket* clientsock, struct sockaddr_in& sockaddr) : id(id), clientsock(clientsock), sockaddr(sockaddr) {
+    Client(int id) : id(id) {
+        clientsock = nullptr;
     }
     void init();
+    void disconnect();
 };
 
-#endif  // CLIENT_H
+#endif // CLIENT_H

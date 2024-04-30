@@ -1,4 +1,13 @@
+
 # Getting Started
+
+## Environment Setup Instructions
+
+1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+2. Launch WSL
+3. Install mingw-w64 by running `sudo apt-get install mingw-w64`
+4. Add the mingw g++ compiler environment variable by running `export CC=x86_64-w64-mingw32-g++`, and/or add it to your `.bashrc`.
+5. You can now run `make` to build the projects.
 
 ## Windows Instructions
 
@@ -55,3 +64,4 @@ If you've compiled for Mac, remove the CMake cache first by running `rm -rf CMak
 \* _What's up with --toolchain?_
 
 The --toolchain flag tells CMake to use the specified toolchain with our custom toolchain file, for example, tc-osx.cmake, where it will use clang and clang++ to compile the files, with the libraries and frameworks specified in the toolchain file. Each environment has its own toolchain: for compiling on Windows: tc-winwin.cmake; for compiling on Mac with a Windows target: tc-macwin.cmake; for compiling on Mac with a Mac target: tc-osx.cmake
+

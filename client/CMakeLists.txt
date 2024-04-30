@@ -24,6 +24,8 @@ set(
 
     # 125-Starter
     src/Mover.cpp
+    ../common/Packet.cpp
+    src/GameManager.cpp
 )
 
 # Add header files
@@ -46,6 +48,8 @@ set(
     include/Bone.h
     # 125-Starter
     include/Mover.h
+    include/GameManager.hpp
+    include/PlayerManager.hpp
 )
 
 # Require GL
@@ -83,4 +87,5 @@ add_custom_target(CopyShaders ALL
 	"${PROJECT_SOURCE_DIR}/shaders"
 	"${CMAKE_BINARY_DIR}/shaders"
 )
+
 add_dependencies(menv CopyShaders)

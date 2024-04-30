@@ -1,6 +1,6 @@
 #include "core.h"
 #include "Window.h"
-#include "Client.h"
+#include "GameManager.hpp"
 
 // Window Properties
 int Window::width;
@@ -9,11 +9,11 @@ const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
 // Cube* Window::cube;
-Client client;
+Client* client;
 
 // Added by me:
-Mover* Window::mover;
 uint8_t buf[4];
+PlayerManager* Window::playerManager;
 
 // Camera Properties
 Camera* Cam;
@@ -26,8 +26,8 @@ int MouseX, MouseY;
 GLuint Window::shaderProgram;
 
 // Constructors and desctructors
-bool Window::initializeProgram() {
-    // FIXME migrate networked client initialization outside of this
+bool Window::initializeProgram(Client& c) {
+    client = &c;
     memset(buf, 0, 4);
 
     // Create a shader program with a vertex shader and a fragment shader.
@@ -46,19 +46,14 @@ bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-
-    mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    // client.init(mover);
-    client.init(mover);
-    // model2 = new Model("../assets/medieval_civilian_3/scene.gltf");
-    // model2->setPosition(glm::vec3(50.0f, 0.0f, 0.0f));
+    // playerManager = new PlayerManager();
+    // playerManager->mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
     return true;
 }
 
 void Window::cleanUp() {
-    // Deallcoate the objects.
+    // Deallocate the objects.
     // delete cube;
-    if (mover) delete mover;
 
     // Delete the shader program.
     glDeleteProgram(shaderProgram);
@@ -82,7 +77,8 @@ GLFWwindow* Window::createWindow(int width, int height) {
 #endif
 
     // Create the GLFW window.
-    GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
+    GLFWwindow* window =
+        glfwCreateWindow(width, height, windowTitle, NULL, NULL);
 
     // Check if the window could not be created.
     if (!window) {
@@ -137,7 +133,7 @@ void Window::idleCallback() {
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-    mover->Update(frameTime);
+    playerManager->mover->Update(frameTime);
     // player->update(frameTime);
     // accumulator += frameTime;
 
@@ -145,7 +141,6 @@ void Window::idleCallback() {
     //     mover->UpdatePhysics(deltaTime);
     //     accumulator -= deltaTime;
     // }
-    // mover->Update(1 / 300.0f); // not using deltaTime argument for now
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -153,18 +148,21 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    // model->draw(Cam->GetViewProjectMtx(), shaderProgram);
-    // model2->draw(Cam->GetViewProjectMtx(), shaderProgram);
-    // auto transforms = player->getFinalBoneMatrices();
-    // for(int i = 0; i < transforms.size(); i++) {
-    //     // if(i == 50) {
-    //     //     std::cout<<"matrix: " << glm::to_string(transforms[i]) << std::endl;
-    //     // }
-    //     glUseProgram(shaderProgram);
-    //     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
-    // }
-    // Gets events, including input such as keyboard and mouse or window resizing.
+    for (auto it : GameManager::instance().players) {
+        std::cout<<it.second->mover->speed<<std::endl;
+        // it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    }
+    // playerManager->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+//     // TODO draw object
+//     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+//     for (auto kv : GameManager::instance().players) {
+//         // kv.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+//         std::cout << "Player " << kv.second->id << ": "
+//                   << glm::to_string(kv.second->mover->position) << std::endl;
+//     }
+
+//     // Gets events, including input such as keyboard and mouse or window
+//     // resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
@@ -177,7 +175,8 @@ void Window::resetCamera() {
 }
 
 // callbacks - for Interaction
-void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action,
+                         int mods) {
     /*
      * TODO: Modify below to add your key callbacks.
      */
@@ -185,87 +184,93 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
     // Check for a key press.
     if (action == GLFW_PRESS) {
         switch (key) {
-            case GLFW_KEY_ESCAPE:
-                // Close the window. This causes the program to also terminate.
-                glfwSetWindowShouldClose(window, GL_TRUE);
-                break;
+        case GLFW_KEY_ESCAPE:
+            // Close the window. This causes the program to also terminate.
+            glfwSetWindowShouldClose(window, GL_TRUE);
+            break;
 
-            case GLFW_KEY_R:
-                resetCamera();
-                break;
+        case GLFW_KEY_R:
+            resetCamera();
+            break;
 
-            case GLFW_KEY_W:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin forward!" << std::endl;
-                // mover->velocityHeading += glm::vec3(0,0,-1);
-                buf[0] = 1;
-                break;
+        case GLFW_KEY_W:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Movin forward!" << std::endl;
+            // mover->velocityHeading += glm::vec3(0,0,-1);
+            buf[0] = 1;
+            break;
 
-            case GLFW_KEY_A:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin left!" << std::endl;
-                // mover->velocityHeading += glm::vec3(-1,0,0);
-                buf[1] = 1;
-                break;
+        case GLFW_KEY_A:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Movin left!" << std::endl;
+            // mover->velocityHeading += glm::vec3(-1,0,0);
+            buf[1] = 1;
+            break;
 
-            case GLFW_KEY_S:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin back!" << std::endl;
-                // mover->velocityHeading += glm::vec3(0,0,1);
-                buf[2] = 1;
-                break;
+        case GLFW_KEY_S:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Movin back!" << std::endl;
+            // mover->velocityHeading += glm::vec3(0,0,1);
+            buf[2] = 1;
+            break;
 
-            case GLFW_KEY_D:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Movin right!" << std::endl;
-                // mover->velocityHeading += glm::vec3(1,0,0);
-                buf[3] = 1;
-                break;
+        case GLFW_KEY_D:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Movin right!" << std::endl;
+            // mover->velocityHeading += glm::vec3(1,0,0);
+            buf[3] = 1;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
     if (action == GLFW_RELEASE) {
         switch (key) {
-            case GLFW_KEY_W:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Stopping forward!" << std::endl;
-                // mover->velocityHeading -= glm::vec3(0,0,-1);
-                buf[0] = 0;
-                break;
+        case GLFW_KEY_W:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Stopping forward!" << std::endl;
+            // mover->velocityHeading -= glm::vec3(0,0,-1);
+            buf[0] = 0;
+            break;
 
-            case GLFW_KEY_A:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Stopping left!" << std::endl;
-                // mover->velocityHeading -= glm::vec3(-1,0,0);
-                buf[1] = 0;
-                break;
+        case GLFW_KEY_A:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Stopping left!" << std::endl;
+            // mover->velocityHeading -= glm::vec3(-1,0,0);
+            buf[1] = 0;
+            break;
 
-            case GLFW_KEY_S:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Stopping back!" << std::endl;
-                // mover->velocityHeading -= glm::vec3(0,0,1);
-                buf[2] = 0;
-                break;
+        case GLFW_KEY_S:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Stopping back!" << std::endl;
+            // mover->velocityHeading -= glm::vec3(0,0,1);
+            buf[2] = 0;
+            break;
 
-            case GLFW_KEY_D:
-                // Close the window. This causes the program to also terminate.
-                std::cout << "Stopping right!" << std::endl;
-                // mover->velocityHeading -= glm::vec3(1,0,0);
-                buf[3] = 0;
-                break;
+        case GLFW_KEY_D:
+            // Close the window. This causes the program to also terminate.
+            std::cout << "Stopping right!" << std::endl;
+            // mover->velocityHeading -= glm::vec3(1,0,0);
+            buf[3] = 0;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
-    client.send((const char*)buf, 4);
+    Packet* packet = new Packet();
+    packet->write_int((int)PacketType::PLAYER_INPUT);
+    for (int i = 0; i < 4; i++) {
+        packet->write_byte(buf[i]);
+    }
+    client->send(packet);
 }
 
-void Window::mouse_callback(GLFWwindow* window, int button, int action, int mods) {
+void Window::mouse_callback(GLFWwindow* window, int button, int action,
+                            int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         LeftDown = (action == GLFW_PRESS);
     }
@@ -287,11 +292,13 @@ void Window::cursor_callback(GLFWwindow* window, double currX, double currY) {
     if (LeftDown) {
         const float rate = 1.0f;
         Cam->SetAzimuth(Cam->GetAzimuth() + dx * rate);
-        Cam->SetIncline(glm::clamp(Cam->GetIncline() - dy * rate, -90.0f, 90.0f));
+        Cam->SetIncline(
+            glm::clamp(Cam->GetIncline() - dy * rate, -90.0f, 90.0f));
     }
     if (RightDown) {
         const float rate = 0.005f;
-        float dist = glm::clamp(Cam->GetDistance() * (1.0f - dx * rate), 0.01f, 1000.0f);
+        float dist =
+            glm::clamp(Cam->GetDistance() * (1.0f - dx * rate), 0.01f, 1000.0f);
         Cam->SetDistance(dist);
     }
 }

@@ -1,12 +1,11 @@
 #include "Mover.h"
 
-
 Mover::Mover() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
 
-    cube = new Cube(glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0.5, 0.5, 0.5));
+    // cube = new Cube(glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0.5, 0.5, 0.5));
 }
 
 Mover::Mover(std::string path) {
