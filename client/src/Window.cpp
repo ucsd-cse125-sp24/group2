@@ -150,6 +150,11 @@ void Window::displayCallback(GLFWwindow* window) {
 
     // Render the object.
     for (auto it : GameManager::instance().players) {
+        // FIXME make thread safe and only once
+        if (it.second->mover == nullptr) {
+            it.second->mover = new Mover(
+                "../assets/male_basic_walk_30_frames_loop/scene.gltf");
+        }
         it.second->mover->Update(deltaTime);
         it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }

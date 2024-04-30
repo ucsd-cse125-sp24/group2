@@ -73,7 +73,6 @@ int main(void) {
         exit(EXIT_FAILURE);
 
     client.setCallback([window](Packet* params) {
-        glfwMakeContextCurrent(window);
         GameManager::instance().handle_packet(params);
     });
     client.connect("127.0.0.1", 25565);

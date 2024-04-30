@@ -27,8 +27,7 @@ void GameManager::player_position(Packet* pkt) {
     if (players.find(player_id) == players.end()) {
         PlayerManager* p = new PlayerManager();
         p->id = player_id;
-        // FIXME create Cube at runtime
-        p->mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+        p->mover = nullptr;
         players[player_id] = p;
     }
 
@@ -39,5 +38,7 @@ void GameManager::player_position(Packet* pkt) {
     pkt->read_int((int*)&num.l);
     float z = num.f;
 
-    players[player_id]->mover->position = glm::vec3(x, y, z);
+    // FIXME make thread safe
+    if (players[player_id]->mover != nullptr)
+        players[player_id]->mover->position = glm::vec3(x, y, z);
 }
