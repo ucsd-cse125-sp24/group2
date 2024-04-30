@@ -2,7 +2,9 @@
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) : vertices(vertices), indices(indices), textures(textures){
     modelMtx = glm::mat4(1.0f);
-    // modelMtx = glm::rotate(modelMtx, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    // rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
+    //rotation = glm::rotate(rotation, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    // modelMtx = glm::rotate(modelMtx, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     // modelMtx = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -50.0f, 0.0f));
     color = glm::vec3(1.0f, 0.95f, 0.1f);
     glGenVertexArrays(1, &VAO);
@@ -81,4 +83,14 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     glUseProgram(0);
 
     glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::setPosition(glm::vec3 pos) {
+    position = pos;
+}
+
+void Mesh::update(float dt, glm::vec3 pos) {
+    position = pos;
+    std::cout<<"position: "<<glm::to_string(position)<<std::endl;
+    modelMtx = glm::translate(position);
 }

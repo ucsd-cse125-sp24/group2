@@ -10,9 +10,6 @@ const char* Window::windowTitle = "Model Environment";
 // Objects to render
 // Cube* Window::cube;
 Client client;
-Model* Window::model;
-AnimationPlayer* Window::player;
-AnimationClip* Window::clip;
 
 // Added by me:
 Mover* Window::mover;
@@ -50,11 +47,11 @@ bool Window::initializeObjects() {
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
 
-    mover = new Mover();
+    mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    // client.init(mover);
     client.init(mover);
-    model = new Model("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    clip = new AnimationClip("../assets/male_basic_walk_30_frames_loop/scene.gltf", model);
-    player = new AnimationPlayer(clip);
+    // model2 = new Model("../assets/medieval_civilian_3/scene.gltf");
+    // model2->setPosition(glm::vec3(50.0f, 0.0f, 0.0f));
     return true;
 }
 
@@ -137,17 +134,17 @@ void Window::idleCallback() {
 
     // spins cube
     // cube->update();
-
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-    player->update(frameTime);
-    accumulator += frameTime;
+    mover->Update(frameTime);
+    // player->update(frameTime);
+    // accumulator += frameTime;
 
-    while (accumulator >= deltaTime) {
-        mover->UpdatePhysics(deltaTime);
-        accumulator -= deltaTime;
-    }
+    // while (accumulator >= deltaTime) {
+    //     mover->UpdatePhysics(deltaTime);
+    //     accumulator -= deltaTime;
+    // }
     // mover->Update(1 / 300.0f); // not using deltaTime argument for now
 }
 
@@ -156,16 +153,17 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    model->draw(Cam->GetViewProjectMtx(), shaderProgram);
-    auto transforms = player->getFinalBoneMatrices();
-    for(int i = 0; i < transforms.size(); i++) {
-        // if(i == 50) {
-        //     std::cout<<"matrix: " << glm::to_string(transforms[i]) << std::endl;
-        // }
-        glUseProgram(shaderProgram);
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
-    }
+    mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // model->draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // model2->draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // auto transforms = player->getFinalBoneMatrices();
+    // for(int i = 0; i < transforms.size(); i++) {
+    //     // if(i == 50) {
+    //     //     std::cout<<"matrix: " << glm::to_string(transforms[i]) << std::endl;
+    //     // }
+    //     glUseProgram(shaderProgram);
+    //     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, glm::value_ptr(transforms[i]));
+    // }
     // Gets events, including input such as keyboard and mouse or window resizing.
     glfwPollEvents();
     // Swap buffers.

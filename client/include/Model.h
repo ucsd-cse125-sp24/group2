@@ -17,7 +17,8 @@ public:
     int getBoneCount() const;
     std::map<std::string, BoneInfo>& getBoneInfoMap();
     void addBoneCount();
-    void update(float dt);
+    void update(float dt, glm::vec3 pos);
+    void setPosition(glm::vec3 pos);
 private:
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);

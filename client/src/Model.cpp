@@ -8,7 +8,10 @@ Model::Model(std::string path) {
     loadModel(path);
 }
 
-void Model::update(float dt) {
+void Model::update(float dt, glm::vec3 pos) {
+    for(int i = 0; i < meshes.size(); i++) {
+        meshes[i].update(dt, pos);
+    }
 }
 
 void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
@@ -211,4 +214,10 @@ std::map<std::string, BoneInfo>& Model::getBoneInfoMap() {
 
 void Model::addBoneCount() {
     boneCounter++;
+}
+
+void Model::setPosition(glm::vec3 pos) {
+    for(int i = 0; i < meshes.size(); i++) {
+        meshes[i].setPosition(pos);
+    }
 }

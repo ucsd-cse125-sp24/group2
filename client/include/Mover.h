@@ -2,6 +2,9 @@
 
 #include "core.h"
 #include "Cube.h"
+#include "Model.h"
+#include "AnimationPlayer.h"
+#include "AnimationClip.h"
 
 class Mover {
     public:
@@ -10,8 +13,11 @@ class Mover {
         float speed;
 
         Cube* cube;
-        
+        Model* model;
+        AnimationPlayer* animationPlayer;
+        AnimationClip* clip;
         Mover();
+        Mover(std::string path);
         ~Mover();
         void Update(float deltaTime);
         void UpdatePhysics(float deltaTime);

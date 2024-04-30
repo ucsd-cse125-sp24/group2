@@ -22,8 +22,10 @@ public:
     // Added by me
     static Mover* mover;
     static Model* model;
-    static AnimationPlayer* player;
-    static AnimationClip* clip;
+    // static AnimationPlayer* player;
+    // static AnimationClip* clip;
+
+    static Model* model2;
 
     // Shader Program
     static GLuint shaderProgram;
