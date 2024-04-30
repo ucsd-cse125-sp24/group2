@@ -23,8 +23,15 @@ public:
     GameObject(glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
     virtual std::string toString();
-    IComponent* getComponent(std::type_index type);
     void addComponent(IComponent* newComponent);
+
+    /**
+     * Takes type as "argument" in template, returns IComponent*
+    */
+    template <class T>
+    T* getComponent() {
+        return static_cast<T*>(typeToComponentMap[typeid(T)]);
+    }
 };
 
 

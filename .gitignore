@@ -13,3 +13,5 @@ Makefile
 *.app
 **/CopyOfCMakeCache.txt
 *.o
+client/Makefile
+server/Makefile

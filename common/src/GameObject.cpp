@@ -13,10 +13,6 @@ GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 n
 }
 
 
-IComponent* GameObject::getComponent(std::type_index type) {
-    return typeToComponentMap[type];
-}
-
 void GameObject::addComponent(IComponent* newComponent) {
     components.push_back(newComponent);
     typeToComponentMap.emplace(typeid(*(newComponent)), newComponent);

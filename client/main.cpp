@@ -6,6 +6,7 @@
 #include "../common/include/GameObject.hpp"
 #include "../common/include/Transform.hpp"
 
+
 void error_callback(int error, const char* description) {
     // Print error.
     std::cerr << description << std::endl;
@@ -51,18 +52,18 @@ void print_versions() {
 
 int main(void) {
 
-    // Tests for GameObject
+    // ========= Tests for GameObject ======== //
+    
     GameObject* testObj = new GameObject();
     std::cout << "Before any updates" << std::endl;
     std::cout << testObj->toString() << std::endl;
-    
-    Transform* testTrans = static_cast<Transform*>(testObj->getComponent(typeid(Transform)));
-    testTrans->setPosition(glm::vec3(1738));
-    testTrans->setRotation(glm::vec3(1337));
-    testTrans->setScale(glm::vec3(300));
+
+    testObj->getComponent<Transform>()->setPosition(glm::vec3(1738));
     
     std::cout << "After updates" << std::endl;
     std::cout << testObj->toString() << std::endl;
+
+    // ===== End of tests for GameObject ===== // 
 
     Client client;
     client.setCallback(
