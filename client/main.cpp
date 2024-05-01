@@ -1,6 +1,14 @@
 #include "Window.h"
+#include "Client.h"
 #include "core.h"
 #include "InputManager.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#include "GameManager.hpp"
+#include <glm/gtx/string_cast.hpp>
+#include "GameObject.hpp"
+#include "Transform.hpp"
 
 void error_callback(int error, const char* description) {
     // Print error.
@@ -40,14 +48,18 @@ void print_versions() {
 
     // If the shading language symbol is defined.
 #ifdef GL_SHADING_LANGUAGE_VERSION
-    std::cout << "Supported GLSL version is: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "Supported GLSL version is: "
+              << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
 }
 
 int main(void) {
+    Client client;
+
     // Create the GLFW window.
     GLFWwindow* window = Window::createWindow(800, 600);
-    if (!window) exit(EXIT_FAILURE);
+    if (!window)
+        exit(EXIT_FAILURE);
 
     // Print OpenGL and GLSL versions.
     print_versions();
@@ -57,9 +69,16 @@ int main(void) {
     setup_opengl_settings();
 
     // Initialize the shader program; exit if initialization fails.
-    if (!Window::initializeProgram()) exit(EXIT_FAILURE);
+    if (!Window::initializeProgram(client))
+        exit(EXIT_FAILURE);
     // Initialize objects/pointers for rendering; exit if initialization fails.
-    if (!Window::initializeObjects()) exit(EXIT_FAILURE);
+    if (!Window::initializeObjects())
+        exit(EXIT_FAILURE);
+
+    client.setCallback([window](Packet* params) {
+        GameManager::instance().handle_packet(params);
+    });
+    client.connect("127.0.0.1", 25565);
 
     // Loop while GLFW window should stay open.
     while (!glfwWindowShouldClose(window)) {

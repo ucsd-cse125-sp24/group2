@@ -8,6 +8,8 @@
 
 #include "Mover.h"
 
+#include "PlayerManager.hpp"
+#include "Client.h"
 class Window {
 public:
     // Window Properties
@@ -19,13 +21,14 @@ public:
     // static Cube* cube;
 
     // Added by me
-    static Mover* mover;
+    static PlayerManager* playerManager;
 
     // Shader Program
     static GLuint shaderProgram;
 
     // Act as Constructors and desctructors
-    static bool initializeProgram();
+    // FIXME decouple client creation and window creation
+    static bool initializeProgram(Client& client);
     static bool initializeObjects();
     static void cleanUp();
 

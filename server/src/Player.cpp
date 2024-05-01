@@ -7,5 +7,5 @@ void Player::update() {
     //velocity = glm::vec3();
     
     position += velocity * speed;
-    std::cout << glm::to_string(position) << std::endl;
+    // std::cout << glm::to_string(position) << std::endl;
 }

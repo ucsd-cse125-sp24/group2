@@ -1,16 +1,21 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "Mover.h"
 #include "psocket.hpp"
+#include <functional>
+#include <mutex>
+#include "Packet.hpp"
 
+typedef std::function<void(Packet*)> ReceiveHandler;
 class Client {
-   private:
-   public:
+private:
+public:
+    std::mutex mutex;
     Socket psocket;
-    Mover* m;
-    void init(Mover*);
+    void connect(const char*, uint16_t);
     static void* receive(void*);
-    void send(const char*, int);
+    void send(Packet*);
+    ReceiveHandler receive_event = nullptr;
+    void setCallback(const ReceiveHandler& callback);
 };
-#endif  // CLIENT_H
+#endif // CLIENT_H
