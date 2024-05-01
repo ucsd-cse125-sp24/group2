@@ -126,23 +126,31 @@ float deltaTime = 0.01;
 float currentTime = 0.0;
 float accumulator = 0.0;
 
+float t = 0.0f;
 void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
 
-    // spins cube
-    // cube->update();
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-    // playerManager->mover->Update(frameTime);
-    //  player->update(frameTime);
-    //  accumulator += frameTime;
 
-    // while (accumulator >= deltaTime) {
-    //     mover->UpdatePhysics(deltaTime);
-    //     accumulator -= deltaTime;
-    // }
+    t += frameTime;
+    if (t > 0.025f) {
+        Packet* pkt = new Packet();
+        pkt->write_int((int)PacketType::PLAYER_INPUT);
+        uint8_t* buf = new uint8_t[4];
+        buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
+        buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
+        buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
+        buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
+        for (int i = 0; i < 4; i++) {
+            pkt->write_byte(buf[i]);
+        }
+        client->send(pkt);
+        delete[] buf;
+        t = 0;
+    }
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -151,7 +159,7 @@ void Window::displayCallback(GLFWwindow* window) {
 
     // Render the object.
     for (auto it : GameManager::instance().players) {
-        // FIXME make thread safe and only once
+        // FIXME make thread safe and call only once
         if (it.second->mover == nullptr) {
             it.second->mover = new Mover(
                 "../assets/male_basic_walk_30_frames_loop/scene.gltf");
@@ -159,18 +167,6 @@ void Window::displayCallback(GLFWwindow* window) {
         it.second->mover->Update(deltaTime);
         it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }
-    // playerManager->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    //     // TODO draw object
-    //     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    //     for (auto kv : GameManager::instance().players) {
-    //         // kv.second->mover->Draw(Cam->GetViewProjectMtx(),
-    //         shaderProgram); std::cout << "Player " << kv.second->id << ": "
-    //                   << glm::to_string(kv.second->mover->position) <<
-    //                   std::endl;
-    //     }
-
-    //     // Gets events, including input such as keyboard and mouse or window
-    //     // resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
