@@ -4,6 +4,10 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
+#include "InputManager.h"
+
+#include "Mover.h"
+
 #include "PlayerManager.hpp"
 #include "Client.h"
 class Window {

@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Client.h"
 #include "core.h"
+#include "InputManager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -21,8 +22,8 @@ void setup_callbacks(GLFWwindow* window) {
     glfwSetWindowSizeCallback(window, Window::resizeCallback);
 
     // Set the key callback.
-    glfwSetKeyCallback(window, Window::keyCallback);
-
+    // glfwSetKeyCallback(window, Window::keyCallback);
+    InputManager::setUpCallback(window);
     // Set the mouse and cursor callbacks
     glfwSetMouseButtonCallback(window, Window::mouse_callback);
     glfwSetCursorPosCallback(window, Window::cursor_callback);

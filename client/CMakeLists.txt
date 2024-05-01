@@ -20,6 +20,7 @@ set(
     src/Mesh.cpp
     src/AnimationClip.cpp
     src/AnimationPlayer.cpp
+    src/InputManager.cpp
     src/Bone.cpp
 
     # 125-Starter
@@ -51,6 +52,7 @@ set(
     include/Mover.h
     include/GameManager.hpp
     include/PlayerManager.hpp
+    include/InputManager.h
 )
 
 # Require GL

@@ -46,6 +46,7 @@ bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+    InputManager::setDefaultKeys();
     // playerManager = new PlayerManager();
     // playerManager->mover = new
     // Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
@@ -125,23 +126,31 @@ float deltaTime = 0.01;
 float currentTime = 0.0;
 float accumulator = 0.0;
 
+float t = 0.0f;
 void Window::idleCallback() {
     // Perform any updates as necessary.
     Cam->Update();
 
-    // spins cube
-    // cube->update();
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
-    // playerManager->mover->Update(frameTime);
-    //  player->update(frameTime);
-    //  accumulator += frameTime;
 
-    // while (accumulator >= deltaTime) {
-    //     mover->UpdatePhysics(deltaTime);
-    //     accumulator -= deltaTime;
-    // }
+    t += frameTime;
+    if (t > 0.025f) {
+        Packet* pkt = new Packet();
+        pkt->write_int((int)PacketType::PLAYER_INPUT);
+        uint8_t* buf = new uint8_t[4];
+        buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
+        buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
+        buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
+        buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
+        for (int i = 0; i < 4; i++) {
+            pkt->write_byte(buf[i]);
+        }
+        client->send(pkt);
+        delete[] buf;
+        t = 0;
+    }
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -150,7 +159,7 @@ void Window::displayCallback(GLFWwindow* window) {
 
     // Render the object.
     for (auto it : GameManager::instance().players) {
-        // FIXME make thread safe and only once
+        // FIXME make thread safe and call only once
         if (it.second->mover == nullptr) {
             it.second->mover = new Mover(
                 "../assets/male_basic_walk_30_frames_loop/scene.gltf");
@@ -158,18 +167,6 @@ void Window::displayCallback(GLFWwindow* window) {
         it.second->mover->Update(deltaTime);
         it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }
-    // playerManager->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    //     // TODO draw object
-    //     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    //     for (auto kv : GameManager::instance().players) {
-    //         // kv.second->mover->Draw(Cam->GetViewProjectMtx(),
-    //         shaderProgram); std::cout << "Player " << kv.second->id << ": "
-    //                   << glm::to_string(kv.second->mover->position) <<
-    //                   std::endl;
-    //     }
-
-    //     // Gets events, including input such as keyboard and mouse or window
-    //     // resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
@@ -179,101 +176,6 @@ void Window::displayCallback(GLFWwindow* window) {
 void Window::resetCamera() {
     Cam->Reset();
     Cam->SetAspect(float(Window::width) / float(Window::height));
-}
-
-// callbacks - for Interaction
-void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods) {
-    /*
-     * TODO: Modify below to add your key callbacks.
-     */
-
-    // Check for a key press.
-    if (action == GLFW_PRESS) {
-        switch (key) {
-        case GLFW_KEY_ESCAPE:
-            // Close the window. This causes the program to also terminate.
-            glfwSetWindowShouldClose(window, GL_TRUE);
-            break;
-
-        case GLFW_KEY_R:
-            resetCamera();
-            break;
-
-        case GLFW_KEY_W:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Movin forward!" << std::endl;
-            // mover->velocityHeading += glm::vec3(0,0,-1);
-            buf[0] = 1;
-            break;
-
-        case GLFW_KEY_A:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Movin left!" << std::endl;
-            // mover->velocityHeading += glm::vec3(-1,0,0);
-            buf[1] = 1;
-            break;
-
-        case GLFW_KEY_S:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Movin back!" << std::endl;
-            // mover->velocityHeading += glm::vec3(0,0,1);
-            buf[2] = 1;
-            break;
-
-        case GLFW_KEY_D:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Movin right!" << std::endl;
-            // mover->velocityHeading += glm::vec3(1,0,0);
-            buf[3] = 1;
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    if (action == GLFW_RELEASE) {
-        switch (key) {
-        case GLFW_KEY_W:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Stopping forward!" << std::endl;
-            // mover->velocityHeading -= glm::vec3(0,0,-1);
-            buf[0] = 0;
-            break;
-
-        case GLFW_KEY_A:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Stopping left!" << std::endl;
-            // mover->velocityHeading -= glm::vec3(-1,0,0);
-            buf[1] = 0;
-            break;
-
-        case GLFW_KEY_S:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Stopping back!" << std::endl;
-            // mover->velocityHeading -= glm::vec3(0,0,1);
-            buf[2] = 0;
-            break;
-
-        case GLFW_KEY_D:
-            // Close the window. This causes the program to also terminate.
-            std::cout << "Stopping right!" << std::endl;
-            // mover->velocityHeading -= glm::vec3(1,0,0);
-            buf[3] = 0;
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    Packet* packet = new Packet();
-    packet->write_int((int)PacketType::PLAYER_INPUT);
-    for (int i = 0; i < 4; i++) {
-        packet->write_byte(buf[i]);
-    }
-    client->send(packet);
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action,
