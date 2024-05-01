@@ -27,7 +27,7 @@ set(
     src/Mover.cpp
     src/GameManager.cpp
 )
-FILE(GLOB COMMON_SOURCES ../common/src/*.cpp)
+FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 
 # Add header files
 set(
@@ -60,8 +60,8 @@ set(
 # Add include directories
 include_directories(
     include
-    ../common
-    ../common/include
+    ../_common
+    ../_common/include
 )
 # Add library directories
 link_directories(

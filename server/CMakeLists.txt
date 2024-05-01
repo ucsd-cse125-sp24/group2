@@ -12,7 +12,7 @@ set(SERVER_SOURCES
     src/Server.cpp
     main.cpp
     )
-FILE(GLOB COMMON_SOURCES ../common/src/*.cpp)
+FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 
 add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
 set(SERVER_INCLUDE_DIRECTORIES
@@ -20,8 +20,8 @@ set(SERVER_INCLUDE_DIRECTORIES
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(
-    "../common/"
-    "../common/include"
+    "../_common/"
+    "../_common/include"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
