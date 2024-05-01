@@ -59,7 +59,7 @@ void* Client::receive(void* params) {
 }
 
 void Client::send(Packet* pkt) {
-    int sent_bytes = psocket.send((char*) pkt->getBytes(), pkt->size(), 0);
+    int sent_bytes = psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
     if (sent_bytes < 0) {
         printf("failed to send\n");
     }

@@ -6,6 +6,8 @@
 #include <stb_image.h>
 #include "GameManager.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include "GameObject.hpp"
+#include "Transform.hpp"
 
 void error_callback(int error, const char* description) {
     // Print error.

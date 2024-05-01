@@ -36,6 +36,7 @@ void Server::start() {
     // Populate clients
     for (int i = 0; i < MAX_CLIENTS; i++) {
         clients[i] = new Client(i);
+        clients[i]->clientsock = nullptr;
     }
 
     while (1) {

@@ -1,5 +1,9 @@
 #include "Packet.hpp"
 
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
+
 /**
  * Packet class
  * Write and Read - byte, int, float, double, glm::vec3
