@@ -24,9 +24,9 @@ set(
 
     # 125-Starter
     src/Mover.cpp
-    ../common/Packet.cpp
     src/GameManager.cpp
 )
+FILE(GLOB COMMON_SOURCES ../common/src/*.cpp)
 
 # Add header files
 set(
@@ -58,6 +58,7 @@ set(
 include_directories(
     include
     ../common
+    ../common/include
 )
 # Add library directories
 link_directories(
@@ -65,7 +66,7 @@ link_directories(
 )
 
 # Add executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${COMMON_SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)

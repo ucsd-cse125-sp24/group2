@@ -1,4 +1,4 @@
-#include "packet.hpp"
+#include "Packet.hpp"
 
 /**
  * Packet class
@@ -19,6 +19,14 @@ union Union64 {
     double f;
     uint64_t l;
 } union64;
+
+void Packet::write(uint8_t* data, int len) {
+    int i = 0;
+    while (i < len) {
+        buffer.push_back(data[i]);
+        i++;
+    }
+}
 
 void Packet::write_byte(char data){
     buffer.push_back(uint8_t(data));
@@ -249,3 +257,5 @@ uint8_t* Packet::getBytes() {
 
     return byte_array;
 }
+
+int Packet::size() { return buffer.size(); }

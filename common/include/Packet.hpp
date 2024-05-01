@@ -12,12 +12,13 @@
  **/
 #include <winsock2.h>
 #endif
-
+enum class PacketType { PLAYER_POSITION, PLAYER_INPUT };
 class Packet {
 
    public:
     std::deque<uint8_t> buffer;
 
+    void write(uint8_t*, int);
     void write_byte(char data);
     void write_int(int data);
     void write_float(float data);
@@ -34,6 +35,7 @@ class Packet {
     int read_quat(glm::quat* data);
 
     uint8_t* getBytes();
+    int size();
 };
 
 #endif  // PACKET_H
