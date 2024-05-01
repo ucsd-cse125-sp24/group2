@@ -6,7 +6,6 @@
 #include "../common/include/GameObject.hpp"
 #include "../common/include/Transform.hpp"
 
-
 void error_callback(int error, const char* description) {
     // Print error.
     std::cerr << description << std::endl;
@@ -51,20 +50,6 @@ void print_versions() {
 }
 
 int main(void) {
-
-    // ========= Tests for GameObject ======== //
-    
-    GameObject* testObj = new GameObject();
-    std::cout << "Before any updates" << std::endl;
-    std::cout << testObj->toString() << std::endl;
-
-    testObj->getComponent<Transform>()->setPosition(glm::vec3(1738));
-    
-    std::cout << "After updates" << std::endl;
-    std::cout << testObj->toString() << std::endl;
-
-    // ===== End of tests for GameObject ===== // 
-
     Client client;
     client.setCallback(
         [](Packet* params) { GameManager::instance().handle_packet(params); });

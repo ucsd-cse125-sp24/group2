@@ -1,11 +1,8 @@
-#include "../include/Packet.hpp"
+#include "Packet.hpp"
 
 #ifdef _WIN32
 #include <winsock2.h>
 #endif
-
-Packet::Packet() {}
-Packet::~Packet() {}
 
 void Packet::write_byte(char data) { buffer.push_back(data); }
 

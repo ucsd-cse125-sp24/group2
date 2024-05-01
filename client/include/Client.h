@@ -4,7 +4,7 @@
 #include "psocket.hpp"
 #include <functional>
 #include <mutex>
-#include "../../common/include/Packet.hpp"
+#include "Packet.hpp"
 
 typedef std::function<void(Packet*)> ReceiveHandler;
 class Client {
