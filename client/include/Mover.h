@@ -14,7 +14,6 @@ public:
     glm::vec3 velocityHeading;
     float speed;
     Cube* cube;
-    uint8_t buf[4];
     Model* model;
     AnimationPlayer* animationPlayer;
     AnimationClip* clip;
