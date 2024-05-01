@@ -7,6 +7,7 @@
 #include <thread>
 #include <algorithm>
 #include <functional>
+#include <algorithm>
 
 #include "Server.hpp"
 

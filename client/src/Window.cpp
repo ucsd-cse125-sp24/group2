@@ -1,6 +1,6 @@
+#include "core.h"
 #include "Window.h"
 #include "GameManager.hpp"
-#include <glm/gtx/string_cast.hpp>
 
 // Window Properties
 int Window::width;
@@ -13,6 +13,7 @@ Client* client;
 
 // Added by me:
 uint8_t buf[4];
+PlayerManager* Window::playerManager;
 
 // Camera Properties
 Camera* Cam;
@@ -45,7 +46,9 @@ bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
     // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-
+    // playerManager = new PlayerManager();
+    // playerManager->mover = new
+    // Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
     return true;
 }
 
@@ -119,7 +122,7 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 // update and draw functions
 float deltaTime = 0.01;
 
-float currentTime = glfwGetTime();
+float currentTime = 0.0;
 float accumulator = 0.0;
 
 void Window::idleCallback() {
@@ -128,19 +131,17 @@ void Window::idleCallback() {
 
     // spins cube
     // cube->update();
-
     float newTime = glfwGetTime();
     float frameTime = newTime - currentTime;
     currentTime = newTime;
+    // playerManager->mover->Update(frameTime);
+    //  player->update(frameTime);
+    //  accumulator += frameTime;
 
-    accumulator += frameTime;
-
-    while (accumulator >= deltaTime) {
-        // TODO physics update for prediction
-        accumulator -= deltaTime;
-    }
-
-    // mover->Update(1 / 300.0f); // not using deltaTime argument for now
+    // while (accumulator >= deltaTime) {
+    //     mover->UpdatePhysics(deltaTime);
+    //     accumulator -= deltaTime;
+    // }
 }
 
 void Window::displayCallback(GLFWwindow* window) {
@@ -148,16 +149,27 @@ void Window::displayCallback(GLFWwindow* window) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Render the object.
-    // TODO draw object
-    // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-    for (auto kv : GameManager::instance().players) {
-        // kv.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-        std::cout << "Player " << kv.second->id << ": "
-                  << glm::to_string(kv.second->mover->position) << std::endl;
+    for (auto it : GameManager::instance().players) {
+        // FIXME make thread safe and only once
+        if (it.second->mover == nullptr) {
+            it.second->mover = new Mover(
+                "../assets/male_basic_walk_30_frames_loop/scene.gltf");
+        }
+        it.second->mover->Update(deltaTime);
+        it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }
+    // playerManager->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    //     // TODO draw object
+    //     // mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    //     for (auto kv : GameManager::instance().players) {
+    //         // kv.second->mover->Draw(Cam->GetViewProjectMtx(),
+    //         shaderProgram); std::cout << "Player " << kv.second->id << ": "
+    //                   << glm::to_string(kv.second->mover->position) <<
+    //                   std::endl;
+    //     }
 
-    // Gets events, including input such as keyboard and mouse or window
-    // resizing.
+    //     // Gets events, including input such as keyboard and mouse or window
+    //     // resizing.
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
