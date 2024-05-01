@@ -4,10 +4,12 @@
 #include "Cube.h"
 #include "Shader.h"
 #include "core.h"
-#include "Client.h"
+#include "InputManager.h"
 
 #include "Mover.h"
 
+#include "PlayerManager.hpp"
+#include "Client.h"
 class Window {
 public:
     // Window Properties
@@ -17,6 +19,9 @@ public:
 
     // Objects to render
     // static Cube* cube;
+
+    // Added by me
+    static PlayerManager* playerManager;
 
     // Shader Program
     static GLuint shaderProgram;

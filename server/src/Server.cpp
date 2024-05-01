@@ -36,6 +36,7 @@ void Server::start() {
     // Populate clients
     for (int i = 0; i < MAX_CLIENTS; i++) {
         clients[i] = new Client(i);
+        clients[i]->clientsock = nullptr;
     }
 
     while (1) {
@@ -61,6 +62,7 @@ void Server::start() {
             clients[i]->clientsock = client_sock;
             clients[i]->init();
 
+            // FIXME deadlock in scene when getting clients
             on_client_joined(i);
 
             // NetworkManager::instance().register_entity(clients[i]->p);
@@ -82,16 +84,17 @@ void Server::start() {
     }
 }
 
-std::vector<Client*>* Server::get_clients() {
-    std::vector<Client*>* res = new std::vector<Client*>();
-    std::lock_guard<std::mutex> lock(_mutex);
-    for (auto it : clients) {
-        res->push_back(it.second);
+std::vector<Client*> Server::get_clients() {
+    // std::lock_guard<std::mutex> lock(_mutex);
+    std::vector<Client*> res;
+    for (auto& it : clients) {
+        res.push_back(it.second);
     }
+
     return res;
 }
 
-// multi-threaded
+// new thread per client
 void Server::receive(Client* client) {
     uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
@@ -134,8 +137,8 @@ int Server::send(int client_id, Packet* pkt) {
         return 1;
     }
 
-    int sent_bytes =
-        clients[client_id]->clientsock->send(pkt->getBytes(), pkt->size(), 0);
+    int sent_bytes = clients[client_id]->clientsock->send(
+        (const char*)pkt->getBytes(), pkt->size(), 0);
     delete pkt;
     if (sent_bytes < 0) {
         printf("[SERVER] failed to send\n");

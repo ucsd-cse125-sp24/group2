@@ -16,5 +16,6 @@ public:
 
     void handle_packet(Packet*);
     void player_position(Packet*);
+    void update(Packet*);
 };
 #endif

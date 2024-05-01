@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <string>
 #include <thread>
+#include <algorithm>
 #include <functional>
+#include <algorithm>
 
 #include "Server.hpp"
 #include "Scene.hpp"
@@ -38,7 +40,10 @@ void NetworkManager::init() {
     scene.object_added += [this](EventArgs* e) {
         ObjectEventArgs* args = (ObjectEventArgs*)e;
 
-        for (auto it : *server.get_clients()) {
+        std::vector<Client*> clients = server.get_clients();
+        for (auto it : clients) {
+            if (it->clientsock == nullptr)
+                continue;
             it->track_object(args->e);
         }
     };
@@ -68,9 +73,9 @@ void NetworkManager::process_input() {
             for (int i = 0; i < 4; i++) {
                 packet->read_byte(&input[i]);
             }
-            (*server.get_clients())[client_id]->p->inputs.x =
+            server.get_clients()[client_id]->p->inputs.x =
                 (float)input[3] - (float)input[1];
-            (*server.get_clients())[client_id]->p->inputs.y =
+            server.get_clients()[client_id]->p->inputs.y =
                 (float)input[0] - (float)input[2];
             break;
         default:
@@ -85,9 +90,10 @@ void NetworkManager::update() { scene.update(); }
 void NetworkManager::send_state() {
     uint8_t buf[12];
 
-    std::vector<Client*>* clients = server.get_clients();
+    // std::lock_guard<std::mutex> lock(_mutex);
+    std::vector<Client*> clients = server.get_clients();
     // Send all states to clients
-    for (const auto& client : *clients) {
+    for (const auto& client : clients) {
         // Skip disconnected clients
         if (client->clientsock == nullptr)
             continue;

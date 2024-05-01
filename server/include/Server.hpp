@@ -28,7 +28,7 @@ public:
     void start();
     int teardown();
     int send(int, Packet*);
-    std::vector<Client*>* get_clients();
+    std::vector<Client*> get_clients();
     inline void set_message_received_callback(const Action& handler) {
         message_received += handler;
     }
@@ -36,7 +36,8 @@ public:
         client_joined += handler;
     }
     inline void on_message_received(int clientId, uint8_t* buffer) {
-        MessageReceivedEventArgs* args = new MessageReceivedEventArgs(clientId, buffer);
+        MessageReceivedEventArgs* args =
+            new MessageReceivedEventArgs(clientId, buffer);
         message_received.invoke(args);
     }
     inline void on_client_joined(int clientId) {

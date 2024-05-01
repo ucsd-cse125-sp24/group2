@@ -33,7 +33,7 @@ void* Client::receive(void* params) {
     uint8_t buf[4096];
     int read_bytes;
     do {
-        read_bytes = client->psocket.recv(buf, 4096, 0);
+        read_bytes = client->psocket.recv((char*)buf, 4096, 0);
         if (read_bytes > 0) {
             for (int i = 0; i < read_bytes; i++) {
                 std::cout << std::setfill('0') << std::setw(2) << std::hex
@@ -59,7 +59,7 @@ void* Client::receive(void* params) {
 }
 
 void Client::send(Packet* pkt) {
-    int sent_bytes = psocket.send(pkt->getBytes(), pkt->size(), 0);
+    int sent_bytes = psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
     if (sent_bytes < 0) {
         printf("[CLIENT] failed to send\n");
     }

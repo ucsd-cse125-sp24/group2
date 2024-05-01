@@ -14,6 +14,9 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::PLAYER_POSITION:
         player_position(packet);
         break;
+    case PacketType::STATE_UPDATE:
+        update(packet);
+        break;
 
     default:
         break;
@@ -27,8 +30,7 @@ void GameManager::player_position(Packet* pkt) {
     if (players.find(player_id) == players.end()) {
         PlayerManager* p = new PlayerManager();
         p->id = player_id;
-        // FIXME create Cube at runtime
-        p->mover = new Mover();
+        p->mover = nullptr;
         players[player_id] = p;
     }
 
@@ -39,5 +41,37 @@ void GameManager::player_position(Packet* pkt) {
     pkt->read_int((int*)&num.l);
     float z = num.f;
 
-    players[player_id]->mover->position = glm::vec3(x, y, z);
+    // FIXME make thread safe
+    if (players[player_id]->mover != nullptr)
+        players[player_id]->mover->position = glm::vec3(x, y, z);
+}
+
+void GameManager::update(Packet* pkt) {
+    int num_updates;
+    pkt->read_int(&num_updates);
+
+    while (num_updates) {
+        int object_id;
+        pkt->read_int(&object_id);
+
+        if (players.find(object_id) == players.end()) {
+            PlayerManager* p = new PlayerManager();
+            p->id = object_id;
+            p->mover = nullptr;
+            players[object_id] = p;
+        }
+
+        pkt->read_int((int*)&num.l);
+        float x = num.f;
+        pkt->read_int((int*)&num.l);
+        float y = num.f;
+        pkt->read_int((int*)&num.l);
+        float z = num.f;
+
+        // FIXME make thread safe
+        if (players[object_id]->mover != nullptr)
+            players[object_id]->mover->position = glm::vec3(x, y, z);
+
+        num_updates--;
+    }
 }

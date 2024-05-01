@@ -10,21 +10,20 @@ set(SERVER_SOURCES
     src/NetworkManager.cpp
     src/Player.cpp
     src/Server.cpp
-    ../common/Packet.cpp
-    ../common/NetworkObject.cpp
     main.cpp
     src/Entity.cpp
     src/Scene.cpp
     )
+FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 
-
-add_executable(server "${SERVER_SOURCES}")
+add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(
-    "../common/"
+    "../_common/"
+    "../_common/include"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)

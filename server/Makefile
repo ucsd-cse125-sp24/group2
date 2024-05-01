@@ -129,53 +129,125 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
-Users/shane/code/src/cse125/common/NetworkObject.obj: Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.obj
+Users/shane/code/src/cse125/_common/src/GameObject.obj: Users/shane/code/src/cse125/_common/src/GameObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.obj
 
 # target to build an object file
-Users/shane/code/src/cse125/common/NetworkObject.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.obj
+Users/shane/code/src/cse125/_common/src/GameObject.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/GameObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.cpp.obj
 
-Users/shane/code/src/cse125/common/NetworkObject.i: Users/shane/code/src/cse125/common/NetworkObject.cpp.i
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.i
+Users/shane/code/src/cse125/_common/src/GameObject.i: Users/shane/code/src/cse125/_common/src/GameObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.i
 
 # target to preprocess a source file
-Users/shane/code/src/cse125/common/NetworkObject.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.i
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.i
+Users/shane/code/src/cse125/_common/src/GameObject.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/GameObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.cpp.i
 
-Users/shane/code/src/cse125/common/NetworkObject.s: Users/shane/code/src/cse125/common/NetworkObject.cpp.s
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.s
+Users/shane/code/src/cse125/_common/src/GameObject.s: Users/shane/code/src/cse125/_common/src/GameObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.s
 
 # target to generate assembly for a file
-Users/shane/code/src/cse125/common/NetworkObject.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/NetworkObject.cpp.s
-.PHONY : Users/shane/code/src/cse125/common/NetworkObject.cpp.s
+Users/shane/code/src/cse125/_common/src/GameObject.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/GameObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/GameObject.cpp.s
 
-Users/shane/code/src/cse125/common/Packet.obj: Users/shane/code/src/cse125/common/Packet.cpp.obj
-.PHONY : Users/shane/code/src/cse125/common/Packet.obj
+Users/shane/code/src/cse125/_common/src/IComponent.obj: Users/shane/code/src/cse125/_common/src/IComponent.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.obj
 
 # target to build an object file
-Users/shane/code/src/cse125/common/Packet.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.obj
-.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.obj
+Users/shane/code/src/cse125/_common/src/IComponent.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/IComponent.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.cpp.obj
 
-Users/shane/code/src/cse125/common/Packet.i: Users/shane/code/src/cse125/common/Packet.cpp.i
-.PHONY : Users/shane/code/src/cse125/common/Packet.i
+Users/shane/code/src/cse125/_common/src/IComponent.i: Users/shane/code/src/cse125/_common/src/IComponent.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.i
 
 # target to preprocess a source file
-Users/shane/code/src/cse125/common/Packet.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.i
-.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.i
+Users/shane/code/src/cse125/_common/src/IComponent.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/IComponent.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.cpp.i
 
-Users/shane/code/src/cse125/common/Packet.s: Users/shane/code/src/cse125/common/Packet.cpp.s
-.PHONY : Users/shane/code/src/cse125/common/Packet.s
+Users/shane/code/src/cse125/_common/src/IComponent.s: Users/shane/code/src/cse125/_common/src/IComponent.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.s
 
 # target to generate assembly for a file
-Users/shane/code/src/cse125/common/Packet.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/common/Packet.cpp.s
-.PHONY : Users/shane/code/src/cse125/common/Packet.cpp.s
+Users/shane/code/src/cse125/_common/src/IComponent.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/IComponent.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/IComponent.cpp.s
+
+Users/shane/code/src/cse125/_common/src/NetworkObject.obj: Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.obj
+
+# target to build an object file
+Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.obj
+
+Users/shane/code/src/cse125/_common/src/NetworkObject.i: Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.i
+
+# target to preprocess a source file
+Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.i
+
+Users/shane/code/src/cse125/_common/src/NetworkObject.s: Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.s
+
+# target to generate assembly for a file
+Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/NetworkObject.cpp.s
+
+Users/shane/code/src/cse125/_common/src/Packet.obj: Users/shane/code/src/cse125/_common/src/Packet.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.obj
+
+# target to build an object file
+Users/shane/code/src/cse125/_common/src/Packet.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Packet.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.cpp.obj
+
+Users/shane/code/src/cse125/_common/src/Packet.i: Users/shane/code/src/cse125/_common/src/Packet.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.i
+
+# target to preprocess a source file
+Users/shane/code/src/cse125/_common/src/Packet.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Packet.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.cpp.i
+
+Users/shane/code/src/cse125/_common/src/Packet.s: Users/shane/code/src/cse125/_common/src/Packet.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.s
+
+# target to generate assembly for a file
+Users/shane/code/src/cse125/_common/src/Packet.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Packet.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/Packet.cpp.s
+
+Users/shane/code/src/cse125/_common/src/Transform.obj: Users/shane/code/src/cse125/_common/src/Transform.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.obj
+
+# target to build an object file
+Users/shane/code/src/cse125/_common/src/Transform.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Transform.cpp.obj
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.cpp.obj
+
+Users/shane/code/src/cse125/_common/src/Transform.i: Users/shane/code/src/cse125/_common/src/Transform.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.i
+
+# target to preprocess a source file
+Users/shane/code/src/cse125/_common/src/Transform.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Transform.cpp.i
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.cpp.i
+
+Users/shane/code/src/cse125/_common/src/Transform.s: Users/shane/code/src/cse125/_common/src/Transform.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.s
+
+# target to generate assembly for a file
+Users/shane/code/src/cse125/_common/src/Transform.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/Users/shane/code/src/cse125/_common/src/Transform.cpp.s
+.PHONY : Users/shane/code/src/cse125/_common/src/Transform.cpp.s
 
 main.obj: main.cpp.obj
 .PHONY : main.obj
@@ -354,12 +426,21 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
-	@echo "... Users/shane/code/src/cse125/common/NetworkObject.obj"
-	@echo "... Users/shane/code/src/cse125/common/NetworkObject.i"
-	@echo "... Users/shane/code/src/cse125/common/NetworkObject.s"
-	@echo "... Users/shane/code/src/cse125/common/Packet.obj"
-	@echo "... Users/shane/code/src/cse125/common/Packet.i"
-	@echo "... Users/shane/code/src/cse125/common/Packet.s"
+	@echo "... Users/shane/code/src/cse125/_common/src/GameObject.obj"
+	@echo "... Users/shane/code/src/cse125/_common/src/GameObject.i"
+	@echo "... Users/shane/code/src/cse125/_common/src/GameObject.s"
+	@echo "... Users/shane/code/src/cse125/_common/src/IComponent.obj"
+	@echo "... Users/shane/code/src/cse125/_common/src/IComponent.i"
+	@echo "... Users/shane/code/src/cse125/_common/src/IComponent.s"
+	@echo "... Users/shane/code/src/cse125/_common/src/NetworkObject.obj"
+	@echo "... Users/shane/code/src/cse125/_common/src/NetworkObject.i"
+	@echo "... Users/shane/code/src/cse125/_common/src/NetworkObject.s"
+	@echo "... Users/shane/code/src/cse125/_common/src/Packet.obj"
+	@echo "... Users/shane/code/src/cse125/_common/src/Packet.i"
+	@echo "... Users/shane/code/src/cse125/_common/src/Packet.s"
+	@echo "... Users/shane/code/src/cse125/_common/src/Transform.obj"
+	@echo "... Users/shane/code/src/cse125/_common/src/Transform.i"
+	@echo "... Users/shane/code/src/cse125/_common/src/Transform.s"
 	@echo "... main.obj"
 	@echo "... main.i"
 	@echo "... main.s"
