@@ -23,6 +23,7 @@ public:
     void register_entity(Entity*);
     void unregister_entity(Entity*);
     void handle_packet(int, void*);
+    void handle_input(Packet* packet, int client_id);
     static NetworkManager& instance() {
         static NetworkManager s;
         return s;

@@ -31,14 +31,10 @@ void GameManager::player_position(Packet* pkt) {
         players[player_id] = p;
     }
 
-    pkt->read_int((int*)&num.l);
-    float x = num.f;
-    pkt->read_int((int*)&num.l);
-    float y = num.f;
-    pkt->read_int((int*)&num.l);
-    float z = num.f;
+    glm::vec3 new_pos;
+    pkt->read_vec3(&new_pos);
 
     // FIXME make thread safe
     if (players[player_id]->mover != nullptr)
-        players[player_id]->mover->position = glm::vec3(x, y, z);
+        players[player_id]->mover->position = new_pos;
 }

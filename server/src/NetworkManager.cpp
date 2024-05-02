@@ -34,17 +34,30 @@ void NetworkManager::process_input() {
         // TODO call appropriate handler based on packet type
         PacketType packet_type;
         packet->read_int((int*)&packet_type);
-
-        // but for now, we do this to set input manually
-        char input[4];
-        for (int i = 0; i < 4; i++) {
-            packet->read_byte(&input[i]);
+        switch(packet_type){
+            case PacketType::PLAYER_INPUT:
+                handle_input(packet, client_id);
+                break;
+            default:
+                std::cout << "ERROR: Unrecognized packet type" << std::endl;
+                return;
         }
-        (*server.get_clients())[client_id]->p->inputs.x =
-            (float)input[3] - (float)input[1];
-        (*server.get_clients())[client_id]->p->inputs.y =
-            (float)input[0] - (float)input[2];
     }
+}
+
+// TODO: error handling?
+void NetworkManager::handle_input(Packet* packet, int client_id){
+    char input[4];
+    for (int i = 0; i < 4; i++) {
+        packet->read_byte(&input[i]);
+    }
+
+    // calculate net X input
+    (*server.get_clients())[client_id]->p->inputs.x =
+        (float)input[3] - (float)input[1];
+    // calculate net Y input
+    (*server.get_clients())[client_id]->p->inputs.y =
+        (float)input[0] - (float)input[2];
 }
 
 void NetworkManager::update() {
@@ -76,13 +89,7 @@ void NetworkManager::send_state() {
 
             // Write player position
             auto tmp = it0->p->position;
-            uint32_t tmpl;
-            num.f = tmp.x;
-            packet->write_int(num.l);
-            num.f = tmp.y;
-            packet->write_int(num.l);
-            num.f = tmp.z;
-            packet->write_int(num.l);
+            packet->write_vec3(tmp);
 
             server.send(it->id, packet);
         }
