@@ -2,10 +2,11 @@
 #define COLLIDER_HPP
 
 #include "IComponent.hpp"
-#include "../glm/glm.hpp"
+#include "glm/glm.hpp"
 
 class Collider : public IComponent {
     glm::vec3 position = glm::vec3();
+    glm::vec3 rotation = glm::vec3();
     float radius = 0.0f;
     float height = 0.0f;
     float startAngle = 0.0f;
@@ -14,18 +15,15 @@ class Collider : public IComponent {
     bool isPoint = false;
 
 public:
-    Collider();
+    // default, Cylinder with owner at 0,0,0. Can be used for obstacles
     Collider(GameObject* owner);
-    // Point, only need position
-    Collider(GameObject* owner, glm::vec3 newPosition);
-    // Cylinder, no Rotation needed
-    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newScale);
-    // TODO: CylinderSector
-    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale, float angle);
+    // default constructor for cylinder, use functions to change it to sectors/point
+    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
     virtual std::string toString() const override;
 
     const glm::vec3& getPosition() const;
+    const glm::vec3& getRotation() const;
     float getRadius() const;
     float getHeight() const;
     float getStartAngle() const;
@@ -34,12 +32,17 @@ public:
     bool getIsPoint() const;
 
     void setPosition(glm::vec3 newPosition);
+    void setRotation(glm::vec3 newRotation);
     void setRadius(float newRadius);
     void setHeight(float newHeight);
     void setStartAngle(float newStartAngle);
     void setEndAngle(float newEndAngle);
     void setIsSector(bool sector);
     void setIsPoint(bool point);
+
+    void makeSector(float angle);
+
+    void makePoint();
 
     // void updateCylinder(glm::vec3 newPosition, float nradius, float nheight);
 
