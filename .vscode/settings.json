@@ -74,6 +74,7 @@
     "xutility": "cpp",
     "array": "cpp",
     "future": "cpp",
+    "typeindex": "cpp",
     "condition_variable": "cpp",
     "set": "cpp",
     "typeindex": "cpp",
