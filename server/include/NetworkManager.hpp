@@ -18,7 +18,6 @@ public:
     void update();
     void send_state();
     void process_input();
-    void handle_packet(int, void*);
     void on_message_received(const EventArgs* e);
     void on_client_joined(const EventArgs* e);
     static NetworkManager& instance() {

@@ -88,16 +88,9 @@ void NetworkManager::update() { scene.update(); }
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {
-    uint8_t buf[12];
-
-    // std::lock_guard<std::mutex> lock(_mutex);
     std::vector<Client*> clients = server.get_clients();
     // Send all states to clients
     for (const auto& client : clients) {
-        // Skip disconnected clients
-        if (client->clientsock == nullptr)
-            continue;
-
         // Serialize all network objects into single state update packet
         Packet* updates = new Packet();
         updates->write_int((int)PacketType::STATE_UPDATE);
@@ -111,18 +104,15 @@ void NetworkManager::send_state() {
 
 // FIXME handle incomplete packets or multiple packets per send() call
 // thread-safe
-void NetworkManager::handle_packet(int client_id, void* pkt) {
-    // Create new packet from received data
-    Packet* packet = new Packet();
-    packet->write((uint8_t*)pkt, 8);
-
-    std::lock_guard<std::mutex> lock(_mutex);
-    message_queue.push_back(std::pair<int, Packet*>(client_id, packet));
-}
-
 void NetworkManager::on_message_received(const EventArgs* e) {
     MessageReceivedEventArgs* args = (MessageReceivedEventArgs*)e;
-    handle_packet(args->fromClient, args->buffer);
+
+    // Create new packet from received data
+    Packet* packet = new Packet();
+    packet->write((uint8_t*)args->buffer, args->size);
+
+    std::lock_guard<std::mutex> lock(_mutex);
+    message_queue.push_back(std::pair<int, Packet*>(args->fromClient, packet));
 }
 
 void NetworkManager::on_client_joined(const EventArgs* e) {

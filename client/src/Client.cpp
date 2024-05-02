@@ -23,6 +23,7 @@ void Client::connect(const char* ip, uint16_t port) {
         perror("[CLIENT] connection failed");
         return;
     }
+    printf("[CLIENT] successfully connected to %s:%d\n", ip, port);
 
     pthread_t thread;
     int res = pthread_create(&thread, NULL, Client::receive, this);
@@ -59,7 +60,8 @@ void* Client::receive(void* params) {
 }
 
 void Client::send(Packet* pkt) {
-    int sent_bytes = psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
+    int sent_bytes =
+        psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
     if (sent_bytes < 0) {
         printf("[CLIENT] failed to send\n");
     }

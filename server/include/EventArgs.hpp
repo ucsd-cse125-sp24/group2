@@ -8,9 +8,10 @@ typedef struct EventArgs {
 typedef struct MessageReceivedEventArgs : public EventArgs {
     int fromClient;
     uint8_t* buffer;
+    int size;
 
-    MessageReceivedEventArgs(int fromClient, uint8_t* buffer)
-        : fromClient(fromClient), buffer(buffer) {}
+    MessageReceivedEventArgs(int fromClient, uint8_t* buffer, int size)
+        : fromClient(fromClient), buffer(buffer), size(size) {}
 } MessageReceivedEventArgs;
 
 typedef struct ClientJoinedEventArgs : public EventArgs {

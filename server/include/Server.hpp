@@ -12,7 +12,7 @@
 #include "psocket.hpp"
 #include "EventArgs.hpp"
 
-#define MAX_CLIENTS 8
+#define MAX_CLIENTS 4
 #define SERVER_PORT 25565
 class Server {
 private:
@@ -34,15 +34,6 @@ public:
     }
     inline void set_client_joined_callback(const Action& handler) {
         client_joined += handler;
-    }
-    inline void on_message_received(int clientId, uint8_t* buffer) {
-        MessageReceivedEventArgs* args =
-            new MessageReceivedEventArgs(clientId, buffer);
-        message_received.invoke(args);
-    }
-    inline void on_client_joined(int clientId) {
-        ClientJoinedEventArgs* args = new ClientJoinedEventArgs(clientId);
-        client_joined.invoke(args);
     }
 }; // SERVER_H
 
