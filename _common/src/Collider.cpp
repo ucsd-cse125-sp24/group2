@@ -16,10 +16,16 @@ Collider::Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newScale)
 : IComponent(owner), position(newPosition), radius(newScale.x), height(newScale.z) {}
 
 // Cylinder Sector
-Collider::Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newScale, float angle)
+Collider::Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale, float angle)
 : IComponent(owner), 
 position(newPosition), radius(newScale.x), height(newScale.z), isSector(true) {
-    
+    glm::vec3 projectedVec(newRotation.x, newRotation.y, 0.0f);
+    glm::vec3 normalizedVec = glm::normalize(projectedVec);
+    glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
+    float dot = glm::dot(normalizedVec, xAxis);
+    float rotationAngle = std::acos(dot);
+    startAngle = rotationAngle - angle/2;
+    endAngle = rotationAngle + angle/2;
 }
 
 std::string Collider::toString() const {
