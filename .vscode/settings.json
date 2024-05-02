@@ -73,6 +73,9 @@
     "xtree": "cpp",
     "xutility": "cpp",
     "array": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "condition_variable": "cpp",
+    "set": "cpp",
+    "typeindex": "cpp"
   }
 }

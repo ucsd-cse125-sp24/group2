@@ -17,6 +17,7 @@ public:
     Model* model;
     AnimationPlayer* animationPlayer;
     AnimationClip* clip;
+
     Mover();
     Mover(std::string path);
     ~Mover();
