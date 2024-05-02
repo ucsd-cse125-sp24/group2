@@ -4,8 +4,7 @@
 
 
 GameObject::GameObject() {
-    Transform* transform = new Transform(this);
-    AddComponent(transform);
+    
 }
 
 GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
