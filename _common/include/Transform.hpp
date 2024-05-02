@@ -5,6 +5,8 @@
 #include "glm/glm.hpp"
 
 class Transform : public IComponent {
+    
+private:
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;

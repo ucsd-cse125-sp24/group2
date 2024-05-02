@@ -9,6 +9,8 @@ class GameObject;
 
 
 class IComponent {
+    
+protected:
     GameObject* owner;
 
 public:
