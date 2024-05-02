@@ -12,7 +12,13 @@
  **/
 #include <winsock2.h>
 #endif
-enum class PacketType { PLAYER_POSITION, PLAYER_INPUT, STATE_UPDATE };
+enum class PacketType {
+    PLAYER_POSITION,
+    PLAYER_INPUT,
+    STATE_UPDATE,
+    DESTROY_OBJECT,
+    DESTROY_OBJECT_ACK,
+};
 class Packet {
 
 public:

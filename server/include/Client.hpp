@@ -11,10 +11,10 @@
 
 class Client {
 private:
-    std::map<int, NetworkObjectState> objectStates;
     static void* receive(void*);
 
 public:
+    std::map<int, NetworkObjectState> objectStates;
     Player* p;
     int id;
     Socket* clientsock;
@@ -23,6 +23,7 @@ public:
     void init();
     void disconnect();
     void track_object(NetworkObject*);
+    void mark_as_deleted(NetworkObject*);
 };
 
 #endif // CLIENT_H

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <stdio.h>
+#include "GameManager.hpp"
 
 void Client::connect(const char* ip, uint16_t port) {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
@@ -27,6 +28,18 @@ void Client::connect(const char* ip, uint16_t port) {
 
     pthread_t thread;
     int res = pthread_create(&thread, NULL, Client::receive, this);
+
+    GameManager::instance().object_destroyed += [this](EventArgs* e) {
+        DestroyedEventArgs* args = (DestroyedEventArgs*)e;
+
+        Packet* destroyed_ack = new Packet();
+        destroyed_ack->write_int((int) PacketType::DESTROY_OBJECT_ACK);
+        destroyed_ack->write_int(args->destroyedObjectIds.size());
+        for (int destroyedObjId : args->destroyedObjectIds) {
+            destroyed_ack->write_int(destroyedObjId);
+        }
+        send(destroyed_ack);
+    };
 }
 
 void* Client::receive(void* params) {

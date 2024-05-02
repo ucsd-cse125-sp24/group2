@@ -5,6 +5,10 @@
 #include <thread>
 #include "ColorCodes.hpp"
 
+size_t getThread() {
+    return std::hash<std::thread::id> {}(std::this_thread::get_id());
+}
+
 int Server::teardown() { return 0; }
 
 // FIXME rare chance that server crashes silently on client disconnect
@@ -74,19 +78,14 @@ void Server::start() {
         }
 
         // Raise client joined event
-        auto args = new ClientJoinedEventArgs(newClientId);
+        auto args = new ClientEventArgs(newClientId);
         client_joined.invoke(args);
     }
 }
 
-std::vector<Client*> Server::get_clients() {
-    // FIXME using lock guard in get_clients causes deadlock
+std::map<int, Client*> Server::get_clients() {
     std::lock_guard<std::mutex> lock(_mutex);
-    std::vector<Client*> res;
-    for (auto& it : clients) {
-        res.push_back(it.second);
-    }
-
+    std::map<int, Client*> res(clients);
     return res;
 }
 
@@ -95,6 +94,7 @@ void Server::receive(Client* client) {
     uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
 
+    int clientId = client->id;
     while (1) {
         int read_bytes =
             client->clientsock->recv((char*)buffer, expected_data_len, 0);
@@ -102,20 +102,15 @@ void Server::receive(Client* client) {
         if (read_bytes == 0) { // Connection was closed
             std::lock_guard<std::mutex> lock(_mutex);
             client->disconnect();
-            std::cout << "[SERVER] Client " << client->id << " disconnected."
-                      << std::endl;
-            return;
+            break;
         } else if (read_bytes < 0) { // error
             std::lock_guard<std::mutex> lock(_mutex);
             client->disconnect();
-            std::cout << "[SERVER] recv failed" << std::endl;
-            std::cout << "[SERVER] Client " << client->id << " disconnected."
-                      << std::endl;
-            return;
+            break;
         } else {
             // TODO handle multiple packets per receive call
-            printf("[SERVER] Received %d bytes from client %d\n", read_bytes,
-                   client->id);
+            printf("[SERVER %lu] Received %d bytes from client %d\n",
+                   getThread(), read_bytes, client->id);
             uint8_t* recvd_bytes = new uint8_t[read_bytes];
             memcpy(recvd_bytes, buffer, read_bytes);
 
@@ -126,13 +121,25 @@ void Server::receive(Client* client) {
 
         memset(buffer, 0, 4096);
     }
+
+    auto args = new ClientEventArgs(clientId);
+    client_disconnected.invoke(args);
+    std::cout << "[SERVER " << getThread() << "] Client " << clientId
+              << " disconnected." << std::endl;
+    std::lock_guard<std::mutex> lock(_mutex);
+    delete client;
+    clients.erase(clientId);
 }
 
 int Server::send(int client_id, Packet* pkt) {
     std::lock_guard<std::mutex> lock(_mutex);
+    if (clients.find(client_id) == clients.end()) {
+        printf("[SERVER] failed to send - client disconnected\n");
+        return 1;
+    }
+
     if (clients[client_id]->clientsock == nullptr) {
-        printf("[SERVER] failed to send\n");
-        clients.erase(client_id);
+        printf("[SERVER] failed to send - bad socket fd\n");
         return 1;
     }
 
@@ -141,8 +148,6 @@ int Server::send(int client_id, Packet* pkt) {
     delete pkt;
     if (sent_bytes < 0) {
         printf("[SERVER] failed to send\n");
-        clients[client_id]->disconnect();
-        clients.erase(client_id);
         return -1;
     }
     return 0;

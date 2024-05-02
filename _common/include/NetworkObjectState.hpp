@@ -2,14 +2,16 @@
 #define NETWORK_OBJECT_STATE_H
 #include "NetworkObject.hpp"
 
+enum StatusFlags : uint8_t {
+    UNUSED = 0, // for object pooling
+    ON_SERVER = 1,
+    ON_CLIENT = 2,
+    AWAITING_DESTRUCTION = 4,
+    DESTROYING = 8
+};
+
 struct NetworkObjectState {
-    enum StatusFlags : uint8_t {
-        UNUSED = 0, // for object pooling
-        ON_SERVER = 1,
-        ON_CLIENT = 2,
-        AWAITING_DESTRUCTION = 4,
-        DESTROYING = 8
-    } status;
+    StatusFlags status;
 
     inline bool valid_on_server() const { return (status & ON_CLIENT); }
     inline bool valid_on_client() const {

@@ -2,6 +2,7 @@
 #define EVENT_ARGS_H
 #include <iomanip>
 #include <iostream>
+#include "Entity.hpp"
 typedef struct EventArgs {
 } EventArgs;
 
@@ -14,15 +15,22 @@ typedef struct MessageReceivedEventArgs : public EventArgs {
         : fromClient(fromClient), buffer(buffer), size(size) {}
 } MessageReceivedEventArgs;
 
-typedef struct ClientJoinedEventArgs : public EventArgs {
+typedef struct ClientEventArgs : public EventArgs {
     int clientId;
 
-    ClientJoinedEventArgs(int clientId) : clientId(clientId) {}
-} ClientJoinedEventArgs;
+    ClientEventArgs(int clientId) : clientId(clientId) {}
+} ClientEventArgs;
 
 typedef struct ObjectEventArgs : public EventArgs {
     Entity* e;
 
     ObjectEventArgs(Entity* e) : e(e) {}
 } ObjectEventArgs;
+
+typedef struct DestroyedEventArgs : public EventArgs {
+    std::vector<int> destroyedObjectIds;
+
+    DestroyedEventArgs(std::vector<int> destroyedObjectIds)
+        : destroyedObjectIds(destroyedObjectIds) {}
+} DestroyedEventArgs;
 #endif

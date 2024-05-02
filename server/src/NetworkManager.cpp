@@ -11,6 +11,8 @@
 
 #include "Server.hpp"
 #include "Scene.hpp"
+#include "NetworkObjectState.hpp"
+#include "ColorCodes.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -35,18 +37,29 @@ void NetworkManager::init() {
     auto client_joined_callback = std::bind(&NetworkManager::on_client_joined,
                                             this, std::placeholders::_1);
     server.set_client_joined_callback(client_joined_callback);
+    server.set_client_disconnected_callback([this](EventArgs* e) {
+        ClientEventArgs* args = (ClientEventArgs*)e;
+        scene.remove_object(server.clients[args->clientId]->p);
+    });
 
     // Register listener for object added
     scene.object_added += [this](EventArgs* e) {
         ObjectEventArgs* args = (ObjectEventArgs*)e;
 
-        std::vector<Client*> clients = server.get_clients();
-        for (auto it : clients) {
-            it->track_object(args->e);
+        std::map<int, Client*> clients = server.get_clients();
+        for (auto kv : clients) {
+            Client* client = kv.second;
+            client->track_object(args->e);
         }
     };
-    scene.object_removed +=
-        [this](EventArgs* e) { ObjectEventArgs* args = (ObjectEventArgs*)e; };
+    scene.object_removed += [this](EventArgs* e) {
+        ObjectEventArgs* args = (ObjectEventArgs*)e;
+        std::map<int, Client*> clients = server.get_clients();
+        for (auto kv : clients) {
+            Client* client = kv.second;
+            client->mark_as_deleted(args->e);
+        }
+    };
 
     // Start server
     std::thread(&Server::start, &server).detach();
@@ -66,15 +79,32 @@ void NetworkManager::process_input() {
 
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
-        case PacketType::PLAYER_INPUT:
+        case PacketType::PLAYER_INPUT: {
             char input[4];
             for (int i = 0; i < 4; i++) {
                 packet->read_byte(&input[i]);
             }
-            server.get_clients()[client_id]->p->inputs.x =
-                (float)input[3] - (float)input[1];
-            server.get_clients()[client_id]->p->inputs.y =
-                (float)input[0] - (float)input[2];
+            std::map<int, Client*> clients = server.get_clients();
+            if (clients.find(client_id) == clients.end())
+                break;
+
+            clients[client_id]->p->inputs.x = (float)input[3] - (float)input[1];
+            clients[client_id]->p->inputs.y = (float)input[0] - (float)input[2];
+            break;
+        }
+        case PacketType::DESTROY_OBJECT_ACK:
+            int numObjectsDestroyed;
+            packet->read_int(&numObjectsDestroyed);
+            while (numObjectsDestroyed) {
+                int destroyedObjectId;
+                packet->read_int(&destroyedObjectId);
+                std::map<int, Client*> clients = server.get_clients();
+                if (clients.size() != 0) {
+                    clients[client_id]->objectStates.erase(destroyedObjectId);
+                }
+
+                numObjectsDestroyed--;
+            }
             break;
         default:
             break;
@@ -86,9 +116,10 @@ void NetworkManager::update() { scene.update(); }
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {
-    std::vector<Client*> clients = server.get_clients();
-    // Send all states to clients
-    for (const auto& client : clients) {
+    std::map<int, Client*> clients = server.get_clients();
+    // Send state updates to clients
+    for (const auto& kv : clients) {
+        Client* client = kv.second;
         // Serialize all network objects into single state update packet
         Packet* updates = new Packet();
         updates->write_int((int)PacketType::STATE_UPDATE);
@@ -97,6 +128,29 @@ void NetworkManager::send_state() {
             obj->serialize(updates);
         }
         server.send(client->id, updates);
+    }
+
+    // Send delete message to clients
+    for (const auto& kv : clients) {
+        Client* client = kv.second;
+        Packet* destroy = new Packet();
+        destroy->write_int((int)PacketType::DESTROY_OBJECT);
+
+        int numObjectsToDestroy = 0;
+        std::vector<int> objectIdsToDestroy;
+        for (const auto& obj : client->objectStates) {
+            if (obj.second.status & AWAITING_DESTRUCTION) {
+                std::cout << "[NETWORK_MANAGER] Destroying object " << obj.first
+                          << " on client " << client->id << std::endl;
+                numObjectsToDestroy++;
+                objectIdsToDestroy.push_back(obj.first);
+            }
+        }
+        destroy->write_int(numObjectsToDestroy);
+        for (int idToDestroy : objectIdsToDestroy) {
+            destroy->write_int(idToDestroy);
+        }
+        server.send(client->id, destroy);
     }
 }
 
@@ -114,7 +168,7 @@ void NetworkManager::on_message_received(const EventArgs* e) {
 }
 
 void NetworkManager::on_client_joined(const EventArgs* e) {
-    ClientJoinedEventArgs* args = (ClientJoinedEventArgs*)e;
+    ClientEventArgs* args = (ClientEventArgs*)e;
 
     // Give client control over player
     Player* p = new Player();

@@ -4,18 +4,21 @@
 #include <map>
 #include "PlayerManager.hpp"
 #include "Packet.hpp"
+#include "EventArgs.hpp"
+#include "Event.hpp"
 class GameManager {
 
 public:
-    // TODO initialize players
     std::map<int, PlayerManager*> players;
+    EventHandler<EventArgs> object_destroyed;
+
     static GameManager& instance() {
         static GameManager m;
         return m;
     }
-
     void handle_packet(Packet*);
     void player_position(Packet*);
     void update(Packet*);
+    void destroy_object(Packet*);
 };
 #endif

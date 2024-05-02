@@ -1,4 +1,5 @@
 #include "GameManager.hpp"
+#include "ColorCodes.hpp"
 
 union FloatUnion {
     float f;
@@ -16,6 +17,9 @@ void GameManager::handle_packet(Packet* packet) {
         break;
     case PacketType::STATE_UPDATE:
         update(packet);
+        break;
+    case PacketType::DESTROY_OBJECT:
+        destroy_object(packet);
         break;
 
     default:
@@ -54,6 +58,7 @@ void GameManager::update(Packet* pkt) {
         int object_id;
         pkt->read_int(&object_id);
 
+        // Could not find object, create it
         if (players.find(object_id) == players.end()) {
             PlayerManager* p = new PlayerManager();
             p->id = object_id;
@@ -74,4 +79,29 @@ void GameManager::update(Packet* pkt) {
 
         num_updates--;
     }
+}
+
+void GameManager::destroy_object(Packet* pkt) {
+    int numObjectsToDestroy;
+    pkt->read_int(&numObjectsToDestroy);
+    std::vector<int> objIdsDestroyed;
+    while (numObjectsToDestroy) {
+        int objIdToDestroy;
+        pkt->read_int(&objIdToDestroy);
+
+        // Found object, destroy it
+        if (players.find(objIdToDestroy) != players.end()) {
+            printf(RED "DESTROYING OBJECT\n" RST);
+            delete players[objIdToDestroy]->mover;
+            players[objIdToDestroy]->mover = nullptr;
+            players.erase(objIdToDestroy);
+
+            objIdsDestroyed.push_back(objIdToDestroy);
+        }
+        numObjectsToDestroy--;
+    }
+
+    // FIXME have GameManager handle this as well
+    DestroyedEventArgs* args = new DestroyedEventArgs(objIdsDestroyed);
+    object_destroyed.invoke(args);
 }
