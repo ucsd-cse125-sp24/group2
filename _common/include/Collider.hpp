@@ -21,7 +21,7 @@ public:
     // Cylinder, no Rotation needed
     Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newScale);
     // TODO: CylinderSector
-    // Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
+    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale, float angle);
 
     virtual std::string toString() const override;
 
