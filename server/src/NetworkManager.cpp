@@ -42,8 +42,6 @@ void NetworkManager::init() {
 
         std::vector<Client*> clients = server.get_clients();
         for (auto it : clients) {
-            if (it->clientsock == nullptr)
-                continue;
             it->track_object(args->e);
         }
     };
