@@ -7,6 +7,9 @@
 #include "INetworkComponent.hpp"
 
 
+class INetworkComponent;
+
+
 class NetworkObject : public GameObject {
 private:
     int _networkId;

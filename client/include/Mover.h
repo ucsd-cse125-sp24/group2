@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "AnimationPlayer.h"
 #include "AnimationClip.h"
+#include "../../_common/include/INetworkComponent.hpp"
 
 class Mover {
 public:

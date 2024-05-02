@@ -4,11 +4,27 @@
 
 #include "IComponent.hpp"
 #include "Packet.hpp"
+#include "NetworkObject.hpp"
+
+
+class NetworkObject;
 
 
 class INetworkComponent : public IComponent {
+    
+protected:
+    NetworkObject* netOwner;
 
 public:
+    INetworkComponent() : 
+        IComponent(), 
+        netOwner(nullptr) 
+    {}
+    INetworkComponent(NetworkObject* newNetOwner) :
+        IComponent((GameObject*)newNetOwner),
+        netOwner(newNetOwner)
+    {}
+
     void Serialize(Packet*);
     void Deserialize(Packet*);
 };
