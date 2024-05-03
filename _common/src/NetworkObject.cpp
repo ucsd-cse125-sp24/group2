@@ -29,3 +29,7 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
         typeToComponentMap.erase(typeid(*comp));
     }
 }
+
+std::string NetworkObject::ToString() {
+    return "NetworkObject";
+}

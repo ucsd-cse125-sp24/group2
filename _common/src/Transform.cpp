@@ -23,7 +23,7 @@ Transform::Transform(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRota
     scale(newScale)
 {}
 
-std::string Transform::ToString() const {
+std::string Transform::ToString() {
     return 
         "Transform: pos(" + glm::to_string(position) +
         ") rot(" + glm::to_string(position) +

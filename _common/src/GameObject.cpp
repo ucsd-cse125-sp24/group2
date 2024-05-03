@@ -25,5 +25,5 @@ void GameObject::RemoveComponent(IComponent* comp) {
 }
 
 std::string GameObject::ToString() {
-    return "GameObject with transform: " + GetComponent<Transform>()->ToString();
+    return "GameObject";
 }

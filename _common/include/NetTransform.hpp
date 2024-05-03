@@ -18,7 +18,7 @@ public:
     NetTransform(NetworkObject* owner);
     NetTransform(NetworkObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
-    virtual std::string ToString() const;
+    virtual std::string ToString();
 
     const glm::vec3& GetPosition() const { return position; }
     const glm::vec3& GetRotation() const { return rotation; }

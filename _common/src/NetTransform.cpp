@@ -23,7 +23,7 @@ NetTransform::NetTransform(NetworkObject* owner, glm::vec3 newPosition, glm::vec
     scale(newScale)
 {}
 
-std::string NetTransform::ToString() const {
+std::string NetTransform::ToString() {
     return 
         "Networked Transform: pos(" + glm::to_string(position) +
         ") rot(" + glm::to_string(position) +
