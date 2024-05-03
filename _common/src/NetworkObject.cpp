@@ -30,6 +30,6 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
     }
 }
 
-std::string NetworkObject::ToString() {
-    return "NetworkObject";
-}
+// std::string NetworkObject::ToString() {
+//     return "NetworkObject";
+// }

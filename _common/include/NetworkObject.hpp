@@ -32,7 +32,7 @@ public:
     virtual void deserialize(Packet*) = 0;
     inline int networkId() const { return _networkId; }
 
-    std::string ToString() override;
+    // std::string ToString() override;
 };
 
 

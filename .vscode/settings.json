@@ -76,6 +76,8 @@
     "future": "cpp",
     "condition_variable": "cpp",
     "set": "cpp",
-    "typeindex": "cpp"
+    "typeindex": "cpp",
+    "ranges": "cpp",
+    "span": "cpp"
   }
 }

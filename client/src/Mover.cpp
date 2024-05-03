@@ -6,7 +6,7 @@ Mover::Mover() : INetworkComponent() {
     speed = 0.2;
 }
 
-Mover::Mover(std::string path) {
+Mover::Mover(std::string path) : INetworkComponent() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;

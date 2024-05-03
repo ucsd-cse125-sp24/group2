@@ -1,15 +1,19 @@
 #pragma once
 
+
+#include <iostream>
 #include "core.h"
+
+#include "../../_common/include/INetworkComponent.hpp"
+
 #include "Cube.h"
 #include "InputManager.h"
-#include <iostream>
 #include "Model.h"
 #include "AnimationPlayer.h"
 #include "AnimationClip.h"
-#include "../../_common/include/INetworkComponent.hpp"
 
-class Mover : INetworkComponent {
+
+class Mover : public INetworkComponent {
 public:
     glm::vec3 position;
     glm::vec3 velocityHeading;

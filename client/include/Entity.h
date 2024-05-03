@@ -7,6 +7,8 @@ class Entity : public NetworkObject {
     
 
 public:
-    Entity(int id);
+    Entity();
+
+    std::string ToString() override;
 };
 #endif // ENTITY_H
