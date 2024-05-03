@@ -20,6 +20,7 @@ public:
         IComponent(), 
         netOwner(nullptr) 
     {}
+    
     INetworkComponent(NetworkObject* newNetOwner) :
         IComponent((GameObject*)newNetOwner),
         netOwner(newNetOwner)
