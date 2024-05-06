@@ -10,6 +10,7 @@ Mover::Mover(std::string path) : INetworkComponent() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
+    // this needs to be references to parent GameObject's components
     model = new Model(path);
     clip = new AnimationClip(path, model);
     animationPlayer = new AnimationPlayer(clip);

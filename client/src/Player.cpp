@@ -3,6 +3,14 @@
 #include <iostream>
 
 Player::Player() : Entity() {
+    Mover* mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    AddComponent(mover);
+    Model* model = new Model();
+    AddComponent(model);
+    AnimationClip* clip = new AnimationClip();
+    AddComponent(clip);
+    AnimationPlayer* animPlayer = new AnimationPlayer();
+    AddComponent(animPlayer);
     std::cout << "Player::Player()" << std::endl;
 }
 

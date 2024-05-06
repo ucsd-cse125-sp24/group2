@@ -3,6 +3,10 @@
 
 
 #include "Entity.h"
+#include "Mover.h"
+#include "AnimationPlayer.h"
+#include "AnimationClip.h"
+#include "Model.h"
 
 class Player : public Entity {
     public:
