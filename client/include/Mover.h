@@ -20,6 +20,7 @@ public:
     float speed;
 
     Cube* cube;
+    // references to the other components
     Model* model;
     AnimationPlayer* animationPlayer;
     AnimationClip* clip;

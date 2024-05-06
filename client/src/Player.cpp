@@ -3,15 +3,18 @@
 #include <iostream>
 
 Player::Player() : Entity() {
-    Mover* mover = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    Mover* mover = new Mover();
+    mover->SetOwner(this);
     AddComponent(mover);
-    Model* model = new Model();
+    Model* model = new Model("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    model->SetOwner(this);
     AddComponent(model);
-    AnimationClip* clip = new AnimationClip();
+    AnimationClip* clip = new AnimationClip("../assets/male_basic_walk_30_frames_loop/scene.gltf", model);
+    clip->SetOwner(this);
     AddComponent(clip);
-    AnimationPlayer* animPlayer = new AnimationPlayer();
+    AnimationPlayer* animPlayer = new AnimationPlayer(clip);
+    animPlayer->SetOwner(this);
     AddComponent(animPlayer);
-    std::cout << "Player::Player()" << std::endl;
 }
 
 // TODO: implement serialize and deserialize? unless it gets implemented in entity

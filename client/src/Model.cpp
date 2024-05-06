@@ -9,7 +9,6 @@ Model::Model(std::string path) : IComponent() {
 }
 
 void Model::update(float dt, glm::vec3 pos) {
-    std::cout << "did we get in Model::update" << std::endl;
     for(int i = 0; i < meshes.size(); i++) {
         meshes[i].update(dt, pos);
     }

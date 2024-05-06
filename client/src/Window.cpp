@@ -8,7 +8,7 @@ int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
 // Objects to render
-// Cube* Window::cube;
+Cube* cube;
 Client* client;
 
 // Added by me:
@@ -45,7 +45,7 @@ bool Window::initializeProgram(Client& c) {
 bool Window::initializeObjects() {
     // Create a cube
     // cube = new Cube();
-    // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+    cube = new Cube(glm::vec3(-1, -1, -1), glm::vec3(1, 1, 1));
     InputManager::setDefaultKeys();
     // playerManager = new PlayerManager();
     // playerManager->mover = new
@@ -157,13 +157,12 @@ void Window::displayCallback(GLFWwindow* window) {
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    cube->draw(Cam->GetViewProjectMtx(), shaderProgram);
+
     // Render the object.
     for (auto it : GameManager::instance().players) {
         // FIXME make thread safe and call only once
         Mover* m = it.second->GetComponent<Mover>();
-        // if (m == nullptr) {
-        //     m = new Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-        // }
         if (m != nullptr) {
             m->Update(deltaTime);
             m->Draw(Cam->GetViewProjectMtx(), shaderProgram);

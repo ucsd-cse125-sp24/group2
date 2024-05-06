@@ -104,7 +104,6 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 void Mesh::setPosition(glm::vec3 pos) { position = pos; }
 
 void Mesh::update(float dt, glm::vec3 pos) {
-    std::cout << "or does it completely break here" << std::endl; 
     position = pos;
     // std::cout<<"position: "<<glm::to_string(position)<<std::endl;
     modelMtx = glm::translate(position);

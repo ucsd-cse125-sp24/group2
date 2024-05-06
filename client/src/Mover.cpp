@@ -4,23 +4,25 @@ Mover::Mover() : INetworkComponent() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
+    model = owner->GetComponent<Model>();
+    clip = owner->GetComponent<AnimationClip>();
+    animationPlayer = owner->GetComponent<AnimationPlayer>();
 }
 
-Mover::Mover(std::string path) : INetworkComponent() {
-    position = glm::vec3(0);
-    velocityHeading = glm::vec3(0);
-    speed = 0.2;
-    // this needs to be references to parent GameObject's components
-    model = new Model(path);
-    clip = new AnimationClip(path, model);
-    animationPlayer = new AnimationPlayer(clip);
-}
+// Mover::Mover(std::string path) : INetworkComponent() {
+//     position = glm::vec3(0);
+//     velocityHeading = glm::vec3(0);
+//     speed = 0.2;
+//     // this needs to be references to parent GameObject's components
+//     model = new Model(path);
+//     clip = new AnimationClip(path, model);
+//     animationPlayer = new AnimationPlayer(clip);
+// }
 
 Mover::~Mover() { delete cube; }
 
 void Mover::Update(float deltaTime) {
     model->update(deltaTime, position);
-    std::cout << "probably the position" << std::endl;
     animationPlayer->update(deltaTime);
 }
 
