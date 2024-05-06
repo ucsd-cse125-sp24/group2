@@ -5,7 +5,11 @@
 #include "Entity.h"
 
 class Player : public Entity {
-    
+    public:
+        Player();
+
+        void serialize(Packet*) override;
+        void deserialize(Packet*) override;
 };
 
 

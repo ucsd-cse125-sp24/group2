@@ -26,6 +26,10 @@ set(
     # 125-Starter
     src/Mover.cpp
     src/GameManager.cpp
+
+    # game engine
+    src/Entity.cpp
+    src/Player.cpp
 )
 FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 
@@ -53,6 +57,10 @@ set(
     include/GameManager.hpp
     include/PlayerManager.hpp
     include/InputManager.h
+
+    # game engine
+    include/Entity.h
+    include/Player.h
 )
 
 # Require GL

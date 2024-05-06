@@ -19,6 +19,7 @@ Mover::~Mover() { delete cube; }
 
 void Mover::Update(float deltaTime) {
     model->update(deltaTime, position);
+    std::cout << "probably the position" << std::endl;
     animationPlayer->update(deltaTime);
 }
 

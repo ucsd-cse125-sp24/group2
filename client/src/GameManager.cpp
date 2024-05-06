@@ -25,9 +25,12 @@ void GameManager::player_position(Packet* pkt) {
     pkt->read_int(&player_id);
 
     if (players.find(player_id) == players.end()) {
-        PlayerManager* p = new PlayerManager();
-        p->id = player_id;
-        p->mover = nullptr;
+        // PlayerManager* p = new PlayerManager();
+        // p->id = player_id;
+        // p->mover = nullptr;
+        // players[player_id] = p;
+        Player* p = new Player();
+        // p->_networkId = player_id; how to set this id?
         players[player_id] = p;
     }
 
@@ -39,6 +42,8 @@ void GameManager::player_position(Packet* pkt) {
     float z = num.f;
 
     // FIXME make thread safe
-    if (players[player_id]->mover != nullptr)
-        players[player_id]->mover->position = glm::vec3(x, y, z);
+    Mover* m = players[player_id]->GetComponent<Mover>();
+    std::cout << "did we get past GameManager::player_position?" << std::endl;
+    if (m != nullptr)
+        m->position = glm::vec3(x, y, z);
 }

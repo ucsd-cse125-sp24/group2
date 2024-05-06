@@ -19,3 +19,8 @@ Entity::Entity() : NetworkObject() {
     AddComponent(animPlayer);
     // EntityManager?
 }
+
+std::string Entity::ToString() {
+    // probably print the name and id of this entity and its components
+    return "Entity";
+}
