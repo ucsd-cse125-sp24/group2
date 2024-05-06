@@ -4,7 +4,7 @@ AnimationPlayer::AnimationPlayer() {
     
 }
 
-AnimationPlayer::AnimationPlayer(AnimationClip* clip) {
+AnimationPlayer::AnimationPlayer(AnimationClip* clip) : IComponent() {
     currentTime = 0.0f;
     deltaTime = 0.0f;
     currentAnimation = clip;
@@ -51,4 +51,8 @@ void AnimationPlayer::calculateBoneTransforms(const AssimpNodeData* node, glm::m
 
 const std::vector<glm::mat4>& AnimationPlayer::getFinalBoneMatrices() const {
     return finalBoneMtx;
+}
+
+std::string AnimationPlayer::ToString() {
+    return "AnimationPlayer";
 }

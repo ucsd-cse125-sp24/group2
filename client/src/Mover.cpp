@@ -1,12 +1,12 @@
 #include "Mover.h"
 
-Mover::Mover() {
+Mover::Mover() : INetworkComponent() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
 }
 
-Mover::Mover(std::string path) {
+Mover::Mover(std::string path) : INetworkComponent() {
     position = glm::vec3(0);
     velocityHeading = glm::vec3(0);
     speed = 0.2;
@@ -42,4 +42,8 @@ void Mover::Draw(glm::mat4 view, GLuint shaderProgram) {
                 ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()),
             1, GL_FALSE, glm::value_ptr(transforms[i]));
     }
+}
+
+std::string Mover::ToString() {
+    return "Mover";
 }
