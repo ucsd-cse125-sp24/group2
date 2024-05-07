@@ -29,7 +29,7 @@ public:
 
     void remove(GameObject* owner);
 
-    void move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
+    bool move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
     // These may not need to be public in the future
     bool collisionCylinderCylinder(const Collider* cyl1, const Collider* cyl2);

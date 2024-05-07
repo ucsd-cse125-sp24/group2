@@ -24,7 +24,9 @@ void CollisionManager::remove(GameObject* owner) {
     colliderOwners.erase(collider);
 }
 
-void CollisionManager::move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale){
+// For cylinders, return true if moved successfully or false if not
+// For others (attacks), return true if attack hits
+bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale){
     std::lock_guard<std::mutex> lock(_mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
     Transform* transform = owner->GetComponent<Transform>();
@@ -40,12 +42,16 @@ void CollisionManager::move(GameObject* owner, glm::vec3 newPosition, glm::vec3 
             collider->SetRadius(transform->GetScale().x);
             collider->SetHeight(transform->GetScale().z);
             collider->SetRotation(transform->GetRotation());
+            return true;
         } else { // otherwise update transform
             transform->SetPosition(collider->GetPosition());
             glm::vec3 newTransformScale(collider->GetRadius(), collider->GetRadius(), collider->GetHeight());
             transform->SetScale(newTransformScale);
             transform->SetRotation(collider->GetRotation());
+            return false;
         }
+    } else {
+        
     }
 }
 
