@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <string>
 #include <map>
 #include <iostream>
@@ -9,17 +10,18 @@
 #include "stb_image.h"
 #include "Helper.h"
 
-class Model {
-public:
-    Model();
-    Model(std::string path);
-    void draw(const glm::mat4& viewProjMtx, GLuint shader);
-    int getBoneCount() const;
-    std::map<std::string, BoneInfo>& getBoneInfoMap();
-    void addBoneCount();
-    void update(float dt, glm::vec3 pos);
-    void setPosition(glm::vec3 pos);
+#include "../../_common/include/IComponent.hpp"
+
+
+class Model : public IComponent {
+
 private:
+    std::vector<Mesh> meshes;
+    std::string directory;
+    std::vector<Texture> textures_loaded;
+    std::map<std::string, BoneInfo> boneInfoMap;
+    int boneCounter = 0;
+
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
@@ -29,9 +31,15 @@ private:
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
     void extractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
-    std::vector<Mesh> meshes;
-    std::string directory;
-    std::vector<Texture> textures_loaded;
-    std::map<std::string, BoneInfo> boneInfoMap;
-    int boneCounter = 0;
+public:
+    Model();
+    Model(std::string path);
+    void draw(const glm::mat4& viewProjMtx, GLuint shader);
+    int getBoneCount() const;
+    std::map<std::string, BoneInfo>& getBoneInfoMap();
+    void addBoneCount();
+    void update(float dt, glm::vec3 pos);
+    void setPosition(glm::vec3 pos);
+
+    std::string ToString() override;
 };

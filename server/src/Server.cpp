@@ -3,6 +3,11 @@
 #include <iomanip>
 #include <iostream>
 #include <thread>
+#include "ColorCodes.hpp"
+
+size_t getThread() {
+    return std::hash<std::thread::id> {}(std::this_thread::get_id());
+}
 
 int Server::teardown() { return 0; }
 
@@ -12,7 +17,7 @@ void Server::start() {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
 
     if (sock < 0) {
-        perror("socket() failed");
+        perror("[SERVER] socket() failed");
         return;
     }
 
@@ -23,7 +28,7 @@ void Server::start() {
     sin.sin_port = htons(SERVER_PORT);
 
     if (!psocket.bind((struct sockaddr*)&sin, sizeof(sin))) {
-        perror("bind failed");
+        perror("[SERVER] bind failed");
         return;
     }
 
@@ -31,13 +36,7 @@ void Server::start() {
         perror("listen failed");
         return;
     }
-    printf("Now listening on port %d\n", SERVER_PORT);
-
-    // Populate clients
-    for (int i = 0; i < MAX_CLIENTS; i++) {
-        clients[i] = new Client(i);
-        clients[i]->clientsock = nullptr;
-    }
+    printf("[SERVER] Now listening on port %d\n", SERVER_PORT);
 
     while (1) {
         struct sockaddr_in client_sin;
@@ -49,93 +48,98 @@ void Server::start() {
             return;
         }
 
-        printf("Incoming connection from %s:%d\n",
+        printf("[SERVER] Incoming connection from %s:%d\n",
                inet_ntoa(client_sin.sin_addr), client_sin.sin_port);
-        int i = 0;
         std::unique_lock<std::mutex> lock(_mutex);
-        for (; i < MAX_CLIENTS; i++) {
+        int newClientId = -1;
+        for (int i = 0; i < MAX_CLIENTS; i++) {
             // Find first free slot
-            if (clients[i]->clientsock != nullptr)
+            if (clients.find(i) != clients.end())
                 continue;
 
-            clients[i]->clientsock = client_sock;
-            clients[i]->init();
+            newClientId = i;
+            clients[newClientId] = new Client(newClientId);
+            clients[newClientId]->clientsock = client_sock;
 
-            NetworkManager::instance().register_entity(clients[i]->p);
-            // FIXME track server capacity in a not-dumb way
-            printf(
-                "Client (%s:%d) was assigned id %d. Server capacity: %d / %d\n",
-                inet_ntoa(client_sin.sin_addr), client_sin.sin_port, i,
-                Server::clients.size(), MAX_CLIENTS);
+            printf("[SERVER] Client (%s:%d) was assigned id %d. Server "
+                   "capacity: %d / %d\n",
+                   inet_ntoa(client_sin.sin_addr), client_sin.sin_port,
+                   newClientId, Server::clients.size(), MAX_CLIENTS);
 
-            std::thread(&Server::receive, this, clients[i]).detach();
+            std::thread(&Server::receive, this, clients[newClientId]).detach();
 
             break;
         }
         lock.unlock();
 
-        if (i == MAX_CLIENTS) {
-            perror("Server is full");
+        if (newClientId == -1) {
+            printf(RED "[SERVER] Server is full\n" RST);
+            continue;
         }
+
+        // Raise client joined event
+        auto args = new ClientEventArgs(newClientId);
+        client_joined.invoke(args);
     }
 }
 
-std::vector<Client*>* Server::get_clients() {
-    std::vector<Client*>* res = new std::vector<Client*>();
+std::map<int, Client*> Server::get_clients() {
     std::lock_guard<std::mutex> lock(_mutex);
-    for (auto it : clients) {
-        res->push_back(it.second);
-    }
+    std::map<int, Client*> res(clients);
     return res;
 }
 
-// multi-threaded
+// new thread per client
 void Server::receive(Client* client) {
     uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
 
+    int clientId = client->id;
     while (1) {
         int read_bytes =
             client->clientsock->recv((char*)buffer, expected_data_len, 0);
+        // TODO handle disconnect events
         if (read_bytes == 0) { // Connection was closed
             std::lock_guard<std::mutex> lock(_mutex);
-            // TODO have network manager handle disconnect events
-            NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
-            std::cout << "Client " << client->id << " disconnected."
-                      << std::endl;
-            return;
+            break;
         } else if (read_bytes < 0) { // error
             std::lock_guard<std::mutex> lock(_mutex);
-            NetworkManager::instance().unregister_entity(client->p);
             client->disconnect();
-            std::cout << "recv failed" << std::endl;
-            std::cout << "Client " << client->id << " disconnected."
-                      << std::endl;
-            return;
+            break;
         } else {
-            printf("Received %d bytes from client %d\n", read_bytes,
-                   client->id);
-            // do we need this?
-            std::lock_guard<std::mutex> lock(handler_mutex);
-            if (receive_event) {
-                receive_event(client->id, buffer);
-            }
+            // TODO handle multiple packets per receive call
+            printf("[SERVER %lu] Received %d bytes from client %d\n",
+                   getThread(), read_bytes, client->id);
+            uint8_t* recvd_bytes = new uint8_t[read_bytes];
+            memcpy(recvd_bytes, buffer, read_bytes);
+
+            MessageReceivedEventArgs* args =
+                new MessageReceivedEventArgs(client->id, buffer, read_bytes);
+            message_received.invoke(args);
         }
 
         memset(buffer, 0, 4096);
     }
-}
 
-void Server::set_callback(const ReceiveHandler& handler) {
-    std::lock_guard<std::mutex> lock(handler_mutex);
-    receive_event = handler;
+    auto args = new ClientEventArgs(clientId);
+    client_disconnected.invoke(args);
+    std::cout << "[SERVER " << getThread() << "] Client " << clientId
+              << " disconnected." << std::endl;
+    std::lock_guard<std::mutex> lock(_mutex);
+    delete client;
+    clients.erase(clientId);
 }
 
 int Server::send(int client_id, Packet* pkt) {
-    // FIXME might not be thread-safe?
+    std::lock_guard<std::mutex> lock(_mutex);
+    if (clients.find(client_id) == clients.end()) {
+        printf("[SERVER] failed to send - client disconnected\n");
+        return 1;
+    }
+
     if (clients[client_id]->clientsock == nullptr) {
-        printf("failed to send\n");
+        printf("[SERVER] failed to send - bad socket fd\n");
         return 1;
     }
 
@@ -143,8 +147,8 @@ int Server::send(int client_id, Packet* pkt) {
         (const char*)pkt->getBytes(), pkt->size(), 0);
     delete pkt;
     if (sent_bytes < 0) {
-        printf("failed to send\n");
-        return 1;
+        printf("[SERVER] failed to send\n");
+        return -1;
     }
     return 0;
 }

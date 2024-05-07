@@ -1,6 +1,6 @@
 #include "AnimationClip.h"
 
-AnimationClip::AnimationClip(std::string path, Model* model) {
+AnimationClip::AnimationClip(std::string path, Model* model) : IComponent() {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
     assert(scene && scene->mRootNode);
@@ -73,4 +73,8 @@ void AnimationClip::readHierarchyData(AssimpNodeData& dest, const aiNode* src) {
 
 const glm::mat4& AnimationClip::getGlobalInverseTransform() const {
     return globalInverseTransform;
+}
+
+std::string AnimationClip::ToString() {
+    return "AnimationClip";
 }
