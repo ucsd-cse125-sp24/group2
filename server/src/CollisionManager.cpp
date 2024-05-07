@@ -5,18 +5,27 @@
 #include "CollisionManager.hpp"
 
 
-
-void CollisionManager::add(GameObject* owner){
+// To discuss: add can be false if the position is occupied. When adding, check if successful. If not, readd to another place.
+bool CollisionManager::add(GameObject* owner){
+    std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
+    if (!collider->GetIsPoint() && !collider->GetIsSector()){
+        if (checkCollisionCylinder(collider)){
+            return false;
+        }
+    }
     colliderOwners[collider] = owner;
+    return true;
 }
 
 void CollisionManager::remove(GameObject* owner) {
+    std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
     colliderOwners.erase(collider);
 }
 
 void CollisionManager::move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale){
+    std::lock_guard<std::mutex> lock(_mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
     Transform* transform = owner->GetComponent<Transform>();
     if (!collider->GetIsPoint() && !collider->GetIsSector()){

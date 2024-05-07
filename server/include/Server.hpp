@@ -9,7 +9,6 @@
 #include "Client.hpp"
 #include "NetworkManager.hpp"
 #include "psocket.hpp"
-#include "CollisionManager.hpp"
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565

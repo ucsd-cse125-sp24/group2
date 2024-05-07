@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <unordered_map>
+#include <mutex>
 
 #include "Collider.hpp"
 #include "GameObject.hpp"
@@ -20,10 +21,11 @@
 
 class CollisionManager {
 private:
+    std::mutex _mutex; // everything touching colliderOwners should be mutex protected
     std::unordered_map<Collider*, GameObject*> colliderOwners;
 
 public:
-    void add(GameObject* owner);
+    bool add(GameObject* owner);
 
     void remove(GameObject* owner);
 
@@ -35,6 +37,10 @@ public:
     bool collisionCylinderPoint(const Collider* cyl, const Collider* point);
     bool collisionCylinderBoundary(const Collider* cyl);
     bool checkCollisionCylinder(Collider* cyl);
+    static CollisionManager& instance() {
+        static CollisionManager s;
+        return s;
+    }
 };
 
 struct Vector2 {
