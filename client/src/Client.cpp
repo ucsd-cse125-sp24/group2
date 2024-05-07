@@ -4,11 +4,12 @@
 #include <iostream>
 #include <pthread.h>
 #include <stdio.h>
+#include "GameManager.hpp"
 
 void Client::connect(const char* ip, uint16_t port) {
     int sock = psocket.socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
-        printf("failed to create socket\n");
+        printf("[CLIENT] failed to create socket\n");
         return;
     }
 
@@ -20,48 +21,61 @@ void Client::connect(const char* ip, uint16_t port) {
 
     // connect to server
     if (!psocket.connect((struct sockaddr*)&sin, sizeof(sin))) {
-        perror("connection failed");
+        perror("[CLIENT] connection failed");
         return;
     }
+    printf("[CLIENT] successfully connected to %s:%d\n", ip, port);
+    
+    std::thread(&Client::receive, this).detach();
 
-    pthread_t thread;
-    int res = pthread_create(&thread, NULL, Client::receive, this);
+    // FIXME Move this business logic out of client
+    GameManager::instance().object_destroyed += [this](EventArgs* e) {
+        DestroyedEventArgs* args = (DestroyedEventArgs*)e;
+
+        Packet* destroyed_ack = new Packet();
+        destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
+        destroyed_ack->write_int(args->destroyedObjectIds.size());
+        for (int destroyedObjId : args->destroyedObjectIds) {
+            destroyed_ack->write_int(destroyedObjId);
+        }
+        send(destroyed_ack);
+    };
 }
 
-void* Client::receive(void* params) {
-    Client* client = (Client*)params;
+void Client::receive() {
     uint8_t buf[4096];
     int read_bytes;
     do {
-        read_bytes = client->psocket.recv((char*)buf, 4096, 0);
+        read_bytes = psocket.recv((char*)buf, 4096, 0);
         if (read_bytes > 0) {
             for (int i = 0; i < read_bytes; i++) {
                 std::cout << std::setfill('0') << std::setw(2) << std::hex
                           << (int)buf[i] << " ";
             }
             std::cout << std::endl;
-            printf("received %d bytes from server\n", read_bytes);
+            printf("[CLIENT] received %d bytes from server\n", read_bytes);
 
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);
 
-            std::lock_guard<std::mutex> lock(client->mutex);
-            if (client->receive_event) {
-                client->receive_event(pkt);
+            std::lock_guard<std::mutex> lock(mutex);
+            if (receive_event) {
+                receive_event(pkt);
             }
 
         } else if (read_bytes < 0) {
-            printf("error in receive\n");
+            printf("[CLIENT] error in receive\n");
         } else {
-            printf("disconnected\n");
+            printf("[CLIENT] disconnected\n");
         }
     } while (read_bytes > 0);
 }
 
 void Client::send(Packet* pkt) {
-    int sent_bytes = psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
+    int sent_bytes =
+        psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
     if (sent_bytes < 0) {
-        printf("failed to send\n");
+        printf("[CLIENT] failed to send\n");
     }
 }
 

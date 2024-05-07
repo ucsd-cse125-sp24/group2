@@ -12,12 +12,18 @@
  **/
 #include <winsock2.h>
 #endif
-enum class PacketType { PLAYER_POSITION, PLAYER_INPUT };
+enum class PacketType {
+    PLAYER_POSITION,
+    PLAYER_INPUT,
+    STATE_UPDATE,
+    DESTROY_OBJECT,
+    DESTROY_OBJECT_ACK,
+};
 class Packet {
-
-   public:
+private:
     std::deque<uint8_t> buffer;
 
+public:
     void write(uint8_t*, int);
     void write_byte(char data);
     void write_int(int data);
@@ -38,4 +44,4 @@ class Packet {
     int size();
 };
 
-#endif  // PACKET_H
+#endif // PACKET_H

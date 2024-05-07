@@ -19,7 +19,7 @@ Mover::Mover() : INetworkComponent() {
 //     animationPlayer = new AnimationPlayer(clip);
 // }
 
-Mover::~Mover() { delete cube; }
+Mover::~Mover() {}
 
 void Mover::Update(float deltaTime) {
     model->update(deltaTime, position);

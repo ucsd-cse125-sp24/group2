@@ -1,14 +1,11 @@
 #ifndef NETWORK_OBJECT_H
 #define NETWORK_OBJECT_H
 
-
 #include "GameObject.hpp"
 #include "Packet.hpp"
 #include "INetworkComponent.hpp"
 
-
 class INetworkComponent;
-
 
 class NetworkObject : public GameObject {
 private:
@@ -34,6 +31,5 @@ public:
 
     // std::string ToString() override;
 };
-
 
 #endif

@@ -11,6 +11,8 @@ set(SERVER_SOURCES
     src/Player.cpp
     src/Server.cpp
     main.cpp
+    src/Entity.cpp
+    src/Scene.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 

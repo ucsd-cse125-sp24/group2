@@ -162,11 +162,8 @@ void Window::displayCallback(GLFWwindow* window) {
     // Render the object.
     for (auto it : GameManager::instance().players) {
         // FIXME make thread safe and call only once
-        Mover* m = it.second->GetComponent<Mover>();
-        if (m != nullptr) {
-            m->Update(deltaTime);
-            m->Draw(Cam->GetViewProjectMtx(), shaderProgram);
-        }
+        it.second->mover->Update(deltaTime);
+        it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
     }
     glfwPollEvents();
     // Swap buffers.

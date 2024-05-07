@@ -1,16 +1,13 @@
 #include "NetworkObject.hpp"
 #include <algorithm>
 
-
 int NetworkObject::nextNetworkId = 0;
 
-
-NetworkObject::NetworkObject() : GameObject() { 
-    _networkId = nextNetworkId++; 
-}
+NetworkObject::NetworkObject() : GameObject() { _networkId = nextNetworkId++; }
 
 void NetworkObject::AddComponent(IComponent* newComp) {
-    if (INetworkComponent* newNetComp = dynamic_cast<INetworkComponent*>(newComp)) {
+    if (INetworkComponent* newNetComp =
+            dynamic_cast<INetworkComponent*>(newComp)) {
         networkComponents.push_back(newNetComp);
         typeToComponentMap.emplace(typeid(*newComp), newComp);
     } else {
@@ -21,7 +18,8 @@ void NetworkObject::AddComponent(IComponent* newComp) {
 
 void NetworkObject::RemoveComponent(IComponent* comp) {
     if (INetworkComponent* netComp = dynamic_cast<INetworkComponent*>(comp)) {
-        std::remove(networkComponents.begin(), networkComponents.end(), netComp);
+        std::remove(networkComponents.begin(), networkComponents.end(),
+                    netComp);
         typeToComponentMap.erase(typeid(*comp));
     } else {
         // components.push_back(comp);
@@ -29,7 +27,3 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
         typeToComponentMap.erase(typeid(*comp));
     }
 }
-
-// std::string NetworkObject::ToString() {
-//     return "NetworkObject";
-// }
