@@ -7,45 +7,45 @@
 
 
 void CollisionManager::add(GameObject* owner){
-    Collider* collider = owner->getComponent<Collider>();
+    Collider* collider = owner->GetComponent<Collider>();
     colliderOwners[collider] = owner;
 }
 
 void CollisionManager::remove(GameObject* owner) {
-    Collider* collider = owner->getComponent<Collider>();
+    Collider* collider = owner->GetComponent<Collider>();
     colliderOwners.erase(collider);
 }
 
 void CollisionManager::move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale){
-    Collider* collider = owner->getComponent<Collider>();
-    Transform* transform = owner->getComponent<Transform>();
-    if (!collider->getIsPoint() && !collider->getIsSector()){
+    Collider* collider = owner->GetComponent<Collider>();
+    Transform* transform = owner->GetComponent<Transform>();
+    if (!collider->GetIsPoint() && !collider->GetIsSector()){
         newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
-        collider->setPosition(newPosition);
-        collider->setRadius(newScale.x);
-        collider->setHeight(newScale.z);
-        collider->setRotation(newRotation);
+        collider->SetPosition(newPosition);
+        collider->SetRadius(newScale.x);
+        collider->SetHeight(newScale.z);
+        collider->SetRotation(newRotation);
         // if collision, revert to previous collider
         if (checkCollisionCylinder(collider)){
-            collider->setPosition(transform->getPosition());
-            collider->setRadius(transform->getScale().x);
-            collider->setHeight(transform->getScale().z);
-            collider->setRotation(transform->getRotation());
+            collider->SetPosition(transform->GetPosition());
+            collider->SetRadius(transform->GetScale().x);
+            collider->SetHeight(transform->GetScale().z);
+            collider->SetRotation(transform->GetRotation());
         } else { // otherwise update transform
-            transform->setPosition(collider->getPosition());
-            glm::vec3 newTransformScale(collider->getRadius(), collider->getRadius(), collider->getHeight());
-            transform->setScale(newTransformScale);
-            transform->setRotation(collider->getRotation());
+            transform->SetPosition(collider->GetPosition());
+            glm::vec3 newTransformScale(collider->GetRadius(), collider->GetRadius(), collider->GetHeight());
+            transform->SetScale(newTransformScale);
+            transform->SetRotation(collider->GetRotation());
         }
     }
 }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1, const Collider* cyl2) {
-    glm::vec3 position1 = cyl1->getPosition();
-    glm::vec3 position2 = cyl2->getPosition();
+    glm::vec3 position1 = cyl1->GetPosition();
+    glm::vec3 position2 = cyl2->GetPosition();
     // First check for overlap in the z-axis
-    float z1Min = position1.z; float z1Max = position1.z + cyl1->getHeight();
-    float z2Min = position2.z; float z2Max = position2.z + cyl2->getHeight();
+    float z1Min = position1.z; float z1Max = position1.z + cyl1->GetHeight();
+    float z2Min = position2.z; float z2Max = position2.z + cyl2->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
@@ -53,7 +53,7 @@ bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1, const Col
     float dx = position1.x - position2.x;
     float dy = position1.y - position2.y;
     float distanceSquared = dx * dx + dy * dy;
-    float radiusSum = cyl1->getRadius() + cyl2->getRadius();
+    float radiusSum = cyl1->GetRadius() + cyl2->GetRadius();
     if (distanceSquared >= radiusSum * radiusSum)
         return false;
 
@@ -61,18 +61,18 @@ bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1, const Col
 }
 
 bool CollisionManager::collisionCylinderSector(const Collider* cyl, const Collider* sec) {
-    glm::vec3 position1 = cyl->getPosition();
-    glm::vec3 position2 = sec->getPosition();
-    float z1Min = position1.z; float z1Max = position1.z + cyl->getHeight();
-    float z2Min = position2.z; float z2Max = position2.z + sec->getHeight();
+    glm::vec3 position1 = cyl->GetPosition();
+    glm::vec3 position2 = sec->GetPosition();
+    float z1Min = position1.z; float z1Max = position1.z + cyl->GetHeight();
+    float z2Min = position2.z; float z2Max = position2.z + sec->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
-    Vector2 edge1 = {sec->getRadius() * cos(sec->getStartAngle()), sec->getRadius() * sin(sec->getStartAngle())};
-    Vector2 edge2 = {sec->getRadius() * cos(sec->getEndAngle()), sec->getRadius() * sin(sec->getEndAngle())};
+    Vector2 edge1 = {sec->GetRadius() * cos(sec->GetStartAngle()), sec->GetRadius() * sin(sec->GetStartAngle())};
+    Vector2 edge2 = {sec->GetRadius() * cos(sec->GetEndAngle()), sec->GetRadius() * sin(sec->GetEndAngle())};
     Vector2 conn = {position1.x - position2.x, position1.y - position2.y};
     if (isBetween(conn, edge1, edge2)) {
-        if (sqrt(conn.dot(conn)) < cyl->getRadius() + sec->getRadius()) {
+        if (sqrt(conn.dot(conn)) < cyl->GetRadius() + sec->GetRadius()) {
             return true;
         } else {
             return false;
@@ -94,7 +94,7 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl, const Collid
             }
             if ((closestPoint.x - position1.x)*(closestPoint.x - position1.x) + 
                 (closestPoint.y - position1.y)*(closestPoint.y - position1.y) < 
-                cyl->getRadius() * cyl->getRadius())
+                cyl->GetRadius() * cyl->GetRadius())
                 return true;
         }
         return false;
@@ -102,24 +102,24 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl, const Collid
 }
 
 bool CollisionManager::collisionCylinderPoint(const Collider* cyl, const Collider* point) {
-    glm::vec3 position1 = cyl->getPosition();
-    glm::vec3 position2 = point->getPosition();
+    glm::vec3 position1 = cyl->GetPosition();
+    glm::vec3 position2 = point->GetPosition();
     float zMin = position1.z;
-    float zMax = position1.z + cyl->getHeight();
+    float zMax = position1.z + cyl->GetHeight();
     if (position2.z < zMin || position2.z > zMax)
         return false;
     float dx = position2.x - position1.x;
     float dy = position2.y - position1.y;
     float distanceSquared = dx * dx + dy * dy;
-    if (distanceSquared >= cyl->getRadius() * cyl->getRadius())
+    if (distanceSquared >= cyl->GetRadius() * cyl->GetRadius())
         return false;
     return true;
 }
 
 bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
-    glm::vec3 position1 = cyl->getPosition();
-    if (position1.x-cyl->getRadius() < 0 || position1.x+cyl->getRadius() > BOUNDARY_LEN || 
-        position1.y-cyl->getRadius() < 0 || position1.y+cyl->getRadius() > BOUNDARY_LEN) 
+    glm::vec3 position1 = cyl->GetPosition();
+    if (position1.x-cyl->GetRadius() < 0 || position1.x+cyl->GetRadius() > BOUNDARY_LEN || 
+        position1.y-cyl->GetRadius() < 0 || position1.y+cyl->GetRadius() > BOUNDARY_LEN) 
         return true;
     return false;
 }
@@ -130,7 +130,7 @@ bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
     GameObject* cylOwner = colliderOwners.at(cyl);
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second){
-            if (!pair.first->getIsSector() && !pair.first->getIsPoint()
+            if (!pair.first->GetIsSector() && !pair.first->GetIsPoint()
                 && collisionCylinderCylinder(cyl, pair.first)) 
                 return true;
         }

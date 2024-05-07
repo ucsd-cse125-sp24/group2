@@ -7,8 +7,8 @@
 GameObject::GameObject() {
     Transform* transform = new Transform(this);
     Collider* collider = new Collider(this);
-    addComponent(transform);
-    addComponent(collider);
+    AddComponent(transform);
+    AddComponent(collider);
 }
 
 GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
@@ -17,8 +17,8 @@ GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
         new Transform(this, newPosition, newRotation, newScale);
     Collider* collider = 
         new Collider(this, newPosition, newRotation, newScale);
-    addComponent(transform);
-    addComponent(collider);
+    AddComponent(transform);
+    AddComponent(collider);
 }
 
 void GameObject::AddComponent(IComponent* newComponent) {

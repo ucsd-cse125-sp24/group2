@@ -19,6 +19,7 @@
 // Therefore, the only collsions possible are Cylinder&Cylinder, Cylinder&Sector, Cylinder&Point, Cylinder&Floor/Boundary
 
 class CollisionManager {
+private:
     std::unordered_map<Collider*, GameObject*> colliderOwners;
 
 public:

@@ -23,7 +23,7 @@ void Collider::makePoint() {
     isPoint = true;
 }
 
-std::string Collider::toString() const {
+std::string Collider::ToString() {
     return "Position: " + glm::to_string(position) +
            ", Radius: " + std::to_string(radius) +
            ", Height: " + std::to_string(height) +
@@ -33,39 +33,39 @@ std::string Collider::toString() const {
            ", Point: " + (isPoint ? "Yes" : "No");
 }
 
-const glm::vec3& Collider::getPosition() const { return position; }
-const glm::vec3& Collider::getRotation() const { return rotation; }
-float Collider::getRadius() const { return radius; }
-float Collider::getHeight() const { return height; }
-float Collider::getStartAngle() const { return startAngle; }
-float Collider::getEndAngle() const { return endAngle; }
-bool Collider::getIsSector() const { return isSector; }
-bool Collider::getIsPoint() const { return isPoint; }
+const glm::vec3& Collider::GetPosition() const { return position; }
+const glm::vec3& Collider::GetRotation() const { return rotation; }
+float Collider::GetRadius() const { return radius; }
+float Collider::GetHeight() const { return height; }
+float Collider::GetStartAngle() const { return startAngle; }
+float Collider::GetEndAngle() const { return endAngle; }
+bool Collider::GetIsSector() const { return isSector; }
+bool Collider::GetIsPoint() const { return isPoint; }
 
-void Collider::setPosition(glm::vec3 newPosition) { position = newPosition; }
-void Collider::setRotation(glm::vec3 newRotation) { rotation = newRotation; }
-void Collider::setRadius(float newRadius) { radius = newRadius; }
-void Collider::setHeight(float newHeight) { height = newHeight; }
-void Collider::setStartAngle(float newStartAngle) { startAngle = newStartAngle; }
-void Collider::setEndAngle(float newEndAngle) { endAngle = newEndAngle; }
-void Collider::setIsSector(bool sector) { isSector = sector; }
-void Collider::setIsPoint(bool point) { isPoint = point; }
+void Collider::SetPosition(glm::vec3 newPosition) { position = newPosition; }
+void Collider::SetRotation(glm::vec3 newRotation) { rotation = newRotation; }
+void Collider::SetRadius(float newRadius) { radius = newRadius; }
+void Collider::SetHeight(float newHeight) { height = newHeight; }
+void Collider::SetStartAngle(float newStartAngle) { startAngle = newStartAngle; }
+void Collider::SetEndAngle(float newEndAngle) { endAngle = newEndAngle; }
+void Collider::SetIsSector(bool sector) { isSector = sector; }
+void Collider::SetIsPoint(bool point) { isPoint = point; }
 
 
 // void Collider::updateCylinder(glm::vec3 newPosition, float nradius, float nheight) {
-//     setPosition(newPosition); 
-//     setRadius(nradius); 
-//     setHeight(nheight);
+//     SetPosition(newPosition); 
+//     SetRadius(nradius); 
+//     SetHeight(nheight);
 // }
 
 // void Collider::updateSector(glm::vec3 newPosition, float nradius, float nheight, float nstartAngle, float nendAngle) {
-//     setPosition(newPosition); 
-//     setRadius(nradius); 
-//     setHeight(nheight);
-//     setStartAngle(nstartAngle); 
-//     setEndAngle(nendAngle);
+//     SetPosition(newPosition); 
+//     SetRadius(nradius); 
+//     SetHeight(nheight);
+//     SetStartAngle(nstartAngle); 
+//     SetEndAngle(nendAngle);
 // }
 
 // void Collider::updatePoint(glm::vec3 newPosition) {
-//     setPosition(newPosition);
+//     SetPosition(newPosition);
 // }

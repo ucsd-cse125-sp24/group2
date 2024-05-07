@@ -20,25 +20,25 @@ public:
     // default constructor for cylinder, use functions to change it to sectors/point
     Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
-    virtual std::string toString() const override;
+    virtual std::string ToString();
 
-    const glm::vec3& getPosition() const;
-    const glm::vec3& getRotation() const;
-    float getRadius() const;
-    float getHeight() const;
-    float getStartAngle() const;
-    float getEndAngle() const;
-    bool getIsSector() const;
-    bool getIsPoint() const;
+    const glm::vec3& GetPosition() const;
+    const glm::vec3& GetRotation() const;
+    float GetRadius() const;
+    float GetHeight() const;
+    float GetStartAngle() const;
+    float GetEndAngle() const;
+    bool GetIsSector() const;
+    bool GetIsPoint() const;
 
-    void setPosition(glm::vec3 newPosition);
-    void setRotation(glm::vec3 newRotation);
-    void setRadius(float newRadius);
-    void setHeight(float newHeight);
-    void setStartAngle(float newStartAngle);
-    void setEndAngle(float newEndAngle);
-    void setIsSector(bool sector);
-    void setIsPoint(bool point);
+    void SetPosition(glm::vec3 newPosition);
+    void SetRotation(glm::vec3 newRotation);
+    void SetRadius(float newRadius);
+    void SetHeight(float newHeight);
+    void SetStartAngle(float newStartAngle);
+    void SetEndAngle(float newEndAngle);
+    void SetIsSector(bool sector);
+    void SetIsPoint(bool point);
 
     void makeSector(float angle);
 

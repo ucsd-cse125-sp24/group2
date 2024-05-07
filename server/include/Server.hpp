@@ -9,6 +9,7 @@
 #include "Client.hpp"
 #include "NetworkManager.hpp"
 #include "psocket.hpp"
+#include "CollisionManager.hpp"
 
 #define MAX_CLIENTS 8
 #define SERVER_PORT 25565
@@ -21,7 +22,7 @@ private:
     std::map<int, Client*> clients;
     Socket psocket;
     void receive(Client* client);
-    ReceiveHandler receive_event = nullptr;
+    ReceiveHandler receive_event = nullptr; 
 
 public:
     void start();
