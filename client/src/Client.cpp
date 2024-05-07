@@ -25,9 +25,8 @@ void Client::connect(const char* ip, uint16_t port) {
         return;
     }
     printf("[CLIENT] successfully connected to %s:%d\n", ip, port);
-
-    pthread_t thread;
-    int res = pthread_create(&thread, NULL, Client::receive, this);
+    
+    std::thread(&Client::receive, this).detach();
 
     // FIXME Move this business logic out of client
     GameManager::instance().object_destroyed += [this](EventArgs* e) {
@@ -43,12 +42,11 @@ void Client::connect(const char* ip, uint16_t port) {
     };
 }
 
-void* Client::receive(void* params) {
-    Client* client = (Client*)params;
+void Client::receive() {
     uint8_t buf[4096];
     int read_bytes;
     do {
-        read_bytes = client->psocket.recv((char*)buf, 4096, 0);
+        read_bytes = psocket.recv((char*)buf, 4096, 0);
         if (read_bytes > 0) {
             for (int i = 0; i < read_bytes; i++) {
                 std::cout << std::setfill('0') << std::setw(2) << std::hex
@@ -60,9 +58,9 @@ void* Client::receive(void* params) {
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);
 
-            std::lock_guard<std::mutex> lock(client->mutex);
-            if (client->receive_event) {
-                client->receive_event(pkt);
+            std::lock_guard<std::mutex> lock(mutex);
+            if (receive_event) {
+                receive_event(pkt);
             }
 
         } else if (read_bytes < 0) {

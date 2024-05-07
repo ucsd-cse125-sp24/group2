@@ -11,8 +11,6 @@
 
 class Client {
 private:
-    static void* receive(void*);
-
 public:
     std::map<int, NetworkObjectState> objectStates;
     Player* p;

@@ -1,5 +1,6 @@
 #include "GameManager.hpp"
 #include "ColorCodes.hpp"
+#include <thread>
 
 union FloatUnion {
     float f;
@@ -12,9 +13,6 @@ void GameManager::handle_packet(Packet* packet) {
     PacketType p = (PacketType)packet_id;
 
     switch (p) {
-    case PacketType::PLAYER_POSITION:
-        player_position(packet);
-        break;
     case PacketType::STATE_UPDATE:
         update(packet);
         break;
@@ -25,29 +23,6 @@ void GameManager::handle_packet(Packet* packet) {
     default:
         break;
     }
-}
-
-void GameManager::player_position(Packet* pkt) {
-    int player_id;
-    pkt->read_int(&player_id);
-
-    if (players.find(player_id) == players.end()) {
-        PlayerManager* p = new PlayerManager();
-        p->id = player_id;
-        p->mover = nullptr;
-        players[player_id] = p;
-    }
-
-    pkt->read_int((int*)&num.l);
-    float x = num.f;
-    pkt->read_int((int*)&num.l);
-    float y = num.f;
-    pkt->read_int((int*)&num.l);
-    float z = num.f;
-
-    // FIXME make thread safe
-    if (players[player_id]->mover != nullptr)
-        players[player_id]->mover->position = glm::vec3(x, y, z);
 }
 
 void GameManager::update(Packet* pkt) {
@@ -62,7 +37,8 @@ void GameManager::update(Packet* pkt) {
         if (players.find(object_id) == players.end()) {
             PlayerManager* p = new PlayerManager();
             p->id = object_id;
-            p->mover = nullptr;
+            p->mover = new Mover(
+                "../assets/male_basic_walk_30_frames_loop/scene.gltf");
             players[object_id] = p;
         }
 
@@ -73,9 +49,7 @@ void GameManager::update(Packet* pkt) {
         pkt->read_int((int*)&num.l);
         float z = num.f;
 
-        // FIXME make thread safe
-        if (players[object_id]->mover != nullptr)
-            players[object_id]->mover->position = glm::vec3(x, y, z);
+        players[object_id]->mover->position = glm::vec3(x, y, z);
 
         num_updates--;
     }

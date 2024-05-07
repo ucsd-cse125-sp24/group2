@@ -6,6 +6,8 @@
 #include "Packet.hpp"
 #include "EventArgs.hpp"
 #include "Event.hpp"
+#include <thread>
+
 class GameManager {
 
 public:
@@ -17,7 +19,6 @@ public:
         return m;
     }
     void handle_packet(Packet*);
-    void player_position(Packet*);
     void update(Packet*);
     void destroy_object(Packet*);
 };

@@ -20,10 +20,10 @@ enum class PacketType {
     DESTROY_OBJECT_ACK,
 };
 class Packet {
-
-public:
+private:
     std::deque<uint8_t> buffer;
 
+public:
     void write(uint8_t*, int);
     void write_byte(char data);
     void write_int(int data);
