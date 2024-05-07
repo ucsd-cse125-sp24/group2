@@ -17,8 +17,10 @@ class Collider : public IComponent {
 public:
     // default, Cylinder with owner at 0,0,0. Can be used for obstacles
     Collider(GameObject* owner);
-    // default constructor for cylinder, use functions to change it to sectors/point
-    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
+    // default constructor for cylinder, use functions to change it to
+    // sectors/point
+    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation,
+             glm::vec3 newScale);
 
     virtual std::string ToString();
 
@@ -43,12 +45,6 @@ public:
     void makeSector(float angle);
 
     void makePoint();
-
-    // void updateCylinder(glm::vec3 newPosition, float nradius, float nheight);
-
-    // void updateSector(glm::vec3 newPosition, float nradius, float nheight, float nstartAngle, float nendAngle);
-
-    // void updatePoint(glm::vec3 newPosition);
 };
 
 #endif // COLLIDER_HPP

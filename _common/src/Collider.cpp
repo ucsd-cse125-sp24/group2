@@ -3,8 +3,10 @@
 
 Collider::Collider(GameObject* owner) : IComponent(owner) {}
 
-Collider::Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale)
-: IComponent(owner), position(newPosition), radius(newScale.x), height(newScale.z), rotation(newRotation) {}
+Collider::Collider(GameObject* owner, glm::vec3 newPosition,
+                   glm::vec3 newRotation, glm::vec3 newScale)
+    : IComponent(owner), position(newPosition), radius(newScale.x),
+      height(newScale.z), rotation(newRotation) {}
 
 void Collider::makeSector(float angle) {
     if (isSector)
@@ -14,14 +16,12 @@ void Collider::makeSector(float angle) {
     glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
     float dot = glm::dot(normalizedVec, xAxis);
     float rotationAngle = std::acos(dot);
-    startAngle = rotationAngle - angle/2;
-    endAngle = rotationAngle + angle/2;
+    startAngle = rotationAngle - angle / 2;
+    endAngle = rotationAngle + angle / 2;
     isSector = true;
 }
 
-void Collider::makePoint() {
-    isPoint = true;
-}
+void Collider::makePoint() { isPoint = true; }
 
 std::string Collider::ToString() {
     return "Position: " + glm::to_string(position) +
@@ -46,26 +46,9 @@ void Collider::SetPosition(glm::vec3 newPosition) { position = newPosition; }
 void Collider::SetRotation(glm::vec3 newRotation) { rotation = newRotation; }
 void Collider::SetRadius(float newRadius) { radius = newRadius; }
 void Collider::SetHeight(float newHeight) { height = newHeight; }
-void Collider::SetStartAngle(float newStartAngle) { startAngle = newStartAngle; }
+void Collider::SetStartAngle(float newStartAngle) {
+    startAngle = newStartAngle;
+}
 void Collider::SetEndAngle(float newEndAngle) { endAngle = newEndAngle; }
 void Collider::SetIsSector(bool sector) { isSector = sector; }
 void Collider::SetIsPoint(bool point) { isPoint = point; }
-
-
-// void Collider::updateCylinder(glm::vec3 newPosition, float nradius, float nheight) {
-//     SetPosition(newPosition); 
-//     SetRadius(nradius); 
-//     SetHeight(nheight);
-// }
-
-// void Collider::updateSector(glm::vec3 newPosition, float nradius, float nheight, float nstartAngle, float nendAngle) {
-//     SetPosition(newPosition); 
-//     SetRadius(nradius); 
-//     SetHeight(nheight);
-//     SetStartAngle(nstartAngle); 
-//     SetEndAngle(nendAngle);
-// }
-
-// void Collider::updatePoint(glm::vec3 newPosition) {
-//     SetPosition(newPosition);
-// }
