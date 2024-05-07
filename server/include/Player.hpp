@@ -10,4 +10,5 @@ public:
     glm::vec3 velocity = glm::vec3();
     float speed = 0.2f;
     virtual void update() override;
+    int32_t TypeID() const override;
 };
