@@ -13,6 +13,7 @@ set(SERVER_SOURCES
     main.cpp
     src/Entity.cpp
     src/Scene.cpp
+    src/CollisionManager.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 
