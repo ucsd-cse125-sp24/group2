@@ -53,7 +53,11 @@ void print_versions() {
 #endif
 }
 
-int main(void) {
+int main(int argc, char** argv) {
+    if (argc != 3) {
+        printf("Usage: ./menv [IP] [PORT]\n");
+        return 1;
+    }
     Client client;
 
     // Create the GLFW window.
@@ -78,7 +82,7 @@ int main(void) {
     client.setCallback([window](Packet* params) {
         GameManager::instance().handle_packet(params);
     });
-    client.connect("127.0.0.1", 25565);
+    client.connect(argv[1], atoi(argv[2]));
 
     // Loop while GLFW window should stay open.
     while (!glfwWindowShouldClose(window)) {
