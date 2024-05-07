@@ -19,7 +19,6 @@
 // Therefore, the only collsions possible are Cylinder&Cylinder, Cylinder&Sector, Cylinder&Point, Cylinder&Floor/Boundary
 
 class CollisionManager {
-    std::vector<Collider*> colliders;
     std::unordered_map<Collider*, GameObject*> colliderOwners;
 
 public:
@@ -28,10 +27,6 @@ public:
     void remove(GameObject* owner);
 
     void move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
-
-    void moveCylinder(Collider* collider, float nx, float ny, float nz, float nradius, float nheight);
-    void moveSector(Collider* collider, float nx, float ny, float nz, float nradius, float nheight, float nstartAngle, float nendAngle);
-    void movePoint(Collider* collider, float nx, float ny, float nz);
 
     // These may not need to be public in the future
     bool collisionCylinderCylinder(const Collider* cyl1, const Collider* cyl2);
