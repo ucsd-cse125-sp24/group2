@@ -9,6 +9,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include "GameObject.hpp"
 #include "Transform.hpp"
+#include "ConcurrentQueue.hpp"
+#include <thread>
+
+ConcurrentQueue<std::function<void(void)>> task_queue;
 
 void error_callback(int error, const char* description) {
     // Print error.
@@ -53,7 +57,11 @@ void print_versions() {
 #endif
 }
 
-int main(void) {
+int main(int argc, char** argv) {
+    if (argc != 3) {
+        printf("Usage: ./menv [IP] [PORT]\n");
+        return 1;
+    }
     Client client;
 
     // Create the GLFW window.
@@ -75,10 +83,11 @@ int main(void) {
     if (!Window::initializeObjects())
         exit(EXIT_FAILURE);
 
-    client.setCallback([window](Packet* params) {
-        GameManager::instance().handle_packet(params);
+    client.setCallback([&](Packet* params) {
+        task_queue.push_back(
+            [&, params]() { GameManager::instance().handle_packet(params); });
     });
-    client.connect("127.0.0.1", 25565);
+    client.connect(argv[1], atoi(argv[2]));
 
     // Loop while GLFW window should stay open.
     while (!glfwWindowShouldClose(window)) {
@@ -87,6 +96,9 @@ int main(void) {
 
         // Idle callback. Updating objects, etc. can be done here.
         Window::idleCallback();
+        while (!task_queue.empty()) {
+            task_queue.pop_front()();
+        }
     }
 
     Window::cleanUp();
