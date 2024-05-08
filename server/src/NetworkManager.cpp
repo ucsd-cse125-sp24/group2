@@ -125,6 +125,7 @@ void NetworkManager::send_state() {
         updates->write_int((int)PacketType::STATE_UPDATE);
         updates->write_int(scene.entities.size());
         for (const auto& obj : scene.entities) {
+            updates->write_int(obj->TypeID());
             obj->serialize(updates);
         }
         server.send(client->id, updates);

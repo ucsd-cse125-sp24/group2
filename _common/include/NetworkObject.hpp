@@ -7,6 +7,9 @@
 
 class INetworkComponent;
 
+enum NetworkObjectTypeID : int32_t {
+    PLAYER,
+};
 class NetworkObject : public GameObject {
 private:
     int _networkId;
@@ -27,6 +30,7 @@ public:
 
     virtual void serialize(Packet*) = 0;
     virtual void deserialize(Packet*) = 0;
+    virtual int32_t TypeID() const = 0;
     inline int networkId() const { return _networkId; }
 
     // std::string ToString() override;

@@ -30,26 +30,37 @@ void GameManager::update(Packet* pkt) {
     pkt->read_int(&num_updates);
 
     while (num_updates) {
-        int object_id;
-        pkt->read_int(&object_id);
+        NetworkObjectTypeID _typeid;
+        pkt->read_int((int*)&_typeid);
 
-        // Could not find object, create it
-        if (players.find(object_id) == players.end()) {
-            PlayerManager* p = new PlayerManager();
-            p->id = object_id;
-            p->mover = new Mover(
-                "../assets/male_basic_walk_30_frames_loop/scene.gltf");
-            players[object_id] = p;
+        // TODO deserialize
+        switch (_typeid) {
+        case NetworkObjectTypeID::PLAYER: {
+            int network_id;
+            pkt->read_int(&network_id);
+
+            // Could not find object, create it
+            if (players.find(network_id) == players.end()) {
+                PlayerManager* p = new PlayerManager();
+                p->id = network_id;
+                p->mover = new Mover(
+                    "../assets/male_basic_walk_30_frames_loop/scene.gltf");
+                players[network_id] = p;
+            }
+
+            pkt->read_int((int*)&num.l);
+            float x = num.f;
+            pkt->read_int((int*)&num.l);
+            float y = num.f;
+            pkt->read_int((int*)&num.l);
+            float z = num.f;
+
+            players[network_id]->mover->position = glm::vec3(x, y, z);
+            break;
         }
-
-        pkt->read_int((int*)&num.l);
-        float x = num.f;
-        pkt->read_int((int*)&num.l);
-        float y = num.f;
-        pkt->read_int((int*)&num.l);
-        float z = num.f;
-
-        players[object_id]->mover->position = glm::vec3(x, y, z);
+        default:
+            break;
+        }
 
         num_updates--;
     }
