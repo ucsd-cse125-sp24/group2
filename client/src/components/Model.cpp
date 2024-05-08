@@ -2,12 +2,18 @@
 
 Model::Model() {}
 
-Model::Model(std::string path) : IComponent() { loadModel(path); }
+Model::Model(std::string path) : IComponent() {
+    loadModel(path);
+
+    clip = new AnimationClip(path, this);
+    animationPlayer = new AnimationPlayer(clip);
+}
 
 void Model::update(float dt, glm::vec3 pos) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].update(dt, pos);
     }
+    animationPlayer->update(dt);
 }
 
 void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {

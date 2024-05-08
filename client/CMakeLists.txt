@@ -14,6 +14,7 @@ set(
     src/Tokenizer.cpp
     src/Window.cpp
     src/Client.cpp
+    src/Entity.cpp
 
     # graphics
     src/Mesh.cpp

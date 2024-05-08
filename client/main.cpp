@@ -63,7 +63,6 @@ int main(int argc, char** argv) {
         return 1;
     }
     Client client;
-    Scene scene;
 
     // Create the GLFW window.
     float width = 800;
@@ -126,16 +125,14 @@ int main(int argc, char** argv) {
 
         // Main render display callback. Rendering of objects is done here.
         cam->Update();
-        Window::Render(window, &scene, cam, deltaTime);
+        Window::Render(window, &GameManager::instance().scene, cam, deltaTime);
 
         // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
         }
 
-        for (auto& entity : scene.entities) {
-            entity->update();
-        }
+        GameManager::instance().scene.Update();
     }
 
     Window::cleanUp();

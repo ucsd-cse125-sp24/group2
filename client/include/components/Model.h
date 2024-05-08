@@ -10,7 +10,11 @@
 #include "Helper.h"
 
 #include "IComponent.hpp"
+#include "AnimationClip.h"
+#include "AnimationPlayer.h"
 
+class AnimationPlayer;
+class AnimationClip;
 class Model : public IComponent {
 
 private:
@@ -34,6 +38,8 @@ private:
                                       aiMesh* mesh, const aiScene* scene);
 
 public:
+    AnimationPlayer* animationPlayer;
+    AnimationClip* clip;
     Model();
     Model(std::string path);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);

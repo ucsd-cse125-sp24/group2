@@ -1,6 +1,8 @@
 #include "GameManager.hpp"
 #include "ColorCodes.hpp"
 #include <thread>
+#include "components/RendererComponent.hpp"
+#include "components/Model.h"
 
 union FloatUnion {
     float f;
@@ -41,11 +43,17 @@ void GameManager::update(Packet* pkt) {
 
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                PlayerManager* p = new PlayerManager();
-                p->id = network_id;
-                p->mover = new Mover(
+
+                Player* playerPrefab = new Player();
+                Model* model = new Model(
                     "../assets/male_basic_walk_30_frames_loop/scene.gltf");
-                players[network_id] = p;
+                playerPrefab->AddComponent(model);
+                RendererComponent* meshRenderer =
+                    new RendererComponent(playerPrefab);
+                playerPrefab->AddComponent(meshRenderer);
+                players[network_id] = playerPrefab;
+
+                scene.Instantiate(playerPrefab);
             }
 
             pkt->read_int((int*)&num.l);
@@ -55,7 +63,7 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int((int*)&num.l);
             float z = num.f;
 
-            players[network_id]->mover->position = glm::vec3(x, y, z);
+            players[network_id]->position = glm::vec3(x, y, z);
             break;
         }
         default:
@@ -77,8 +85,7 @@ void GameManager::destroy_object(Packet* pkt) {
         // Found object, destroy it
         if (players.find(objIdToDestroy) != players.end()) {
             printf(RED "DESTROYING OBJECT\n" RST);
-            delete players[objIdToDestroy]->mover;
-            players[objIdToDestroy]->mover = nullptr;
+            delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
 
             objIdsDestroyed.push_back(objIdToDestroy);
