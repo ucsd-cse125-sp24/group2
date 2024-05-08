@@ -63,11 +63,18 @@ int main(int argc, char** argv) {
         return 1;
     }
     Client client;
+    Scene scene;
 
     // Create the GLFW window.
-    GLFWwindow* window = Window::createWindow(800, 600);
+    float width = 800;
+    float height = 600;
+    GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
+
+    // Setup camera
+    Camera* cam = new Camera();
+    cam->SetAspect(float(width) / float(height));
 
     // Print OpenGL and GLSL versions.
     print_versions();
@@ -76,11 +83,11 @@ int main(int argc, char** argv) {
     // Setup OpenGL settings.
     setup_opengl_settings();
 
+    // Initialize input
+    InputManager::setDefaultKeys();
+
     // Initialize the shader program; exit if initialization fails.
-    if (!Window::initializeProgram(client))
-        exit(EXIT_FAILURE);
-    // Initialize objects/pointers for rendering; exit if initialization fails.
-    if (!Window::initializeObjects())
+    if (!Window::initializeProgram())
         exit(EXIT_FAILURE);
 
     client.setCallback([&](Packet* params) {
@@ -90,14 +97,44 @@ int main(int argc, char** argv) {
     client.connect(argv[1], atoi(argv[2]));
 
     // Loop while GLFW window should stay open.
+    float deltaTime = 0;
+    float timer = 0;
+    float currentTime = glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
-        // Main render display callback. Rendering of objects is done here.
-        Window::displayCallback(window);
+        // Calculate deltaTime
+        float newTime = glfwGetTime();
+        deltaTime = newTime - currentTime;
+        currentTime = newTime;
 
-        // Idle callback. Updating objects, etc. can be done here.
-        Window::idleCallback();
+        // send input
+        timer += deltaTime;
+        if (timer > 0.025f) {
+            Packet* pkt = new Packet();
+            pkt->write_int((int)PacketType::PLAYER_INPUT);
+            uint8_t* buf = new uint8_t[4];
+            buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
+            buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
+            buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
+            buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
+            for (int i = 0; i < 4; i++) {
+                pkt->write_byte(buf[i]);
+            }
+            client.send(pkt);
+            delete[] buf;
+            timer = 0;
+        }
+
+        // Main render display callback. Rendering of objects is done here.
+        cam->Update();
+        Window::Render(window, &scene, cam, deltaTime);
+
+        // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
+        }
+
+        for (auto& entity : scene.entities) {
+            entity->update();
         }
     }
 

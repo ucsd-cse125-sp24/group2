@@ -1,9 +1,9 @@
 #pragma once
 
 #include "core.h"
-#include "Model.h"
+#include "components/Model.h"
 #include "Bone.h"
-#include "../../_common/include/IComponent.hpp"
+#include "IComponent.hpp"
 
 struct AssimpNodeData
 {

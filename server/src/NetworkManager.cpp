@@ -10,7 +10,7 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "Scene.hpp"
+#include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
 
@@ -39,7 +39,7 @@ void NetworkManager::init() {
     server.set_client_joined_callback(client_joined_callback);
     server.set_client_disconnected_callback([this](EventArgs* e) {
         ClientEventArgs* args = (ClientEventArgs*)e;
-        scene.remove_object(server.clients[args->clientId]->p);
+        scene.Destroy(server.clients[args->clientId]->p);
     });
 
     // Register listener for object added
@@ -112,7 +112,7 @@ void NetworkManager::process_input() {
     }
 }
 
-void NetworkManager::update() { scene.update(); }
+void NetworkManager::update() { scene.Update(); }
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {
@@ -175,5 +175,5 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
     // Create player model
-    scene.add_object(p);
+    scene.Instantiate(p);
 }
