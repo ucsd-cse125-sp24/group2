@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <string>
 #include <map>
 #include <iostream>
@@ -10,9 +9,12 @@
 #include "stb_image.h"
 #include "Helper.h"
 
-#include "../../_common/include/IComponent.hpp"
+#include "IComponent.hpp"
+#include "AnimationClip.h"
+#include "AnimationPlayer.h"
 
-
+class AnimationPlayer;
+class AnimationClip;
 class Model : public IComponent {
 
 private:
@@ -25,11 +27,15 @@ private:
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
-    unsigned int textureFromFile(const char *path, const std::string &directory);
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat,
+                                              aiTextureType type,
+                                              std::string typeName);
+    unsigned int textureFromFile(const char* path,
+                                 const std::string& directory);
     void setVertexBoneDataToDefault(Vertex& vertex);
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
-    void extractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
+    void extractBoneWeightForVertices(std::vector<Vertex>& vertices,
+                                      aiMesh* mesh, const aiScene* scene);
 
 public:
     Model();

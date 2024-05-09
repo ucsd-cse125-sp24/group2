@@ -15,47 +15,23 @@ set(
     src/Window.cpp
     src/Client.cpp
     src/AudioManager.cpp
+    src/Entity.cpp
 
     # graphics
-    src/Model.cpp
     src/Mesh.cpp
     src/AnimationClip.cpp
     src/AnimationPlayer.cpp
     src/InputManager.cpp
     src/Bone.cpp
+    src/components/Model.cpp
+    src/components/RendererComponent.cpp
 
     # 125-Starter
     src/Mover.cpp
     src/GameManager.cpp
 )
-FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
+FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 
-# Add header files
-set(
-    HEADERS
-    include/core.h
-    include/Camera.h
-    include/Cube.h
-    include/Shader.h
-    include/Tokenizer.h
-    include/Window.h
-    include/Client.h
-
-    # graphics
-    include/stb_image.h
-    include/Mesh.h
-    include/Model.h
-    include/AnimationClip.h
-    include/AnimationPlayer.h
-    include/Bone.h
-
-    # 125-Starter
-    include/Mover.h
-    include/GameManager.hpp
-    include/PlayerManager.hpp
-    include/InputManager.h
-    include/AudioManager.hpp
-)
 
 # Require GL
 
@@ -88,19 +64,19 @@ else()
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32 gdi32)
     target_link_libraries(${PROJECT_NAME} pthread ws2_32)
     target_link_libraries(${PROJECT_NAME} fmod_vc.lib)
+    
+    # Move assets to .exe
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "../_common/fmod/lib/fmod.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
 endif()
 
-# Move assets to .exe
 add_custom_target(CopyShaders ALL
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${PROJECT_SOURCE_DIR}/shaders"
-	"${CMAKE_BINARY_DIR}/shaders"
-)
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "../_common/fmod/lib/fmod.dll"
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/shaders"
+    "${CMAKE_BINARY_DIR}/shaders"
 )
 
 add_dependencies(menv CopyShaders)

@@ -112,6 +112,8 @@ void AudioManager::update() {
 
         result = system->playSound(selectedSound, nullptr, false, &noteChannel);
         FMODErrorCheck(result);
+        result = noteChannel->setVolume(0.2f);
+        FMODErrorCheck(result);
     }
 }
 

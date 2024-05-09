@@ -1,6 +1,8 @@
 #include "GameManager.hpp"
 #include "ColorCodes.hpp"
 #include <thread>
+#include "components/RendererComponent.hpp"
+#include "components/Model.h"
 
 union FloatUnion {
     float f;
@@ -41,11 +43,22 @@ void GameManager::update(Packet* pkt) {
 
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                PlayerManager* p = new PlayerManager();
-                p->id = network_id;
-                p->mover = new Mover(
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf");
-                players[network_id] = p;
+
+                Player* playerPrefab = new Player();
+                std::string path =
+                    "../assets/male_basic_walk_30_frames_loop/scene.gltf";
+                Model* model = new Model(path);
+                AnimationClip* clip = new AnimationClip(path, model);
+                AnimationPlayer* animationPlayer = new AnimationPlayer(clip);
+                RendererComponent* meshRenderer =
+                    new RendererComponent(playerPrefab, ShaderType::ANIMATED);
+                playerPrefab->AddComponent(model);
+                playerPrefab->AddComponent(clip);
+                playerPrefab->AddComponent(animationPlayer);
+                playerPrefab->AddComponent(meshRenderer);
+                players[network_id] = playerPrefab;
+
+                scene.Instantiate(playerPrefab);
             }
 
             pkt->read_int((int*)&num.l);
@@ -55,7 +68,7 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int((int*)&num.l);
             float z = num.f;
 
-            players[network_id]->mover->position = glm::vec3(x, y, z);
+            players[network_id]->position = glm::vec3(x, y, z);
             break;
         }
         default:
@@ -77,8 +90,7 @@ void GameManager::destroy_object(Packet* pkt) {
         // Found object, destroy it
         if (players.find(objIdToDestroy) != players.end()) {
             printf(RED "DESTROYING OBJECT\n" RST);
-            delete players[objIdToDestroy]->mover;
-            players[objIdToDestroy]->mover = nullptr;
+            delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
 
             objIdsDestroyed.push_back(objIdToDestroy);
@@ -86,7 +98,11 @@ void GameManager::destroy_object(Packet* pkt) {
         numObjectsToDestroy--;
     }
 
-    // FIXME have GameManager handle this as well
-    DestroyedEventArgs* args = new DestroyedEventArgs(objIdsDestroyed);
-    object_destroyed.invoke(args);
+    Packet* destroyed_ack = new Packet();
+    destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
+    destroyed_ack->write_int(numObjectsToDestroy);
+    for (int destroyedObjId : objIdsDestroyed) {
+        destroyed_ack->write_int(destroyedObjId);
+    }
+    client.send(destroyed_ack);
 }

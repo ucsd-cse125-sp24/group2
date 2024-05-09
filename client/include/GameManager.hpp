@@ -2,16 +2,22 @@
 #define GAME_MANAGER_H
 #include <glm/glm.hpp>
 #include <map>
-#include "PlayerManager.hpp"
 #include "Packet.hpp"
 #include "EventArgs.hpp"
 #include "Event.hpp"
 #include <thread>
+#include "Player.h"
+#include "engine/Scene.hpp"
+#include "Client.h"
+#include "Camera.h"
 
 class GameManager {
 
 public:
-    std::map<int, PlayerManager*> players;
+    Scene scene;
+    Camera* cam;
+    Client client;
+    std::map<int, Player*> players;
     EventHandler<EventArgs> object_destroyed;
 
     static GameManager& instance() {
