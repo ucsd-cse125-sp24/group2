@@ -7,11 +7,14 @@
 
 class Scene {
 public:
+    Scene() {}
+
     EventHandler<ObjectEventArgs> object_removed;
     EventHandler<ObjectEventArgs> object_added;
     std::vector<Entity*> entities;
-    void add_object(Entity*);
-    void remove_object(Entity*);
-    void update();
+
+    void Instantiate(Entity*);
+    void Destroy(Entity*);
+    void Update();
 };
 #endif

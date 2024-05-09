@@ -1,65 +1,36 @@
 #include "core.h"
 #include "Window.h"
 #include "GameManager.hpp"
+#include "components/RendererComponent.hpp"
 
 // Window Properties
 int Window::width;
 int Window::height;
 const char* Window::windowTitle = "Model Environment";
 
-// Objects to render
-// Cube* Window::cube;
-Client* client;
-
-// Added by me:
-uint8_t buf[4];
-PlayerManager* Window::playerManager;
-
-// Camera Properties
-Camera* Cam;
-
 // Interaction Variables
 bool LeftDown, RightDown;
 int MouseX, MouseY;
 
-// The shader program id
-GLuint Window::shaderProgram;
-
 // Constructors and desctructors
-bool Window::initializeProgram(Client& c) {
-    client = &c;
-    memset(buf, 0, 4);
-
+bool Window::initializeProgram() {
     // Create a shader program with a vertex shader and a fragment shader.
-    shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
+    GLuint res;
+    res = Shader::LoadShader(ShaderType::STANDARD, "shaders/model.vert",
+                             "shaders/model.frag");
+    res = Shader::LoadShader(ShaderType::ANIMATED, "shaders/shader.vert",
+                             "shaders/shader.frag");
 
     // Check the shader program.
-    if (!shaderProgram) {
-        std::cerr << "Failed to initialize shader program" << std::endl;
+    if (!res) {
+        std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
 
     return true;
 }
 
-bool Window::initializeObjects() {
-    // Create a cube
-    // cube = new Cube();
-    // cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
-    InputManager::setDefaultKeys();
-    // playerManager = new PlayerManager();
-    // playerManager->mover = new
-    // Mover("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    return true;
-}
-
-void Window::cleanUp() {
-    // Deallocate the objects.
-    // delete cube;
-
-    // Delete the shader program.
-    glDeleteProgram(shaderProgram);
-}
+void Window::cleanUp() { Shader::CleanUp(); }
 
 // for the Window
 GLFWwindow* Window::createWindow(int width, int height) {
@@ -97,10 +68,6 @@ GLFWwindow* Window::createWindow(int width, int height) {
     // Set swap interval to 1.
     glfwSwapInterval(0);
 
-    // set up the camera
-    Cam = new Camera();
-    Cam->SetAspect(float(width) / float(height));
-
     // initialize the interaction variables
     LeftDown = RightDown = false;
     MouseX = MouseY = 0;
@@ -117,61 +84,28 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
     // Set the viewport size.
     glViewport(0, 0, width, height);
 
-    Cam->SetAspect(float(width) / float(height));
+    // Cam->SetAspect(float(width) / float(height));
 }
 
-// update and draw functions
-float deltaTime = 0.01;
-
-float currentTime = 0.0;
-float accumulator = 0.0;
-
-float t = 0.0f;
-void Window::idleCallback() {
-    // Perform any updates as necessary.
-    Cam->Update();
-
-    float newTime = glfwGetTime();
-    float frameTime = newTime - currentTime;
-    currentTime = newTime;
-
-    t += frameTime;
-    if (t > 0.025f) {
-        Packet* pkt = new Packet();
-        pkt->write_int((int)PacketType::PLAYER_INPUT);
-        uint8_t* buf = new uint8_t[4];
-        buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
-        buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
-        buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
-        buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
-        for (int i = 0; i < 4; i++) {
-            pkt->write_byte(buf[i]);
-        }
-        client->send(pkt);
-        delete[] buf;
-        t = 0;
-    }
-}
-
-void Window::displayCallback(GLFWwindow* window) {
+void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
+                    float deltaTime) {
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Render the object.
-    for (auto it : GameManager::instance().players) {
-        // FIXME make thread safe and call only once
-        it.second->mover->Update(deltaTime);
-        it.second->mover->Draw(Cam->GetViewProjectMtx(), shaderProgram);
+    // Render all objects in the scene
+    for (auto& entity : scene->entities) {
+        if (auto model = entity->GetComponent<Model>())
+            model->update(deltaTime, entity->position);
+
+        if (auto animationPlayer = entity->GetComponent<AnimationPlayer>())
+            animationPlayer->update(deltaTime);
+
+        if (auto renderer = entity->GetComponent<RendererComponent>())
+            renderer->Render(camera->GetViewProjectMtx());
     }
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);
-}
-
-// helper to reset the camera
-void Window::resetCamera() {
-    Cam->Reset();
-    Cam->SetAspect(float(Window::width) / float(Window::height));
 }
 
 void Window::mouse_callback(GLFWwindow* window, int button, int action,
@@ -193,7 +127,8 @@ void Window::cursor_callback(GLFWwindow* window, double currX, double currY) {
     MouseY = (int)currY;
 
     // Move camera
-    // NOTE: this should really be part of Camera::Update()
+    // TODO: this should really be part of Camera::Update()
+    Camera* Cam = GameManager::instance().cam;
     if (LeftDown) {
         const float rate = 1.0f;
         Cam->SetAzimuth(Cam->GetAzimuth() + dx * rate);

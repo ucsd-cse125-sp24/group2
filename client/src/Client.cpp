@@ -25,21 +25,8 @@ void Client::connect(const char* ip, uint16_t port) {
         return;
     }
     printf("[CLIENT] successfully connected to %s:%d\n", ip, port);
-    
+
     std::thread(&Client::receive, this).detach();
-
-    // FIXME Move this business logic out of client
-    GameManager::instance().object_destroyed += [this](EventArgs* e) {
-        DestroyedEventArgs* args = (DestroyedEventArgs*)e;
-
-        Packet* destroyed_ack = new Packet();
-        destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
-        destroyed_ack->write_int(args->destroyedObjectIds.size());
-        for (int destroyedObjId : args->destroyedObjectIds) {
-            destroyed_ack->write_int(destroyedObjId);
-        }
-        send(destroyed_ack);
-    };
 }
 
 void Client::receive() {

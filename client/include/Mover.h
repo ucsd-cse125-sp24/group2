@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <iostream>
 #include "core.h"
 
@@ -8,10 +7,9 @@
 
 #include "Cube.h"
 #include "InputManager.h"
-#include "Model.h"
+#include "components/Model.h"
 #include "AnimationPlayer.h"
 #include "AnimationClip.h"
-
 
 class Mover : public INetworkComponent {
 public:

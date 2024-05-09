@@ -14,46 +14,23 @@ set(
     src/Tokenizer.cpp
     src/Window.cpp
     src/Client.cpp
+    src/Entity.cpp
 
     # graphics
-    src/Model.cpp
     src/Mesh.cpp
     src/AnimationClip.cpp
     src/AnimationPlayer.cpp
     src/InputManager.cpp
     src/Bone.cpp
+    src/components/Model.cpp
+    src/components/RendererComponent.cpp
 
     # 125-Starter
     src/Mover.cpp
     src/GameManager.cpp
 )
-FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
+FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 
-# Add header files
-set(
-    HEADERS
-    include/core.h
-    include/Camera.h
-    include/Cube.h
-    include/Shader.h
-    include/Tokenizer.h
-    include/Window.h
-    include/Client.h
-
-    # graphics
-    include/stb_image.h
-    include/Mesh.h
-    include/Model.h
-    include/AnimationClip.h
-    include/AnimationPlayer.h
-    include/Bone.h
-
-    # 125-Starter
-    include/Mover.h
-    include/GameManager.hpp
-    include/PlayerManager.hpp
-    include/InputManager.h
-)
 
 # Require GL
 

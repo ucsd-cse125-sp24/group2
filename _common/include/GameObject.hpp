@@ -30,7 +30,11 @@ public:
      * Takes type as "argument" in template, returns IComponent*
      */
     template <class T> T* GetComponent() {
-        return static_cast<T*>(typeToComponentMap.at(typeid(T)));
+        if (typeToComponentMap.find(typeid(T)) != typeToComponentMap.end()) {
+            return static_cast<T*>(typeToComponentMap.at(typeid(T)));
+        } else {
+            return nullptr;
+        } 
     }
 };
 
