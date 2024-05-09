@@ -11,6 +11,7 @@
 #include "Transform.hpp"
 #include "ConcurrentQueue.hpp"
 #include <thread>
+#include "AudioManager.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -89,10 +90,22 @@ int main(int argc, char** argv) {
     });
     client.connect(argv[1], atoi(argv[2]));
 
+    AudioManager::instance().addNote("../assets/audio/Fsharp.wav", 'i');
+    AudioManager::instance().addNote("../assets/audio/Gsharp.wav", 'j');
+    AudioManager::instance().addNote("../assets/audio/A.wav", 'k');
+    AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
+
+    AudioManager::instance().setMain(
+        "../assets/audio/041124_futuristic_01_rough_mix.mp3", 1.0f);
+    AudioManager::instance().setBpm(112);
+    AudioManager::instance().play();
+
     // Loop while GLFW window should stay open.
     while (!glfwWindowShouldClose(window)) {
         // Main render display callback. Rendering of objects is done here.
         Window::displayCallback(window);
+
+        AudioManager::instance().update();
 
         // Idle callback. Updating objects, etc. can be done here.
         Window::idleCallback();

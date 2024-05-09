@@ -10,14 +10,13 @@
 #include <cstdlib>
 #include <thread>
 
-
-class AudioManger {
+class AudioManager {
 
 public:
-    AudioManger();
-    ~AudioManger();
-    static AudioManger& instance() {
-        static AudioManger a;
+    AudioManager();
+    ~AudioManager();
+    static AudioManager& instance() {
+        static AudioManager a;
         return a;
     }
     void setMain(const char* filename, double volume);
@@ -25,6 +24,7 @@ public:
     void setBpm(int b);
     void setOffFirst(int off);
     void play();
+    void update();
 
 private:
     FMOD::System* system;
@@ -39,10 +39,10 @@ private:
     int offset_first_beat = 0;
     bool isRunning = true;
 
-
     void FMODErrorCheck(FMOD_RESULT result) {
         if (result != FMOD_OK) {
-            std::cerr << "FMOD error " << result << ": " << FMOD_ErrorString(result) << std::endl;
+            std::cerr << "FMOD error " << result << ": "
+                      << FMOD_ErrorString(result) << std::endl;
             // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
             exit(-1);
         }
