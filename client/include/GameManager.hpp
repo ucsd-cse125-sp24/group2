@@ -8,11 +8,13 @@
 #include <thread>
 #include "Player.h"
 #include "engine/Scene.hpp"
+#include "Client.h"
 
 class GameManager {
 
 public:
     Scene scene;
+    Client client;
     std::map<int, Player*> players;
     EventHandler<EventArgs> object_destroyed;
 

@@ -62,7 +62,6 @@ int main(int argc, char** argv) {
         printf("Usage: ./menv [IP] [PORT]\n");
         return 1;
     }
-    Client client;
 
     // Create the GLFW window.
     float width = 800;
@@ -89,11 +88,11 @@ int main(int argc, char** argv) {
     if (!Window::initializeProgram())
         exit(EXIT_FAILURE);
 
-    client.setCallback([&](Packet* params) {
+    GameManager::instance().client.setCallback([&](Packet* params) {
         task_queue.push_back(
             [&, params]() { GameManager::instance().handle_packet(params); });
     });
-    client.connect(argv[1], atoi(argv[2]));
+    GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
@@ -118,7 +117,7 @@ int main(int argc, char** argv) {
             for (int i = 0; i < 4; i++) {
                 pkt->write_byte(buf[i]);
             }
-            client.send(pkt);
+            GameManager::instance().client.send(pkt);
             delete[] buf;
             timer = 0;
         }

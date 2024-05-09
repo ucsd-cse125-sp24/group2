@@ -22,7 +22,6 @@ public:
     static GLuint shaderProgram;
 
     // Act as Constructors and desctructors
-    // FIXME decouple client creation and window creation
     static bool initializeProgram();
     static void cleanUp();
 
@@ -33,9 +32,6 @@ public:
     // update and draw functions
     static void Render(GLFWwindow*, Scene*, Camera*, float);
 
-    // callbacks - for interaction
-    static void keyCallback(GLFWwindow* window, int key, int scancode,
-                            int action, int mods);
     static void mouse_callback(GLFWwindow* window, int button, int action,
                                int mods);
     static void cursor_callback(GLFWwindow* window, double currX, double currY);

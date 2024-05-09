@@ -93,7 +93,11 @@ void GameManager::destroy_object(Packet* pkt) {
         numObjectsToDestroy--;
     }
 
-    // FIXME have GameManager handle this as well
-    DestroyedEventArgs* args = new DestroyedEventArgs(objIdsDestroyed);
-    object_destroyed.invoke(args);
+    Packet* destroyed_ack = new Packet();
+    destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
+    destroyed_ack->write_int(numObjectsToDestroy);
+    for (int destroyedObjId : objIdsDestroyed) {
+        destroyed_ack->write_int(destroyedObjId);
+    }
+    client.send(destroyed_ack);
 }
