@@ -2,18 +2,12 @@
 
 Model::Model() {}
 
-Model::Model(std::string path) : IComponent() {
-    loadModel(path);
-
-    clip = new AnimationClip(path, this);
-    animationPlayer = new AnimationPlayer(clip);
-}
+Model::Model(std::string path) : IComponent() { loadModel(path); }
 
 void Model::update(float dt, glm::vec3 pos) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].update(dt, pos);
     }
-    animationPlayer->update(dt);
 }
 
 void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
@@ -130,9 +124,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat,
         if (!skip) { // if texture hasn't been loaded already, load it
             Texture texture;
             texture.id = textureFromFile(str.C_Str(), this->directory);
-            // std::cout<<"texture id: "<<texture.id<<std::endl;
             texture.type = typeName;
-            // std::cout<<"typename: "<< typeName<<std::endl;
             texture.path = str.C_Str();
             textures.push_back(texture);
             textures_loaded.push_back(

@@ -45,11 +45,16 @@ void GameManager::update(Packet* pkt) {
             if (players.find(network_id) == players.end()) {
 
                 Player* playerPrefab = new Player();
-                Model* model = new Model(
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf");
-                playerPrefab->AddComponent(model);
+                std::string path =
+                    "../assets/male_basic_walk_30_frames_loop/scene.gltf";
+                Model* model = new Model(path);
+                AnimationClip* clip = new AnimationClip(path, model);
+                AnimationPlayer* animationPlayer = new AnimationPlayer(clip);
                 RendererComponent* meshRenderer =
-                    new RendererComponent(playerPrefab);
+                    new RendererComponent(playerPrefab, ShaderType::ANIMATED);
+                playerPrefab->AddComponent(model);
+                playerPrefab->AddComponent(clip);
+                playerPrefab->AddComponent(animationPlayer);
                 playerPrefab->AddComponent(meshRenderer);
                 players[network_id] = playerPrefab;
 

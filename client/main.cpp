@@ -71,8 +71,8 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
 
     // Setup camera
-    Camera* cam = new Camera();
-    cam->SetAspect(float(width) / float(height));
+    GameManager::instance().cam = new Camera();
+    GameManager::instance().cam->SetAspect(float(width) / float(height));
 
     // Print OpenGL and GLSL versions.
     print_versions();
@@ -123,8 +123,9 @@ int main(int argc, char** argv) {
         }
 
         // Main render display callback. Rendering of objects is done here.
-        cam->Update();
-        Window::Render(window, &GameManager::instance().scene, cam, deltaTime);
+        GameManager::instance().cam->Update();
+        Window::Render(window, &GameManager::instance().scene,
+                       GameManager::instance().cam, deltaTime);
 
         // Update loop
         while (!task_queue.empty()) {

@@ -9,11 +9,13 @@
 #include "Player.h"
 #include "engine/Scene.hpp"
 #include "Client.h"
+#include "Camera.h"
 
 class GameManager {
 
 public:
     Scene scene;
+    Camera* cam;
     Client client;
     std::map<int, Player*> players;
     EventHandler<EventArgs> object_destroyed;

@@ -38,8 +38,6 @@ private:
                                       aiMesh* mesh, const aiScene* scene);
 
 public:
-    AnimationPlayer* animationPlayer;
-    AnimationClip* clip;
     Model();
     Model(std::string path);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);

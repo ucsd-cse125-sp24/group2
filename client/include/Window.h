@@ -18,9 +18,6 @@ public:
     static int height;
     static const char* windowTitle;
 
-    // Shader Program
-    static GLuint shaderProgram;
-
     // Act as Constructors and desctructors
     static bool initializeProgram();
     static void cleanUp();

@@ -12,27 +12,25 @@ const char* Window::windowTitle = "Model Environment";
 bool LeftDown, RightDown;
 int MouseX, MouseY;
 
-// The shader program id
-GLuint Window::shaderProgram;
-
 // Constructors and desctructors
 bool Window::initializeProgram() {
     // Create a shader program with a vertex shader and a fragment shader.
-    shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
+    GLuint res;
+    res = Shader::LoadShader(ShaderType::STANDARD, "shaders/model.vert",
+                             "shaders/model.frag");
+    res = Shader::LoadShader(ShaderType::ANIMATED, "shaders/shader.vert",
+                             "shaders/shader.frag");
 
     // Check the shader program.
-    if (!shaderProgram) {
-        std::cerr << "Failed to initialize shader program" << std::endl;
+    if (!res) {
+        std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
 
     return true;
 }
 
-void Window::cleanUp() {
-    // Delete the shader program.
-    glDeleteProgram(shaderProgram);
-}
+void Window::cleanUp() { Shader::CleanUp(); }
 
 // for the Window
 GLFWwindow* Window::createWindow(int width, int height) {
@@ -97,8 +95,9 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
         entity->GetComponent<Model>()->update(deltaTime, entity->position);
+        entity->GetComponent<AnimationPlayer>()->update(deltaTime);
         entity->GetComponent<RendererComponent>()->Render(
-            camera->GetViewProjectMtx(), shaderProgram);
+            camera->GetViewProjectMtx());
     }
     glfwPollEvents();
     // Swap buffers.
@@ -125,7 +124,7 @@ void Window::cursor_callback(GLFWwindow* window, double currX, double currY) {
 
     // Move camera
     // TODO: this should really be part of Camera::Update()
-    /*
+    Camera* Cam = GameManager::instance().cam;
     if (LeftDown) {
         const float rate = 1.0f;
         Cam->SetAzimuth(Cam->GetAzimuth() + dx * rate);
@@ -138,5 +137,4 @@ void Window::cursor_callback(GLFWwindow* window, double currX, double currY) {
             glm::clamp(Cam->GetDistance() * (1.0f - dx * rate), 0.01f, 1000.0f);
         Cam->SetDistance(dist);
     }
-    */
 }
