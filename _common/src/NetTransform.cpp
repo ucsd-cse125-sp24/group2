@@ -29,3 +29,8 @@ std::string NetTransform::ToString() {
         ") rot(" + glm::to_string(position) +
         ") scale(" + glm::to_string(position) + ")";
 }
+
+void NetTransform::Serialize(Packet* packet) {
+    packet->write_vec3(position);
+    packet->write_vec3(rotation);
+}

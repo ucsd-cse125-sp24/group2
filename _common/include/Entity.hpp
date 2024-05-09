@@ -5,7 +5,10 @@
 
 class Entity : public NetworkObject {
 public:
-    glm::vec3 position = glm::vec3();
+    Entity();
+
+    // glm::vec3 position = glm::vec3(); // refactoring to use NetTransform
+
     virtual void update() = 0;
     void serialize(Packet*) override;
     void deserialize(Packet*) override;

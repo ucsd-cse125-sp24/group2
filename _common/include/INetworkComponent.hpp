@@ -26,8 +26,8 @@ public:
         netOwner(newNetOwner)
     {}
 
-    void Serialize(Packet*);
-    void Deserialize(Packet*);
+    virtual void Serialize(Packet*);
+    virtual void Deserialize(Packet*);
 };
 
 
