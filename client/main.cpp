@@ -109,12 +109,13 @@ int main(int argc, char** argv) {
         if (timer > 0.025f) {
             Packet* pkt = new Packet();
             pkt->write_int((int)PacketType::PLAYER_INPUT);
-            uint8_t* buf = new uint8_t[4];
+            uint8_t* buf = new uint8_t[5];
             buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
             buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
             buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
             buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
-            for (int i = 0; i < 4; i++) {
+            buf[4] = InputManager::isKeyPressed(GLFW_KEY_LEFT_SHIFT) && (buf[0] || buf[1] || buf[2] || buf[3]);
+            for (int i = 0; i < 5; i++) {
                 pkt->write_byte(buf[i]);
             }
             GameManager::instance().client.send(pkt);

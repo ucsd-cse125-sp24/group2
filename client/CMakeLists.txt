@@ -28,6 +28,7 @@ set(
     # 125-Starter
     src/Mover.cpp
     src/GameManager.cpp
+    src/Player.cpp
 )
 FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 

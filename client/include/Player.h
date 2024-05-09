@@ -4,7 +4,7 @@
 #include "Entity.hpp"
 
 class Player : public Entity {
-    void update() {}
+    void update() override;
     int32_t TypeID() const { return NetworkObjectTypeID::PLAYER; }
 };
 
