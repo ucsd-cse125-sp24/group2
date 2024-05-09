@@ -4,7 +4,7 @@ Model::Model() {
 
 }
 
-Model::Model(std::string path) {
+Model::Model(std::string path) : IComponent() {
     loadModel(path);
 }
 
@@ -220,4 +220,8 @@ void Model::setPosition(glm::vec3 pos) {
     for(int i = 0; i < meshes.size(); i++) {
         meshes[i].setPosition(pos);
     }
+}
+
+std::string Model::ToString() {
+    return "Model";
 }
