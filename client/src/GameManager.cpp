@@ -101,7 +101,7 @@ void GameManager::destroy_object(Packet* pkt) {
 
     Packet* destroyed_ack = new Packet();
     destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
-    destroyed_ack->write_int(numObjectsToDestroy);
+    destroyed_ack->write_int(objIdsDestroyed.size());
     for (int destroyedObjId : objIdsDestroyed) {
         destroyed_ack->write_int(destroyedObjId);
     }
