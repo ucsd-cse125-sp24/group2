@@ -13,11 +13,15 @@
 #include <winsock2.h>
 #endif
 enum class PacketType {
-    PLAYER_POSITION,
     PLAYER_INPUT,
     STATE_UPDATE,
     DESTROY_OBJECT,
     DESTROY_OBJECT_ACK,
+};
+enum class PacketReceived {
+    FULL,
+    EXCESS,
+    INCOMPLETE
 };
 class Packet {
 private:
@@ -38,7 +42,16 @@ public:
     int read_float(float* dest);
     int read_double(double* dest);
     int read_vec3(glm::vec3* dest);
-    int read_quat(glm::quat* data);
+    int read_quat(glm::quat* dest);
+
+    // read data but don't delete from buffer
+    // returns int position in buffer
+    int peek_byte(char* dest, int start);
+    int peek_int(int* dest, int start);
+    int peek_float(float* dest, int start);
+    int peek_double(double* dest, int start);
+    int peek_vec3(glm::vec3* dest, int start);
+    int peek_quat(glm::quat* dest, int start);
 
     uint8_t* getBytes();
     int size();

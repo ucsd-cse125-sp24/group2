@@ -42,6 +42,21 @@ void Client::connect(const char* ip, uint16_t port) {
     };
 }
 
+
+PacketReceived FullPacket(Packet* packet){
+    int packet_length;
+    int next_i = packet->peek_int(&packet_length);
+
+    int size = GetExpectedSize((PacketType) packet_type, next_i);
+
+    if(packet->size() == size)
+        return PacketReceived::FULL;
+    else if(packet->size() < size)
+        return PacketReceived::INCOMPLETE;
+    else
+        return PacketReceived::EXCESS;
+}
+
 void Client::receive() {
     uint8_t buf[4096];
     int read_bytes;

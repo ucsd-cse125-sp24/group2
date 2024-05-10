@@ -52,7 +52,7 @@ void GameManager::update(Packet* pkt) {
             pkt->read_vec3(&new_pos);
 
             // FIXME make thread safe
-            if (players[network_id]->mover != nullptr)
+            if (players[network_id]->mover != nullptr) // TODO does l46 cover this?
                 players[network_id]->mover->position = new_pos;
 
             break;

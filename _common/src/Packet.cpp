@@ -257,6 +257,141 @@ int Packet::read_quat(glm::quat* dest) {
     return sizeof(float) * 4;
 }
 
+int Packet::peek_byte(char* dest, int start) {
+    if (buffer.size() <= start) {
+        return -1;
+    }
+
+    uint8_t readElem = buffer.at(start);
+    *dest = char(readElem);
+
+    return start + 1;
+}
+
+int Packet::peek_int(int* dest, int start) {
+    int byte_per_int = sizeof(int);
+
+    if (buffer.size() <= start + byte_per_int) {
+        return -1;
+    }
+
+    // read 4 bytes from the buffer
+    uint32_t readData[byte_per_int];
+    for (int i = 0; i < byte_per_int; i++) {
+        readData[i] = buffer.at(start + i);
+    }
+
+    // reconstruct uint32
+    uint32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) |
+                   (readData[0] << 24);
+    i32 = ntohl(i32);
+
+    *dest = static_cast<int>(i32); // convert to int
+
+    return start + byte_per_int;
+}
+
+int Packet::peek_float(float* dest, int start) {
+    int byte_per_float = sizeof(float);
+
+    if (buffer.size() < start + byte_per_float) {
+        return -1;
+    }
+
+    // read 4 bytes from the buffer
+    uint32_t readData[byte_per_float];
+    for (int i = 0; i < byte_per_float; i++) {
+        readData[i] = buffer.at(start + i);
+    }
+
+    // reconstruct uint32
+    uint32_t i32 = readData[3] | (readData[2] << 8) | (readData[1] << 16) |
+                   (readData[0] << 24);
+    i32 = ntohl(i32);
+
+    // convert to float
+    union32.l = i32;
+    *dest = (float)union32.f;
+
+    return start + byte_per_float;
+}
+
+int Packet::peek_double(double* dest, int start) { // use unsigned long long
+    int byte_per_double = sizeof(double);
+
+    if (buffer.size() < start + byte_per_double) {
+        return -1;
+    }
+
+    // read 8 bytes from the buffer
+    uint64_t readData[byte_per_double]; // uint64 instead of uint8 so shifts
+                                        // don't overflow
+    for (int i = 0; i < byte_per_double; i++) {
+        readData[i] = buffer.at(start + i);
+    }
+
+    // reconstruct uint64
+    uint64_t i64 = readData[7] | (readData[6] << 8) | (readData[5] << 16) |
+                   (readData[4] << 24) | (readData[3] << 32) |
+                   (readData[2] << 40) | (readData[1] << 48) |
+                   (readData[0] << 56);
+
+    // convert to double
+    i64 = ntoh64(&i64);
+    union64.l = i64;
+    *dest = union64.f;
+
+    return start + byte_per_double;
+}
+
+int Packet::peek_vec3(glm::vec3* dest, int start) {
+    float x, y, z;
+    // read each element of the vector, error checking size based on return val.
+    int result = peek_float(&x, start);
+    if (result == -1) {
+        return -1;
+    }
+    result = peek_float(&y, result);
+    if (result == -1) {
+        return -1;
+    }
+    result = peek_float(&z, result);
+    if (result == -1) {
+        return -1;
+    }
+
+    // reconstruct vector
+    *dest = glm::vec3(x, y, z);
+
+    return result;
+}
+
+int Packet::peek_quat(glm::quat* dest, int start) {
+    float w, x, y, z;
+    // read each element of the vector, error checking size based on return val.
+    int result = peek_float(&w, start);
+    if (result == -1) {
+        return -1;
+    }
+    result = peek_float(&x, result);
+    if (result == -1) {
+        return -1;
+    }
+    result = peek_float(&y, result);
+    if (result == -1) {
+        return -1;
+    }
+    result = peek_float(&z, result);
+    if (result == -1) {
+        return -1;
+    }
+
+    // reconstruct quaternion
+    *dest = glm::quat(w, x, y, z);
+
+    return result;
+}
+
 uint8_t* Packet::getBytes() {
     uint8_t* byte_array = new uint8_t[buffer.size()];
     memcpy(byte_array, &buffer[0], buffer.size());
