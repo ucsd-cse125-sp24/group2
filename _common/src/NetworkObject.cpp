@@ -27,3 +27,15 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
         typeToComponentMap.erase(typeid(*comp));
     }
 }
+
+void NetworkObject::serialize(Packet* packet) {
+    for (INetworkComponent* netComp : networkComponents) {
+        netComp->Serialize(packet);
+    }
+}
+
+void NetworkObject::deserialize(Packet* packet) {
+    for (INetworkComponent* netComp : networkComponents) {
+        netComp->Deserialize(packet);
+    }
+}

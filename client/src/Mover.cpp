@@ -44,6 +44,10 @@ void Mover::Draw(glm::mat4 view, GLuint shaderProgram) {
     }
 }
 
+void Mover::Serialize(Packet* packet) {}
+
+void Mover::Deserialize(Packet* packet) {}
+
 std::string Mover::ToString() {
     return "Mover";
 }

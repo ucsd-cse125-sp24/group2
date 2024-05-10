@@ -67,6 +67,9 @@ void NetworkManager::init() {
 
 void NetworkManager::process_input() {
     std::lock_guard<std::mutex> lock(_mutex);
+
+    // std::cout << "Size of msgQ: " << message_queue.size() << std::endl;
+
     while (!message_queue.empty()) {
         std::pair<int, Packet*> msg = message_queue.front();
         message_queue.pop_front();
@@ -80,19 +83,25 @@ void NetworkManager::process_input() {
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
         case PacketType::PLAYER_INPUT: {
+            std::cout << "  RECV: PINPUT" << std::endl;
             char input[4];
             for (int i = 0; i < 4; i++) {
                 packet->read_byte(&input[i]);
             }
+
             std::map<int, Client*> clients = server.get_clients();
             if (clients.find(client_id) == clients.end())
                 break;
 
-            clients[client_id]->p->inputs.x = (float)input[3] - (float)input[1];
-            clients[client_id]->p->inputs.y = (float)input[0] - (float)input[2];
+            std::cout << "  Received input: " << (float)input[0] << ", " << (float)input[1] << ", " << (float)input[2] << ", " << (float)input[3] << std::endl;
+
+            clients[client_id]->p->GetComponent<Mover>()->input.x = (float)input[3] - (float)input[1];
+            clients[client_id]->p->GetComponent<Mover>()->input.y = (float)input[0] - (float)input[2];
+
             break;
         }
         case PacketType::DESTROY_OBJECT_ACK:
+            std::cout << "  RECV: DSTRY_ACK" << std::endl;
             int numObjectsDestroyed;
             packet->read_int(&numObjectsDestroyed);
             while (numObjectsDestroyed) {
@@ -107,6 +116,7 @@ void NetworkManager::process_input() {
             }
             break;
         default:
+            std::cout << "  RECV: NONEOFTHEABOVE" << std::endl;
             break;
         }
     }

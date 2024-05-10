@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../include/NetTransform.hpp"
 #include "../glm/gtx/string_cast.hpp"
 
@@ -30,7 +32,12 @@ std::string NetTransform::ToString() {
         ") scale(" + glm::to_string(position) + ")";
 }
 
+void NetTransform::Deserialize(Packet* packet) {
+    // std::cout << "NetTransform::Deserialize(Packet*)" << std::endl;
+    // Should do nothing
+}
+
 void NetTransform::Serialize(Packet* packet) {
     packet->write_vec3(position);
-    packet->write_vec3(rotation);
+    // packet->write_vec3(rotation);
 }

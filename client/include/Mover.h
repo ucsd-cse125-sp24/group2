@@ -4,7 +4,7 @@
 #include <iostream>
 #include "core.h"
 
-#include "../../_common/include/INetworkComponent.hpp"
+#include "INetworkComponent.hpp"
 
 #include "Cube.h"
 #include "InputManager.h"
@@ -31,6 +31,9 @@ public:
     void Update(float deltaTime);
     void UpdatePhysics(float deltaTime);
     void Draw(glm::mat4 view, GLuint shaderProgram);
+
+    void Serialize(Packet* packet) override;
+    void Deserialize(Packet* packet) override;
 
     std::string ToString() override;
 };

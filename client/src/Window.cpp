@@ -147,6 +147,9 @@ void Window::idleCallback() {
         for (int i = 0; i < 4; i++) {
             pkt->write_byte(buf[i]);
         }
+
+        std::cout << "Sending: " << (int)buf[0] << ", " << (int)buf[1] << ", " << (int)buf[2] << ", " << (int)buf[3] << std::endl;
+
         client->send(pkt);
         delete[] buf;
         t = 0;

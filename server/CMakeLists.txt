@@ -14,6 +14,7 @@ set(SERVER_SOURCES
     src/Entity.cpp
     src/Scene.cpp
     src/CollisionManager.cpp
+    src/Mover.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
 

@@ -11,23 +11,20 @@ class NetworkObject;
 
 
 class INetworkComponent : public IComponent {
-    
-protected:
-    NetworkObject* netOwner;
 
 public:
     INetworkComponent() : 
-        IComponent(), 
-        netOwner(nullptr) 
+        IComponent()
     {}
     
-    INetworkComponent(NetworkObject* newNetOwner) :
-        IComponent((GameObject*)newNetOwner),
-        netOwner(newNetOwner)
+    INetworkComponent(NetworkObject* owner) :
+        IComponent((GameObject*)owner)
     {}
 
-    virtual void Serialize(Packet*);
-    virtual void Deserialize(Packet*);
+    virtual void Serialize(Packet*) = 0;
+    virtual void Deserialize(Packet*) = 0;
+
+    virtual std::string ToString() override;
 };
 
 

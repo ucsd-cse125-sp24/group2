@@ -31,8 +31,8 @@ public:
 
     // New functions
 
-    virtual void serialize(Packet*) = 0; // serialize order needs to match deserialize order, and vice versa
-    virtual void deserialize(Packet*) = 0;
+    void serialize(Packet*); // serialize order needs to match deserialize order, and vice versa
+    void deserialize(Packet*);
     virtual int32_t TypeID() const = 0;
     inline int networkId() const { return _networkId; }
 
