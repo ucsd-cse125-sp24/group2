@@ -27,12 +27,12 @@ public:
     void update();
 
 private:
-    FMOD::System* system;
-    FMOD::Sound* main;
-    FMOD::Channel* mainChannel = nullptr;
-    FMOD::Channel* noteChannel = nullptr;
+    FMOD_SYSTEM* system;
+    FMOD_SOUND* main;
+    FMOD_CHANNEL* mainChannel = nullptr;
+    FMOD_CHANNEL* noteChannel = nullptr;
     FMOD_RESULT result;
-    std::unordered_map<char, FMOD::Sound*> noteMap;
+    std::unordered_map<char, FMOD_SOUND*> noteMap;
 
     int bpm;
     int interval;
@@ -43,7 +43,6 @@ private:
         if (result != FMOD_OK) {
             std::cerr << "FMOD error " << result << ": "
                       << FMOD_ErrorString(result) << std::endl;
-            // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
             exit(-1);
         }
     }

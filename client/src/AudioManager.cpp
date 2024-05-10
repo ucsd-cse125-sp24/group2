@@ -7,30 +7,30 @@
 #include "ColorCodes.hpp"
 
 AudioManager::AudioManager() {
-    result = FMOD::System_Create(&system);
+    result = FMOD_System_Create(&system, FMOD_VERSION);
     FMODErrorCheck(result);
-    result = system->init(32, FMOD_INIT_NORMAL, nullptr);
+    result = FMOD_System_Init(system, 32, FMOD_INIT_NORMAL, nullptr);
     FMODErrorCheck(result);
 }
 
 AudioManager::~AudioManager() {
-    main->release();
+    FMOD_Sound_Release(main);
     for (const auto& pair : noteMap) {
-        pair.second->release();
+        FMOD_Sound_Release(pair.second);
     }
-    system->close();
-    system->release();
+    FMOD_System_Close(system);
+    FMOD_System_Release(system);
 }
 
 void AudioManager::setMain(const char* filename, double volume) {
-    result = system->createSound(filename, FMOD_DEFAULT, nullptr, &main);
+    result = FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &main);
     FMODErrorCheck(result);
-    mainChannel->setVolume(volume);
+    FMOD_Channel_SetVolume(mainChannel, volume);
 }
 
 void AudioManager::addNote(const char* filename, char key) {
-    FMOD::Sound* note;
-    result = system->createSound(filename, FMOD_DEFAULT, nullptr, &note);
+    FMOD_SOUND* note;
+    result = FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &note);
     FMODErrorCheck(result);
     noteMap[key] = note;
 }
@@ -47,13 +47,13 @@ bool pressed = false;
 bool waspressed = false;
 auto startTime = std::chrono::steady_clock::now();
 void AudioManager::update() {
-    system->update();
+    FMOD_System_Update(system);
     auto msSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::steady_clock::now() - startTime)
                             .count();
     msSinceStart = msSinceStart - offset_first_beat;
 
-    FMOD::Sound* selectedSound = nullptr;
+    FMOD_SOUND* selectedSound = nullptr;
     if (InputManager::isKeyPressed(GLFW_KEY_J)) {
         pressed = true;
         selectedSound = noteMap.at('i');
@@ -97,9 +97,9 @@ void AudioManager::update() {
 
     if (selectedSound != nullptr) {
         // Check if the channel is currently playing
-        bool isPlaying;
+        FMOD_BOOL isPlaying;
         if (noteChannel != nullptr) {
-            noteChannel->isPlaying(&isPlaying);
+            FMOD_Channel_IsPlaying(noteChannel, &isPlaying);
         } else {
             isPlaying = false;
         }
@@ -107,32 +107,32 @@ void AudioManager::update() {
         // Important: If it is playing, stop it before playing the
         // new sound
         if (isPlaying) {
-            noteChannel->stop();
+            FMOD_Channel_Stop(noteChannel);
         }
 
-        result = system->playSound(selectedSound, nullptr, false, &noteChannel);
+        result = FMOD_System_PlaySound(system, selectedSound, nullptr, false, &noteChannel);
         FMODErrorCheck(result);
-        result = noteChannel->setVolume(0.2f);
+        result = FMOD_Channel_SetVolume(noteChannel, 0.2f);
         FMODErrorCheck(result);
     }
 }
 
 void AudioManager::play() {
-    result = system->playSound(main, nullptr, false, &mainChannel);
+    result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
     startTime = std::chrono::steady_clock::now();
     FMODErrorCheck(result);
     int occupied_beat = 0; // used to exclude other inputs at the same beat
 
-    bool isMainPlaying;
+    FMOD_BOOL isMainPlaying;
     if (mainChannel != nullptr) {
-        mainChannel->isPlaying(&isMainPlaying);
+        FMOD_Channel_IsPlaying(mainChannel, &isMainPlaying);
         // repeat main music track and keep the beats
         if (!isMainPlaying &&
             !(std::chrono::duration_cast<std::chrono::milliseconds>(
                   std::chrono::steady_clock::now() - startTime)
                   .count() %
               interval)) {
-            result = system->playSound(main, nullptr, false, &mainChannel);
+            result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
             startTime = std::chrono::steady_clock::now();
             FMODErrorCheck(result);
         }

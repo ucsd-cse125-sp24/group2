@@ -3,6 +3,7 @@
 #include "EventArgs.hpp"
 #include <vector>
 #include <mutex>
+#include <algorithm>
 
 typedef std::function<void(EventArgs*)> Action;
 template <typename T> class EventHandler {

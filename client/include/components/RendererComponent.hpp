@@ -1,5 +1,6 @@
 #pragma once
 #include "IComponent.hpp"
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include "Shader.h"
 
