@@ -15,6 +15,18 @@ AnimationClip::AnimationClip(std::string path, Model* model) : IComponent() {
     readMissingBones(animation, model);
 }
 
+AnimationClip::AnimationClip(aiAnimation* clip, Model* model, const aiScene* scene){
+    duration = clip->mDuration;
+    name = clip->mName.C_Str();
+    std::cout<<"animation name: " << name <<std::endl;
+    ticksPerSecond = clip->mTicksPerSecond;
+    aiMatrix4x4 globalTransformation = scene->mRootNode->mTransformation;
+    globalTransformation = globalTransformation.Inverse();
+    globalInverseTransform = Helper::ConvertMatrixToGLMFormat(globalTransformation);
+    readHierarchyData(rootNode, scene->mRootNode);
+    readMissingBones(clip, model);
+}
+
 Bone* AnimationClip::findBone(const std::string& name) {
     auto iter = std::find_if(bones.begin(), bones.end(), [&](const Bone& Bone) {
 				return Bone.getName() == name;
@@ -77,4 +89,8 @@ const glm::mat4& AnimationClip::getGlobalInverseTransform() const {
 
 std::string AnimationClip::ToString() {
     return "AnimationClip";
+}
+
+std::string AnimationClip::getName() const {
+    return name;
 }

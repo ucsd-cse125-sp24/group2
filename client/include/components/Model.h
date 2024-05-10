@@ -23,6 +23,8 @@ private:
     std::vector<Texture> textures_loaded;
     std::map<std::string, BoneInfo> boneInfoMap;
     int boneCounter = 0;
+    bool hasAnimation = false;
+    const aiScene* scene;
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
@@ -39,9 +41,10 @@ private:
 
 public:
     Model();
-    Model(std::string path);
+    Model(std::string path, bool hasAnimation);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;
+    const aiScene* getScene() const;
     std::map<std::string, BoneInfo>& getBoneInfoMap();
     void addBoneCount();
     void update(float dt, glm::vec3 pos);

@@ -77,11 +77,15 @@ void NetworkManager::process_input() {
         int packet_type;
         packet->read_int(&packet_type);
 
+        printf("{\n");
+        printf("  client: %d\n", client_id);
+        printf("  packet_type: %d\n", packet_type);
+
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
         case PacketType::PLAYER_INPUT: {
-            char input[4];
-            for (int i = 0; i < 4; i++) {
+            char input[5];
+            for (int i = 0; i < 5; i++) {
                 packet->read_byte(&input[i]);
             }
             std::map<int, Client*> clients = server.get_clients();
@@ -90,14 +94,23 @@ void NetworkManager::process_input() {
 
             clients[client_id]->p->inputs.x = (float)input[3] - (float)input[1];
             clients[client_id]->p->inputs.y = (float)input[0] - (float)input[2];
+            // added for adjusting speed for run & walk
+            if (input[4] == 1) {
+                clients[client_id]->p->speed = 9.0f;
+            } else {
+                clients[client_id]->p->speed = 4.0f;
+            }
             break;
         }
         case PacketType::DESTROY_OBJECT_ACK:
             int numObjectsDestroyed;
             packet->read_int(&numObjectsDestroyed);
+            printf("  numObjectsDestroyed: %d\n", numObjectsDestroyed);
+            printf("  destroyedObjectIds: [ ");
             while (numObjectsDestroyed) {
                 int destroyedObjectId;
                 packet->read_int(&destroyedObjectId);
+                printf("%d ", destroyedObjectId);
                 std::map<int, Client*> clients = server.get_clients();
                 if (clients.size() != 0) {
                     clients[client_id]->objectStates.erase(destroyedObjectId);
@@ -105,10 +118,12 @@ void NetworkManager::process_input() {
 
                 numObjectsDestroyed--;
             }
+            printf("]\n");
             break;
         default:
             break;
         }
+        printf("}\n");
     }
 }
 

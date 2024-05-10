@@ -45,15 +45,15 @@ void GameManager::update(Packet* pkt) {
             if (players.find(network_id) == players.end()) {
 
                 Player* playerPrefab = new Player();
-                std::string path =
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf";
-                Model* model = new Model(path);
-                AnimationClip* clip = new AnimationClip(path, model);
-                AnimationPlayer* animationPlayer = new AnimationPlayer(clip);
+                std::string path = "../assets/animation/scene.gltf";
+                Model* model = new Model(path, true);
+                // AnimationClip* clip = new AnimationClip(path, model);
+                AnimationPlayer* animationPlayer =
+                    new AnimationPlayer(path, model);
                 RendererComponent* meshRenderer =
                     new RendererComponent(playerPrefab, ShaderType::ANIMATED);
                 playerPrefab->AddComponent(model);
-                playerPrefab->AddComponent(clip);
+                // playerPrefab->AddComponent(clip);
                 playerPrefab->AddComponent(animationPlayer);
                 playerPrefab->AddComponent(meshRenderer);
                 players[network_id] = playerPrefab;
@@ -90,6 +90,7 @@ void GameManager::destroy_object(Packet* pkt) {
         // Found object, destroy it
         if (players.find(objIdToDestroy) != players.end()) {
             printf(RED "DESTROYING OBJECT\n" RST);
+            scene.Destroy(players[objIdToDestroy]);
             delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
 
@@ -100,7 +101,7 @@ void GameManager::destroy_object(Packet* pkt) {
 
     Packet* destroyed_ack = new Packet();
     destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
-    destroyed_ack->write_int(numObjectsToDestroy);
+    destroyed_ack->write_int(objIdsDestroyed.size());
     for (int destroyedObjId : objIdsDestroyed) {
         destroyed_ack->write_int(destroyedObjId);
     }
