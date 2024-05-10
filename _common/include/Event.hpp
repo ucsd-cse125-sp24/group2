@@ -4,6 +4,7 @@
 #include <vector>
 #include <mutex>
 #include <algorithm>
+#include <functional>
 
 typedef std::function<void(EventArgs*)> Action;
 template <typename T> class EventHandler {
