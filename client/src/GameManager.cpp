@@ -45,11 +45,11 @@ void GameManager::update(Packet* pkt) {
             if (players.find(network_id) == players.end()) {
 
                 Player* playerPrefab = new Player();
-                std::string path =
-                    "../assets/animation/scene.gltf";
+                std::string path = "../assets/animation/scene.gltf";
                 Model* model = new Model(path, true);
                 // AnimationClip* clip = new AnimationClip(path, model);
-                AnimationPlayer* animationPlayer = new AnimationPlayer(path, model);
+                AnimationPlayer* animationPlayer =
+                    new AnimationPlayer(path, model);
                 RendererComponent* meshRenderer =
                     new RendererComponent(playerPrefab, ShaderType::ANIMATED);
                 playerPrefab->AddComponent(model);
@@ -90,6 +90,7 @@ void GameManager::destroy_object(Packet* pkt) {
         // Found object, destroy it
         if (players.find(objIdToDestroy) != players.end()) {
             printf(RED "DESTROYING OBJECT\n" RST);
+            scene.Destroy(players[objIdToDestroy]);
             delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
 
