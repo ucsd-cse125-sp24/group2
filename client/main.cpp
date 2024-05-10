@@ -11,6 +11,7 @@
 #include "Transform.hpp"
 #include "ConcurrentQueue.hpp"
 #include <thread>
+#include "AudioManager.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -94,6 +95,16 @@ int main(int argc, char** argv) {
     });
     GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
+    AudioManager::instance().addNote("../assets/audio/Fsharp.wav", 'i');
+    AudioManager::instance().addNote("../assets/audio/Gsharp.wav", 'j');
+    AudioManager::instance().addNote("../assets/audio/A.wav", 'k');
+    AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
+
+    AudioManager::instance().setMain(
+        "../assets/audio/futuristic01-112bpm-Gbm.mp3", 1.0f);
+    AudioManager::instance().setBpm(112);
+    AudioManager::instance().play();
+
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
     float timer = 0;
@@ -103,6 +114,8 @@ int main(int argc, char** argv) {
         float newTime = glfwGetTime();
         deltaTime = newTime - currentTime;
         currentTime = newTime;
+
+        AudioManager::instance().update();
 
         // send input
         timer += deltaTime;

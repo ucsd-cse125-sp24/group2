@@ -14,6 +14,7 @@ set(
     src/Tokenizer.cpp
     src/Window.cpp
     src/Client.cpp
+    src/AudioManager.cpp
     src/Entity.cpp
 
     # graphics
@@ -40,10 +41,12 @@ include_directories(
     include
     ../_common
     ../_common/include
+    ../_common/fmod/inc
 )
 # Add library directories
 link_directories(
     lib
+    ../_common/fmod/lib
 )
 
 # Add executable
@@ -54,19 +57,27 @@ if (CMAKE_SYSTEM_NAME MATCHES OSX)
     target_link_libraries(${PROJECT_NAME} assimp.5)
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(${PROJECT_NAME} fmod)
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
 else()
     set(CMAKE_EXE_LINKER_FLAGS "--static")
     target_link_libraries(${PROJECT_NAME} assimp zlibstatic)
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew32 glfw3 opengl32 gdi32)
     target_link_libraries(${PROJECT_NAME} pthread ws2_32)
+    target_link_libraries(${PROJECT_NAME} fmod_vc.lib)
+    
+    # Move assets to .exe
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "../_common/fmod/lib/fmod.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
 endif()
 
-# Move assets to .exe
 add_custom_target(CopyShaders ALL
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${PROJECT_SOURCE_DIR}/shaders"
-	"${CMAKE_BINARY_DIR}/shaders"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/shaders"
+    "${CMAKE_BINARY_DIR}/shaders"
 )
 
 add_dependencies(menv CopyShaders)
