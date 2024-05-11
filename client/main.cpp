@@ -31,7 +31,6 @@ void setup_callbacks(GLFWwindow* window) {
     InputManager::setUpCallback(window);
     // Set the mouse and cursor callbacks
     glfwSetMouseButtonCallback(window, Window::mouse_callback);
-    glfwSetCursorPosCallback(window, Window::cursor_callback);
 }
 
 void setup_opengl_settings() {
@@ -79,6 +78,7 @@ int main(int argc, char** argv) {
     print_versions();
     // Setup callbacks.
     setup_callbacks(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // Setup OpenGL settings.
     setup_opengl_settings();
 

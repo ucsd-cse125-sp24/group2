@@ -21,6 +21,9 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::DESTROY_OBJECT:
         destroy_object(packet);
         break;
+    case PacketType::SET_LOCAL_PLAYER:
+
+        break;
 
     default:
         break;
@@ -40,10 +43,8 @@ void GameManager::update(Packet* pkt) {
         case NetworkObjectTypeID::PLAYER: {
             int network_id;
             pkt->read_int(&network_id);
-
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-
                 Player* playerPrefab = new Player();
                 std::string path = "../assets/animation/scene.gltf";
                 Model* model = new Model(path, true);

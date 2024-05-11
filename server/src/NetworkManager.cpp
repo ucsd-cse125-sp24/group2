@@ -189,6 +189,12 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Give client control over player
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
+
+    Packet* pkt = new Packet();
+    pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);
+    pkt->write_int(p->networkId());
+    server.send(args->clientId, pkt);
+
     // Create player model
     scene.Instantiate(p);
 }

@@ -18,6 +18,7 @@ enum class PacketType {
     STATE_UPDATE,
     DESTROY_OBJECT,
     DESTROY_OBJECT_ACK,
+    SET_LOCAL_PLAYER,
 };
 class Packet {
 private:

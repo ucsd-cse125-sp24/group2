@@ -117,28 +117,3 @@ void Window::mouse_callback(GLFWwindow* window, int button, int action,
         RightDown = (action == GLFW_PRESS);
     }
 }
-
-void Window::cursor_callback(GLFWwindow* window, double currX, double currY) {
-    int maxDelta = 100;
-    int dx = glm::clamp((int)currX - MouseX, -maxDelta, maxDelta);
-    int dy = glm::clamp(-((int)currY - MouseY), -maxDelta, maxDelta);
-
-    MouseX = (int)currX;
-    MouseY = (int)currY;
-
-    // Move camera
-    // TODO: this should really be part of Camera::Update()
-    Camera* Cam = GameManager::instance().cam;
-    if (LeftDown) {
-        const float rate = 1.0f;
-        Cam->SetAzimuth(Cam->GetAzimuth() + dx * rate);
-        Cam->SetIncline(
-            glm::clamp(Cam->GetIncline() - dy * rate, -90.0f, 90.0f));
-    }
-    if (RightDown) {
-        const float rate = 0.005f;
-        float dist =
-            glm::clamp(Cam->GetDistance() * (1.0f - dx * rate), 0.01f, 1000.0f);
-        Cam->SetDistance(dist);
-    }
-}

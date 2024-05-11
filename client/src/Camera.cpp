@@ -3,6 +3,8 @@
 ////////////////////////////////////////
 
 #include "Camera.h"
+#include "GameManager.hpp"
+#include "InputManager.h"
 
 Camera::Camera() {
     Reset();
