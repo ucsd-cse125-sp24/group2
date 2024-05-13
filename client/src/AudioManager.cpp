@@ -115,24 +115,8 @@ void AudioManager::update() {
 }
 
 void AudioManager::play() {
-    result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
-    startTime = std::chrono::steady_clock::now();
-    FMODErrorCheck(result);
     int occupied_beat = 0; // used to exclude other inputs at the same beat
-
-    FMOD_BOOL isMainPlaying;
-    if (mainChannel != nullptr) {
-        FMOD_Channel_IsPlaying(mainChannel, &isMainPlaying);
-        // repeat main music track and keep the beats
-        if (!isMainPlaying &&
-            !(std::chrono::duration_cast<std::chrono::milliseconds>(
-                  std::chrono::steady_clock::now() - startTime)
-                  .count() %
-              interval)) {
-            result = FMOD_System_PlaySound(system, main, nullptr, false,
-                                           &mainChannel);
-            startTime = std::chrono::steady_clock::now();
-            FMODErrorCheck(result);
-        }
-    }
+    result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
+    FMODErrorCheck(result);
+    startTime = std::chrono::steady_clock::now();
 }
