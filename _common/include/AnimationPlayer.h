@@ -1,8 +1,10 @@
 #pragma once
 
+
 #include "core.h"
 #include "AnimationClip.h"
 #include "../../_common/include/IComponent.hpp"
+
 
 class AnimationPlayer : public IComponent {
 
@@ -13,8 +15,8 @@ private:
     float deltaTime;
 
 public:
-    AnimationPlayer();
-    AnimationPlayer(AnimationClip* clip);
+    AnimationPlayer(GameObject* owner);
+    AnimationPlayer(GameObject* owner, AnimationClip* clip);
 
     void update(float dt);
     void play(AnimationClip* clip);

@@ -32,8 +32,8 @@ private:
     void extractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 public:
-    Model();
-    Model(std::string path);
+    Model(GameObject* owner);
+    Model(GameObject* owner, std::string path);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;
     std::map<std::string, BoneInfo>& getBoneInfoMap();

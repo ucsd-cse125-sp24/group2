@@ -1,6 +1,7 @@
 #include "AnimationClip.h"
 
-AnimationClip::AnimationClip(std::string path, Model* model) : IComponent() {
+
+AnimationClip::AnimationClip(GameObject* owner, std::string path, Model* model) : IComponent(owner) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
     assert(scene && scene->mRootNode);

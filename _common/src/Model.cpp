@@ -1,10 +1,11 @@
 #include "Model.h"
 
-Model::Model() {
+
+Model::Model(GameObject* owner) : IComponent(owner) {
 
 }
 
-Model::Model(std::string path) : IComponent() {
+Model::Model(GameObject* owner, std::string path) : IComponent(owner) {
     loadModel(path);
 }
 

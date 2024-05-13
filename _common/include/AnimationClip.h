@@ -28,7 +28,7 @@ private:
 
 public:
     AnimationClip() = default;
-    AnimationClip(std::string path, Model* model);
+    AnimationClip(GameObject* owner, std::string path, Model* model);
 
     Bone* findBone(const std::string& name);
     float getDuration() const;

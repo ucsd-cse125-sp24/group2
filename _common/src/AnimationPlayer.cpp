@@ -1,10 +1,11 @@
 #include "AnimationPlayer.h"
 
-AnimationPlayer::AnimationPlayer() {
+
+AnimationPlayer::AnimationPlayer(GameObject* owner) : IComponent(owner) {
     
 }
 
-AnimationPlayer::AnimationPlayer(AnimationClip* clip) : IComponent() {
+AnimationPlayer::AnimationPlayer(GameObject* owner, AnimationClip* clip) : IComponent(owner) {
     currentTime = 0.0f;
     deltaTime = 0.0f;
     currentAnimation = clip;

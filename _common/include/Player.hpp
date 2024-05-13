@@ -13,6 +13,10 @@ public:
 
     Player();
 
+    Player(std::string path);
+
     virtual void update() override;
     int32_t TypeID() const override;
+
+    void UpdateModel();
 };
