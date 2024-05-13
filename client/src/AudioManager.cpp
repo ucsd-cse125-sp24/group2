@@ -23,14 +23,16 @@ AudioManager::~AudioManager() {
 }
 
 void AudioManager::setMain(const char* filename, double volume) {
-    result = FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &main);
+    result =
+        FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &main);
     FMODErrorCheck(result);
     FMOD_Channel_SetVolume(mainChannel, volume);
 }
 
 void AudioManager::addNote(const char* filename, char key) {
     FMOD_SOUND* note;
-    result = FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &note);
+    result =
+        FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr, &note);
     FMODErrorCheck(result);
     noteMap[key] = note;
 }
@@ -43,8 +45,6 @@ void AudioManager::setBpm(int b) {
 void AudioManager::setOffFirst(int off) { offset_first_beat = off; }
 
 int occupied_beat = 0;
-bool pressed = false;
-bool waspressed = false;
 auto startTime = std::chrono::steady_clock::now();
 void AudioManager::update() {
     FMOD_System_Update(system);
@@ -54,27 +54,17 @@ void AudioManager::update() {
     msSinceStart = msSinceStart - offset_first_beat;
 
     FMOD_SOUND* selectedSound = nullptr;
-    if (InputManager::isKeyPressed(GLFW_KEY_J)) {
-        pressed = true;
+    if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
         selectedSound = noteMap.at('i');
-    } else if (InputManager::isKeyPressed(GLFW_KEY_K)) {
-        pressed = true;
+    } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
         selectedSound = noteMap.at('j');
-    } else if (InputManager::isKeyPressed(GLFW_KEY_I)) {
-        pressed = true;
+    } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
         selectedSound = noteMap.at('l');
-    } else if (InputManager::isKeyPressed(GLFW_KEY_L)) {
-        pressed = true;
+    } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
         selectedSound = noteMap.at('k');
     } else {
-        pressed = false;
-        waspressed = false;
-    }
-
-    if (!pressed || waspressed)
         return;
-
-    waspressed = true;
+    }
 
     auto off = (msSinceStart % interval < interval - (msSinceStart % interval))
                    ? msSinceStart % interval
@@ -110,7 +100,8 @@ void AudioManager::update() {
             FMOD_Channel_Stop(noteChannel);
         }
 
-        result = FMOD_System_PlaySound(system, selectedSound, nullptr, false, &noteChannel);
+        result = FMOD_System_PlaySound(system, selectedSound, nullptr, false,
+                                       &noteChannel);
         FMODErrorCheck(result);
         result = FMOD_Channel_SetVolume(noteChannel, 0.2f);
         FMODErrorCheck(result);
@@ -132,7 +123,8 @@ void AudioManager::play() {
                   std::chrono::steady_clock::now() - startTime)
                   .count() %
               interval)) {
-            result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
+            result = FMOD_System_PlaySound(system, main, nullptr, false,
+                                           &mainChannel);
             startTime = std::chrono::steady_clock::now();
             FMODErrorCheck(result);
         }
