@@ -10,6 +10,8 @@
 #include "engine/Scene.hpp"
 #include "Client.h"
 #include "Camera.h"
+#include "components/Model.h"
+#include "AnimationPlayer.h"
 
 class GameManager {
 
@@ -17,6 +19,7 @@ public:
     Scene scene;
     Camera* cam;
     Client client;
+    Model* model;
     std::map<int, Player*> players;
     EventHandler<EventArgs> object_destroyed;
 
@@ -24,6 +27,7 @@ public:
         static GameManager m;
         return m;
     }
+    void Init();
     void handle_packet(Packet*);
     void update(Packet*);
     void destroy_object(Packet*);

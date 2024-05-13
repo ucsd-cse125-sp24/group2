@@ -10,7 +10,12 @@ union FloatUnion {
     uint32_t l;
 } num;
 
+const std::string path = "../assets/animation/model.gltf";
+
 void StartGame(Packet*);
+
+void GameManager::Init() { model = new Model(path, true); }
+
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
     packet->read_int(&packet_id);
@@ -51,15 +56,11 @@ void GameManager::update(Packet* pkt) {
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
                 Player* playerPrefab = new Player();
-                std::string path = "../assets/animation/model.gltf";
-                Model* model = new Model(path, true);
-                // AnimationClip* clip = new AnimationClip(path, model);
                 AnimationPlayer* animationPlayer =
                     new AnimationPlayer(path, model);
                 RendererComponent* meshRenderer =
                     new RendererComponent(playerPrefab, ShaderType::ANIMATED);
                 playerPrefab->AddComponent(model);
-                // playerPrefab->AddComponent(clip);
                 playerPrefab->AddComponent(animationPlayer);
                 playerPrefab->AddComponent(meshRenderer);
                 players[network_id] = playerPrefab;

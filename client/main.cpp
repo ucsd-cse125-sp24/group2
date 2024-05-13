@@ -12,6 +12,7 @@
 #include "ConcurrentQueue.hpp"
 #include <thread>
 #include "AudioManager.hpp"
+#include "ColorCodes.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -69,6 +70,10 @@ int main(int argc, char** argv) {
     GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
+
+    printf(YLW "Loading...\n" RST);
+    GameManager::instance().Init();
+    printf(YLW "Done loading!n" RST);
 
     // Setup camera
     GameManager::instance().cam = new Camera();
