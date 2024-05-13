@@ -101,8 +101,8 @@ int main(int argc, char** argv) {
     AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
 
     AudioManager::instance().setMain(
-        "../assets/audio/futuristic01-112bpm-Gbm.mp3", 1.0f);
-    AudioManager::instance().setBpm(112);
+        "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
+    AudioManager::instance().setBpm(232);
     AudioManager::instance().play();
 
     // Loop while GLFW window should stay open.
@@ -123,11 +123,11 @@ int main(int argc, char** argv) {
             Packet* pkt = new Packet();
             pkt->write_int((int)PacketType::PLAYER_INPUT);
             uint8_t* buf = new uint8_t[5];
-            buf[0] = InputManager::IsKeyPressed(GLFW_KEY_W);
-            buf[1] = InputManager::IsKeyPressed(GLFW_KEY_A);
-            buf[2] = InputManager::IsKeyPressed(GLFW_KEY_S);
-            buf[3] = InputManager::IsKeyPressed(GLFW_KEY_D);
-            buf[4] = InputManager::IsKeyPressed(GLFW_KEY_LEFT_SHIFT) &&
+            buf[0] = InputManager::IsKeyDown(GLFW_KEY_W);
+            buf[1] = InputManager::IsKeyDown(GLFW_KEY_A);
+            buf[2] = InputManager::IsKeyDown(GLFW_KEY_S);
+            buf[3] = InputManager::IsKeyDown(GLFW_KEY_D);
+            buf[4] = InputManager::IsKeyDown(GLFW_KEY_LEFT_SHIFT) &&
                      (buf[0] || buf[1] || buf[2] || buf[3]);
             for (int i = 0; i < 5; i++) {
                 pkt->write_byte(buf[i]);

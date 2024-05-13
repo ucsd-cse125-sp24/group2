@@ -13,6 +13,7 @@
 #include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
+#include "PlayerCombat.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -77,9 +78,11 @@ void NetworkManager::process_input() {
         int packet_type;
         packet->read_int(&packet_type);
 
+        /*
         printf("{\n");
         printf("  client: %d\n", client_id);
         printf("  packet_type: %d\n", packet_type);
+        */
 
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
@@ -102,11 +105,11 @@ void NetworkManager::process_input() {
             }
             break;
         }
-        case PacketType::DESTROY_OBJECT_ACK:
+        case PacketType::DESTROY_OBJECT_ACK: {
             int numObjectsDestroyed;
             packet->read_int(&numObjectsDestroyed);
-            printf("  numObjectsDestroyed: %d\n", numObjectsDestroyed);
-            printf("  destroyedObjectIds: [ ");
+            // printf("  numObjectsDestroyed: %d\n", numObjectsDestroyed);
+            // printf("  destroyedObjectIds: [ ");
             while (numObjectsDestroyed) {
                 int destroyedObjectId;
                 packet->read_int(&destroyedObjectId);
@@ -118,12 +121,38 @@ void NetworkManager::process_input() {
 
                 numObjectsDestroyed--;
             }
-            printf("]\n");
+            // printf("]\n");
             break;
+        }
+        case PacketType::PLAYER_ATTACK: {
+            int key;
+            packet->read_int(&key);
+            // printf("  key: %d\n", key);
+            int judgment;
+            packet->read_int(&judgment);
+            // printf("  judgment: %d\n", judgment);
+
+            std::map<int, Client*> clients = server.get_clients();
+            // TODO set miss time to variable
+            if (abs(judgment) > 100) {
+                clients[client_id]
+                    ->p->GetComponent<PlayerCombat>()
+                    ->ResetAllCombos();
+                printf(RED "MISSED\n" RST);
+                break;
+            }
+
+            if (clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(
+                    key)) {
+                printf(YLW "COMBO HIT\n" RST);
+            }
+
+            break;
+        }
         default:
             break;
         }
-        printf("}\n");
+        // printf("}\n");
     }
 }
 

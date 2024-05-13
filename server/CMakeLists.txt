@@ -13,12 +13,14 @@ set(SERVER_SOURCES
     main.cpp
     src/Entity.cpp
     src/CollisionManager.cpp
+    components/PlayerCombat.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
 add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
+    "${CMAKE_CURRENT_LIST_DIR}/components"
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(

@@ -49,6 +49,7 @@ bool InputManager::IsKeyDown(int key) {
     return (keys[key] & KeyState::DOWN) > 0;
 }
 
+// FIXME if this function is called in multiple places, it won't work
 bool InputManager::IsKeyPressed(int key) {
     if ((keys[key] & KeyState::PRESSED) > 0) {
         keys[key] = (KeyState)(keys[key] & ~KeyState::PRESSED);

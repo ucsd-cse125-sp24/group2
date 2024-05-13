@@ -20,6 +20,7 @@ bool PlayerCombat::CheckCombo(int input) {
 
         // Reached end of combo, success
         if (combo.comboIndex == combo.sequence.size()) {
+            ResetAllCombos();
             return true;
         }
     }
@@ -28,3 +29,9 @@ bool PlayerCombat::CheckCombo(int input) {
 }
 
 void PlayerCombat::ResetCombo(Combo& combo) { combo.comboIndex = 0; }
+
+void PlayerCombat::ResetAllCombos() {
+    for (auto& combo : combos) {
+        ResetCombo(combo);
+    }
+}

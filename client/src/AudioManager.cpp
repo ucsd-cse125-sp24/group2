@@ -1,10 +1,8 @@
 #include "AudioManager.hpp"
 #include <chrono>
-#ifdef _WIN32
-#include <conio.h>
-#endif
 #include "InputManager.h"
 #include "ColorCodes.hpp"
+#include "GameManager.hpp"
 
 AudioManager::AudioManager() {
     result = FMOD_System_Create(&system, FMOD_VERSION);
@@ -54,13 +52,19 @@ void AudioManager::update() {
     msSinceStart = msSinceStart - offset_first_beat;
 
     FMOD_SOUND* selectedSound = nullptr;
+    Packet* pkt = new Packet();
+    pkt->write_int((int)PacketType::PLAYER_ATTACK);
     if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
+        pkt->write_int(GLFW_KEY_J);
         selectedSound = noteMap.at('i');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
+        pkt->write_int(GLFW_KEY_K);
         selectedSound = noteMap.at('j');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
+        pkt->write_int(GLFW_KEY_I);
         selectedSound = noteMap.at('l');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
+        pkt->write_int(GLFW_KEY_L);
         selectedSound = noteMap.at('k');
     } else {
         return;
@@ -84,8 +88,10 @@ void AudioManager::update() {
     } else {
         std::cout << "Off Beat! " << std::to_string(off) << std::endl;
     }
+    pkt->write_int(off);
 
     if (selectedSound != nullptr) {
+        GameManager::instance().client.send(pkt);
         // Check if the channel is currently playing
         FMOD_BOOL isPlaying;
         if (noteChannel != nullptr) {
