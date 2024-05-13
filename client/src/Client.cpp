@@ -53,7 +53,7 @@ void Client::receive() {
             //               << (int)buf[i] << " ";
             // }
             // std::cout << std::endl;
-            // printf("[CLIENT] received %d bytes from server\n", read_bytes);
+            printf("[CLIENT] received %d bytes from server\n", read_bytes);
 
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);

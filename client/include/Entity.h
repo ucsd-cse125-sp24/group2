@@ -1,14 +1,14 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+// #ifndef ENTITY_H
+// #define ENTITY_H
 
-#include "../../_common/include/NetworkObject.hpp"
+// #include "../../_common/include/NetworkObject.hpp"
 
-class Entity : public NetworkObject {
+// class Entity : public NetworkObject {
     
 
-public:
-    Entity();
+// public:
+//     Entity();
 
-    std::string ToString() override;
-};
-#endif // ENTITY_H
+//     std::string ToString() override;
+// };
+// #endif // ENTITY_H

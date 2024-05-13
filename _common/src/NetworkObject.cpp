@@ -29,6 +29,7 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
 }
 
 void NetworkObject::serialize(Packet* packet) {
+    packet->write_int(_networkId);
     for (INetworkComponent* netComp : networkComponents) {
         netComp->Serialize(packet);
     }

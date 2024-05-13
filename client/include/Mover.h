@@ -5,7 +5,6 @@
 #include "core.h"
 
 #include "INetworkComponent.hpp"
-
 #include "Cube.h"
 #include "InputManager.h"
 #include "Model.h"
@@ -15,7 +14,7 @@
 
 class Mover : public INetworkComponent {
 public:
-    glm::vec3 position;
+    glm::vec3& position;
     glm::vec3 velocityHeading;
     float speed;
 
@@ -24,12 +23,12 @@ public:
     AnimationPlayer* animationPlayer;
     AnimationClip* clip;
 
-    Mover();
-    Mover(std::string path);
+    Mover(NetworkObject* owner);
+    Mover(NetworkObject* owner, std::string path);
     ~Mover();
 
-    void Update(float deltaTime);
-    void UpdatePhysics(float deltaTime);
+    // void Update(float deltaTime);
+    // void UpdatePhysics(float deltaTime);
     void Draw(glm::mat4 view, GLuint shaderProgram);
 
     void Serialize(Packet* packet) override;

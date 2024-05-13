@@ -2,30 +2,30 @@
 #include "ColorCodes.hpp"
 #include <thread>
 
-union FloatUnion {
-    float f;
-    uint32_t l;
-} num;
+// union FloatUnion {
+//     float f;
+//     uint32_t l;
+// } num;
 
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
     packet->read_int(&packet_id);
     PacketType p = (PacketType)packet_id;
 
-    std::cout << "HANDLEPKT:" << std::endl;
+    // std::cout << "HANDLEPKT:" << std::endl;
 
     switch (p) {
     case PacketType::STATE_UPDATE:
-        std::cout << "  RECV: STATE_UPD" << std::endl;
+        // std::cout << "  RECV: STATE_UPD" << std::endl;
         update(packet);
         break;
     case PacketType::DESTROY_OBJECT:
-        std::cout << "  RECV: DESTROY" << std::endl;
+        // std::cout << "  RECV: DESTROY" << std::endl;
         destroy_object(packet);
         break;
 
     default:
-        std::cout << "  RECV: NONEOFTHEABOVE" << std::endl;
+        // std::cout << "  RECV: NONEOFTHEABOVE" << std::endl;
         break;
     }
 }
@@ -53,19 +53,12 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = p;
             }
 
-            // TODO: implement in deserialization
-            pkt->read_int((int*)&num.l);
-            float x = num.f;
-            pkt->read_int((int*)&num.l);
-            float y = num.f;
-            pkt->read_int((int*)&num.l);
-            float z = num.f;
-            // float x, y, z;
-            // pkt->read_float(&x);
-            // pkt->read_float(&y);
-            // pkt->read_float(&z);
+            float x, y, z;
+            pkt->read_float(&x);
+            pkt->read_float(&y);
+            pkt->read_float(&z);
 
-            std::cout << "Received position: " << glm::to_string(glm::vec3(x, y, z)) << std::endl;
+            // std::cout << "Received position: " << glm::to_string(glm::vec3(x, y, z)) << std::endl;
 
             players[network_id]->mover->position = glm::vec3(x, y, z);
             break;
