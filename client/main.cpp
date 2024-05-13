@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     AudioManager::instance().setMain(
         "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
     AudioManager::instance().setBpm(232);
-    AudioManager::instance().play();
+    // AudioManager::instance().play();
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;

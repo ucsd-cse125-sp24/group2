@@ -3,12 +3,14 @@
 #include <thread>
 #include "components/RendererComponent.hpp"
 #include "components/Model.h"
+#include <AudioManager.hpp>
 
 union FloatUnion {
     float f;
     uint32_t l;
 } num;
 
+void StartGame(Packet*);
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
     packet->read_int(&packet_id);
@@ -23,6 +25,9 @@ void GameManager::handle_packet(Packet* packet) {
         break;
     case PacketType::SET_LOCAL_PLAYER:
 
+        break;
+    case PacketType::START_GAME:
+        StartGame(packet);
         break;
 
     default:
@@ -46,7 +51,7 @@ void GameManager::update(Packet* pkt) {
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
                 Player* playerPrefab = new Player();
-                std::string path = "../assets/animation/scene.gltf";
+                std::string path = "../assets/animation/model.gltf";
                 Model* model = new Model(path, true);
                 // AnimationClip* clip = new AnimationClip(path, model);
                 AnimationPlayer* animationPlayer =
@@ -60,6 +65,12 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
 
                 scene.Instantiate(playerPrefab);
+
+                if (players.size() == 4) {
+                    Packet* pkt = new Packet();
+                    pkt->write_int((int)PacketType::PLAYER_READY);
+                    client.send(pkt);
+                }
             }
 
             pkt->read_int((int*)&num.l);
@@ -107,4 +118,9 @@ void GameManager::destroy_object(Packet* pkt) {
         destroyed_ack->write_int(destroyedObjId);
     }
     client.send(destroyed_ack);
+}
+
+void StartGame(Packet* packet) {
+    printf(GRN "Starting game!\n" RST);
+    AudioManager::instance().play();
 }

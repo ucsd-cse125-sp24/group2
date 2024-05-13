@@ -19,6 +19,12 @@
 
 Server server;
 Scene scene;
+bool gameStarted = false;
+int playersReady = 0;
+std::vector<glm::vec3> spawnPoints = {glm::vec3(-20, 0, 0), glm::vec3(0, 0, 20),
+                                      glm::vec3(20, 0, 0),
+                                      glm::vec3(0, 0, -20)};
+int spawnIndex = 0;
 union FloatUnion {
     float f;
     uint32_t l;
@@ -145,10 +151,27 @@ void NetworkManager::process_input() {
             if (clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(
                     key)) {
                 printf(YLW "COMBO HIT\n" RST);
+                // TODO enemy take damage
             }
 
             break;
         }
+
+        case PacketType::PLAYER_READY:
+            playersReady++;
+
+            if (playersReady == MAX_CLIENTS) {
+                // TODO Spawn enemy
+                printf("Spawn enemy!\n");
+
+                // Start game for all players
+                for (auto& kv : server.get_clients()) {
+                    Packet* pkt = new Packet();
+                    pkt->write_int((int)PacketType::START_GAME);
+                    server.send(kv.first, pkt);
+                }
+            }
+            break;
         default:
             break;
         }
@@ -218,6 +241,7 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Give client control over player
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
+    p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);
