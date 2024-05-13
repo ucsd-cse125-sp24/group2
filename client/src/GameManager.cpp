@@ -4,6 +4,7 @@
 #include "components/RendererComponent.hpp"
 #include "components/Model.h"
 #include <AudioManager.hpp>
+#include "prefabs/Enemy.hpp"
 
 union FloatUnion {
     float f;
@@ -11,10 +12,15 @@ union FloatUnion {
 } num;
 
 const std::string path = "../assets/animation/model.gltf";
+const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
 
 void StartGame(Packet*);
 
-void GameManager::Init() { model = new Model(path, true); }
+int localPlayerObject = -1;
+void GameManager::Init() {
+    model = new Model(path, true);
+    enemy = new Model(enemyPath, false);
+}
 
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
@@ -29,7 +35,9 @@ void GameManager::handle_packet(Packet* packet) {
         destroy_object(packet);
         break;
     case PacketType::SET_LOCAL_PLAYER:
-
+        int netId;
+        packet->read_int(&netId);
+        localPlayerObject = netId;
         break;
     case PacketType::SERVER_READY: {
         Packet* pkt = new Packet();
@@ -82,6 +90,9 @@ void GameManager::update(Packet* pkt) {
             float z = num.f;
 
             players[network_id]->position = glm::vec3(x, y, z);
+            if (localPlayerObject == network_id) {
+                cam->position = glm::vec3(x, y + 200, z + 500);
+            }
             break;
         }
         default:
@@ -121,7 +132,15 @@ void GameManager::destroy_object(Packet* pkt) {
     client.send(destroyed_ack);
 }
 
-void StartGame(Packet* packet) {
+void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
     AudioManager::instance().play();
+
+    Enemy* enemyPrefab = new Enemy();
+    enemyPrefab->AddComponent(enemy);
+    RendererComponent* meshRenderer =
+        new RendererComponent(enemyPrefab, ShaderType::STANDARD);
+    enemyPrefab->AddComponent(meshRenderer);
+
+    scene.Instantiate(enemyPrefab);
 }

@@ -7,12 +7,14 @@
 #include "core.h"
 #include "glm/gtx/euler_angles.hpp"
 
-// The Camera class provides a simple means to controlling the 3D camera. It could
-// be extended to support more interactive controls. Ultimately. the camera sets the
-// GL projection and viewing matrices.
+// The Camera class provides a simple means to controlling the 3D camera. It
+// could be extended to support more interactive controls. Ultimately. the
+// camera sets the GL projection and viewing matrices.
 
 class Camera {
 public:
+    glm::vec3 position = glm::vec3(0, 100, 500);
+
     Camera();
 
     void Update();
@@ -28,19 +30,22 @@ public:
     float GetAzimuth() { return Azimuth; }
     float GetIncline() { return Incline; }
 
-    const glm::mat4 &GetViewProjectMtx() { return ViewProjectMtx; }
+    const glm::mat4& GetViewProjectMtx() { return ViewProjectMtx; }
 
 private:
     // Perspective controls
-    float FOV;       // Field of View Angle (degrees)
-    float Aspect;    // Aspect Ratio
-    float NearClip;  // Near clipping plane distance
-    float FarClip;   // Far clipping plane distance
+    float FOV;      // Field of View Angle (degrees)
+    float Aspect;   // Aspect Ratio
+    float NearClip; // Near clipping plane distance
+    float FarClip;  // Far clipping plane distance
 
     // Polar controls
-    float Distance;  // Distance of the camera eye position to the origin (meters)
-    float Azimuth;   // Rotation of the camera eye position around the Y axis (degrees)
-    float Incline;   // Angle of the camera eye position over the XZ plane (degrees)
+    float
+        Distance;  // Distance of the camera eye position to the origin (meters)
+    float Azimuth; // Rotation of the camera eye position around the Y axis
+                   // (degrees)
+    float
+        Incline; // Angle of the camera eye position over the XZ plane (degrees)
 
     // Computed data
     glm::mat4 ViewProjectMtx;

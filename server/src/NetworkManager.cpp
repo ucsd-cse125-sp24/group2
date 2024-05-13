@@ -21,9 +21,9 @@ Server server;
 Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
-std::vector<glm::vec3> spawnPoints = {glm::vec3(-20, 0, 0), glm::vec3(0, 0, 20),
-                                      glm::vec3(20, 0, 0),
-                                      glm::vec3(0, 0, -20)};
+std::vector<glm::vec3> spawnPoints = {glm::vec3(0, 0, 0), glm::vec3(0, 0, 200),
+                                      glm::vec3(200, 0, 0),
+                                      glm::vec3(0, 0, -200)};
 int spawnIndex = 0;
 union FloatUnion {
     float f;

@@ -26,6 +26,7 @@ set(
     src/Bone.cpp
     src/components/Model.cpp
     src/components/RendererComponent.cpp
+    prefabs/Enemy.cpp
 
     # 125-Starter
     src/Mover.cpp
@@ -40,6 +41,7 @@ FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 # Add include directories
 include_directories(
     include
+    .
     ../_common
     ../_common/include
     ../_common/fmod/inc

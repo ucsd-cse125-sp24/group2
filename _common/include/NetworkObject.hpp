@@ -7,9 +7,7 @@
 
 class INetworkComponent;
 
-enum NetworkObjectTypeID : int32_t {
-    PLAYER,
-};
+enum NetworkObjectTypeID : int32_t { PLAYER, ENEMY };
 class NetworkObject : public GameObject {
 private:
     int _networkId;

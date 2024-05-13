@@ -83,8 +83,8 @@ int main(int argc, char** argv) {
     print_versions();
     // Setup callbacks.
     setup_callbacks(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // Setup OpenGL settings.
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //  Setup OpenGL settings.
     setup_opengl_settings();
 
     // Initialize input

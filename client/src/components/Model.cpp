@@ -2,7 +2,10 @@
 
 Model::Model() {}
 
-Model::Model(std::string path, bool hasAnimation) : IComponent(), hasAnimation(hasAnimation) { loadModel(path); }
+Model::Model(std::string path, bool hasAnimation)
+    : IComponent(), hasAnimation(hasAnimation) {
+    loadModel(path);
+}
 
 void Model::update(float dt, glm::vec3 pos) {
     for (int i = 0; i < meshes.size(); i++) {
@@ -18,10 +21,13 @@ void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
 void Model::loadModel(std::string path) {
     Assimp::Importer importer;
-    if(hasAnimation) {
-        scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    if (hasAnimation) {
+        scene =
+            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     } else {
-        scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_PreTransformVertices);
+        scene =
+            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs |
+                                        aiProcess_PreTransformVertices);
     }
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
@@ -238,6 +244,4 @@ void Model::setPosition(glm::vec3 pos) {
 
 std::string Model::ToString() { return "Model"; }
 
-const aiScene* Model::getScene() const {
-    return scene;
-}
+const aiScene* Model::getScene() const { return scene; }

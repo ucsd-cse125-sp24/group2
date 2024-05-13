@@ -20,6 +20,7 @@ public:
     Camera* cam;
     Client client;
     Model* model;
+    Model* enemy;
     std::map<int, Player*> players;
     EventHandler<EventArgs> object_destroyed;
 
@@ -31,5 +32,6 @@ public:
     void handle_packet(Packet*);
     void update(Packet*);
     void destroy_object(Packet*);
+    void StartGame(Packet*);
 };
 #endif
