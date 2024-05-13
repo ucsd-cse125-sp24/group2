@@ -19,7 +19,7 @@
 
 Server server;
 Scene scene;
-bool gameStarted = false;
+bool isServerReady = false;
 int playersReady = 0;
 std::vector<glm::vec3> spawnPoints = {glm::vec3(-20, 0, 0), glm::vec3(0, 0, 20),
                                       glm::vec3(20, 0, 0),
@@ -157,7 +157,7 @@ void NetworkManager::process_input() {
             break;
         }
 
-        case PacketType::PLAYER_READY:
+        case PacketType::CLIENT_READY:
             playersReady++;
 
             if (playersReady == MAX_CLIENTS) {
@@ -247,6 +247,15 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);
     pkt->write_int(p->networkId());
     server.send(args->clientId, pkt);
+
+    // Tell clients server is ready
+    if (server.clients.size() == MAX_CLIENTS) {
+        for (auto& kv : server.clients) {
+            Packet* packet = new Packet();
+            packet->write_int((int)PacketType::SERVER_READY);
+            server.send(kv.first, packet);
+        }
+    }
 
     // Create player model
     scene.Instantiate(p);

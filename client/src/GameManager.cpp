@@ -31,6 +31,12 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::SET_LOCAL_PLAYER:
 
         break;
+    case PacketType::SERVER_READY: {
+        Packet* pkt = new Packet();
+        pkt->write_int((int)PacketType::CLIENT_READY);
+        client.send(pkt);
+        break;
+    }
     case PacketType::START_GAME:
         StartGame(packet);
         break;
@@ -66,12 +72,6 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
 
                 scene.Instantiate(playerPrefab);
-
-                if (players.size() == 4) {
-                    Packet* pkt = new Packet();
-                    pkt->write_int((int)PacketType::PLAYER_READY);
-                    client.send(pkt);
-                }
             }
 
             pkt->read_int((int*)&num.l);

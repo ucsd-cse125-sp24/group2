@@ -21,7 +21,8 @@ enum class PacketType {
     SET_LOCAL_PLAYER,
     PLAYER_ATTACK,
     START_GAME,
-    PLAYER_READY
+    SERVER_READY,
+    CLIENT_READY
 };
 class Packet {
 private:
