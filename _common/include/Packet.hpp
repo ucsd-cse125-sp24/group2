@@ -19,6 +19,7 @@ enum class PacketType {
     DESTROY_OBJECT,
     DESTROY_OBJECT_ACK,
     SET_LOCAL_PLAYER,
+    PLAYER_ATTACK,
 };
 class Packet {
 private:
