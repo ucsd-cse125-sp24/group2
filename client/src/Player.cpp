@@ -2,7 +2,7 @@
 #include "InputManager.h"
 #include "AnimationPlayer.h"
 
-void Player::update() {
+void Player::update(float deltaTime) {
     if ((InputManager::IsKeyDown(GLFW_KEY_W) ||
          InputManager::IsKeyDown(GLFW_KEY_A) ||
          InputManager::IsKeyDown(GLFW_KEY_S) ||

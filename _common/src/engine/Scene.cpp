@@ -1,8 +1,8 @@
 #include "engine/Scene.hpp"
 #include <algorithm>
-void Scene::Update() {
+void Scene::Update(float deltaTime) {
     for (auto const& entity : entities) {
-        entity->update();
+        entity->update(deltaTime);
     }
 }
 

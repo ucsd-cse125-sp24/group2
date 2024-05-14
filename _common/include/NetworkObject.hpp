@@ -18,6 +18,7 @@ public:
     // Constructors
 
     NetworkObject();
+    NetworkObject(int networkId);
 
     // Overriden functions from GameObject
 

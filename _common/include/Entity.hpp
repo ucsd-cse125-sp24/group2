@@ -5,8 +5,10 @@
 
 class Entity : public NetworkObject {
 public:
+    Entity() : NetworkObject() {}
+    Entity(int networkId) : NetworkObject(networkId) {}
     glm::vec3 position = glm::vec3();
-    virtual void update() = 0;
+    virtual void update(float deltaTime) = 0;
     void serialize(Packet*) override;
     void deserialize(Packet*) override;
 };

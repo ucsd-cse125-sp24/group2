@@ -4,6 +4,9 @@
 int NetworkObject::nextNetworkId = 0;
 
 NetworkObject::NetworkObject() : GameObject() { _networkId = nextNetworkId++; }
+NetworkObject::NetworkObject(int networkId) : GameObject() {
+    _networkId = networkId;
+}
 
 void NetworkObject::AddComponent(IComponent* newComp) {
     if (INetworkComponent* newNetComp =

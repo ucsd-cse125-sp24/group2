@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
             task_queue.pop_front()();
         }
 
-        GameManager::instance().scene.Update();
+        GameManager::instance().scene.Update(deltaTime);
     }
 
     Window::cleanUp();

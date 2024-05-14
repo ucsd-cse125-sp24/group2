@@ -14,6 +14,7 @@
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
 #include "PlayerCombat.hpp"
+#include "prefabs/Enemy.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -163,6 +164,8 @@ void NetworkManager::process_input() {
             if (playersReady == MAX_CLIENTS) {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
+                Enemy* enemyPrefab = new Enemy();
+                scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
                 for (auto& kv : server.get_clients()) {
@@ -179,7 +182,7 @@ void NetworkManager::process_input() {
     }
 }
 
-void NetworkManager::update() { scene.Update(); }
+void NetworkManager::update(float deltaTime) { scene.Update(deltaTime); }
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {

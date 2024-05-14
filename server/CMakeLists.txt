@@ -14,6 +14,7 @@ set(SERVER_SOURCES
     src/Entity.cpp
     src/CollisionManager.cpp
     components/PlayerCombat.cpp
+    prefabs/Enemy.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
@@ -24,6 +25,7 @@ set(SERVER_INCLUDE_DIRECTORIES
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(
+    .
     "../_common/"
     "../_common/include"
     )

@@ -15,6 +15,6 @@ public:
 
     void Instantiate(Entity*);
     void Destroy(Entity*);
-    void Update();
+    void Update(float deltaTime);
 };
 #endif

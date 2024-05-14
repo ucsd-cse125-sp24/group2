@@ -5,6 +5,7 @@
 #include "components/Model.h"
 #include <AudioManager.hpp>
 #include "prefabs/Enemy.hpp"
+#include <algorithm>
 
 union FloatUnion {
     float f;
@@ -61,6 +62,34 @@ void GameManager::update(Packet* pkt) {
 
         // TODO deserialize
         switch (_typeid) {
+        case NetworkObjectTypeID::ENEMY: {
+            int network_id;
+            pkt->read_int(&network_id);
+            auto it = std::find_if(scene.entities.begin(), scene.entities.end(),
+                                   [network_id](Entity* entity) {
+                                       return entity->networkId() == network_id;
+                                   });
+            if (it != scene.entities.end()) {
+                pkt->read_int((int*)&num.l);
+                float x = num.f;
+                pkt->read_int((int*)&num.l);
+                float y = num.f;
+                pkt->read_int((int*)&num.l);
+                float z = num.f;
+
+                (*it)->position = glm::vec3(x, y, z);
+            } else {
+                Enemy* enemyPrefab = new Enemy(network_id);
+                enemyPrefab->AddComponent(enemy);
+                RendererComponent* meshRenderer =
+                    new RendererComponent(enemyPrefab, ShaderType::STANDARD);
+                enemyPrefab->AddComponent(meshRenderer);
+
+                scene.Instantiate(enemyPrefab);
+            }
+
+            break;
+        }
         case NetworkObjectTypeID::PLAYER: {
             int network_id;
             pkt->read_int(&network_id);
@@ -78,7 +107,7 @@ void GameManager::update(Packet* pkt) {
 
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 4) {
+                if (players.size() == 2) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -138,12 +167,4 @@ void GameManager::destroy_object(Packet* pkt) {
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
     AudioManager::instance().play();
-
-    Enemy* enemyPrefab = new Enemy();
-    enemyPrefab->AddComponent(enemy);
-    RendererComponent* meshRenderer =
-        new RendererComponent(enemyPrefab, ShaderType::STANDARD);
-    enemyPrefab->AddComponent(meshRenderer);
-
-    scene.Instantiate(enemyPrefab);
 }
