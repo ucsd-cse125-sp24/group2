@@ -25,10 +25,11 @@ public:
     void SetRotation(glm::vec3 newRotation) { rotation = newRotation; }
     void SetScale(glm::vec3 newScale) { scale = newScale; }
 
-    virtual std::string ToString() override;
-
     virtual void Serialize(Packet*) override;
     virtual void Deserialize(Packet*) override;
+    virtual int32_t TypeID() const override { return TRANSFORM; }
+
+    virtual std::string ToString() override;
 };
 
 

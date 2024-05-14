@@ -9,6 +9,10 @@
 
 class NetworkObject;
 
+enum NetworkComponentTypeID : int32_t {
+    TRANSFORM = 8,
+    MOVER = 9,
+};
 
 class INetworkComponent : public IComponent {
 
@@ -23,6 +27,7 @@ public:
 
     virtual void Serialize(Packet*) = 0;
     virtual void Deserialize(Packet*) = 0;
+    virtual int32_t TypeID() const = 0;
 
     virtual std::string ToString() override;
 };

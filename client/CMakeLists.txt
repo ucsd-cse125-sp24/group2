@@ -24,6 +24,7 @@ set(
     src/Bone.cpp
 
     # 125-Starter
+    src/Player.cpp
     src/Mover.cpp
     src/GameManager.cpp
 )
@@ -49,7 +50,7 @@ set(
     include/Bone.h
 
     # 125-Starter
-    include/Mover.h
+    # include/Mover.h
     include/GameManager.hpp
     include/PlayerManager.hpp
     include/InputManager.h

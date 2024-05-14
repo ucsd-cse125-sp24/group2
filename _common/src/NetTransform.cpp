@@ -25,19 +25,17 @@ NetTransform::NetTransform(NetworkObject* owner, glm::vec3 newPosition, glm::vec
     scale(newScale)
 {}
 
+void NetTransform::Serialize(Packet* packet) {
+    packet->write_vec3(position);
+}
+
+void NetTransform::Deserialize(Packet* packet) {
+    packet->read_vec3(&position);
+}
+
 std::string NetTransform::ToString() {
     return 
         "Networked Transform: pos(" + glm::to_string(position) +
         ") rot(" + glm::to_string(position) +
         ") scale(" + glm::to_string(position) + ")";
-}
-
-void NetTransform::Deserialize(Packet* packet) {
-    // std::cout << "NetTransform::Deserialize(Packet*)" << std::endl;
-    // Should do nothing
-}
-
-void NetTransform::Serialize(Packet* packet) {
-    packet->write_vec3(position);
-    // packet->write_vec3(rotation);
 }

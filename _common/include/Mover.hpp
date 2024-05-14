@@ -1,3 +1,5 @@
+#pragma once
+
 #include "INetworkComponent.hpp"
 
 
@@ -14,8 +16,15 @@ public:
 
     void Update();
 
-    virtual void Serialize(Packet*) override;
-    virtual void Deserialize(Packet*) override;
+    virtual void Serialize(Packet* packet) override {
+        packet->write_float(speed);
+    }
+
+    virtual void Deserialize(Packet* packet) override {
+        packet->read_float(&speed);
+    }
+
+    virtual int32_t TypeID() const override { return MOVER; }
 
     std::string ToString() override;
 };

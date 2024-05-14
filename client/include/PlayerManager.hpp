@@ -1,7 +1,7 @@
 #ifndef PLAYER_MANAGER_H
 #define PLAYER_MANAGER_H
 #include <string>
-#include "Player.h"
+#include "Player.hpp"
 
 class PlayerManager {
 public:

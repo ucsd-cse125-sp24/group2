@@ -9,15 +9,17 @@
 
 class INetworkComponent;
 
+
+// Make sure to add to this list for each NetworkObject created
 enum NetworkObjectTypeID : int32_t {
     PLAYER,
 };
 
 class NetworkObject : public GameObject {
 protected:
-    int _networkId;
+    int _networkId; // to distinguish each NetworkObject
     static int nextNetworkId;
-    std::vector<INetworkComponent*> networkComponents;
+    std::vector<INetworkComponent*> networkComponents; // container for all INetworkComponents, disjoint from GameObject::components
 
 public:
     // Constructors
@@ -26,14 +28,14 @@ public:
 
     // Overriden functions from GameObject
 
-    void AddComponent(IComponent* newComp) override;
-    void RemoveComponent(IComponent* comp) override;
+    void AddComponent(IComponent* newComp) override; // Adds component to either components or networkComponents based on type
+    void RemoveComponent(IComponent* comp) override; // Removes component from either components or networkComponents based on type
 
     // New functions
 
-    void serialize(Packet*); // serialize order needs to match deserialize order, and vice versa
-    void deserialize(Packet*);
-    virtual int32_t TypeID() const = 0;
+    void serialize(Packet*); // Uses INetworkComponent::TypeID(), so make sure to implement for each INetworkComponent
+    void deserialize(Packet*); // Needs to know all possible INetworkComponents, make sure to extend function to support each one created
+    virtual int32_t TypeID() const = 0; // Used to determine size of object in deserialization, make sure to implement for each NetworkObject
     inline int networkId() const { return _networkId; }
 
     // std::string ToString() override;

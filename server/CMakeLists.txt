@@ -11,7 +11,6 @@ set(SERVER_SOURCES
     src/Player.cpp
     src/Server.cpp
     main.cpp
-    src/Entity.cpp
     src/Scene.cpp
     src/CollisionManager.cpp
     src/Mover.cpp

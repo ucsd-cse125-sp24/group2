@@ -1,30 +1,31 @@
-#include "Mover.h"
+#include "Mover.hpp"
 #include "NetTransform.hpp"
 
 Mover::Mover(NetworkObject* owner) : 
     INetworkComponent(owner),
-    position(owner->GetComponent<NetTransform>()->position)
+    position(owner->GetComponent<NetTransform>()->position),
+    rotation(owner->GetComponent<NetTransform>()->rotation)
 {
     // position = glm::vec3(0);
     // velocityHeading = glm::vec3(0);
     // speed = 0.2;
 }
 
-Mover::Mover(NetworkObject* owner, std::string path) : 
-    INetworkComponent(owner),
-    position(owner->GetComponent<NetTransform>()->position)
-{
-    // position = glm::vec3(0);
-    // velocityHeading = glm::vec3(0);
-    // speed = 0.2; 
+// Mover::Mover(NetworkObject* owner, std::string path) : 
+//     INetworkComponent(owner),
+//     position(owner->GetComponent<NetTransform>()->position)
+// {
+//     // position = glm::vec3(0);
+//     // velocityHeading = glm::vec3(0);
+//     // speed = 0.2; 
 
-    model = new Model(path);
-    clip = new AnimationClip(path, model);
-    animationPlayer = new AnimationPlayer(clip);
-    // position = owner->GetComponent<NetTransform>()->position;
-}
+//     model = new Model(path);
+//     clip = new AnimationClip(path, model);
+//     animationPlayer = new AnimationPlayer(clip);
+//     // position = owner->GetComponent<NetTransform>()->position;
+// }
 
-Mover::~Mover() {}
+// Mover::~Mover() {}
 
 // void Mover::Update(float deltaTime) {
 //     model->update(deltaTime, position);
@@ -39,23 +40,24 @@ Mover::~Mover() {}
 //     position += normalizedVelocityHeading * speed;
 // }
 
-void Mover::Draw(glm::mat4 view, GLuint shaderProgram) {
-    // glm::mat4 transform = glm::translate(position);
-    model->draw(view, shaderProgram);
-    auto transforms = animationPlayer->getFinalBoneMatrices();
-    for (int i = 0; i < transforms.size(); i++) {
-        glUseProgram(shaderProgram);
-        glUniformMatrix4fv(
-            glGetUniformLocation(
-                shaderProgram,
-                ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()),
-            1, GL_FALSE, glm::value_ptr(transforms[i]));
-    }
-}
+// void Mover::Draw(glm::mat4 view, GLuint shaderProgram) {
+//     // glm::mat4 transform = glm::translate(position);
+//     model->draw(view, shaderProgram);
+//     auto transforms = animationPlayer->getFinalBoneMatrices();
+//     for (int i = 0; i < transforms.size(); i++) {
+//         glUseProgram(shaderProgram);
+//         glUniformMatrix4fv(
+//             glGetUniformLocation(
+//                 shaderProgram,
+//                 ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()),
+//             1, GL_FALSE, glm::value_ptr(transforms[i]));
+//     }
+// }
 
-void Mover::Serialize(Packet* packet) {}
+// Implemented in Mover.hpp
+// void Mover::Serialize(Packet* packet) {}
 
-void Mover::Deserialize(Packet* packet) {}
+// void Mover::Deserialize(Packet* packet) {}
 
 std::string Mover::ToString() {
     return "Mover";

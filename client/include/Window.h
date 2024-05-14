@@ -6,7 +6,7 @@
 #include "core.h"
 #include "InputManager.h"
 
-#include "Mover.h"
+#include "Mover.hpp"
 
 #include "PlayerManager.hpp"
 #include "Client.h"
