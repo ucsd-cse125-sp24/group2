@@ -10,14 +10,22 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "Scene.hpp"
+#include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
+#include "PlayerCombat.hpp"
+#include "prefabs/Enemy.hpp"
+#include "Mover.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
 Server server;
 Scene scene;
+bool isServerReady = false;
+int playersReady = 0;
+std::vector<glm::vec3> spawnPoints = {glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+                                      glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)};
+int spawnIndex = 0;
 union FloatUnion {
     float f;
     uint32_t l;
@@ -39,7 +47,7 @@ void NetworkManager::init() {
     server.set_client_joined_callback(client_joined_callback);
     server.set_client_disconnected_callback([this](EventArgs* e) {
         ClientEventArgs* args = (ClientEventArgs*)e;
-        scene.remove_object(server.clients[args->clientId]->p);
+        scene.Destroy(server.clients[args->clientId]->p);
     });
 
     // Register listener for object added
@@ -80,12 +88,17 @@ void NetworkManager::process_input() {
         int packet_type;
         packet->read_int(&packet_type);
 
+        /*
+        printf("{\n");
+        printf("  client: %d\n", client_id);
+        printf("  packet_type: %d\n", packet_type);
+        */
+
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
         case PacketType::PLAYER_INPUT: {
-            // std::cout << "  RECV: PINPUT" << std::endl;
-            char input[4];
-            for (int i = 0; i < 4; i++) {
+            char input[5];
+            for (int i = 0; i < 5; i++) {
                 packet->read_byte(&input[i]);
             }
 
@@ -93,20 +106,32 @@ void NetworkManager::process_input() {
             if (clients.find(client_id) == clients.end())
                 break;
 
-            // std::cout << "  Received input: " << (float)input[0] << ", " << (float)input[1] << ", " << (float)input[2] << ", " << (float)input[3] << std::endl;
+            // std::cout << "  Received input: " << (float)input[0] << ", " <<
+            // (float)input[1] << ", " << (float)input[2] << ", " <<
+            // (float)input[3] << std::endl;
 
-            clients[client_id]->p->GetComponent<Mover>()->input.x = (float)input[3] - (float)input[1];
-            clients[client_id]->p->GetComponent<Mover>()->input.y = (float)input[0] - (float)input[2];
+            clients[client_id]->p->GetComponent<Mover>()->input.x =
+                (float)input[3] - (float)input[1];
+            clients[client_id]->p->GetComponent<Mover>()->input.y =
+                (float)input[0] - (float)input[2];
+            if (input[4] == 1) {
+                clients[client_id]->p->GetComponent<Mover>()->speed = 9.0f;
+            } else {
+                clients[client_id]->p->GetComponent<Mover>()->speed = 4.0f;
+            }
 
             break;
         }
-        case PacketType::DESTROY_OBJECT_ACK:
+        case PacketType::DESTROY_OBJECT_ACK: {
             // std::cout << "  RECV: DSTRY_ACK" << std::endl;
             int numObjectsDestroyed;
             packet->read_int(&numObjectsDestroyed);
+            // printf("  numObjectsDestroyed: %d\n", numObjectsDestroyed);
+            // printf("  destroyedObjectIds: [ ");
             while (numObjectsDestroyed) {
                 int destroyedObjectId;
                 packet->read_int(&destroyedObjectId);
+                printf("%d ", destroyedObjectId);
                 std::map<int, Client*> clients = server.get_clients();
                 if (clients.size() != 0) {
                     clients[client_id]->objectStates.erase(destroyedObjectId);
@@ -114,15 +139,62 @@ void NetworkManager::process_input() {
 
                 numObjectsDestroyed--;
             }
+            // printf("]\n");
+            break;
+        }
+        case PacketType::PLAYER_ATTACK: {
+            int key;
+            packet->read_int(&key);
+            // printf("  key: %d\n", key);
+            int judgment;
+            packet->read_int(&judgment);
+            // printf("  judgment: %d\n", judgment);
+
+            std::map<int, Client*> clients = server.get_clients();
+            // TODO set miss time to variable
+            if (abs(judgment) > 100) {
+                clients[client_id]
+                    ->p->GetComponent<PlayerCombat>()
+                    ->ResetAllCombos();
+                printf(RED "MISSED\n" RST);
+                break;
+            }
+
+            if (clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(
+                    key)) {
+                printf(YLW "COMBO HIT\n" RST);
+                // TODO enemy take damage
+            }
+
+            break;
+        }
+
+        case PacketType::CLIENT_READY:
+            playersReady++;
+
+            if (playersReady == MAX_CLIENTS) {
+                // TODO Spawn enemy
+                printf("Spawn enemy!\n");
+                Enemy* enemyPrefab = new Enemy();
+                scene.Instantiate(enemyPrefab);
+
+                // Start game for all players
+                for (auto& kv : server.get_clients()) {
+                    Packet* pkt = new Packet();
+                    pkt->write_int((int)PacketType::START_GAME);
+                    server.send(kv.first, pkt);
+                }
+            }
             break;
         default:
             // std::cout << "  RECV: NONEOFTHEABOVE" << std::endl;
             break;
         }
+        // printf("}\n");
     }
 }
 
-void NetworkManager::update() { scene.update(); }
+void NetworkManager::update(float deltaTime) { scene.Update(deltaTime); }
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {
@@ -184,6 +256,22 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Give client control over player
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
+    p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+
+    Packet* pkt = new Packet();
+    pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);
+    pkt->write_int(p->networkId());
+    server.send(args->clientId, pkt);
+
+    // Tell clients server is ready
+    if (server.clients.size() == MAX_CLIENTS) {
+        for (auto& kv : server.clients) {
+            Packet* packet = new Packet();
+            packet->write_int((int)PacketType::SERVER_READY);
+            server.send(kv.first, packet);
+        }
+    }
+
     // Create player model
-    scene.add_object(p);
+    scene.Instantiate(p);
 }

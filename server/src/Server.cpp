@@ -109,8 +109,10 @@ void Server::receive(Client* client) {
             break;
         } else {
             // TODO handle multiple packets per receive call
+            /*
             printf("[SERVER %lu] Received %d bytes from client %d\n",
                    getThread(), read_bytes, client->id);
+                   */
             uint8_t* recvd_bytes = new uint8_t[read_bytes];
             memcpy(recvd_bytes, buffer, read_bytes);
 

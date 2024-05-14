@@ -2,7 +2,6 @@
 
 #include "INetworkComponent.hpp"
 
-
 class Mover : public INetworkComponent {
 public:
     float speed;

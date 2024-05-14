@@ -15,7 +15,7 @@ private:
 
 public:
     void init();
-    void update();
+    void update(float deltaTime);
     void send_state();
     void process_input();
     void on_message_received(const EventArgs* e);

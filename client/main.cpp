@@ -11,6 +11,8 @@
 #include "Transform.hpp"
 #include "ConcurrentQueue.hpp"
 #include <thread>
+#include "AudioManager.hpp"
+#include "ColorCodes.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -30,7 +32,6 @@ void setup_callbacks(GLFWwindow* window) {
     InputManager::setUpCallback(window);
     // Set the mouse and cursor callbacks
     glfwSetMouseButtonCallback(window, Window::mouse_callback);
-    glfwSetCursorPosCallback(window, Window::cursor_callback);
 }
 
 void setup_opengl_settings() {
@@ -62,43 +63,96 @@ int main(int argc, char** argv) {
         printf("Usage: ./menv [IP] [PORT]\n");
         return 1;
     }
-    Client client;
 
     // Create the GLFW window.
-    GLFWwindow* window = Window::createWindow(800, 600);
+    float width = 800;
+    float height = 600;
+    GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
+
+    printf(YLW "Loading...\n" RST);
+    GameManager::instance().Init();
+    printf(YLW "Done loading!n" RST);
+
+    // Setup camera
+    GameManager::instance().cam = new Camera();
+    GameManager::instance().cam->SetAspect(float(width) / float(height));
 
     // Print OpenGL and GLSL versions.
     print_versions();
     // Setup callbacks.
     setup_callbacks(window);
-    // Setup OpenGL settings.
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //  Setup OpenGL settings.
     setup_opengl_settings();
 
+    // Initialize input
+    InputManager::setDefaultKeys();
+
     // Initialize the shader program; exit if initialization fails.
-    if (!Window::initializeProgram(client))
-        exit(EXIT_FAILURE);
-    // Initialize objects/pointers for rendering; exit if initialization fails.
-    if (!Window::initializeObjects())
+    if (!Window::initializeProgram())
         exit(EXIT_FAILURE);
 
-    client.setCallback([&](Packet* params) {
+    GameManager::instance().client.setCallback([&](Packet* params) {
         task_queue.push_back(
             [&, params]() { GameManager::instance().handle_packet(params); });
     });
-    client.connect(argv[1], atoi(argv[2]));
+    GameManager::instance().client.connect(argv[1], atoi(argv[2]));
+
+    AudioManager::instance().addNote("../assets/audio/Fsharp.wav", 'i');
+    AudioManager::instance().addNote("../assets/audio/Gsharp.wav", 'j');
+    AudioManager::instance().addNote("../assets/audio/A.wav", 'k');
+    AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
+
+    AudioManager::instance().setMain(
+        "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
+    AudioManager::instance().setBpm(232);
+    // AudioManager::instance().play();
 
     // Loop while GLFW window should stay open.
+    float deltaTime = 0;
+    float timer = 0;
+    float currentTime = glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
-        // Main render display callback. Rendering of objects is done here.
-        Window::displayCallback(window);
+        // Calculate deltaTime
+        float newTime = glfwGetTime();
+        deltaTime = newTime - currentTime;
+        currentTime = newTime;
 
-        // Idle callback. Updating objects, etc. can be done here.
-        Window::idleCallback();
+        AudioManager::instance().update();
+
+        // send input
+        timer += deltaTime;
+        if (timer > 0.025f) {
+            Packet* pkt = new Packet();
+            pkt->write_int((int)PacketType::PLAYER_INPUT);
+            uint8_t* buf = new uint8_t[5];
+            buf[0] = InputManager::IsKeyDown(GLFW_KEY_W);
+            buf[1] = InputManager::IsKeyDown(GLFW_KEY_A);
+            buf[2] = InputManager::IsKeyDown(GLFW_KEY_S);
+            buf[3] = InputManager::IsKeyDown(GLFW_KEY_D);
+            buf[4] = InputManager::IsKeyDown(GLFW_KEY_LEFT_SHIFT) &&
+                     (buf[0] || buf[1] || buf[2] || buf[3]);
+            for (int i = 0; i < 5; i++) {
+                pkt->write_byte(buf[i]);
+            }
+            GameManager::instance().client.send(pkt);
+            delete[] buf;
+            timer = 0;
+        }
+
+        // Main render display callback. Rendering of objects is done here.
+        GameManager::instance().cam->Update();
+        Window::Render(window, &GameManager::instance().scene,
+                       GameManager::instance().cam, deltaTime);
+
+        // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
         }
+
+        GameManager::instance().scene.Update(deltaTime);
     }
 
     Window::cleanUp();

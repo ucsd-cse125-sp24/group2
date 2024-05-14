@@ -25,21 +25,8 @@ void Client::connect(const char* ip, uint16_t port) {
         return;
     }
     printf("[CLIENT] successfully connected to %s:%d\n", ip, port);
-    
+
     std::thread(&Client::receive, this).detach();
-
-    // FIXME Move this business logic out of client
-    GameManager::instance().object_destroyed += [this](EventArgs* e) {
-        DestroyedEventArgs* args = (DestroyedEventArgs*)e;
-
-        Packet* destroyed_ack = new Packet();
-        destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
-        destroyed_ack->write_int(args->destroyedObjectIds.size());
-        for (int destroyedObjId : args->destroyedObjectIds) {
-            destroyed_ack->write_int(destroyedObjId);
-        }
-        send(destroyed_ack);
-    };
 }
 
 void Client::receive() {
@@ -48,12 +35,14 @@ void Client::receive() {
     do {
         read_bytes = psocket.recv((char*)buf, 4096, 0);
         if (read_bytes > 0) {
-            // for (int i = 0; i < read_bytes; i++) {
-            //     std::cout << std::setfill('0') << std::setw(2) << std::hex
-            //               << (int)buf[i] << std::dec << " ";
-            // }
-            // std::cout << std::endl;
+            /*
+            for (int i = 0; i < read_bytes; i++) {
+                std::cout << std::setfill('0') << std::setw(2) << std::hex
+                          << (int)buf[i] << " ";
+            }
+            std::cout << std::endl;
             printf("[CLIENT] received %d bytes from server\n", read_bytes);
+            */
 
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);

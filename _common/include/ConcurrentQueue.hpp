@@ -24,4 +24,9 @@ public:
         std::lock_guard<std::mutex> lock(_mutex);
         return deque.empty();
     }
+
+    size_t size() {
+        std::lock_guard<std::mutex> lock(_mutex);
+        return deque.size();
+    }
 };

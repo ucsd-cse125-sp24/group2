@@ -6,12 +6,9 @@
 class Entity : public NetworkObject {
 public:
     Entity();
-
-    // glm::vec3 position = glm::vec3(); // refactoring to use NetTransform
-
-    virtual void update() = 0;
-    // void serialize(Packet*) override; // already implemented in NetworkObject
-    // void deserialize(Packet*) override; // already implemented in NetworkObject
+    Entity(int networkId);
+    glm::vec3 position = glm::vec3();
+    virtual void update(float deltaTime) = 0;
 };
 
 #endif // ENTITY_H

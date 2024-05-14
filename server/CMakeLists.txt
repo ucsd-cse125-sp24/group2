@@ -11,18 +11,21 @@ set(SERVER_SOURCES
     src/Player.cpp
     src/Server.cpp
     main.cpp
-    src/Scene.cpp
     src/CollisionManager.cpp
     src/Mover.cpp
+    components/PlayerCombat.cpp
+    prefabs/Enemy.cpp
     )
-FILE(GLOB COMMON_SOURCES ../_common/src/*.cpp)
+FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
 add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
+    "${CMAKE_CURRENT_LIST_DIR}/components"
 )
 include_directories(server PRIVATE "${SERVER_INCLUDE_DIRECTORIES}")
 include_directories(
+    .
     "../_common/"
     "../_common/include"
     )
@@ -32,5 +35,6 @@ if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
   target_link_libraries(server PUBLIC ws2_32)
   target_link_libraries(server PRIVATE pthread)
 else()
+  target_link_libraries(${PROJECT_NAME} assimp.5)
   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "server.app")
 endif()

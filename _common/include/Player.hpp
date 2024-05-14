@@ -19,15 +19,12 @@ public:
     // float speed = 0.2f;
 
     int32_t TypeID() const override { return PLAYER; }
-    
+
     // Used by server
     Player();
 
-    virtual void update() override;
+    virtual void update(float deltaTime) override;
 
     // Used by client
-    Player(std::string path);
-
-    void UpdateModel(float deltaTime);
-    void Draw(glm::mat4 view, GLuint shaderProgram);
+    Player(std::string path, int networkId);
 };

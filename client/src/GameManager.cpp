@@ -1,11 +1,24 @@
 #include "GameManager.hpp"
 #include "ColorCodes.hpp"
 #include <thread>
+#include "components/RendererComponent.hpp"
+#include "components/Model.h"
+#include <AudioManager.hpp>
+#include "prefabs/Enemy.hpp"
+#include <algorithm>
 
-// union FloatUnion {
-//     float f;
-//     uint32_t l;
-// } num;
+const std::string path = "../assets/animation/model.gltf";
+const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
+
+void StartGame(Packet*);
+
+int localPlayerObject = -1;
+void GameManager::Init() {
+    /*
+    model = new Model(path, true);
+    enemy = new Model(enemyPath, false);
+    */
+}
 
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
@@ -22,6 +35,17 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::DESTROY_OBJECT:
         // std::cout << "  PacketType: DESTROY" << std::endl;
         destroy_object(packet);
+        break;
+    case PacketType::SET_LOCAL_PLAYER:
+        int netId;
+        packet->read_int(&netId);
+        localPlayerObject = netId;
+        break;
+    case PacketType::SERVER_READY: {
+        break;
+    }
+    case PacketType::START_GAME:
+        StartGame(packet);
         break;
 
     default:
@@ -42,29 +66,68 @@ void GameManager::update(Packet* pkt) {
 
         // TODO deserialize
         switch (_typeid) {
+        case NetworkObjectTypeID::ENEMY: {
+            /*
+            int network_id;
+            pkt->read_int(&network_id);
+            auto it = std::find_if(scene.entities.begin(), scene.entities.end(),
+                                   [network_id](Entity* entity) {
+                                       return entity->networkId() == network_id;
+                                   });
+            Entity* enemyPrefab;
+            if (it == scene.entities.end()) {
+                enemyPrefab = new Enemy(network_id);
+                enemyPrefab->AddComponent(enemy);
+                RendererComponent* meshRenderer =
+                    new RendererComponent(enemyPrefab, ShaderType::STANDARD);
+                enemyPrefab->AddComponent(meshRenderer);
+
+                scene.Instantiate(enemyPrefab);
+            } else {
+                enemyPrefab = *it;
+            }
+
+            enemyPrefab->deserialize(pkt);
+
+*/
+            break;
+        }
         case NetworkObjectTypeID::PLAYER: {
             // std::cout << "    ObjTypeID: Player" << std::endl;
             int network_id;
             pkt->read_int(&network_id);
-
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                PlayerManager* p = new PlayerManager();
-                p->id = network_id;
-                p->player = new Player(
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf");
-                players[network_id] = p;
+                Player* playerPrefab = new Player(
+                    "../assets/male_basic_walk_30_frames_loop/scene.gltf",
+                    network_id);
+                players[network_id] = playerPrefab;
+                printf("plyer network id: %d\n",
+                       players[network_id]->networkId());
+                scene.Instantiate(playerPrefab);
+
+                if (players.size() == 2) {
+                    Packet* pkt = new Packet();
+                    pkt->write_int((int)PacketType::CLIENT_READY);
+                    client.send(pkt);
+                }
             }
 
-            // float x, y, z;
-            // pkt->read_float(&x);
-            // pkt->read_float(&y);
-            // pkt->read_float(&z);
-            // // std::cout << "Received position: " << glm::to_string(glm::vec3(x, y, z)) << std::endl;
-            // players[network_id]->mover->position = glm::vec3(x, y, z);
-            
-            players[network_id]->player->deserialize(pkt);
-            
+            players[network_id]->deserialize(pkt);
+
+            if (localPlayerObject == network_id) {
+                cam->position = players[network_id]
+                                    ->GetComponent<NetTransform>()
+                                    ->position +
+                                glm::vec3(0, 200, 500);
+                /*
+std::cout << glm::to_string(players[network_id]
+                                ->GetComponent<NetTransform>()
+                                ->position)
+          << std::endl;
+std::cout << glm::to_string(cam->position) << std::endl;
+*/
+            }
             break;
         }
         default:
@@ -90,10 +153,8 @@ void GameManager::destroy_object(Packet* pkt) {
         // Found object, destroy it
         if (players.find(objIdToDestroy) != players.end()) {
             printf(RED "DESTROYING OBJECT\n" RST);
-            // delete players[objIdToDestroy]->mover;
-            // players[objIdToDestroy]->mover = nullptr;
-            delete players[objIdToDestroy]->player;
-            players[objIdToDestroy]->player = nullptr;
+            scene.Destroy(players[objIdToDestroy]);
+            delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
 
             objIdsDestroyed.push_back(objIdToDestroy);
@@ -101,7 +162,16 @@ void GameManager::destroy_object(Packet* pkt) {
         numObjectsToDestroy--;
     }
 
-    // FIXME have GameManager handle this as well
-    DestroyedEventArgs* args = new DestroyedEventArgs(objIdsDestroyed);
-    object_destroyed.invoke(args);
+    Packet* destroyed_ack = new Packet();
+    destroyed_ack->write_int((int)PacketType::DESTROY_OBJECT_ACK);
+    destroyed_ack->write_int(objIdsDestroyed.size());
+    for (int destroyedObjId : objIdsDestroyed) {
+        destroyed_ack->write_int(destroyedObjId);
+    }
+    client.send(destroyed_ack);
+}
+
+void GameManager::StartGame(Packet* packet) {
+    printf(GRN "Starting game!\n" RST);
+    AudioManager::instance().play();
 }
