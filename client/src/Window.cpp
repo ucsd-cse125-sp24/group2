@@ -95,7 +95,6 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
         if (auto model = entity->GetComponent<Model>()) {
-            // model->update(deltaTime, entity->position);
             NetTransform* transform = entity->GetComponent<NetTransform>();
             model->update(deltaTime, transform->position);
         }

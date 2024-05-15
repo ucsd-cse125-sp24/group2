@@ -7,7 +7,6 @@ class Entity : public NetworkObject {
 public:
     Entity();
     Entity(int networkId);
-    // glm::vec3 position = glm::vec3();
     virtual void update(float deltaTime) = 0;
 };
 
