@@ -99,7 +99,10 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
             model->update(deltaTime, transform->position);
         }
         if (auto animationPlayer = entity->GetComponent<AnimationPlayer>()) {
+            // std::cout << "uashdouahf" << std::endl;
             animationPlayer->update(deltaTime);
+
+            
         }
 
         if (auto renderer = entity->GetComponent<RendererComponent>()) {

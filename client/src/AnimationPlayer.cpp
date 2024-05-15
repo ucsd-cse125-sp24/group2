@@ -59,4 +59,6 @@ const std::vector<glm::mat4>& AnimationPlayer::getFinalBoneMatrices() const {
     return finalBoneMtx;
 }
 
-std::string AnimationPlayer::ToString() { return "AnimationPlayer"; }
+std::string AnimationPlayer::ToString() { 
+    return "AnimationPlayer"; 
+}

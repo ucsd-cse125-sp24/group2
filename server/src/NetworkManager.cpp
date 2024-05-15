@@ -256,7 +256,8 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Give client control over player
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
-    p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    p->GetComponent<NetTransform>()->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);
