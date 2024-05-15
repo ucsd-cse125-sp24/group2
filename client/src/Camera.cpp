@@ -9,7 +9,7 @@
 Camera::Camera() { Reset(); }
 void Camera::Update() {
     // Compute camera world matrix
-    std::cout << "Camera::position: " << glm::to_string(position) << " in Camera::Update()." << std::endl;
+    // std::cout << "Camera::position: " << glm::to_string(position) << " in Camera::Update()." << std::endl;
 
     glm::mat4 world(1);
     world[3] = glm::vec4(position, 1);

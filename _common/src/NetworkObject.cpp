@@ -21,6 +21,7 @@ void NetworkObject::AddComponent(IComponent* newComp) {
         components.push_back(newComp);
         typeToComponentMap.emplace(typeid(*newComp), newComp);
     }
+    newComp->SetOwner(this);
 }
 
 void NetworkObject::RemoveComponent(IComponent* comp) {
@@ -32,6 +33,7 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
         std::remove(components.begin(), components.end(), comp);
         typeToComponentMap.erase(typeid(*comp));
     }
+    comp->SetOwner(nullptr);
 }
 
 void NetworkObject::serialize(Packet* packet) {

@@ -14,10 +14,10 @@ void StartGame(Packet*);
 
 int localPlayerObject = -1;
 void GameManager::Init() {
-    /*
-    model = new Model(path, true);
-    enemy = new Model(enemyPath, false);
-    */
+    
+    model = new Model(nullptr, path, true);
+    enemy = new Model(nullptr, enemyPath, false);
+    
 }
 
 void GameManager::handle_packet(Packet* packet) {
@@ -64,7 +64,6 @@ void GameManager::update(Packet* pkt) {
         // TODO deserialize
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
-            /*
             int network_id;
             pkt->read_int(&network_id);
             auto it = std::find_if(scene.entities.begin(), scene.entities.end(),
@@ -78,7 +77,6 @@ void GameManager::update(Packet* pkt) {
                 RendererComponent* meshRenderer =
                     new RendererComponent(enemyPrefab, ShaderType::STANDARD);
                 enemyPrefab->AddComponent(meshRenderer);
-
                 scene.Instantiate(enemyPrefab);
             } else {
                 enemyPrefab = *it;
@@ -86,7 +84,6 @@ void GameManager::update(Packet* pkt) {
 
             enemyPrefab->deserialize(pkt);
 
-*/
             break;
         }
         case NetworkObjectTypeID::PLAYER: {
