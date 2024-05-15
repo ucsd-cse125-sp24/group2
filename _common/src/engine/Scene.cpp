@@ -4,7 +4,7 @@ void Scene::Update(float deltaTime) {
     int count = 0;
     for (auto const& entity : entities) {
         entity->update(deltaTime);
-        printf("updating %d\n", count);
+        // printf("updating %d\n", count);
         count++;
     }
 }

@@ -53,12 +53,12 @@ void GameManager::handle_packet(Packet* packet) {
         break;
     }
 }
-
+int test = 0;
 void GameManager::update(Packet* pkt) {
     int num_updates;
     pkt->read_int(&num_updates);
 
-    // std::cout << "    numUpd: " << num_updates << std::endl;
+    // std::cout << "Updating with num_updates: " << num_updates << std::endl;
 
     while (num_updates) {
         NetworkObjectTypeID _typeid;
@@ -116,10 +116,19 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->deserialize(pkt);
 
             if (localPlayerObject == network_id) {
+
+                std::cout << "BEFORE:\n";
+                std::cout << "  " << glm::to_string(players[network_id]->GetComponent<NetTransform>()->position) << std::endl;
+                std::cout << "  " << glm::to_string(cam->position) << std::endl;
+
                 cam->position = players[network_id]
                                     ->GetComponent<NetTransform>()
-                                    ->position +
+                                    ->position + //glm::vec3(0.1f * (++test), 0, 0) +
                                 glm::vec3(0, 200, 500);
+
+                std::cout << "AFTER + 0.1 * " << test << ":\n";
+                std::cout << "  " << glm::to_string(players[network_id]->GetComponent<NetTransform>()->position) << std::endl;
+                std::cout << "  " << glm::to_string(cam->position) << std::endl;
                 /*
 std::cout << glm::to_string(players[network_id]
                                 ->GetComponent<NetTransform>()
