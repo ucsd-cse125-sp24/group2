@@ -41,14 +41,15 @@ private:
 
 public:
     Model();
-    Model(std::string path, bool hasAnimation);
+    Model(GameObject* owner, std::string path, bool hasAnimation);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;
     const aiScene* getScene() const;
     std::map<std::string, BoneInfo>& getBoneInfoMap();
     void addBoneCount();
-    void update(float dt, glm::vec3 pos);
+    void update(float dt);
     void setPosition(glm::vec3 pos);
+    void setRotation(glm::vec3 rot);
 
     std::string ToString() override;
 };

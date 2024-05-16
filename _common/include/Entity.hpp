@@ -5,7 +5,6 @@
 
 class Entity : public NetworkObject {
 public:
-    glm::vec3 position = glm::vec3();
     virtual void update() = 0;
     void serialize(Packet*) override;
     void deserialize(Packet*) override;
