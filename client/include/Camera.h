@@ -23,6 +23,8 @@ public:
     void SetDistance(float d) { Distance = d; }
     void SetAzimuth(float a) { Azimuth = a; }
     void SetIncline(float i) { Incline = i; }
+    void SetPosition(glm::vec3 pos) { position = pos; }
+    void SetTarget(glm::vec3 target) { target = target; }
 
     float GetDistance() { return Distance; }
     float GetAzimuth() { return Azimuth; }
@@ -41,6 +43,10 @@ private:
     float Distance;  // Distance of the camera eye position to the origin (meters)
     float Azimuth;   // Rotation of the camera eye position around the Y axis (degrees)
     float Incline;   // Angle of the camera eye position over the XZ plane (degrees)
+
+    // camera transform?
+    glm::vec3 position;
+    glm::vec3 target;
 
     // Computed data
     glm::mat4 ViewProjectMtx;

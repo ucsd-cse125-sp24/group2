@@ -3,6 +3,7 @@
 #include <thread>
 #include "components/RendererComponent.hpp"
 #include "components/Model.h"
+#include "Transform.hpp"
 
 union FloatUnion {
     float f;
@@ -47,7 +48,7 @@ void GameManager::update(Packet* pkt) {
             if (players.find(network_id) == players.end()) {
                 Player* playerPrefab = new Player();
                 std::string path = "../assets/animation/scene.gltf";
-                Model* model = new Model(path, true);
+                Model* model = new Model(playerPrefab, path, true);
                 // AnimationClip* clip = new AnimationClip(path, model);
                 AnimationPlayer* animationPlayer =
                     new AnimationPlayer(path, model);
@@ -68,8 +69,19 @@ void GameManager::update(Packet* pkt) {
             float y = num.f;
             pkt->read_int((int*)&num.l);
             float z = num.f;
+            pkt->read_int((int*)&num.l);
+            float angleAboutX = num.f;
+            pkt->read_int((int*)&num.l);
+            float angleAboutY = num.f;
+            pkt->read_int((int*)&num.l);
+            float angleAboutZ = num.f;
+            
+            players[network_id]->GetComponent<Transform>()->SetPosition(glm::vec3(x, y, z));
+            players[network_id]->GetComponent<Transform>()->SetRotation(glm::vec3(angleAboutX, angleAboutY, angleAboutZ));
 
-            players[network_id]->position = glm::vec3(x, y, z);
+            // cam->SetPosition(glm::vec3(x, y, z) + glm::normalize(glm::vec3(x, y, z)) * 500.0f + glm::vec3(0.0f, 200.0f, 0.0f));
+            cam->SetPosition(glm::vec3(0.0f, 200.0f, 500.0f));
+            cam->SetTarget(glm::vec3(0, 0, 0));
             break;
         }
         default:

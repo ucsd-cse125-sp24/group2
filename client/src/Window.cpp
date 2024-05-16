@@ -95,7 +95,8 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
         if (auto model = entity->GetComponent<Model>())
-            model->update(deltaTime, entity->position);
+            // model->update(deltaTime, entity->position);
+            model->update(deltaTime);
 
         if (auto animationPlayer = entity->GetComponent<AnimationPlayer>())
             animationPlayer->update(deltaTime);

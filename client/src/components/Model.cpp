@@ -1,12 +1,13 @@
 #include "components/Model.h"
+#include "../../../_common/include/Transform.hpp"
 
 Model::Model() {}
 
-Model::Model(std::string path, bool hasAnimation) : IComponent(), hasAnimation(hasAnimation) { loadModel(path); }
+Model::Model(GameObject* owner, std::string path, bool hasAnimation) : IComponent(owner), hasAnimation(hasAnimation) { loadModel(path); }
 
-void Model::update(float dt, glm::vec3 pos) {
+void Model::update(float dt) {
     for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].update(dt, pos);
+        meshes[i].update(dt, owner->GetComponent<Transform>()->GetPosition(), owner->GetComponent<Transform>()->GetRotation());
     }
 }
 
@@ -233,6 +234,12 @@ void Model::addBoneCount() { boneCounter++; }
 void Model::setPosition(glm::vec3 pos) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].setPosition(pos);
+    }
+}
+
+void Model::setRotation(glm::vec3 rot) {
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].setRotation(rot);
     }
 }
 
