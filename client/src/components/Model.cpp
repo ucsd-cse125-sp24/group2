@@ -1,13 +1,26 @@
 #include "components/Model.h"
-#include "../../../_common/include/Transform.hpp"
+#include "NetTransform.hpp"
+#include "Transform.hpp"
 
-Model::Model() {}
+Model::Model(GameObject* owner) : IComponent(owner) {}
 
-Model::Model(GameObject* owner, std::string path, bool hasAnimation) : IComponent(owner), hasAnimation(hasAnimation) { loadModel(path); }
+Model::Model(GameObject* owner, std::string path, bool hasAnimation)
+    : IComponent(owner), hasAnimation(hasAnimation) {
+    loadModel(path);
+}
 
 void Model::update(float dt) {
     for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].update(dt, owner->GetComponent<Transform>()->GetPosition(), owner->GetComponent<Transform>()->GetRotation());
+        glm::vec3 pos;
+        glm::vec3 rot;
+        if (auto netTransform = owner->GetComponent<NetTransform>()) {
+            pos = netTransform->GetPosition();
+            rot = netTransform->GetRotation();
+        } else {
+            pos = owner->GetComponent<Transform>()->GetPosition();
+            rot = owner->GetComponent<Transform>()->GetRotation();
+        }
+        meshes[i].update(dt, pos, rot);
     }
 }
 
@@ -19,10 +32,13 @@ void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
 void Model::loadModel(std::string path) {
     Assimp::Importer importer;
-    if(hasAnimation) {
-        scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    if (hasAnimation) {
+        scene =
+            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     } else {
-        scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_PreTransformVertices);
+        scene =
+            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs |
+                                        aiProcess_PreTransformVertices);
     }
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
@@ -245,6 +261,4 @@ void Model::setRotation(glm::vec3 rot) {
 
 std::string Model::ToString() { return "Model"; }
 
-const aiScene* Model::getScene() const {
-    return scene;
-}
+const aiScene* Model::getScene() const { return scene; }

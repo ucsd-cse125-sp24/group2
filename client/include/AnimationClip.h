@@ -30,7 +30,7 @@ private:
 
 public:
     AnimationClip() = default;
-    AnimationClip(std::string path, Model* model);
+    AnimationClip(GameObject* owner, std::string path, Model* model);
     AnimationClip(aiAnimation* clip, Model* model, const aiScene* scene);
 
     Bone* findBone(const std::string& name);

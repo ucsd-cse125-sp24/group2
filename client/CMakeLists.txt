@@ -16,7 +16,7 @@ set(
     src/Window.cpp
     src/Client.cpp
     src/AudioManager.cpp
-    src/Entity.cpp
+    src/AssetManager.cpp
 
     # graphics
     src/Mesh.cpp
@@ -26,8 +26,10 @@ set(
     src/Bone.cpp
     src/components/Model.cpp
     src/components/RendererComponent.cpp
+    prefabs/Enemy.cpp
 
     # 125-Starter
+    src/Player.cpp
     src/Mover.cpp
     src/GameManager.cpp
     src/Player.cpp
@@ -40,6 +42,7 @@ FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 # Add include directories
 include_directories(
     include
+    .
     ../_common
     ../_common/include
     ../_common/fmod/inc

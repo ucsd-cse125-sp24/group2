@@ -1,8 +1,11 @@
 #include "engine/Scene.hpp"
 #include <algorithm>
-void Scene::Update() {
+void Scene::Update(float deltaTime) {
+    int count = 0;
     for (auto const& entity : entities) {
-        entity->update();
+        entity->update(deltaTime);
+        // printf("updating %d\n", count);
+        count++;
     }
 }
 

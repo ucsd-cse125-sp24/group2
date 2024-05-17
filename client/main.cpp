@@ -12,6 +12,9 @@
 #include "ConcurrentQueue.hpp"
 #include <thread>
 #include "AudioManager.hpp"
+#include "ColorCodes.hpp"
+#include "AssetManager.hpp"
+
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -70,6 +73,10 @@ int main(int argc, char** argv) {
     if (!window)
         exit(EXIT_FAILURE);
 
+    printf(YLW "Loading...\n" RST);
+    GameManager::instance().Init();
+    printf(YLW "Done loading!n" RST);
+
     // Setup camera
     GameManager::instance().cam = new Camera();
     GameManager::instance().cam->SetAspect(float(width) / float(height));
@@ -78,8 +85,8 @@ int main(int argc, char** argv) {
     print_versions();
     // Setup callbacks.
     setup_callbacks(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // Setup OpenGL settings.
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //  Setup OpenGL settings.
     setup_opengl_settings();
 
     // Initialize input
@@ -101,9 +108,42 @@ int main(int argc, char** argv) {
     AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
 
     AudioManager::instance().setMain(
-        "../assets/audio/futuristic01-112bpm-Gbm.mp3", 1.0f);
-    AudioManager::instance().setBpm(112);
-    AudioManager::instance().play();
+        "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
+    AudioManager::instance().setBpm(232);
+    // AudioManager::instance().play();
+
+    std::cout << "Updating AssetManager" << std::endl;
+    std::vector<std::string> modelPaths;
+    modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    modelPaths.push_back("../assets/animation/model.gltf");
+    for (std::string path : modelPaths) {
+        std::cout << "  path: " << path << std::endl;
+        Model* model = new Model(nullptr, path, true);
+        AssetManager::Instance().AddMapping(path, {});
+
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        assert(scene && scene->mRootNode);
+        
+        std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
+        // std::map<std::string, AnimationClip*> animations = std::map<std::string, AnimationClip*>();
+        for (int i = 0; i < scene->mNumAnimations; ++i) {
+            aiAnimation* animation = scene->mAnimations[i];
+            AnimationClip* clip = new AnimationClip(animation, model, scene);
+            std::cout << "  Clip name: " << clip->getName() << std::endl;
+            AssetManager::Instance().AddClipToMapping(path, clip);
+        }
+    }
+    std::cout << "  Finished updating AssetManager" << std::endl;
+
+
+    // AssetManager::instance().AddModelPathToClips("hello", {
+    //     new AnimationClip(nullptr, 
+    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", 
+    //         new Model(nullptr, "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
+    //     ),
+
+    // });
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
@@ -123,11 +163,12 @@ int main(int argc, char** argv) {
             Packet* pkt = new Packet();
             pkt->write_int((int)PacketType::PLAYER_INPUT);
             uint8_t* buf = new uint8_t[5];
-            buf[0] = InputManager::isKeyPressed(GLFW_KEY_W);
-            buf[1] = InputManager::isKeyPressed(GLFW_KEY_A);
-            buf[2] = InputManager::isKeyPressed(GLFW_KEY_S);
-            buf[3] = InputManager::isKeyPressed(GLFW_KEY_D);
-            buf[4] = InputManager::isKeyPressed(GLFW_KEY_LEFT_SHIFT) && (buf[0] || buf[1] || buf[2] || buf[3]);
+            buf[0] = InputManager::IsKeyDown(GLFW_KEY_W);
+            buf[1] = InputManager::IsKeyDown(GLFW_KEY_A);
+            buf[2] = InputManager::IsKeyDown(GLFW_KEY_S);
+            buf[3] = InputManager::IsKeyDown(GLFW_KEY_D);
+            buf[4] = InputManager::IsKeyDown(GLFW_KEY_LEFT_SHIFT) &&
+                     (buf[0] || buf[1] || buf[2] || buf[3]);
             for (int i = 0; i < 5; i++) {
                 pkt->write_byte(buf[i]);
             }
@@ -146,7 +187,7 @@ int main(int argc, char** argv) {
             task_queue.pop_front()();
         }
 
-        GameManager::instance().scene.Update();
+        GameManager::instance().scene.Update(deltaTime);
     }
 
     Window::cleanUp();

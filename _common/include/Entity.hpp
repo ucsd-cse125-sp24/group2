@@ -5,9 +5,9 @@
 
 class Entity : public NetworkObject {
 public:
-    virtual void update() = 0;
-    void serialize(Packet*) override;
-    void deserialize(Packet*) override;
+    Entity();
+    Entity(int networkId);
+    virtual void update(float deltaTime) = 0;
 };
 
 #endif // ENTITY_H

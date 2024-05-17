@@ -40,7 +40,7 @@ private:
                                       aiMesh* mesh, const aiScene* scene);
 
 public:
-    Model();
+    Model(GameObject* owner);
     Model(GameObject* owner, std::string path, bool hasAnimation);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;

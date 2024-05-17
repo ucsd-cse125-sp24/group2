@@ -4,7 +4,7 @@
 #include "AnimationClip.h"
 #include "../../_common/include/IComponent.hpp"
 
-class AnimationClip;
+    class AnimationClip;
 class AssimpNodeData;
 class Model;
 class AnimationPlayer : public IComponent {
@@ -15,12 +15,13 @@ private:
     AnimationClip* currentAnimation;
     float currentTime;
     float deltaTime;
+    Model* model;
 
 public:
-    AnimationPlayer();
-    AnimationPlayer(AnimationClip* clip);
-    AnimationPlayer(std::string path, Model* model);
+    AnimationPlayer(GameObject* owner);
+    AnimationPlayer(GameObject* owner, Model* model);
 
+    void AddClip(AnimationClip* clip);
     void update(float dt);
     void play(AnimationClip* clip);
     void play(std::string name);

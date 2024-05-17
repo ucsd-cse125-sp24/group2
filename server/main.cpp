@@ -23,15 +23,18 @@ int main(int argc, char** argv) {
     // Main game loops
     unsigned long tick = 0;
     auto start_time = chrono::steady_clock::now();
+    auto new_time = chrono::steady_clock::now();
     while (running) {
-        chrono::time_point<chrono::steady_clock> new_time =
-            chrono::steady_clock::now();
+        float deltaTime =
+            chrono::duration<float>(chrono::steady_clock::now() - new_time)
+                .count();
+        new_time = chrono::steady_clock::now();
         tick++;
         chrono::time_point<chrono::steady_clock> next_tick_time =
             start_time + tick * chrono::microseconds(TICK_RATE_USEC);
         // TODO handle input
         NetworkManager::instance().process_input();
-        NetworkManager::instance().update();
+        NetworkManager::instance().update(deltaTime);
         NetworkManager::instance().send_state();
 
         // Wait for end of tick
