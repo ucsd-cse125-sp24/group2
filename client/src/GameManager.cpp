@@ -79,7 +79,9 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->GetComponent<Transform>()->SetPosition(glm::vec3(x, y, z));
             players[network_id]->GetComponent<Transform>()->SetRotation(glm::vec3(angleAboutX, angleAboutY, angleAboutZ));
 
+            // set cam to third person
             // cam->SetPosition(glm::vec3(x, y, z) + glm::normalize(glm::vec3(x, y, z)) * 500.0f + glm::vec3(0.0f, 200.0f, 0.0f));
+            // set cam to locked
             cam->SetPosition(glm::vec3(0.0f, 200.0f, 500.0f));
             cam->SetTarget(glm::vec3(0, 0, 0));
             break;

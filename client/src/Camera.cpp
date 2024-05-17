@@ -16,6 +16,7 @@ void Camera::Update() {
     // // Compute view matrix (inverse of world matrix)
     // glm::mat4 view = glm::inverse(world);
 
+    // camera tracks target from position
     glm::mat4 view = glm::lookAt(position, target, glm::vec3(0, 1, 0));
 
     // Compute perspective projection matrix
