@@ -93,14 +93,19 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                Player* playerPrefab = new Player(
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf",
-                    network_id);
-                
-                std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-                for (AnimationClip* clip : prefabClips) {
+                Player* playerPrefab = new Player(path, network_id);
+                std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips(path);
+                for (int i = 0; i < prefabClips.size(); ++i) {
+                    AnimationClip* clip = prefabClips[i];
+                    std::cout << "Adding clip: " << clip->getName() << std::endl;
                     playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
+                    if (i == 0) {
+                        // std::cout << "PLAY THE DAMN CLIP" << std::endl;
+                        playerPrefab->GetComponent<AnimationPlayer>()->play(clip);
+                        // std::cout << "Now playing: " << playerPrefab->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+                    }
                 }
+                
 
                 players[network_id] = playerPrefab;
                 printf("plyer network id: %d\n",
@@ -121,6 +126,9 @@ void GameManager::update(Packet* pkt) {
                                     ->GetComponent<NetTransform>()
                                     ->position + glm::vec3(0, 200, 500);
             }
+
+            // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+
             break;
         }
         default:

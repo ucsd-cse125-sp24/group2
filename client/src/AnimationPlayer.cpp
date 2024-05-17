@@ -20,16 +20,12 @@ void AnimationPlayer::AddClip(AnimationClip* clip) {
 
 void AnimationPlayer::update(float dt) {
     deltaTime = dt;
-    // if (currentAnimation == nullptr) std::cout << "NULL ANIM CLIP" << std::endl;
-    // else std::cout << "currentAnimation: " << currentAnimation << std::endl;
     if (currentAnimation) {
-        std::cout << "uroiadibs" << std::endl;
         currentTime += currentAnimation->getTicksPerSecond() * deltaTime;
         currentTime = fmod(currentTime, currentAnimation->getDuration());
         calculateBoneTransforms(&currentAnimation->getRootNode(),
                                 glm::mat4(1.0f));
     }
-    // std::cout << "aphdaushdpfaj" << std::endl;
 }
 
 void AnimationPlayer::play(AnimationClip* clip) {
