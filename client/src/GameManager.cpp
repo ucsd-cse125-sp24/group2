@@ -123,7 +123,7 @@ void GameManager::update(Packet* pkt) {
             }
 
             players[network_id]->deserialize(pkt);
-
+          
             cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
                 auto playerPos =
