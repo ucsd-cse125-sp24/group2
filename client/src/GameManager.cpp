@@ -6,6 +6,7 @@
 #include <AudioManager.hpp>
 #include "prefabs/Enemy.hpp"
 #include <algorithm>
+#include "AssetManager.hpp"
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
@@ -95,9 +96,20 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                Player* playerPrefab = new Player(
-                    "../assets/male_basic_walk_30_frames_loop/scene.gltf",
-                    network_id);
+                Player* playerPrefab = new Player(path, network_id);
+                std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips(path);
+                for (int i = 0; i < prefabClips.size(); ++i) {
+                    AnimationClip* clip = prefabClips[i];
+                    std::cout << "Adding clip: " << clip->getName() << std::endl;
+                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
+                    if (i == 0) {
+                        // std::cout << "PLAY THE DAMN CLIP" << std::endl;
+                        playerPrefab->GetComponent<AnimationPlayer>()->play(clip);
+                        // std::cout << "Now playing: " << playerPrefab->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+                    }
+                }
+                
+
                 players[network_id] = playerPrefab;
                 printf("player network id: %d\n",
                        players[network_id]->networkId());
@@ -124,6 +136,9 @@ void GameManager::update(Packet* pkt) {
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
                     glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
             }
+
+            // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+
             break;
         }
         default:

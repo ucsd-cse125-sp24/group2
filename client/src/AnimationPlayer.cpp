@@ -2,15 +2,20 @@
 
 AnimationPlayer::AnimationPlayer(GameObject* owner) : IComponent(owner) {}
 
-AnimationPlayer::AnimationPlayer(GameObject* owner, AnimationClip* clip)
+AnimationPlayer::AnimationPlayer(GameObject* owner, Model* newModel)
     : IComponent(owner) {
     currentTime = 0.0f;
     deltaTime = 0.0f;
-    currentAnimation = clip;
+    currentAnimation = nullptr;
+    model = newModel;
     finalBoneMtx.reserve(100);
     for (int i = 0; i < 100; i++) {
         finalBoneMtx.push_back(glm::mat4(1.0f));
     }
+}
+
+void AnimationPlayer::AddClip(AnimationClip* clip) {
+    animations.emplace(clip->getName(), clip);
 }
 
 void AnimationPlayer::update(float dt) {

@@ -11,13 +11,13 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     Mover* mover = new Mover(this);
     AddComponent(mover);
     RendererComponent* meshRenderer =
-        new RendererComponent(this, ShaderType::STANDARD);
+        new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
     Model* model = new Model(this, path, true);
     AddComponent(model);
     AnimationClip* animationClip = new AnimationClip(this, path, model);
     AddComponent(animationClip);
-    AnimationPlayer* animationPlayer = new AnimationPlayer(this, animationClip);
+    AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
 }
 
