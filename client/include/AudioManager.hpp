@@ -38,11 +38,15 @@ private:
     int interval;
     int offset_first_beat = 0;
     bool isRunning = true;
+    unsigned int position = 0;
+    bool pressed = false;
+    bool waspressed = false;
 
-    void FMODErrorCheck(FMOD_RESULT result) {
+    void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {
             std::cerr << "FMOD error " << result << ": "
-                      << FMOD_ErrorString(result) << std::endl;
+                      << FMOD_ErrorString(result) << "in: "
+                      << s << std::endl;
             exit(-1);
         }
     }

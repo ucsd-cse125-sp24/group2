@@ -13,8 +13,7 @@
 
 class Camera {
 public:
-    glm::vec3 position = glm::vec3(0, 100, 500);
-
+    glm::vec3 position = glm::vec3();
     Camera();
 
     void Update();
@@ -25,10 +24,10 @@ public:
     void SetDistance(float d) { Distance = d; }
     void SetAzimuth(float a) { Azimuth = a; }
     void SetIncline(float i) { Incline = i; }
+    void SetPosition(glm::vec3 pos) { position = pos; }
+    void SetTarget(glm::vec3 target) { target = target; }
 
-    float GetDistance() { return Distance; }
-    float GetAzimuth() { return Azimuth; }
-    float GetIncline() { return Incline; }
+    glm::vec3 GetTarget() { return target; }
 
     const glm::mat4& GetViewProjectMtx() { return ViewProjectMtx; }
 
@@ -46,6 +45,9 @@ private:
                    // (degrees)
     float
         Incline; // Angle of the camera eye position over the XZ plane (degrees)
+
+    // camera transform?
+    glm::vec3 target = glm::vec3();
 
     // Computed data
     glm::mat4 ViewProjectMtx;

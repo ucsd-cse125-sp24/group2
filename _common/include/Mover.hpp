@@ -11,6 +11,9 @@ public:
     glm::vec3& position; // Taken from NetTransform
     glm::vec3& rotation; // Taken from NetTransform
 
+    float radius = 500;
+    float angle = 0;
+
     Mover(NetworkObject* owner);
 
     void Update();

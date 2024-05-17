@@ -14,10 +14,10 @@ void StartGame(Packet*);
 
 int localPlayerObject = -1;
 void GameManager::Init() {
-    
+    /*
     model = new Model(nullptr, path, true);
     enemy = new Model(nullptr, enemyPath, false);
-    
+    */
 }
 
 void GameManager::handle_packet(Packet* packet) {
@@ -64,6 +64,7 @@ void GameManager::update(Packet* pkt) {
         // TODO deserialize
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
+            /*
             int network_id;
             pkt->read_int(&network_id);
             auto it = std::find_if(scene.entities.begin(), scene.entities.end(),
@@ -84,6 +85,8 @@ void GameManager::update(Packet* pkt) {
 
             enemyPrefab->deserialize(pkt);
 
+
+            */
             break;
         }
         case NetworkObjectTypeID::PLAYER: {
@@ -96,7 +99,7 @@ void GameManager::update(Packet* pkt) {
                     "../assets/male_basic_walk_30_frames_loop/scene.gltf",
                     network_id);
                 players[network_id] = playerPrefab;
-                printf("plyer network id: %d\n",
+                printf("player network id: %d\n",
                        players[network_id]->networkId());
                 scene.Instantiate(playerPrefab);
 
@@ -109,10 +112,17 @@ void GameManager::update(Packet* pkt) {
 
             players[network_id]->deserialize(pkt);
 
+            cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
-                cam->position = players[network_id]
-                                    ->GetComponent<NetTransform>()
-                                    ->position + glm::vec3(0, 200, 500);
+                auto playerPos =
+                    players[network_id]->GetComponent<NetTransform>()->position;
+                auto playerRightVector = glm::normalize(glm::cross(
+                    cam->GetTarget() - playerPos, glm::vec3(0, 1, 0)));
+
+                cam->SetPosition(
+                    playerPos +
+                    glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
+                    glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
             }
             break;
         }

@@ -22,6 +22,27 @@ void Mover::Update() {
         movementHeading = glm::normalize(movementHeading);
 
     position += glm::vec3(rotate * glm::vec4(movementHeading, 0) * speed);
+
+    if (input.y != 0) {
+        radius += -input.y;
+    }
+    if (input.x != 0) {
+        angle += -input.x * speed * 0.01;
+    }
+
+    glm::vec3 position =
+        glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
+    owner->GetComponent<NetTransform>()->SetPosition(position);
+    float dotPosWithZ = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), position);
+    float magnitude = glm::length(position);
+    float angleAboutY = glm::degrees(glm::acos(dotPosWithZ / magnitude));
+    if (position.x >= 0) {
+        owner->GetComponent<NetTransform>()->SetRotation(
+            glm::vec3(0, 180.0f + angleAboutY, 0.0f));
+    } else {
+        owner->GetComponent<NetTransform>()->SetRotation(
+            glm::vec3(0, 180.0f - angleAboutY, 0.0f));
+    }
 }
 
 std::string Mover::ToString() { return "Mover"; }

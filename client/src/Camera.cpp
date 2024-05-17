@@ -3,14 +3,10 @@
 ////////////////////////////////////////
 
 #include "Camera.h"
-#include "GameManager.hpp"
-#include "InputManager.h"
 
 Camera::Camera() { Reset(); }
 void Camera::Update() {
     // Compute camera world matrix
-    // std::cout << "Camera::position: " << glm::to_string(position) << " in Camera::Update()." << std::endl;
-
     glm::mat4 world(1);
     world[3] = glm::vec4(position, 1);
 
@@ -20,10 +16,8 @@ void Camera::Update() {
     world[2] = rotationMatrix[2];
 
     // Compute view matrix (inverse of world matrix)
-    glm::mat4 view = glm::inverse(world); // THE ACTUAL ORIGINAL
-    // glm::mat4 view = world; 
-    // glm::mat4 view = glm::translate(glm::mat4(1), -position);
-    // glm::mat4 view = glm::mat4(1);
+    // glm::mat4 view = glm::inverse(world);
+    glm::mat4 view = glm::lookAt(position, target, glm::vec3(0, 1, 0));
 
     // Compute perspective projection matrix
     glm::mat4 project =
@@ -31,8 +25,6 @@ void Camera::Update() {
 
     // Compute final view-projection matrix
     ViewProjectMtx = project * view;
-
-    // std::cout << "END OF Camera::Update()" << std::endl;
 }
 void Camera::Reset() {
     FOV = 45.0f;

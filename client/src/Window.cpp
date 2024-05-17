@@ -96,13 +96,10 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     for (auto& entity : scene->entities) {
         if (auto model = entity->GetComponent<Model>()) {
             NetTransform* transform = entity->GetComponent<NetTransform>();
-            model->update(deltaTime, transform->position);
+            model->update(deltaTime);
         }
         if (auto animationPlayer = entity->GetComponent<AnimationPlayer>()) {
-            // std::cout << "uashdouahf" << std::endl;
             animationPlayer->update(deltaTime);
-
-            
         }
 
         if (auto renderer = entity->GetComponent<RendererComponent>()) {

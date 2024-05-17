@@ -47,8 +47,9 @@ public:
     const aiScene* getScene() const;
     std::map<std::string, BoneInfo>& getBoneInfoMap();
     void addBoneCount();
-    void update(float dt, glm::vec3 pos);
+    void update(float dt);
     void setPosition(glm::vec3 pos);
+    void setRotation(glm::vec3 rot);
 
     std::string ToString() override;
 };

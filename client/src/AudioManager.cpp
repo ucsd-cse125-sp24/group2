@@ -1,5 +1,4 @@
 #include "AudioManager.hpp"
-#include <chrono>
 #include "InputManager.h"
 #include "ColorCodes.hpp"
 #include "GameManager.hpp"
@@ -42,14 +41,17 @@ void AudioManager::setBpm(int b) {
 
 void AudioManager::setOffFirst(int off) { offset_first_beat = off; }
 
-int occupied_beat = 0;
-auto startTime = std::chrono::steady_clock::now();
 void AudioManager::update() {
     FMOD_System_Update(system);
-    auto msSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::steady_clock::now() - startTime)
-                            .count();
-    msSinceStart = msSinceStart - offset_first_beat;
+
+    FMOD_BOOL isPlaying;
+    FMOD_Channel_IsPlaying(mainChannel, &isPlaying);
+    if (!isPlaying) {
+        return;
+    }
+    result = FMOD_Channel_GetPosition(mainChannel, &position, FMOD_TIMEUNIT_MS);
+    FMODErrorCheck(result, "FMOD_Channel_GetPosition");
+    position = position - offset_first_beat;
 
     FMOD_SOUND* selectedSound = nullptr;
     Packet* pkt = new Packet();
@@ -70,12 +72,9 @@ void AudioManager::update() {
         return;
     }
 
-    auto off = (msSinceStart % interval < interval - (msSinceStart % interval))
-                   ? msSinceStart % interval
-                   : -(interval - (msSinceStart % interval));
-    // TODO: Calibration
-    off -= 60;
-    occupied_beat = (int)(msSinceStart - off) / interval;
+    int off = (position % interval < interval - (position % interval))
+                  ? position % interval
+                  : -(interval - (position % interval));
     if (abs(off) <= 100) {
         if (abs(off) <= 25) {
             std::cout << "Perfect! ";
@@ -100,8 +99,7 @@ void AudioManager::update() {
             isPlaying = false;
         }
 
-        // Important: If it is playing, stop it before playing the
-        // new sound
+        // Important: If playing, stop before playing new sound
         if (isPlaying) {
             FMOD_Channel_Stop(noteChannel);
         }
@@ -115,8 +113,6 @@ void AudioManager::update() {
 }
 
 void AudioManager::play() {
-    int occupied_beat = 0; // used to exclude other inputs at the same beat
     result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
     FMODErrorCheck(result);
-    startTime = std::chrono::steady_clock::now();
 }

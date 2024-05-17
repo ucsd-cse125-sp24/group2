@@ -23,8 +23,9 @@ Server server;
 Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
-std::vector<glm::vec3> spawnPoints = {glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-                                      glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)};
+std::vector<glm::vec3> spawnPoints = {
+    glm::vec3(500, 0, 0), glm::vec3(0, 0, 500), glm::vec3(-500, 0, 0),
+    glm::vec3(0, 0, -500)};
 int spawnIndex = 0;
 union FloatUnion {
     float f;
@@ -106,9 +107,9 @@ void NetworkManager::process_input() {
             if (clients.find(client_id) == clients.end())
                 break;
 
-            // std::cout << "  Received input: " << (float)input[0] << ", " <<
-            // (float)input[1] << ", " << (float)input[2] << ", " <<
-            // (float)input[3] << std::endl;
+            // std::cout << "  Received input: " << (float)input[0] << ", "
+            //           << (float)input[1] << ", " << (float)input[2] << ", "
+            //           << (float)input[3] << std::endl;
 
             clients[client_id]->p->GetComponent<Mover>()->input.x =
                 (float)input[3] - (float)input[1];
@@ -176,7 +177,7 @@ void NetworkManager::process_input() {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
                 Enemy* enemyPrefab = new Enemy();
-                scene.Instantiate(enemyPrefab);
+                // scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
                 for (auto& kv : server.get_clients()) {
@@ -257,7 +258,8 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
     // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    p->GetComponent<NetTransform>()->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    p->GetComponent<NetTransform>()->position =
+        spawnPoints[spawnIndex++ % spawnPoints.size()];
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);

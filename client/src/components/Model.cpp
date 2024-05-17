@@ -1,4 +1,6 @@
 #include "components/Model.h"
+#include "NetTransform.hpp"
+#include "Transform.hpp"
 
 Model::Model(GameObject* owner) : IComponent(owner) {}
 
@@ -7,9 +9,18 @@ Model::Model(GameObject* owner, std::string path, bool hasAnimation)
     loadModel(path);
 }
 
-void Model::update(float dt, glm::vec3 pos) {
+void Model::update(float dt) {
     for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].update(dt, pos);
+        glm::vec3 pos;
+        glm::vec3 rot;
+        if (auto netTransform = owner->GetComponent<NetTransform>()) {
+            pos = netTransform->GetPosition();
+            rot = netTransform->GetRotation();
+        } else {
+            pos = owner->GetComponent<Transform>()->GetPosition();
+            rot = owner->GetComponent<Transform>()->GetRotation();
+        }
+        meshes[i].update(dt, pos, rot);
     }
 }
 
@@ -239,6 +250,12 @@ void Model::addBoneCount() { boneCounter++; }
 void Model::setPosition(glm::vec3 pos) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].setPosition(pos);
+    }
+}
+
+void Model::setRotation(glm::vec3 rot) {
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].setRotation(rot);
     }
 }
 
