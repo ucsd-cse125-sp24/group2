@@ -16,6 +16,7 @@ set(
     src/Window.cpp
     src/Client.cpp
     src/AudioManager.cpp
+    src/AssetManager.cpp
 
     # graphics
     src/Mesh.cpp

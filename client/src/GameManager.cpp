@@ -6,6 +6,7 @@
 #include <AudioManager.hpp>
 #include "prefabs/Enemy.hpp"
 #include <algorithm>
+#include "AssetManager.hpp"
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
@@ -95,6 +96,12 @@ void GameManager::update(Packet* pkt) {
                 Player* playerPrefab = new Player(
                     "../assets/male_basic_walk_30_frames_loop/scene.gltf",
                     network_id);
+                
+                std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+                for (AnimationClip* clip : prefabClips) {
+                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
+                }
+
                 players[network_id] = playerPrefab;
                 printf("plyer network id: %d\n",
                        players[network_id]->networkId());

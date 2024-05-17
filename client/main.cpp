@@ -13,6 +13,8 @@
 #include <thread>
 #include "AudioManager.hpp"
 #include "ColorCodes.hpp"
+#include "AssetManager.hpp"
+
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -109,6 +111,38 @@ int main(int argc, char** argv) {
         "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
     AudioManager::instance().setBpm(232);
     // AudioManager::instance().play();
+
+    std::cout << "Updating AssetManager" << std::endl;
+    std::vector<std::string> modelPaths;
+    modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    for (std::string path : modelPaths) {
+        std::cout << "  path: " << path << std::endl;
+        Model* model = new Model(nullptr, path, true);
+        AssetManager::Instance().AddMapping(path, {});
+
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        assert(scene && scene->mRootNode);
+        
+        std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
+        // std::map<std::string, AnimationClip*> animations = std::map<std::string, AnimationClip*>();
+        for (int i = 0; i < scene->mNumAnimations; ++i) {
+            aiAnimation* animation = scene->mAnimations[i];
+            AnimationClip* clip = new AnimationClip(animation, model, scene);
+            std::cout << "  Clip name: " << clip->getName() << std::endl;
+            AssetManager::Instance().AddClipToMapping(path, clip);
+        }
+    }
+    std::cout << "  Finished updating AssetManager" << std::endl;
+
+
+    // AssetManager::instance().AddModelPathToClips("hello", {
+    //     new AnimationClip(nullptr, 
+    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", 
+    //         new Model(nullptr, "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
+    //     ),
+
+    // });
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;

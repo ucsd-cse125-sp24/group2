@@ -15,11 +15,13 @@ private:
     AnimationClip* currentAnimation;
     float currentTime;
     float deltaTime;
+    Model* model;
 
 public:
     AnimationPlayer(GameObject* owner);
-    AnimationPlayer(GameObject* owner, AnimationClip* clip);
+    AnimationPlayer(GameObject* owner, Model* model);
 
+    void AddClip(AnimationClip* clip);
     void update(float dt);
     void play(AnimationClip* clip);
     void play(std::string name);
