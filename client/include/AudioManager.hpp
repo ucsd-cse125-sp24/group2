@@ -41,6 +41,7 @@ private:
     unsigned int position = 0;
     bool pressed = false;
     bool waspressed = false;
+    bool game_started = false;
 
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {
