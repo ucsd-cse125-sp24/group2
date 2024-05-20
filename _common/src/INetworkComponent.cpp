@@ -1,5 +1,9 @@
 #include "../include/INetworkComponent.hpp"
 
-// std::string INetworkComponent::ToString() {
-//     return "N"
-// }
+void INetworkComponent::Serialize(Packet*) {}
+
+void INetworkComponent::Deserialize(Packet*) {}
+
+std::string INetworkComponent::ToString() {
+    return "INetworkComponent";
+}

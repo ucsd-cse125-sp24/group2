@@ -19,6 +19,10 @@ enum class PacketType {
     DESTROY_OBJECT,
     DESTROY_OBJECT_ACK,
     SET_LOCAL_PLAYER,
+    PLAYER_ATTACK,
+    START_GAME,
+    SERVER_READY,
+    CLIENT_READY
 };
 class Packet {
 private:

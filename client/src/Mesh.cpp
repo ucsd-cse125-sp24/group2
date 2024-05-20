@@ -103,8 +103,14 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
 void Mesh::setPosition(glm::vec3 pos) { position = pos; }
 
-void Mesh::update(float dt, glm::vec3 pos) {
+void Mesh::setRotation(glm::vec3 rot) { rotation = rot; }
+
+void Mesh::update(float dt, glm::vec3 pos, glm::vec3 rot) {
     position = pos;
+    rotation = rot;
     // std::cout<<"position: "<<glm::to_string(position)<<std::endl;
     modelMtx = glm::translate(position);
+    modelMtx = glm::rotate(modelMtx, glm::radians(rot.y), glm::vec3(0, 1, 0));
+    modelMtx = glm::rotate(modelMtx, glm::radians(rot.x), glm::vec3(1, 0, 0));
+    modelMtx = glm::rotate(modelMtx, glm::radians(rot.z), glm::vec3(0, 0, 1));
 }

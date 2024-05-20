@@ -94,14 +94,17 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
 
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
-        if (auto model = entity->GetComponent<Model>())
-            model->update(deltaTime, entity->position);
-
-        if (auto animationPlayer = entity->GetComponent<AnimationPlayer>())
+        if (auto model = entity->GetComponent<Model>()) {
+            NetTransform* transform = entity->GetComponent<NetTransform>();
+            model->update(deltaTime);
+        }
+        if (auto animationPlayer = entity->GetComponent<AnimationPlayer>()) {
             animationPlayer->update(deltaTime);
+        }
 
-        if (auto renderer = entity->GetComponent<RendererComponent>())
+        if (auto renderer = entity->GetComponent<RendererComponent>()) {
             renderer->Render(camera->GetViewProjectMtx());
+        }
     }
     glfwPollEvents();
     // Swap buffers.

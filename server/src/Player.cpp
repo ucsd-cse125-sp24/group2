@@ -1,14 +1,20 @@
 #include "Player.hpp"
+#include "components/PlayerCombat.hpp"
 #include <iostream>
 
-void Player::update() {
-    glm::vec3 input_dir = glm::vec3(inputs.x, 0, -inputs.y);
-    velocity =
-        (inputs == glm::vec2()) ? glm::vec3() : glm::normalize(input_dir);
-    // velocity = glm::vec3();
+Player::Player() : Entity() {
+    Mover* mover = new Mover(this);
+    AddComponent(mover);
+    PlayerCombat* playerCombat = new PlayerCombat();
+    AddComponent(playerCombat);
 
-    position += velocity * speed;
-    // std::cout << glm::to_string(position) << std::endl;
+    // I = 73, J = 74, K = 75, L = 76
+    // TODO make player-specific combos
+    playerCombat->AddCombo({74, 74, 74, 74});
+    playerCombat->AddCombo({74, 75, 76, 73});
 }
 
-int32_t Player::TypeID() const { return NetworkObjectTypeID::PLAYER; }
+void Player::update(float deltaTime) {
+    if (GetComponent<Mover>() != nullptr)
+        GetComponent<Mover>()->Update();
+}

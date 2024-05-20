@@ -1,6 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 #include "EventArgs.hpp"
+#include <algorithm>
 #include <vector>
 #include <mutex>
 #include <algorithm>

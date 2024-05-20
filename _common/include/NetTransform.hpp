@@ -8,12 +8,11 @@
 
 class NetTransform : public INetworkComponent {
 
-private:
+public:
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
 
-public:
     NetTransform();
     NetTransform(NetworkObject* owner);
     NetTransform(NetworkObject* owner, glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
@@ -25,6 +24,10 @@ public:
     void SetPosition(glm::vec3 newPosition) { position = newPosition; }
     void SetRotation(glm::vec3 newRotation) { rotation = newRotation; }
     void SetScale(glm::vec3 newScale) { scale = newScale; }
+
+    virtual void Serialize(Packet*) override;
+    virtual void Deserialize(Packet*) override;
+    virtual int32_t TypeID() const override { return TRANSFORM; }
 
     virtual std::string ToString() override;
 };

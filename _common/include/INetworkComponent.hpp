@@ -9,25 +9,27 @@
 
 class NetworkObject;
 
+enum NetworkComponentTypeID : int32_t {
+    TRANSFORM = 8,
+    MOVER = 9,
+};
 
 class INetworkComponent : public IComponent {
-    
-protected:
-    NetworkObject* netOwner;
 
 public:
     INetworkComponent() : 
-        IComponent(), 
-        netOwner(nullptr) 
+        IComponent()
     {}
     
-    INetworkComponent(NetworkObject* newNetOwner) :
-        IComponent((GameObject*)newNetOwner),
-        netOwner(newNetOwner)
+    INetworkComponent(NetworkObject* owner) :
+        IComponent((GameObject*)owner)
     {}
 
-    void Serialize(Packet*);
-    void Deserialize(Packet*);
+    virtual void Serialize(Packet*) = 0;
+    virtual void Deserialize(Packet*) = 0;
+    virtual int32_t TypeID() const = 0;
+
+    virtual std::string ToString() override;
 };
 
 

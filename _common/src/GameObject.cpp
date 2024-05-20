@@ -4,7 +4,8 @@
 
 
 GameObject::GameObject() {
-    
+    Transform* transform = new Transform(this); 
+    AddComponent(transform);
 }
 
 GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
@@ -17,11 +18,13 @@ GameObject::GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
 void GameObject::AddComponent(IComponent* newComponent) {
     components.push_back(newComponent);
     typeToComponentMap.emplace(typeid(*(newComponent)), newComponent);
+    newComponent->SetOwner(this);
 }
 
 void GameObject::RemoveComponent(IComponent* comp) {
     std::remove(components.begin(), components.end(), comp);
     typeToComponentMap.erase(typeid(*comp));
+    comp->SetOwner(nullptr);
 }
 
 std::string GameObject::ToString() {

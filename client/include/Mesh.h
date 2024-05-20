@@ -50,12 +50,14 @@ public:
     GLuint VAO;
     void binding();
     void setPosition(glm::vec3 pos);
+    void setRotation(glm::vec3 rot);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
-    void update(float dt, glm::vec3 pos);
+    void update(float dt, glm::vec3 pos, glm::vec3 rot);
 private:
     GLuint VBO, EBO;
     glm::mat4 modelMtx;
     glm::vec3 color;
     glm::vec3 position;
-    glm::quat rotation;
+    glm::vec3 rotation;
+    // glm::quat rotation;
 };
