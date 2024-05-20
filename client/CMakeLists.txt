@@ -55,8 +55,8 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${COMMON_SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)
-    target_link_libraries(${PROJECT_NAME} assimp.5)
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glew glfw)
+    target_link_libraries(${PROJECT_NAME} assimp.5.4.0)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW.2.2 glfw.3)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     target_link_libraries(${PROJECT_NAME} fmod)
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
