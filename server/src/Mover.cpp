@@ -25,12 +25,21 @@ void Mover::Update() {
         angle += -input.x * speed / radius;
     }
 
+    float angleDeg = glm::degrees(angle);
+
+    std::cout << "angle: " << angle;
+    std::cout << " | angleDeg: " << angleDeg;
+    std::cout << " | input.x: " << input.x;
+    std::cout << " | speed: " << speed;
+    std::cout << " | radius: " << radius;
+
     glm::vec3 position =
         glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
 
     // check for collisions
     if (CollisionManager::instance().move(owner, position)) {
         // collision detected
+        std::cout << "\nCOLLIDE!" << std::endl;
         radius = oldRadius;
         angle = oldAngle;
     }
@@ -38,6 +47,8 @@ void Mover::Update() {
     owner->GetComponent<NetTransform>()->SetPosition(owner->GetComponent<Transform>()->GetPosition());
 
     float angleAboutY = 180.0f-glm::degrees(angle);
+    std::cout << " | abtY: " << angleAboutY << std::endl;
+
     owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(0.0f, angleAboutY, 0.0f));
 }
 

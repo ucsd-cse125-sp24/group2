@@ -43,6 +43,10 @@ void CollisionManager::remove(GameObject* owner) {
     colliderOwners.erase(collider);
 }
 
+/**
+ * Updates transform position if it collides, otherwise it stays the same.
+ * @return true on collision, false otherwise
+*/
 bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
     std::lock_guard<std::mutex> lock(
         _mutex); // checkCollisionCylinder touches colliderOwners
@@ -89,7 +93,7 @@ bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition,
             transform->SetPosition(collider->GetPosition());
             glm::vec3 newTransformScale(collider->GetRadius(),
                                         collider->GetRadius(),
-                                        collider->GetHeight());
+                                        collider->GetHeight()); // shouldn't this be radius, height, radius?
             transform->SetScale(newTransformScale);
             transform->SetRotation(collider->GetRotation());
             return false;
