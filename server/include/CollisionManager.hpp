@@ -23,15 +23,15 @@ class CollisionManager {
 private:
     std::mutex
         _mutex; // everything touching colliderOwners should be mutex protected
-    std::unordered_map<Collider*, GameObject*> colliderOwners;
+    std::unordered_map<Collider*, GameObject*> colliderOwners; // holds all cylinders
 
 public:
-    bool add(GameObject* owner);
+    void add(GameObject* owner);
 
     void remove(GameObject* owner);
 
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
-    std::vector<GameObject*> moveBossAttack(GameObject* owner, float newCenterAngle);
+    std::vector<GameObject*> moveBossSwipe(GameObject* owner, float newCenterAngle);
     bool move(GameObject* owner, glm::vec3 newPosition);
 
 
@@ -42,7 +42,6 @@ public:
     bool collisionCylinderPoint(const Collider* cyl, const Collider* point);
     bool collisionCylinderBoundary(const Collider* cyl);
     bool checkCollisionCylinder(Collider* cyl);
-    bool checkCollisionAttack(Collider* att);
     static CollisionManager& instance() {
         static CollisionManager s;
         return s;

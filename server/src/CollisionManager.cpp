@@ -6,22 +6,20 @@
 
 // To discuss: add can be false if the position is occupied. When adding, check
 // if successful. If not, readd to another place.
-bool CollisionManager::add(GameObject* owner) {
+void CollisionManager::add(GameObject* owner) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
-    // if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-    //     if (checkCollisionCylinder(collider)) {
-    //         return false;
-    //     }
-    // }
-    colliderOwners[collider] = owner;
-    return true;
+    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
+        colliderOwners[collider] = owner;
+    }
 }
 
 void CollisionManager::remove(GameObject* owner) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
-    colliderOwners.erase(collider);
+    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
+        colliderOwners.erase(collider);
+    }
 }
 
 // return true if player attack hits
@@ -34,15 +32,23 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
 }
 
 // return a list of GameObjects that boss attack hits
-std::vector<GameObject*> CollisionManager::moveBossAttack(GameObject* owner, float newCenterAngle) {
+std::vector<GameObject*> CollisionManager::moveBossSwipe(GameObject* owner, float newCenterAngle) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* attCollider = owner->GetComponent<Collider>();
-    Transform* attTransform = owner->GetComponent<Transform>();
+    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
     // TODO: swipe
-    // attCollider->SetStartAngle();
-    // attCollider->SetEndAngle();
-    // attTransform->SetRotation();
+    float oldCenterAngle = (attCollider->GetStartAngle() + attCollider->GetEndAngle())/2;
+    attCollider->SetStartAngle(attCollider->GetStartAngle() + (newCenterAngle - oldCenterAngle));
+    attCollider->SetEndAngle(attCollider->GetEndAngle() + (newCenterAngle - oldCenterAngle));
+    glm::vec3 newRotation = glm::normalize(glm::vec3(std::cos(newCenterAngle), 0, std::sin(newCenterAngle)));
+    attTransform->SetRotation(newRotation);
+
+    for (const auto& pair : colliderOwners) {
+        if (collisionCylinderSector(pair.first, attCollider)) {
+            hitObjects.push_back(pair.second);
+        }
+    }
     return hitObjects;
 }
 
@@ -176,22 +182,6 @@ bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
             if (!pair.first->GetIsSector() && !pair.first->GetIsPoint() &&
                 collisionCylinderCylinder(cyl, pair.first))
                 return true;
-        }
-    }
-    return false;
-}
-
-bool CollisionManager::checkCollisionAttack(Collider* att) {
-    GameObject* attOwner = colliderOwners.at(att);
-    for (const auto& pair : colliderOwners) {
-        if (attOwner != pair.second && !pair.first->GetIsSector() &&
-            !pair.first->GetIsPoint()) {
-            if (att->GetIsPoint() && collisionCylinderPoint(pair.first, att)) {
-                return true;
-            } else if (att->GetIsSector() &&
-                       collisionCylinderSector(pair.first, att)) {
-                return true;
-            }
         }
     }
     return false;

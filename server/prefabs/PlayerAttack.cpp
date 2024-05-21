@@ -22,7 +22,6 @@ void PlayerAttack::init(Player* player) {
     attackC->makePoint();
     this->AddComponent(attackC);
     this->GetComponent<NetTransform>()->SetPosition(newPosition);
-    std::cout << "Attack fired! at position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
 }
 
 void PlayerAttack::update(float deltaTime) {
@@ -32,7 +31,6 @@ void PlayerAttack::update(float deltaTime) {
     glm::vec3 direction = glm::normalize(targetCenter - PlayerAttackCollider->GetPosition());
     glm::vec3 newPosition = PlayerAttackCollider->GetPosition() + direction * speed * deltaTime;
     bool hit = CollisionManager::instance().movePlayerAttack(this, target, newPosition);
-    std::cout << "Attack at position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
     if (hit) {
         DealDamage();
     }
@@ -41,9 +39,7 @@ void PlayerAttack::update(float deltaTime) {
 void PlayerAttack::DealDamage() {
     if (exist) {
         if (target != nullptr) {
-            std::cout << "Boss hit, Boss HP change from " << target->GetComponent<Health>()->GetHealth();
             target->GetComponent<Health>()->ChangeHealth(-damage);
-            std::cout << " to " << target->GetComponent<Health>()->GetHealth() << std::endl;
         }
         exist = false;
         CollisionManager::instance().remove(this);
