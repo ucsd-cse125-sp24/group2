@@ -3,6 +3,7 @@
 
 #include "IComponent.hpp"
 #include "glm/glm.hpp"
+#include "Transform.hpp"
 
 class Collider : public IComponent {
     glm::vec3 position = glm::vec3();
@@ -19,8 +20,9 @@ public:
     Collider(GameObject* owner);
     // default constructor for cylinder, use functions to change it to
     // sectors/point
-    Collider(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation,
-             glm::vec3 newScale);
+    Collider(GameObject* owner, Transform* transform);
+
+    Collider(GameObject* owner, Collider* copyfrom);
 
     virtual std::string ToString();
 
@@ -42,6 +44,7 @@ public:
     void SetIsSector(bool sector);
     void SetIsPoint(bool point);
 
+    // input: angle: the whole angle range of the sector
     void makeSector(float angle);
 
     void makePoint();
