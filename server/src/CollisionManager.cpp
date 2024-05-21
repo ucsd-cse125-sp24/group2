@@ -9,11 +9,11 @@
 bool CollisionManager::add(GameObject* owner) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        if (checkCollisionCylinder(collider)) {
-            return false;
-        }
-    }
+    // if (!collider->GetIsPoint() && !collider->GetIsSector()) {
+    //     if (checkCollisionCylinder(collider)) {
+    //         return false;
+    //     }
+    // }
     colliderOwners[collider] = owner;
     return true;
 }
@@ -24,61 +24,78 @@ void CollisionManager::remove(GameObject* owner) {
     colliderOwners.erase(collider);
 }
 
-bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
+// return true if player attack hits
+bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition) {
+    Collider* attCollider = owner->GetComponent<Collider>();
+    Collider* targetCollider = target->GetComponent<Collider>();
+    NetTransform* attTransform = owner->GetComponent<NetTransform>();
+    attCollider->SetPosition(newPosition);
+    attTransform->SetPosition(newPosition);
+    return collisionCylinderPoint(targetCollider, attCollider)
+}
+
+// return a list of GameObjects that boss attack hits
+std::vector<GameObject*> CollisionManager::moveBossAttack(GameObject* owner, float newCenterAngle) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    Collider* attCollider = owner->GetComponent<Collider>();
+    NetTransform* attTransform = owner->GetComponent<NetTransform>();
+    std::vector<GameObject*> hitObjects;
+    // TODO: swipe
+    // attCollider->SetStartAngle();
+    // attCollider->SetEndAngle();
+    // attTransform->SetRotation();
+    return hitObjects;
+}
+
+void CollisionManager::movePlayerBoss(GameObject* owner, glm::vec3 newPosition) {
     std::lock_guard<std::mutex> lock(
         _mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
-    Transform* transform = owner->GetComponent<Transform>();
-    newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
+    NetTransform* transform = owner->GetComponent<NetTransform>();
     collider->SetPosition(newPosition);
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        // if collision, revert to previous collider
-        if (checkCollisionCylinder(collider)) {
-            collider->SetPosition(transform->GetPosition());
-            return true;
-        } else { // otherwise update transform
-            transform->SetPosition(collider->GetPosition());
-            return false;
-        }
-    } else {
-        return checkCollisionAttack(collider);
+    // if collision, revert to previous collider
+    if (checkCollisionCylinder(collider)) {
+        collider->SetPosition(transform->GetPosition());
+    } else { // otherwise, update transform
+        transform->SetPosition(collider->GetPosition());
     }
 }
 
+// Deprecated
 // For cylinders, return true if moved successfully or false if not
 // For others (attacks), return true if attack hits
-bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition,
-                            glm::vec3 newRotation, glm::vec3 newScale) {
-    std::lock_guard<std::mutex> lock(
-        _mutex); // checkCollisionCylinder touches colliderOwners
-    Collider* collider = owner->GetComponent<Collider>();
-    Transform* transform = owner->GetComponent<Transform>();
-    newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
-    collider->SetPosition(newPosition);
-    collider->SetRadius(newScale.x);
-    collider->SetHeight(newScale.z);
-    collider->SetRotation(newRotation);
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        // if collision, revert to previous collider
-        if (checkCollisionCylinder(collider)) {
-            collider->SetPosition(transform->GetPosition());
-            collider->SetRadius(transform->GetScale().x);
-            collider->SetHeight(transform->GetScale().z);
-            collider->SetRotation(transform->GetRotation());
-            return true;
-        } else { // otherwise update transform
-            transform->SetPosition(collider->GetPosition());
-            glm::vec3 newTransformScale(collider->GetRadius(),
-                                        collider->GetRadius(),
-                                        collider->GetHeight());
-            transform->SetScale(newTransformScale);
-            transform->SetRotation(collider->GetRotation());
-            return false;
-        }
-    } else {
-        return checkCollisionAttack(collider);
-    }
-}
+// bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition,
+//                             glm::vec3 newRotation, glm::vec3 newScale) {
+//     std::lock_guard<std::mutex> lock(
+//         _mutex); // checkCollisionCylinder touches colliderOwners
+//     Collider* collider = owner->GetComponent<Collider>();
+//     NetTransform* transform = owner->GetComponent<NetTransform>();
+//     newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
+//     collider->SetPosition(newPosition);
+//     collider->SetRadius(newScale.x);
+//     collider->SetHeight(newScale.z);
+//     collider->SetRotation(newRotation);
+//     if (!collider->GetIsPoint() && !collider->GetIsSector()) {
+//         // if collision, revert to previous collider
+//         if (checkCollisionCylinder(collider)) {
+//             collider->SetPosition(transform->GetPosition());
+//             collider->SetRadius(transform->GetScale().x);
+//             collider->SetHeight(transform->GetScale().z);
+//             collider->SetRotation(transform->GetRotation());
+//             return true;
+//         } else { // otherwise update transform
+//             transform->SetPosition(collider->GetPosition());
+//             glm::vec3 newTransformScale(collider->GetRadius(),
+//                                         collider->GetRadius(),
+//                                         collider->GetHeight());
+//             transform->SetScale(newTransformScale);
+//             transform->SetRotation(collider->GetRotation());
+//             return false;
+//         }
+//     } else {
+//         return checkCollisionAttack(collider);
+//     }
+// }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
                                                  const Collider* cyl2) {
@@ -169,6 +186,7 @@ bool CollisionManager::collisionCylinderPoint(const Collider* cyl,
     return true;
 }
 
+// Not used right now
 bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
     glm::vec3 position1 = cyl->GetPosition();
     if (position1.x - cyl->GetRadius() < 0 ||
@@ -180,8 +198,6 @@ bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
 }
 
 bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
-    if (collisionCylinderBoundary(cyl))
-        return true;
     GameObject* cylOwner = colliderOwners.at(cyl);
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second) {

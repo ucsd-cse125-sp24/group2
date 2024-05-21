@@ -10,11 +10,11 @@
 
 #include "Collider.hpp"
 #include "GameObject.hpp"
-#include "Transform.hpp"
+#include "NetTransform.hpp"
 
 #define BOUNDARY_LEN 500
 
-// Cylinder is used for objects
+// Cylinder is used for player and boss
 // CylindricalSector is used for attack range
 // Point is for music (magic) attack
 // Therefore, the only collsions possible are Cylinder&Cylinder,
@@ -31,9 +31,11 @@ public:
 
     void remove(GameObject* owner);
 
-    bool move(GameObject* owner, glm::vec3 newPosition);
-    bool move(GameObject* owner, glm::vec3 newPosition, glm::vec3 newRotation,
-              glm::vec3 newScale);
+    bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
+    std::vector<GameObject*> moveBossAttack(GameObject* owner, float newCenterAngle);
+    void movePlayerBoss(GameObject* owner, glm::vec3 newPosition);
+
+
 
     // These may not need to be public in the future
     bool collisionCylinderCylinder(const Collider* cyl1, const Collider* cyl2);

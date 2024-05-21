@@ -3,11 +3,11 @@
 
 Collider::Collider(GameObject* owner) : IComponent(owner) {}
 
-Collider::Collider(GameObject* owner, glm::vec3 newPosition,
-                   glm::vec3 newRotation, glm::vec3 newScale)
-    : IComponent(owner), position(newPosition), radius(newScale.x),
-      height(newScale.z), rotation(newRotation) {}
+Collider::Collider(GameObject* owner, NetTransform* transform)
+    : IComponent(owner), position(transform->GetPosition()), radius(transform->GetScale().x),
+      height(transform->GetScale().z), rotation(transform->GetRotation()) {}
 
+// input: angle: the whole angle range of the sector
 void Collider::makeSector(float angle) {
     if (isSector)
         return;
@@ -18,10 +18,16 @@ void Collider::makeSector(float angle) {
     float rotationAngle = std::acos(dot);
     startAngle = rotationAngle - angle / 2;
     endAngle = rotationAngle + angle / 2;
+    isPoint = false;
     isSector = true;
 }
 
-void Collider::makePoint() { isPoint = true; }
+void Collider::makePoint() { 
+    isPoint = true;
+    isSector = false;
+    radius = 0.0f;
+    height = 0.0f;
+}
 
 std::string Collider::ToString() {
     return "Position: " + glm::to_string(position) +
