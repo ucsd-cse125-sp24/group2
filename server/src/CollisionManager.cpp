@@ -3,6 +3,8 @@
 #include <list>
 
 #include "CollisionManager.hpp"
+#include "NetTransform.hpp"
+#include "Transform.hpp"
 
 // To discuss: add can be false if the position is occupied. When adding, check
 // if successful. If not, readd to another place.
@@ -28,9 +30,11 @@ void CollisionManager::remove(GameObject* owner) {
 bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition) {
     Collider* attCollider = owner->GetComponent<Collider>();
     Collider* targetCollider = target->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     attCollider->SetPosition(newPosition);
-    attTransform->SetPosition(newPosition);
+    owner->GetComponent<Transform>()->SetPosition(newPosition);
+    if (owner->GetComponent<NetTransform>() != nullptr) {
+        owner->GetComponent<NetTransform>()->SetPosition(newPosition);
+    }
     return collisionCylinderPoint(targetCollider, attCollider);
 }
 
@@ -38,7 +42,7 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
 std::vector<GameObject*> CollisionManager::moveBossAttack(GameObject* owner, float newCenterAngle) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* attCollider = owner->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
+    Transform* attTransform = owner->GetComponent<Transform>();
     std::vector<GameObject*> hitObjects;
     // TODO: swipe
     // attCollider->SetStartAngle();
@@ -47,55 +51,22 @@ std::vector<GameObject*> CollisionManager::moveBossAttack(GameObject* owner, flo
     return hitObjects;
 }
 
-void CollisionManager::movePlayerBoss(GameObject* owner, glm::vec3 newPosition) {
+bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
     std::lock_guard<std::mutex> lock(
         _mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
-    NetTransform* transform = owner->GetComponent<NetTransform>();
+    Transform* transform = owner->GetComponent<Transform>();
     collider->SetPosition(newPosition);
     // if collision, revert to previous collider
     if (checkCollisionCylinder(collider)) {
         collider->SetPosition(transform->GetPosition());
+        return true;
     } else { // otherwise, update transform
         transform->SetPosition(collider->GetPosition());
+        owner->GetComponent<NetTransform>() -> SetPosition(collider->GetPosition());
+        return false;
     }
 }
-
-// Deprecated
-// For cylinders, return true if moved successfully or false if not
-// For others (attacks), return true if attack hits
-// bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition,
-//                             glm::vec3 newRotation, glm::vec3 newScale) {
-//     std::lock_guard<std::mutex> lock(
-//         _mutex); // checkCollisionCylinder touches colliderOwners
-//     Collider* collider = owner->GetComponent<Collider>();
-//     NetTransform* transform = owner->GetComponent<NetTransform>();
-//     newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
-//     collider->SetPosition(newPosition);
-//     collider->SetRadius(newScale.x);
-//     collider->SetHeight(newScale.z);
-//     collider->SetRotation(newRotation);
-//     if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-//         // if collision, revert to previous collider
-//         if (checkCollisionCylinder(collider)) {
-//             collider->SetPosition(transform->GetPosition());
-//             collider->SetRadius(transform->GetScale().x);
-//             collider->SetHeight(transform->GetScale().z);
-//             collider->SetRotation(transform->GetRotation());
-//             return true;
-//         } else { // otherwise update transform
-//             transform->SetPosition(collider->GetPosition());
-//             glm::vec3 newTransformScale(collider->GetRadius(),
-//                                         collider->GetRadius(),
-//                                         collider->GetHeight());
-//             transform->SetScale(newTransformScale);
-//             transform->SetRotation(collider->GetRotation());
-//             return false;
-//         }
-//     } else {
-//         return checkCollisionAttack(collider);
-//     }
-// }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
                                                  const Collider* cyl2) {

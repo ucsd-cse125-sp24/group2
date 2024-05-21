@@ -10,7 +10,6 @@
 
 #include "Collider.hpp"
 #include "GameObject.hpp"
-#include "NetTransform.hpp"
 
 #define BOUNDARY_LEN 500
 
@@ -33,7 +32,7 @@ public:
 
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
     std::vector<GameObject*> moveBossAttack(GameObject* owner, float newCenterAngle);
-    void movePlayerBoss(GameObject* owner, glm::vec3 newPosition);
+    bool move(GameObject* owner, glm::vec3 newPosition);
 
 
 

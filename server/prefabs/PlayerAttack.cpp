@@ -1,5 +1,6 @@
 #include "PlayerAttack.hpp"
 #include "Transform.hpp"
+#include "NetTransform.hpp"
 #include "Collider.hpp"
 #include "Health.hpp"
 #include "CollisionManager.hpp"
@@ -21,17 +22,17 @@ void PlayerAttack::init(Player* player) {
     attackC->SetPosition(newPosition);
     attackC->makePoint();
     this->AddComponent(attackC);
-    this->GetComponent<NetTransform>()->position = newPosition;
+    this->GetComponent<NetTransform>()->SetPosition(newPosition);
+    this->GetComponent<Transform>()->SetPosition(newPosition);
     std::cout << "Attack fired! at position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
 }
 
 void PlayerAttack::update(float deltaTime) {
-    NetTransform* PlayerAttackTransform = this->GetComponent<NetTransform>();
-    NetTransform* targetTransform = target->GetComponent<NetTransform>();
+    Collider* PlayerAttackCollider = this->GetComponent<Collider>();
     Collider* targetCollider = target->GetComponent<Collider>();
-    glm::vec3 targetCenter(targetTransform->GetPosition().x, targetTransform->GetPosition().y + targetCollider->GetHeight()/2, targetTransform->GetPosition().z);
-    glm::vec3 direction = glm::normalize(targetCenter - PlayerAttackTransform->GetPosition());
-    glm::vec3 newPosition = PlayerAttackTransform->GetPosition() + direction * speed * deltaTime;
+    glm::vec3 targetCenter(targetCollider->GetPosition().x, targetCollider->GetPosition().y + targetCollider->GetHeight()/2, targetCollider->GetPosition().z);
+    glm::vec3 direction = glm::normalize(targetCenter - PlayerAttackCollider->GetPosition());
+    glm::vec3 newPosition = PlayerAttackCollider->GetPosition() + direction * speed * deltaTime;
     bool hit = CollisionManager::instance().movePlayerAttack(this, target, newPosition);
     std::cout << "Attack at position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
     if (hit) {

@@ -2,21 +2,27 @@
 #define HEALTH_HPP
 
 
-#include "IComponent.hpp"
+#include "INetworkComponent.hpp"
 
 
-class Health : public IComponent {
+class Health : public INetworkComponent {
 private:
     int hp;
 
 public:
-    Health() : IComponent(), hp(0) {}
-    Health(GameObject* owner) : IComponent(owner), hp(0) {}
-    Health(GameObject* owner, int newHp) : IComponent(owner), hp(newHp) {}
+    Health() : INetworkComponent(), hp(0) {}
+    Health(NetworkObject* owner) : INetworkComponent(owner), hp(0) {}
+    Health(NetworkObject* owner, int newHp) : INetworkComponent(owner), hp(newHp) {}
 
-    virtual std::string ToString() {
-        return "Health: hp(" + std::to_string(hp) + ")";
+    virtual void Serialize(Packet* packet) override {
+        packet->write_int(hp);
     }
+
+    virtual void Deserialize(Packet* packet) override {
+        packet->read_int(&hp);
+    }
+
+    virtual int32_t TypeID() const override { return HEALTH; }
 
     int GetHealth() const { return hp; }
 

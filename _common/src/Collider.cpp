@@ -3,7 +3,7 @@
 
 Collider::Collider(GameObject* owner) : IComponent(owner) {}
 
-Collider::Collider(GameObject* owner, NetTransform* transform)
+Collider::Collider(GameObject* owner, Transform* transform)
     : IComponent(owner), position(transform->GetPosition()), radius(transform->GetScale().x),
       height(transform->GetScale().y), rotation(transform->GetRotation()) {}
 
