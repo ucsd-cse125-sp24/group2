@@ -2,7 +2,7 @@
 #define HEALTH_HPP
 
 
-#include "../IComponent.hpp"
+#include "IComponent.hpp"
 
 
 class Health : public IComponent {
