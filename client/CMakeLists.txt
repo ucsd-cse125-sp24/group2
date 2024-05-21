@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L/mnt/c/Users/Shane/Desktop/cse125/client/lib/fmod.dll")
+#SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L/mnt/c/Users/Shane/Desktop/cse125/client/lib/fmod.dll")
 
 project(menv)
 
@@ -50,7 +50,6 @@ include_directories(
 # Add library directories
 link_directories(
     lib
-    ../_common/fmod/lib
 )
 
 # Add executable
