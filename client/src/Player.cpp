@@ -6,6 +6,7 @@
 #include "AnimationPlayer.h"
 #include "InputManager.h"
 #include "components/RendererComponent.hpp"
+#include "AssetManager.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     Mover* mover = new Mover(this);
@@ -13,7 +14,7 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     RendererComponent* meshRenderer =
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
-    Model* model = new Model(this, path, true);
+    Model* model = AssetManager::Instance().GetModel(path);
     AddComponent(model);
     AnimationClip* animationClip = new AnimationClip(this, path, model);
     AddComponent(animationClip);

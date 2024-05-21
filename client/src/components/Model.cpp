@@ -9,6 +9,14 @@ Model::Model(GameObject* owner, std::string path, bool hasAnimation)
     loadModel(path);
 }
 
+Model::Model(Model* other) : Model(owner) {
+    for (int i = 0; i < other->meshes.size(); i++) {
+        meshes.push_back(Mesh(other->meshes[i].vertices,
+                              other->meshes[i].indices,
+                              other->meshes[i].textures));
+    }
+}
+
 void Model::update(float dt) {
     for (int i = 0; i < meshes.size(); i++) {
         glm::vec3 pos;
