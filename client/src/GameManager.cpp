@@ -69,6 +69,7 @@ void GameManager::update(Packet* pkt) {
             float z = num.f;
 
             players[network_id]->position = glm::vec3(x, y, z);
+            
             break;
         }
         default:

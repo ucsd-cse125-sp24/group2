@@ -1,5 +1,4 @@
 #include "components/Model.h"
-
 Model::Model() {}
 
 Model::Model(std::string path, bool hasAnimation) : IComponent(), hasAnimation(hasAnimation) { loadModel(path); }
@@ -126,7 +125,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat,
         }
         if (!skip) { // if texture hasn't been loaded already, load it
             Texture texture;
-            texture.id = textureFromFile(str.C_Str(), this->directory);
+            texture.id = Helper::textureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);
@@ -159,7 +158,7 @@ unsigned int Model::textureFromFile(const char* path,
             format = GL_RGB;
         else if (nrComponents == 4)
             format = GL_RGBA;
-
+        std::cout<<"texture id: "<< textureID<< std::endl;
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                      GL_UNSIGNED_BYTE, data);

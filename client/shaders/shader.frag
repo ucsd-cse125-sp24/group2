@@ -23,10 +23,13 @@ void main()
 	// Compute irradiance (sum of ambient & direct lighting)
 	vec3 irradiance = AmbientColor + LightColor * max(0, dot(LightDirection, fragNormal));
 
+	vec3 objectColor = texture(texture_diffuse1, TexCoords).xyz;
+
 	// Diffuse reflectance
-	vec3 reflectance = irradiance * DiffuseColor;
+	vec3 reflectance = irradiance * objectColor;
+
 
 	// Gamma correction
-	//fragColor = vec4(sqrt(reflectance), 1);
-	fragColor = texture(texture_diffuse1, TexCoords);
+	fragColor = vec4(sqrt(reflectance), 1);
+	//fragColor = texture(texture_diffuse1, TexCoords);
 }

@@ -58,6 +58,7 @@ void Mesh::binding() {
 
 void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     // bind appropriate textures
+    glUseProgram(shader);
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
@@ -85,7 +86,6 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
-    glUseProgram(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false,
                        (float*)&viewProjMtx);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
@@ -96,9 +96,8 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-    glUseProgram(0);
-
     glActiveTexture(GL_TEXTURE0);
+    glUseProgram(0);
 }
 
 void Mesh::setPosition(glm::vec3 pos) { position = pos; }

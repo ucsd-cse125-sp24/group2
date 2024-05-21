@@ -18,7 +18,7 @@ void Camera::Update() {
 
     // Compute perspective projection matrix
     glm::mat4 project = glm::perspective(glm::radians(FOV), Aspect, NearClip, FarClip);
-
+    
     // Compute final view-projection matrix
     ViewProjectMtx = project * view;
 }

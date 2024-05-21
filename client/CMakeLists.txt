@@ -25,6 +25,13 @@ set(
     src/components/Model.cpp
     src/components/RendererComponent.cpp
 
+    # HUD
+    src/HealthBar.cpp
+    src/Metronome.cpp
+    src/Quad.cpp
+    src/TeamInfo.cpp
+    src/HUD.cpp
+
     # 125-Starter
     src/Mover.cpp
     src/GameManager.cpp
