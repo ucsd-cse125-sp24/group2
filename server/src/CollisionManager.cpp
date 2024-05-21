@@ -4,6 +4,25 @@
 
 #include "CollisionManager.hpp"
 
+bool isBetween(const Vector2& C, const Vector2& A, const Vector2& B) {
+    // Normalize vectors
+    Vector2 nA = A.normalize();
+    Vector2 nB = B.normalize();
+    Vector2 nC = C.normalize();
+
+    // Cross products to check the plane and direction
+    double crossAC = nA.cross(nC);
+    double crossAB = nA.cross(nB);
+    double crossBC = nB.cross(nC);
+    double crossBA = nB.cross(nA);
+
+    // Check if the directions of the cross products are consistent
+    bool cond1 = crossAC * crossAB > 0; // C is on the same side of A as B
+    bool cond2 = crossBC * crossBA > 0; // C is on the same side of B as A
+
+    return cond1 && cond2;
+}
+
 // To discuss: add can be false if the position is occupied. When adding, check
 // if successful. If not, readd to another place.
 bool CollisionManager::add(GameObject* owner) {
@@ -171,9 +190,9 @@ bool CollisionManager::collisionCylinderPoint(const Collider* cyl,
 
 bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
     glm::vec3 position1 = cyl->GetPosition();
-    if (position1.x - cyl->GetRadius() < 0 ||
+    if (position1.x - cyl->GetRadius() < -BOUNDARY_LEN ||
         position1.x + cyl->GetRadius() > BOUNDARY_LEN ||
-        position1.y - cyl->GetRadius() < 0 ||
+        position1.y - cyl->GetRadius() < -BOUNDARY_LEN ||
         position1.y + cyl->GetRadius() > BOUNDARY_LEN)
         return true;
     return false;
@@ -182,6 +201,9 @@ bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
 bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
     if (collisionCylinderBoundary(cyl))
         return true;
+    if (colliderOwners.find(cyl) == colliderOwners.end()) {
+        return false;
+    }
     GameObject* cylOwner = colliderOwners.at(cyl);
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second) {

@@ -12,7 +12,7 @@
 #include "GameObject.hpp"
 #include "Transform.hpp"
 
-#define BOUNDARY_LEN 500
+#define BOUNDARY_LEN 1000
 
 // Cylinder is used for objects
 // CylindricalSector is used for attack range
@@ -66,23 +66,6 @@ struct Vector2 {
     }
 };
 
-bool isBetween(const Vector2& C, const Vector2& A, const Vector2& B) {
-    // Normalize vectors
-    Vector2 nA = A.normalize();
-    Vector2 nB = B.normalize();
-    Vector2 nC = C.normalize();
 
-    // Cross products to check the plane and direction
-    double crossAC = nA.cross(nC);
-    double crossAB = nA.cross(nB);
-    double crossBC = nB.cross(nC);
-    double crossBA = nB.cross(nA);
-
-    // Check if the directions of the cross products are consistent
-    bool cond1 = crossAC * crossAB > 0; // C is on the same side of A as B
-    bool cond2 = crossBC * crossBA > 0; // C is on the same side of B as A
-
-    return cond1 && cond2;
-}
 
 #endif // COLLISIONMANAGER_HPP
