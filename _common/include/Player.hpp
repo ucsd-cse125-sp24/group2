@@ -9,6 +9,7 @@
 // #include "../../client/include/core.h"
 
 #include "Entity.hpp"
+#include "Transform.hpp"
 #include "NetTransform.hpp"
 #include "Mover.hpp"
 

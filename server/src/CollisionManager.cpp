@@ -3,17 +3,19 @@
 #include <list>
 
 #include "CollisionManager.hpp"
+#include "NetTransform.hpp"
+#include "Transform.hpp"
 
 // To discuss: add can be false if the position is occupied. When adding, check
 // if successful. If not, readd to another place.
 bool CollisionManager::add(GameObject* owner) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        if (checkCollisionCylinder(collider)) {
-            return false;
-        }
-    }
+    // if (!collider->GetIsPoint() && !collider->GetIsSector()) {
+    //     if (checkCollisionCylinder(collider)) {
+    //         return false;
+    //     }
+    // }
     colliderOwners[collider] = owner;
     return true;
 }
@@ -24,59 +26,45 @@ void CollisionManager::remove(GameObject* owner) {
     colliderOwners.erase(collider);
 }
 
+// return true if player attack hits
+bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition) {
+    Collider* attCollider = owner->GetComponent<Collider>();
+    Collider* targetCollider = target->GetComponent<Collider>();
+    attCollider->SetPosition(newPosition);
+    owner->GetComponent<Transform>()->SetPosition(newPosition);
+    if (owner->GetComponent<NetTransform>() != nullptr) {
+        owner->GetComponent<NetTransform>()->SetPosition(newPosition);
+    }
+    return collisionCylinderPoint(targetCollider, attCollider);
+}
+
+// return a list of GameObjects that boss attack hits
+std::vector<GameObject*> CollisionManager::moveBossAttack(GameObject* owner, float newCenterAngle) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    Collider* attCollider = owner->GetComponent<Collider>();
+    Transform* attTransform = owner->GetComponent<Transform>();
+    std::vector<GameObject*> hitObjects;
+    // TODO: swipe
+    // attCollider->SetStartAngle();
+    // attCollider->SetEndAngle();
+    // attTransform->SetRotation();
+    return hitObjects;
+}
+
 bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
     std::lock_guard<std::mutex> lock(
         _mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
     Transform* transform = owner->GetComponent<Transform>();
-    newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
     collider->SetPosition(newPosition);
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        // if collision, revert to previous collider
-        if (checkCollisionCylinder(collider)) {
-            collider->SetPosition(transform->GetPosition());
-            return true;
-        } else { // otherwise update transform
-            transform->SetPosition(collider->GetPosition());
-            return false;
-        }
-    } else {
-        return checkCollisionAttack(collider);
-    }
-}
-
-// For cylinders, return true if moved successfully or false if not
-// For others (attacks), return true if attack hits
-bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition,
-                            glm::vec3 newRotation, glm::vec3 newScale) {
-    std::lock_guard<std::mutex> lock(
-        _mutex); // checkCollisionCylinder touches colliderOwners
-    Collider* collider = owner->GetComponent<Collider>();
-    Transform* transform = owner->GetComponent<Transform>();
-    newPosition.z = std::max(newPosition.z, 0.0f); // cannot go below ground
-    collider->SetPosition(newPosition);
-    collider->SetRadius(newScale.x);
-    collider->SetHeight(newScale.z);
-    collider->SetRotation(newRotation);
-    if (!collider->GetIsPoint() && !collider->GetIsSector()) {
-        // if collision, revert to previous collider
-        if (checkCollisionCylinder(collider)) {
-            collider->SetPosition(transform->GetPosition());
-            collider->SetRadius(transform->GetScale().x);
-            collider->SetHeight(transform->GetScale().z);
-            collider->SetRotation(transform->GetRotation());
-            return true;
-        } else { // otherwise update transform
-            transform->SetPosition(collider->GetPosition());
-            glm::vec3 newTransformScale(collider->GetRadius(),
-                                        collider->GetRadius(),
-                                        collider->GetHeight());
-            transform->SetScale(newTransformScale);
-            transform->SetRotation(collider->GetRotation());
-            return false;
-        }
-    } else {
-        return checkCollisionAttack(collider);
+    // if collision, revert to previous collider
+    if (checkCollisionCylinder(collider)) {
+        collider->SetPosition(transform->GetPosition());
+        return true;
+    } else { // otherwise, update transform
+        transform->SetPosition(collider->GetPosition());
+        owner->GetComponent<NetTransform>() -> SetPosition(collider->GetPosition());
+        return false;
     }
 }
 
@@ -85,16 +73,16 @@ bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
     glm::vec3 position1 = cyl1->GetPosition();
     glm::vec3 position2 = cyl2->GetPosition();
     // First check for overlap in the z-axis
-    float z1Min = position1.z;
-    float z1Max = position1.z + cyl1->GetHeight();
-    float z2Min = position2.z;
-    float z2Max = position2.z + cyl2->GetHeight();
+    float z1Min = position1.y;
+    float z1Max = position1.y + cyl1->GetHeight();
+    float z2Min = position2.y;
+    float z2Max = position2.y + cyl2->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
     // Then check for overlap in the x-y plane
     float dx = position1.x - position2.x;
-    float dy = position1.y - position2.y;
+    float dy = position1.z - position2.z;
     float distanceSquared = dx * dx + dy * dy;
     float radiusSum = cyl1->GetRadius() + cyl2->GetRadius();
     if (distanceSquared >= radiusSum * radiusSum)
@@ -107,10 +95,10 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
                                                const Collider* sec) {
     glm::vec3 position1 = cyl->GetPosition();
     glm::vec3 position2 = sec->GetPosition();
-    float z1Min = position1.z;
-    float z1Max = position1.z + cyl->GetHeight();
-    float z2Min = position2.z;
-    float z2Max = position2.z + sec->GetHeight();
+    float z1Min = position1.y;
+    float z1Max = position1.y + cyl->GetHeight();
+    float z2Min = position2.y;
+    float z2Max = position2.y + sec->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
@@ -118,8 +106,8 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
                      sec->GetRadius() * sin(sec->GetStartAngle())};
     Vector2 edge2 = {sec->GetRadius() * cos(sec->GetEndAngle()),
                      sec->GetRadius() * sin(sec->GetEndAngle())};
-    Vector2 conn = {position1.x - position2.x, position1.y - position2.y};
-    if (isBetween(conn, edge1, edge2)) {
+    Vector2 conn = {position1.x - position2.x, position1.z - position2.z};
+    if (conn.isBetween(edge1, edge2)) {
         if (sqrt(conn.dot(conn)) < cyl->GetRadius() + sec->GetRadius()) {
             return true;
         } else {
@@ -131,21 +119,21 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
             float edgeLength = sqrt(edges[i].dot(edges[i]));
             Vector2 edgeUnit = edges[i].normalize();
             float projectedLength = ((position1.x - position2.x) * edgeUnit.x +
-                                     (position1.y - position2.y) * edgeUnit.y);
+                                     (position1.z - position2.z) * edgeUnit.z);
             Vector2 closestPoint;
             if (projectedLength < 0) {
-                closestPoint = {position2.x, position2.y};
+                closestPoint = {position2.x, position2.z};
             } else if (projectedLength > edgeLength) {
                 closestPoint = {position2.x + edges[i].x,
-                                position2.y + edges[i].y};
+                                position2.z + edges[i].z};
             } else {
                 closestPoint = {position2.x + projectedLength * edgeUnit.x,
-                                position2.y + projectedLength * edgeUnit.y};
+                                position2.z + projectedLength * edgeUnit.z};
             }
             if ((closestPoint.x - position1.x) *
                         (closestPoint.x - position1.x) +
-                    (closestPoint.y - position1.y) *
-                        (closestPoint.y - position1.y) <
+                    (closestPoint.z - position1.z) *
+                        (closestPoint.z - position1.z) <
                 cyl->GetRadius() * cyl->GetRadius())
                 return true;
         }
@@ -157,31 +145,30 @@ bool CollisionManager::collisionCylinderPoint(const Collider* cyl,
                                               const Collider* point) {
     glm::vec3 position1 = cyl->GetPosition();
     glm::vec3 position2 = point->GetPosition();
-    float zMin = position1.z;
-    float zMax = position1.z + cyl->GetHeight();
-    if (position2.z < zMin || position2.z > zMax)
+    float zMin = position1.y;
+    float zMax = position1.y + cyl->GetHeight();
+    if (position2.y < zMin || position2.y > zMax)
         return false;
     float dx = position2.x - position1.x;
-    float dy = position2.y - position1.y;
+    float dy = position2.z - position1.z;
     float distanceSquared = dx * dx + dy * dy;
     if (distanceSquared >= cyl->GetRadius() * cyl->GetRadius())
         return false;
     return true;
 }
 
+// Not used right now
 bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
     glm::vec3 position1 = cyl->GetPosition();
     if (position1.x - cyl->GetRadius() < 0 ||
         position1.x + cyl->GetRadius() > BOUNDARY_LEN ||
-        position1.y - cyl->GetRadius() < 0 ||
-        position1.y + cyl->GetRadius() > BOUNDARY_LEN)
+        position1.z - cyl->GetRadius() < 0 ||
+        position1.z + cyl->GetRadius() > BOUNDARY_LEN)
         return true;
     return false;
 }
 
 bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
-    if (collisionCylinderBoundary(cyl))
-        return true;
     GameObject* cylOwner = colliderOwners.at(cyl);
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second) {
