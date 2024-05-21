@@ -7,10 +7,10 @@
 
 class PlayerAttack : public Entity {
 private:
-    int damage;
+    int damage = 10;
     bool exist;
     GameObject* target = nullptr;
-    float speed = 2.0f;
+    float speed = 50.0f;
     Player* playerOwner;
 
 public:

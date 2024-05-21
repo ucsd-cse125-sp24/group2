@@ -31,7 +31,7 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
     NetTransform* attTransform = owner->GetComponent<NetTransform>();
     attCollider->SetPosition(newPosition);
     attTransform->SetPosition(newPosition);
-    return collisionCylinderPoint(targetCollider, attCollider)
+    return collisionCylinderPoint(targetCollider, attCollider);
 }
 
 // return a list of GameObjects that boss attack hits
@@ -102,16 +102,16 @@ bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
     glm::vec3 position1 = cyl1->GetPosition();
     glm::vec3 position2 = cyl2->GetPosition();
     // First check for overlap in the z-axis
-    float z1Min = position1.z;
-    float z1Max = position1.z + cyl1->GetHeight();
-    float z2Min = position2.z;
-    float z2Max = position2.z + cyl2->GetHeight();
+    float z1Min = position1.y;
+    float z1Max = position1.y + cyl1->GetHeight();
+    float z2Min = position2.y;
+    float z2Max = position2.y + cyl2->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
     // Then check for overlap in the x-y plane
     float dx = position1.x - position2.x;
-    float dy = position1.y - position2.y;
+    float dy = position1.z - position2.z;
     float distanceSquared = dx * dx + dy * dy;
     float radiusSum = cyl1->GetRadius() + cyl2->GetRadius();
     if (distanceSquared >= radiusSum * radiusSum)
@@ -124,10 +124,10 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
                                                const Collider* sec) {
     glm::vec3 position1 = cyl->GetPosition();
     glm::vec3 position2 = sec->GetPosition();
-    float z1Min = position1.z;
-    float z1Max = position1.z + cyl->GetHeight();
-    float z2Min = position2.z;
-    float z2Max = position2.z + sec->GetHeight();
+    float z1Min = position1.y;
+    float z1Max = position1.y + cyl->GetHeight();
+    float z2Min = position2.y;
+    float z2Max = position2.y + sec->GetHeight();
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
@@ -135,8 +135,8 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
                      sec->GetRadius() * sin(sec->GetStartAngle())};
     Vector2 edge2 = {sec->GetRadius() * cos(sec->GetEndAngle()),
                      sec->GetRadius() * sin(sec->GetEndAngle())};
-    Vector2 conn = {position1.x - position2.x, position1.y - position2.y};
-    if (isBetween(conn, edge1, edge2)) {
+    Vector2 conn = {position1.x - position2.x, position1.z - position2.z};
+    if (conn.isBetween(edge1, edge2)) {
         if (sqrt(conn.dot(conn)) < cyl->GetRadius() + sec->GetRadius()) {
             return true;
         } else {
@@ -148,21 +148,21 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
             float edgeLength = sqrt(edges[i].dot(edges[i]));
             Vector2 edgeUnit = edges[i].normalize();
             float projectedLength = ((position1.x - position2.x) * edgeUnit.x +
-                                     (position1.y - position2.y) * edgeUnit.y);
+                                     (position1.z - position2.z) * edgeUnit.z);
             Vector2 closestPoint;
             if (projectedLength < 0) {
-                closestPoint = {position2.x, position2.y};
+                closestPoint = {position2.x, position2.z};
             } else if (projectedLength > edgeLength) {
                 closestPoint = {position2.x + edges[i].x,
-                                position2.y + edges[i].y};
+                                position2.z + edges[i].z};
             } else {
                 closestPoint = {position2.x + projectedLength * edgeUnit.x,
-                                position2.y + projectedLength * edgeUnit.y};
+                                position2.z + projectedLength * edgeUnit.z};
             }
             if ((closestPoint.x - position1.x) *
                         (closestPoint.x - position1.x) +
-                    (closestPoint.y - position1.y) *
-                        (closestPoint.y - position1.y) <
+                    (closestPoint.z - position1.z) *
+                        (closestPoint.z - position1.z) <
                 cyl->GetRadius() * cyl->GetRadius())
                 return true;
         }
@@ -174,12 +174,12 @@ bool CollisionManager::collisionCylinderPoint(const Collider* cyl,
                                               const Collider* point) {
     glm::vec3 position1 = cyl->GetPosition();
     glm::vec3 position2 = point->GetPosition();
-    float zMin = position1.z;
-    float zMax = position1.z + cyl->GetHeight();
-    if (position2.z < zMin || position2.z > zMax)
+    float zMin = position1.y;
+    float zMax = position1.y + cyl->GetHeight();
+    if (position2.y < zMin || position2.y > zMax)
         return false;
     float dx = position2.x - position1.x;
-    float dy = position2.y - position1.y;
+    float dy = position2.z - position1.z;
     float distanceSquared = dx * dx + dy * dy;
     if (distanceSquared >= cyl->GetRadius() * cyl->GetRadius())
         return false;
@@ -191,8 +191,8 @@ bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
     glm::vec3 position1 = cyl->GetPosition();
     if (position1.x - cyl->GetRadius() < 0 ||
         position1.x + cyl->GetRadius() > BOUNDARY_LEN ||
-        position1.y - cyl->GetRadius() < 0 ||
-        position1.y + cyl->GetRadius() > BOUNDARY_LEN)
+        position1.z - cyl->GetRadius() < 0 ||
+        position1.z + cyl->GetRadius() > BOUNDARY_LEN)
         return true;
     return false;
 }

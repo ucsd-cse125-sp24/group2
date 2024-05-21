@@ -267,6 +267,7 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
     p->GetComponent<NetTransform>()->position =
         spawnPoints[spawnIndex++ % spawnPoints.size()];
+    // std::cout << p->GetComponent<NetTransform>()->position.x << p->GetComponent<NetTransform>()->position.y << p->GetComponent<NetTransform>()->position.z << std::endl; 
     AttackManager::instance().addPlayer(p);
 
     Packet* pkt = new Packet();

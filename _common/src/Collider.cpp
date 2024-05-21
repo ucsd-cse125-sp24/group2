@@ -5,13 +5,19 @@ Collider::Collider(GameObject* owner) : IComponent(owner) {}
 
 Collider::Collider(GameObject* owner, NetTransform* transform)
     : IComponent(owner), position(transform->GetPosition()), radius(transform->GetScale().x),
-      height(transform->GetScale().z), rotation(transform->GetRotation()) {}
+      height(transform->GetScale().y), rotation(transform->GetRotation()) {}
+
+Collider::Collider(GameObject* owner, Collider* copyfrom) 
+    : IComponent(owner), position(copyfrom->GetPosition()), radius(copyfrom->GetRadius()),
+      height(copyfrom->GetHeight()), rotation(copyfrom->GetRotation()), 
+      startAngle(copyfrom->GetStartAngle()), endAngle(copyfrom->GetEndAngle()),
+      isSector(copyfrom->GetIsSector()), isPoint(copyfrom->GetIsPoint()) {}
 
 // input: angle: the whole angle range of the sector
 void Collider::makeSector(float angle) {
     if (isSector)
         return;
-    glm::vec3 projectedVec(rotation.x, rotation.y, 0.0f);
+    glm::vec3 projectedVec(rotation.x, 0.0f, rotation.z);
     glm::vec3 normalizedVec = glm::normalize(projectedVec);
     glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
     float dot = glm::dot(normalizedVec, xAxis);

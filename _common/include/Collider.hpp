@@ -22,6 +22,8 @@ public:
     // sectors/point
     Collider(GameObject* owner, NetTransform* transform);
 
+    Collider(GameObject* owner, Collider* copyfrom);
+
     virtual std::string ToString();
 
     const glm::vec3& GetPosition() const;

@@ -22,7 +22,7 @@ public:
 
     void SetHealth(int newHp) { hp = newHp; }
 
-    void ChangeHealth(int amount) { hp = hp + amount; }
+    void ChangeHealth(int amount) { hp += amount; }
 };
 
 
