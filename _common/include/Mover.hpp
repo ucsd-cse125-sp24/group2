@@ -17,7 +17,7 @@ public:
 
     Mover(NetworkObject* owner);
 
-    void Update(); // test 5
+    void Update(); // test 6
 
     virtual void Serialize(Packet* packet) override {
         packet->write_float(speed);
