@@ -14,7 +14,7 @@ void AttackManager::newPlayerAttack(Player* p) {
 void AttackManager::addPlayer(Player* p) {
     std::lock_guard<std::mutex> lock(_player_mutex);
     // Initialize and Register Player Collider in CollisionManager
-    Collider* c = new Collider(p, p->GetComponent<Transform>());
+    Collider* c = new Collider(p, p->GetComponent<NetTransform>());
     c->SetRadius(10);
     c->SetHeight(10);
     c->SetRotation(glm::vec3(1, 0, 0));
@@ -26,7 +26,7 @@ void AttackManager::addPlayer(Player* p) {
 void AttackManager::addEnemy(Enemy* e) {
     enemyPrefab = e;
     // Initialize and Register Enemy Collider in CollisionManager
-    Collider* c = new Collider(enemyPrefab, enemyPrefab->GetComponent<Transform>());
+    Collider* c = new Collider(enemyPrefab, enemyPrefab->GetComponent<NetTransform>());
     // for testing purposes
     c->SetRadius(20);
     c->SetHeight(50);

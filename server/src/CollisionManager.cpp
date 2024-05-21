@@ -3,8 +3,6 @@
 #include <list>
 
 #include "CollisionManager.hpp"
-#include "NetTransform.hpp"
-#include "Transform.hpp"
 
 // To discuss: add can be false if the position is occupied. When adding, check
 // if successful. If not, readd to another place.
@@ -31,10 +29,7 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
     Collider* attCollider = owner->GetComponent<Collider>();
     Collider* targetCollider = target->GetComponent<Collider>();
     attCollider->SetPosition(newPosition);
-    owner->GetComponent<Transform>()->SetPosition(newPosition);
-    if (owner->GetComponent<NetTransform>() != nullptr) {
-        owner->GetComponent<NetTransform>()->SetPosition(newPosition);
-    }
+    owner->GetComponent<NetTransform>()->SetPosition(newPosition);
     return collisionCylinderPoint(targetCollider, attCollider);
 }
 
@@ -55,15 +50,21 @@ bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
     std::lock_guard<std::mutex> lock(
         _mutex); // checkCollisionCylinder touches colliderOwners
     Collider* collider = owner->GetComponent<Collider>();
-    Transform* transform = owner->GetComponent<Transform>();
     collider->SetPosition(newPosition);
     // if collision, revert to previous collider
     if (checkCollisionCylinder(collider)) {
-        collider->SetPosition(transform->GetPosition());
+        if (owner->GetComponent<NetTransform>() != nullptr) {
+            collider->SetPosition(owner->GetComponent<NetTransform>()->GetPosition());
+        } else {
+            collider->SetPosition(owner->GetComponent<Transform>()->GetPosition());
+        }
         return true;
     } else { // otherwise, update transform
-        transform->SetPosition(collider->GetPosition());
-        owner->GetComponent<NetTransform>() -> SetPosition(collider->GetPosition());
+        if (owner->GetComponent<NetTransform>() != nullptr) {
+            owner->GetComponent<NetTransform>()->SetPosition(newPosition);
+        } else {
+            owner->GetComponent<Transform>()->SetPosition(newPosition);
+        }
         return false;
     }
 }

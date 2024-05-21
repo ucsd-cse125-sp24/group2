@@ -180,7 +180,6 @@ void NetworkManager::process_input() {
                 printf("Spawn enemy!\n");
                 Enemy* enemyPrefab = new Enemy();
                 enemyPrefab->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
-                enemyPrefab->GetComponent<Transform>()->SetPosition(glm::vec3(0, 0, 0));
                 AttackManager::instance().addEnemy(enemyPrefab);
                 // scene.Instantiate(enemyPrefab);
 
@@ -268,7 +267,6 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
     glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
     p->GetComponent<NetTransform>()->SetPosition(position);
-    p->GetComponent<Transform>()->SetPosition(position);
     AttackManager::instance().addPlayer(p);
 
     Packet* pkt = new Packet();

@@ -1,5 +1,4 @@
 #include "PlayerAttack.hpp"
-#include "Transform.hpp"
 #include "NetTransform.hpp"
 #include "Collider.hpp"
 #include "Health.hpp"
@@ -23,7 +22,6 @@ void PlayerAttack::init(Player* player) {
     attackC->makePoint();
     this->AddComponent(attackC);
     this->GetComponent<NetTransform>()->SetPosition(newPosition);
-    this->GetComponent<Transform>()->SetPosition(newPosition);
     std::cout << "Attack fired! at position: (" << newPosition.x << ", " << newPosition.y << ", " << newPosition.z << ")" << std::endl;
 }
 
