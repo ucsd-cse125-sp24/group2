@@ -6,6 +6,7 @@ class Particle {
 public:
     Particle();
     Particle(glm::vec3 position, glm::vec3 velocity, float lifeTime, float scale, glm::vec4 color, glm::vec4 endColor);
+    Particle(glm::vec3 position, glm::vec3 velocity, float lifeTime, float scale, const char* fileName, const std::string& directory);
     const glm::vec3& getPosition() const { return position; }
     const glm::vec3& getColor() const { return color; }
     void reset(glm::vec3 position, glm::vec3 velocity);

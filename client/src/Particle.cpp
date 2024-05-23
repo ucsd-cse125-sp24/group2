@@ -3,8 +3,23 @@
 Particle::Particle() {
 }
 
+Particle::Particle(glm::vec3 position, glm::vec3 velocity, float lifeTime, float scale, const char* fileName, const std::string& directory) {
+    quad = new Quad(position, scale);
+    quad->setRotation(-180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    quad->setShader(Shader::GetShader(ShaderType::PARTICLE));
+    quad->setTexture(fileName, directory);
+    this->position = position;
+    this->velocity = velocity;
+    this->lifeTime = lifeTime;
+    this->scale = scale;
+    this->isActive = false;
+    this->angle = 0.0f;
+    this->angularVelocity = 10.0f * glm::pi<float>() / lifeTime;
+}
+
 Particle::Particle(glm::vec3 position, glm::vec3 velocity, float lifeTime, float scale, glm::vec4 color, glm::vec4 endColor) {
     quad = new Quad(position, scale);
+    quad->setRotation(-180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     quad->setShader(Shader::GetShader(ShaderType::PARTICLE));
     this->position = position;
     this->velocity = velocity;
@@ -20,7 +35,7 @@ Particle::Particle(glm::vec3 position, glm::vec3 velocity, float lifeTime, float
 void Particle::update(float dt) {
     angle += angularVelocity * dt;
     float radius = 50.0f;
-    //position += velocity * dt;
+    // position += velocity * dt;
     position.x =  radius * sin(angle);
     position.z =  radius * cos(angle);
     // set transform

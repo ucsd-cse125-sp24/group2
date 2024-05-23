@@ -36,7 +36,8 @@ bool Window::initializeProgram() {
         return false;
     }
     hud = new HUDs();
-    particleSystem = new ParticleSystem(glm::vec3(0.0f), glm::vec4(254/255.0f, 212/255.0f, 123/255.0f, 1.0f), glm::vec4(254/255.0f, 109/255.0f, 41/255.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, 1000, 10.0f);
+    //particleSystem = new ParticleSystem(glm::vec3(0.0f), glm::vec4(254/255.0f, 212/255.0f, 123/255.0f, 1.0f), glm::vec4(254/255.0f, 109/255.0f, 41/255.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, 1000, 10.0f);
+    particleSystem = new ParticleSystem(glm::vec3(0.0f), glm::vec3(0.0f), 3.0f, 1000, 0.5f, "particleStar.png", "../assets");
     // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
     // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
     // metronome = new Metronome(60.0f);

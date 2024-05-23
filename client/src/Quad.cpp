@@ -6,6 +6,7 @@ Quad::Quad() {
 
 Quad::Quad(glm::vec3 pos, float width, float height) : position(pos){
     modelMtx = glm::mat4(1.0f);
+    rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     scale = glm::vec3(width, height, 1.0f);
     shader = Shader::GetShader(ShaderType::HUD);
     positions = {
@@ -49,6 +50,7 @@ Quad::Quad(glm::vec3 pos, float width, float height) : position(pos){
 
 Quad::Quad(glm::vec3 pos, float size) : position(pos){
     modelMtx = glm::mat4(1.0f);
+    rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     scale = glm::vec3(size, size, 1.0f);
     shader = Shader::GetShader(ShaderType::HUD);
     positions = {
@@ -127,6 +129,9 @@ void Quad::draw(float aspectRatio) {
 }
 
  void Quad::draw(const glm::mat4& viewProjMtx) {
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE);
     glUseProgram(shader);
     for(unsigned int i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
@@ -146,6 +151,7 @@ void Quad::draw(float aspectRatio) {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
     // Unbind the VAO and shader program
+    glDepthMask(GL_TRUE);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
     glUseProgram(0);
@@ -165,7 +171,7 @@ void Quad::setSize(float width, float height) {
 }
     
 const glm::mat4& Quad::getModelMtx(){
-    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), scale);
+    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1.0f), scale);
     return modelMtx;
 }
 
@@ -184,4 +190,8 @@ void Quad::setShader(GLuint shader) {
 
 void Quad::setColor(glm::vec4 color) {
     this->color = color;
+}
+
+void Quad::setRotation(float angle, const glm::vec3& axis) {
+    rotation = glm::rotate(rotation, angle, axis);
 }
