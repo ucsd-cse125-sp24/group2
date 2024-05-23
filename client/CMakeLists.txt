@@ -24,6 +24,8 @@ set(
     src/Bone.cpp
     src/components/Model.cpp
     src/components/RendererComponent.cpp
+    src/Particle.cpp
+    src/ParticleSystem.cpp
 
     # HUD
     src/HealthBar.cpp

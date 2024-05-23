@@ -10,6 +10,7 @@ void InputManager::setDefaultKeys() {
     keys[GLFW_KEY_D] = false;
     keys[GLFW_KEY_Q] = false;
     keys[GLFW_KEY_E] = false;
+    keys[GLFW_KEY_SPACE] = false;
 }
 
 void InputManager::setUpCallback(GLFWwindow* window) {

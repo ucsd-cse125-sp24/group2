@@ -9,6 +9,7 @@
 #include "Mover.h"
 
 #include "HUD.h"
+#include "ParticleSystem.h"
 
 #include "PlayerManager.hpp"
 #include "Client.h"
@@ -21,6 +22,7 @@ public:
     static const char* windowTitle;
 
     static HUDs* hud;
+    static ParticleSystem* particleSystem;
     // static HealthBar* healthBar;
     // Act as Constructors and desctructors
     static bool initializeProgram();

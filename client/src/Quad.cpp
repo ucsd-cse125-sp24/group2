@@ -126,6 +126,31 @@ void Quad::draw(float aspectRatio) {
     glUseProgram(0);
 }
 
+ void Quad::draw(const glm::mat4& viewProjMtx) {
+    glUseProgram(shader);
+    for(unsigned int i = 0; i < textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        std::string name = "texture" + std::to_string(i);
+        // std::cout<<"texture name: "<< (name).c_str() << std::endl;
+        glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+    }
+    glUniform4fv(glGetUniformLocation(shader, "DiffuseColor"), 1, (float*)&color);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, (float*)&viewProjMtx);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
+
+    // Bind the VAO
+    glBindVertexArray(VAO);
+
+    // draw the points using triangles, indexed with the EBO
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+    glActiveTexture(GL_TEXTURE0);
+    glUseProgram(0);
+ }
+
 void Quad::setPosition(glm::vec3 pos) {
     position = pos;
 }
@@ -151,4 +176,12 @@ void Quad::update() {
 void Quad::setTexture(const char* path, const std::string& directory) {
     unsigned int texture = Helper::textureFromFile(path, directory);
     textures.push_back(texture);
+}
+
+void Quad::setShader(GLuint shader) {
+    this->shader = shader;
+}
+
+void Quad::setColor(glm::vec4 color) {
+    this->color = color;
 }

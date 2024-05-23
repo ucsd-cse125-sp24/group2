@@ -7,6 +7,7 @@
 // Metronome* Window::metronome;
 // TeamInfo* Window::teamInfo;
 HUDs* Window::hud;
+ParticleSystem* Window::particleSystem;
 
 // Window Properties
 int Window::width;
@@ -27,12 +28,15 @@ bool Window::initializeProgram() {
                              "shaders/shader.frag");
     res = Shader::LoadShader(ShaderType::HUD, "shaders/HUD.vert", 
                             "shaders/HUD.frag");
+    res = Shader::LoadShader(ShaderType::PARTICLE, "shaders/particle.vert",
+                            "shaders/particle.frag");
     // Check the shader program.
     if (!res) {
         std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
     hud = new HUDs();
+    particleSystem = new ParticleSystem(glm::vec3(0.0f), glm::vec4(254/255.0f, 212/255.0f, 123/255.0f, 1.0f), glm::vec4(254/255.0f, 109/255.0f, 41/255.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, 1000, 10.0f);
     // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
     // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
     // metronome = new Metronome(60.0f);
@@ -113,6 +117,15 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
         if (auto renderer = entity->GetComponent<RendererComponent>())
             renderer->Render(camera->GetViewProjectMtx());
     }
+    if(InputManager::isKeyPressed(GLFW_KEY_SPACE)) {
+        // for(int i = 0; i < 1000; i++) {
+            // float radius = 0.5f;
+            particleSystem->spawnParticles(glm::vec3(0.0f, 0.0f, 0.0f));
+        // } 
+    }
+    particleSystem->update(deltaTime);
+    particleSystem->draw(camera->GetViewProjectMtx());
+
     hud->update(deltaTime);
     hud->draw(camera->GetAspect());
     // if(InputManager::isKeyPressed(GLFW_KEY_Q))

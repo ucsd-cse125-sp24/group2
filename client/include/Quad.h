@@ -10,11 +10,14 @@ public:
     Quad(glm::vec3 pos, float width, float height);
     ~Quad();
     void draw(float aspectRatio);
+    void draw(const glm::mat4& viewProjMtx);
     void update();
     void setPosition(glm::vec3 pos);
     void setTexture(const char* path, const std::string& directory);
     void setSize(float size);
     void setSize(float width, float height);
+    void setShader(GLuint shader);
+    void setColor(glm::vec4 color);
     GLuint getShader() { return shader; }
     const glm::mat4& getModelMtx();
     const glm::vec3& getPosition() const { return position; }
@@ -30,4 +33,5 @@ private:
     GLuint VAO;
     GLuint shader;
     glm::vec3 scale;
+    glm::vec4 color;
 };
