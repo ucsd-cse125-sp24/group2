@@ -28,7 +28,11 @@
 		{
 			"doubleSided":true,
 			"name":"TCom_SolarCells",
-			"pbrMetallicRoughness":{}
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":0
+				}
+			}
 		}
 	],
 	"meshes":[
@@ -47,11 +51,24 @@
 			]
 		}
 	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"Bear",
+			"uri":"Bear.png"
+		}
+	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":4362,
+			"count":5207,
 			"max":[
 				5.818563938140869,
 				6.985897064208984,
@@ -67,13 +84,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":4362,
+			"count":5207,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":4362,
+			"count":5207,
 			"type":"VEC2"
 		},
 		{
@@ -86,33 +103,39 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":52344,
+			"byteLength":62484,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":52344,
-			"byteOffset":52344,
+			"byteLength":62484,
+			"byteOffset":62484,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":34896,
-			"byteOffset":104688,
+			"byteLength":41656,
+			"byteOffset":124968,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":29040,
-			"byteOffset":139584,
+			"byteOffset":166624,
 			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":168624,
-			"uri":"bear-1.bin"
+			"byteLength":195664,
+			"uri":"bear-3.bin"
 		}
 	]
 }
