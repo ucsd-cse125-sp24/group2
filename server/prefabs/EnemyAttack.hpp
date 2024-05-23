@@ -4,6 +4,7 @@
 #include "Entity.hpp"
 #include "Enemy.hpp"
 #include "Collider.hpp"
+#include <vector>
 
 class EnemyAttack : public Entity {
 private:

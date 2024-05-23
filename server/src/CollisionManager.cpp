@@ -6,7 +6,7 @@
 #include "NetTransform.hpp"
 #include "Transform.hpp"
 
-// four attacks: 
+// four enemy attacks: 
 // 1. jump and stomp, shockwave expanding 
 // 2. mark players and cause damage
 // 3. 4 lasers swiping
