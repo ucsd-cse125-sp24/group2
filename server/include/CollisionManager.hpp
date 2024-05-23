@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <unordered_map>
+#include <unordered_set>
 #include <mutex>
 
 #include "Collider.hpp"
@@ -21,9 +22,10 @@
 
 class CollisionManager {
 private:
-    std::mutex
-        _mutex; // everything touching colliderOwners should be mutex protected
-    std::unordered_map<Collider*, GameObject*> colliderOwners; // holds all cylinders
+    std::mutex _mutex; // protect colliderOwners
+    std::unordered_map<Collider*, GameObject*> colliderOwners; // holds players, boss, (obstacles)
+    std::mutex inv_mutex; // protect invincibles
+    std::unordered_set<GameObject*> invincibles; // holds players during dodge
 
 public:
     void add(GameObject* owner);
@@ -32,9 +34,12 @@ public:
 
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
     std::vector<GameObject*> moveBossSwipe(GameObject* owner, float newCenterAngle);
+    std::vector<GameObject*> moveBossShockwave(GameObject* owner, float newRadius);
+    std::vector<GameObject*> moveBossMark(GameObject* owner);
     bool move(GameObject* owner, glm::vec3 newPosition);
 
-
+    void setInvincible(GameObject* owner);
+    void unsetInvincible(GameObject* owner);
 
     // These may not need to be public in the future
     bool collisionCylinderCylinder(const Collider* cyl1, const Collider* cyl2);

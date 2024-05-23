@@ -4,8 +4,12 @@
 
 #include "CollisionManager.hpp"
 
-// To discuss: add can be false if the position is occupied. When adding, check
-// if successful. If not, readd to another place.
+// four attacks: 
+// 1. jump and stomp, shockwave expanding 
+// 2. mark players and cause damage
+// 3. 4 lasers swiping
+// 4. normal attack: swipe hit
+
 void CollisionManager::add(GameObject* owner) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* collider = owner->GetComponent<Collider>();
@@ -31,13 +35,13 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
     return collisionCylinderPoint(targetCollider, attCollider);
 }
 
-// return a list of GameObjects that boss attack hits
+// return a list of GameObjects that boss swipe hits (swiping lasers, swiping attack)
 std::vector<GameObject*> CollisionManager::moveBossSwipe(GameObject* owner, float newCenterAngle) {
     std::lock_guard<std::mutex> lock(_mutex);
     Collider* attCollider = owner->GetComponent<Collider>();
     NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
-    // TODO: swipe
+
     float oldCenterAngle = (attCollider->GetStartAngle() + attCollider->GetEndAngle())/2;
     attCollider->SetStartAngle(attCollider->GetStartAngle() + (newCenterAngle - oldCenterAngle));
     attCollider->SetEndAngle(attCollider->GetEndAngle() + (newCenterAngle - oldCenterAngle));
@@ -45,7 +49,42 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(GameObject* owner, floa
     attTransform->SetRotation(newRotation);
 
     for (const auto& pair : colliderOwners) {
-        if (collisionCylinderSector(pair.first, attCollider)) {
+        if (collisionCylinderSector(pair.first, attCollider) 
+            && invincibles.find(pair.second) == invincibles.end()) {
+            hitObjects.push_back(pair.second);
+        }
+    }
+    return hitObjects;
+}
+
+// return a list of GameObjects that shockwave hits
+std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, float newRadius) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    Collider* attCollider = owner->GetComponent<Collider>();
+    NetTransform* attTransform = owner->GetComponent<NetTransform>();
+    std::vector<GameObject*> hitObjects;
+
+    attCollider->SetRadius(newRadius);
+    attTransform->SetScale(glm::vec3(newRadius, attTransform->GetScale().y, newRadius));
+
+    for (const auto& pair : colliderOwners) {
+        if (collisionCylinderCylinder(pair.first, attCollider) 
+            && invincibles.find(pair.second) == invincibles.end()) {
+            hitObjects.push_back(pair.second);
+        }
+    }
+    return hitObjects;
+}
+
+// return a list of GameObjects that mark-attack hits
+std::vector<GameObject*> CollisionManager::moveBossMark(GameObject* owner) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    Collider* attCollider = owner->GetComponent<Collider>();
+    std::vector<GameObject*> hitObjects;
+
+    for (const auto& pair : colliderOwners) {
+        if (collisionCylinderCylinder(pair.first, attCollider)
+            && invincibles.find(pair.second) == invincibles.end()) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -73,6 +112,16 @@ bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
         }
         return false;
     }
+}
+
+void CollisionManager::setInvincible(GameObject* owner) {
+    std::lock_guard<std::mutex> lock(inv_mutex);
+    invincibles.insert(owner);
+}
+
+void CollisionManager::unsetInvincible(GameObject* owner) {
+    std::lock_guard<std::mutex> lock(inv_mutex);
+    invincibles.erase(owner);
 }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
