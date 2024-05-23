@@ -35,8 +35,6 @@ void Mover::Update() {
         angle = oldAngle;
     }
 
-    owner->GetComponent<NetTransform>()->SetPosition(owner->GetComponent<Transform>()->GetPosition());
-
     float angleAboutY = 180.0f-glm::degrees(angle);
     owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(0.0f, angleAboutY, 0.0f));
 }
