@@ -16,6 +16,7 @@
 #include "PlayerCombat.hpp"
 #include "prefabs/Enemy.hpp"
 #include "Mover.hpp"
+#include "CooldownComponent.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -110,15 +111,20 @@ void NetworkManager::process_input() {
             // std::cout << "  Received input: " << (float)input[0] << ", "
             //           << (float)input[1] << ", " << (float)input[2] << ", "
             //           << (float)input[3] << std::endl;
-
-            clients[client_id]->p->GetComponent<Mover>()->input.x =
-                (float)input[3] - (float)input[1];
-            clients[client_id]->p->GetComponent<Mover>()->input.y =
-                (float)input[0] - (float)input[2];
+            Player* currPlayer = clients[client_id]->p;
+            Mover* currMover = currPlayer->GetComponent<Mover>();
+            currMover->input.x = (float)input[3] - (float)input[1];
+            currMover->input.y = (float)input[0] - (float)input[2];
             if (input[4] == 1) {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 9.0f;
+                CooldownComponent* cooldownComp = currPlayer->GetComponent<CooldownComponent>();
+                if (cooldownComp->UseAbility("dodge")) {
+                    // do some dodgy things!
+                    std::cout << "DODGE" << std::endl;
+                }
+                else std::cout << "ON COOLDOWN" << std::endl;
+                currMover->speed = 9.0f;
             } else {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 4.0f;
+                currMover->speed = 4.0f;
             }
 
             break;
