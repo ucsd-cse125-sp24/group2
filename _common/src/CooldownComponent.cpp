@@ -17,9 +17,8 @@ void CooldownComponent::RemoveCooldown(std::string name) {
 }
 
 bool CooldownComponent::UseAbility(std::string name) {
-    if (cooldowns.find(name) != cooldowns.end() && cooldowns[name]->IsReady()) {
-        cooldowns[name]->StartTimer();
-        return true;
+    if (cooldowns.find(name) != cooldowns.end()) {
+        return cooldowns[name]->UseAbility();
     }
     return false;
 }

@@ -1,12 +1,19 @@
 #pragma once
 
+
 #include "INetworkComponent.hpp"
+#define INPUT_LEN 5
+
 
 class Mover : public INetworkComponent {
 public:
+    float baseSpeed = 5.0f;
     float speed;
     glm::vec2 input;
     glm::vec3 movementHeading;
+
+    char inputs[INPUT_LEN];
+    glm::vec2 dodgeInput;
 
     glm::vec3& position; // Taken from NetTransform
     glm::vec3& rotation; // Taken from NetTransform
@@ -17,7 +24,8 @@ public:
 
     Mover(NetworkObject* owner);
 
-    void Update();
+    void Update(float deltaTime);
+    void UpdatePhysics(float deltaTime);
 
     virtual void Serialize(Packet* packet) override {
         packet->write_float(speed);

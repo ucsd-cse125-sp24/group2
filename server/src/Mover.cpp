@@ -3,6 +3,7 @@
 #include <iostream>
 #include "glm/gtx/string_cast.hpp"
 #include "CollisionManager.hpp"
+#include "MovementStateMachine.hpp"
 
 Mover::Mover(NetworkObject* owner)
     : INetworkComponent(owner),
@@ -13,11 +14,59 @@ Mover::Mover(NetworkObject* owner)
     // SetCenter(glm::vec2(100.0f, 100.0f));
 }
 
-void Mover::Update() {
+void Mover::Update(float deltaTime) {
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // +y
 
+    if (owner->GetComponent<MovementStateMachine>()) {
+        MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
+        movementStateMachine->Update(deltaTime, inputs);
+
+        std::cout << movementStateMachine->ToString() << std::endl;
+
+        switch(movementStateMachine->GetState()) {
+            case IDLE: {
+                // do nothing
+                UpdatePhysics(deltaTime);
+                break;
+            }
+            case WALK: {
+                speed = baseSpeed;
+                UpdatePhysics(deltaTime);
+                break;
+            }
+            case RUN: {
+                speed = 2.0f * baseSpeed;
+                UpdatePhysics(deltaTime);
+                break;
+            }
+            case DODGE_START: {
+                speed = 2.0f * baseSpeed;
+                dodgeInput = input;
+                UpdatePhysics(deltaTime);
+                break;
+            }
+            case DODGE: {
+                speed = 2.5f * baseSpeed;
+                input = dodgeInput;
+                UpdatePhysics(deltaTime);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    } else {
+        // std::cout << "No MovementSM" << std::endl;
+        UpdatePhysics(deltaTime);
+    }
+}
+
+void Mover::UpdatePhysics(float deltaTime) {
     float oldRadius = radius;
     float oldAngle = angle;
+    if (glm::length(input) != 0) {
+        glm::normalize(input);
+    }
     if (input.y != 0) {
         radius += -input.y * speed;
     }

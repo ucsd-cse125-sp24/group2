@@ -109,6 +109,7 @@ void GameManager::update(Packet* pkt) {
                     }
                 }
                 
+                
 
                 players[network_id] = playerPrefab;
                 printf("player network id: %d\n",
@@ -135,6 +136,8 @@ void GameManager::update(Packet* pkt) {
                     playerPos +
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
                     glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
+
+                players[network_id]->GetComponent<AnimationPlayer>()->play("run");
             }
 
             // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;

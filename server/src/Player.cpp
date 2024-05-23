@@ -4,6 +4,7 @@
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
 #include "CooldownComponent.hpp"
+#include "MovementStateMachine.hpp"
 
 Player::Player() : Entity() {
     Transform* transform = new Transform(this);
@@ -26,11 +27,14 @@ Player::Player() : Entity() {
     CooldownComponent* cooldownComponent = new CooldownComponent(this);
     cooldownComponent->AddCooldown("dodge", 1.0f);
     AddComponent(cooldownComponent);
+
+    MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
+    AddComponent(movementStateMachine);
 }
 
 void Player::update(float deltaTime) {
     if (GetComponent<Mover>())
-        GetComponent<Mover>()->Update();
+        GetComponent<Mover>()->Update(deltaTime);
     if (GetComponent<CooldownComponent>())
         GetComponent<CooldownComponent>()->Update(deltaTime);
-}
+}       
