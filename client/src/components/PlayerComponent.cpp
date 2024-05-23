@@ -6,9 +6,10 @@
 
 void PlayerComponent::Update(float deltaTime) {
     if (glm::length(owner->GetComponent<Mover>()->movementHeading) > 0) {
+        std::cout << "player "
+                  << (dynamic_cast<NetworkObject*>(owner))->networkId()
+                  << " is moving" << std::endl;
         owner->GetComponent<AnimationPlayer>()->play("run");
-        std::cout << owner->GetComponent<AnimationPlayer>()->currentAnimation
-                  << std::endl;
     } else {
         owner->GetComponent<AnimationPlayer>()->play("idle");
     }
