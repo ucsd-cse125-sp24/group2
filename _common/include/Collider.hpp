@@ -6,6 +6,7 @@
 #include "Transform.hpp"
 #include "NetTransform.hpp"
 
+
 class Collider : public IComponent {
     glm::vec3 position = glm::vec3();
     glm::vec3 rotation = glm::vec3();

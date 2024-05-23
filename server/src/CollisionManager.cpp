@@ -3,6 +3,8 @@
 #include <list>
 
 #include "CollisionManager.hpp"
+#include "NetTransform.hpp"
+#include "Transform.hpp"
 
 // four attacks: 
 // 1. jump and stomp, shockwave expanding 

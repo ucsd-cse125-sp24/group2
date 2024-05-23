@@ -33,6 +33,7 @@ public:
     void remove(GameObject* owner);
 
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
+
     std::vector<GameObject*> moveBossSwipe(GameObject* owner, float newCenterAngle);
     std::vector<GameObject*> moveBossShockwave(GameObject* owner, float newRadius);
     std::vector<GameObject*> moveBossMark(GameObject* owner);
