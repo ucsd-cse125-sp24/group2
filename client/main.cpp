@@ -14,6 +14,8 @@
 #include "AudioManager.hpp"
 #include "ColorCodes.hpp"
 #include "AssetManager.hpp"
+#include "components/RendererComponent.hpp"
+#include "EntityBase.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -134,6 +136,14 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
+    EntityBase* go = new EntityBase();
+    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    go->AddComponent(model);
+    RendererComponent* renderer =
+        new RendererComponent(go, ShaderType::STANDARD);
+    go->AddComponent(renderer);
+    GameManager::instance().scene.Instantiate(go);
+
     std::cout << "  Finished updating AssetManager" << std::endl;
 
     // AssetManager::instance().AddModelPathToClips("hello", {
