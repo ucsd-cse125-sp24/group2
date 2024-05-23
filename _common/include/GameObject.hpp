@@ -14,10 +14,11 @@ class IComponent;
 class GameObject {
 
 protected:
-    std::vector<IComponent*> components;
     std::unordered_map<std::type_index, IComponent*> typeToComponentMap;
 
 public:
+    std::vector<IComponent*> components;
+
     GameObject();
     GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
                glm::vec3 newScale);
@@ -34,7 +35,7 @@ public:
             return static_cast<T*>(typeToComponentMap.at(typeid(T)));
         } else {
             return nullptr;
-        } 
+        }
     }
 };
 

@@ -4,7 +4,12 @@ void Scene::Update(float deltaTime) {
     int count = 0;
     for (auto const& entity : entities) {
         entity->update(deltaTime);
-        // printf("updating %d\n", count);
+        for (int i = 0; i < entity->components.size(); i++) {
+            entity->components[i]->Update(deltaTime);
+        }
+        for (int i = 0; i < entity->networkComponents.size(); i++) {
+            entity->networkComponents[i]->Update(deltaTime);
+        }
         count++;
     }
 }

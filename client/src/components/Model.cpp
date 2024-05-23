@@ -11,9 +11,38 @@ Model::Model(GameObject* owner, std::string path, bool hasAnimation)
 
 Model::Model(Model* other) : Model(owner) {
     for (int i = 0; i < other->meshes.size(); i++) {
-        meshes.push_back(Mesh(other->meshes[i].vertices,
-                              other->meshes[i].indices,
-                              other->meshes[i].textures));
+        std::vector<Vertex> verts;
+        std::vector<unsigned int> inds;
+        std::vector<Texture> tex;
+
+        for (int j = 0; j < other->meshes[i].vertices.size(); j++) {
+            Vertex v;
+
+            v.normal = glm::vec3(other->meshes[i].vertices[j].normal);
+            v.position = glm::vec3(other->meshes[i].vertices[j].position);
+            v.texCoords = glm::vec2(other->meshes[i].vertices[j].texCoords);
+
+            for (int k = 0; k < 4; k++) {
+                v.weights[k] = other->meshes[i].vertices[j].weights[k];
+                v.boneIDs[k] = other->meshes[i].vertices[j].boneIDs[k];
+            }
+            verts.push_back(v);
+        }
+
+        for (int j = 0; j < other->meshes[i].indices.size(); j++) {
+            inds.push_back(other->meshes[i].indices[j]);
+        }
+
+        for (auto texture : other->meshes[i].textures) {
+            Texture t;
+            t.id = texture.id;
+            t.path = texture.path;
+            t.type = texture.type;
+
+            tex.push_back(t);
+        }
+
+        meshes.push_back(Mesh(verts, inds, tex));
     }
 }
 

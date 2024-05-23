@@ -17,5 +17,5 @@ std::vector<AnimationClip*> AssetManager::GetClips(std::string modelPath) {
 }
 
 Model* AssetManager::GetModel(std::string modelPath) {
-    return new Model(modelPathToClips[modelPath].first);
+    return modelPathToClips[modelPath].first;
 }
