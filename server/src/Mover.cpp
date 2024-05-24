@@ -15,9 +15,6 @@ Mover::Mover(NetworkObject* owner)
 }
 
 void Mover::Update(float deltaTime) {
-    if (glm::length(input) != 0) {
-        lastNonZeroInput = input;
-    }
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // +y
 
     if (owner->GetComponent<MovementStateMachine>()) {
@@ -44,8 +41,8 @@ void Mover::Update(float deltaTime) {
             }
             case DODGE_START: {
                 speed = 2.0f * baseSpeed;
-                // dodgeInput = input;
-                std::cout << "input: " << glm::to_string(input) << std::endl;
+                dodgeInput = movementStateMachine->GetDodgeDirection();
+                std::cout << "dodgeInput: " << glm::to_string(dodgeInput) << std::endl;
                 UpdatePhysics(deltaTime);
                 break;
             }

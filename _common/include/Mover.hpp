@@ -14,7 +14,6 @@ public:
 
     char inputs[INPUT_LEN];
     glm::vec2 dodgeInput;
-    glm::vec2 lastNonZeroInput;
 
     glm::vec3& position; // Taken from NetTransform
     glm::vec3& rotation; // Taken from NetTransform

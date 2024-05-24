@@ -10,6 +10,11 @@ MovementState MovementStateMachine::Update(float deltaTime, char* input) {
     bool RIGHT_PRESSED = (bool)input[3];
     bool LSHIFT_PRESSED = (bool)input[4]; // "SHIFT_PRESSED" name taken by glfw
     bool MOVING_PRESSED = FORWARD_PRESSED != BACK_PRESSED || LEFT_PRESSED != RIGHT_PRESSED;
+    if (MOVING_PRESSED) {
+        lastNonZeroInput.x = RIGHT_PRESSED - LEFT_PRESSED;
+        lastNonZeroInput.y = FORWARD_PRESSED - BACK_PRESSED;
+    }
+
     dodgeCooldown->UpdateTimer(deltaTime);
     
     switch(currState) {
