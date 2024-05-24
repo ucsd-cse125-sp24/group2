@@ -1,4 +1,5 @@
 #include "MovementStateMachine.hpp"
+// #include "Mover.hpp"
 #include <iostream>
 
 
@@ -7,37 +8,37 @@ MovementState MovementStateMachine::Update(float deltaTime, char* input) {
     bool LEFT_PRESSED = (bool)input[1];
     bool BACK_PRESSED = (bool)input[2];
     bool RIGHT_PRESSED = (bool)input[3];
-    bool SHIFT_PRESSED = (bool)input[4];
-    bool ANY_WASD_PRESSED = FORWARD_PRESSED || LEFT_PRESSED || BACK_PRESSED || RIGHT_PRESSED;
+    bool LSHIFT_PRESSED = (bool)input[4]; // "SHIFT_PRESSED" name taken by glfw
+    bool MOVING_PRESSED = FORWARD_PRESSED != BACK_PRESSED || LEFT_PRESSED != RIGHT_PRESSED;
     dodgeCooldown->UpdateTimer(deltaTime);
     
     switch(currState) {
         case IDLE: {
-            if (ANY_WASD_PRESSED) {
-                if (SHIFT_PRESSED) currState = RUN;
+            if (MOVING_PRESSED) {
+                if (LSHIFT_PRESSED) currState = RUN;
                 else currState = WALK;
             }
             break;
         }
         case WALK: {
-            if (!ANY_WASD_PRESSED) currState = IDLE;
-            else if (SHIFT_PRESSED) currState = RUN;
+            if (!MOVING_PRESSED) currState = IDLE;
+            else if (LSHIFT_PRESSED) currState = RUN;
             break;
         }
         case RUN: {
             if (shiftPressDuration < 0) { // start off shiftPressDuration
                 shiftPressDuration = 0;
                 // shiftPressDuration += deltaTime; // What if there's lag and there's a big deltaTime? Test for feel
-                if (!SHIFT_PRESSED && dodgeCooldown->IsReady()) {
+                if (!LSHIFT_PRESSED && dodgeCooldown->IsReady()) {
                     currState = DODGE_START;
                     shiftPressDuration = -1.0f;
                 }
             } else { // shiftPressDuration ongoing
                 shiftPressDuration += deltaTime;
-                if (!SHIFT_PRESSED) { // let go of shift
+                if (!LSHIFT_PRESSED) { // let go of shift
                     if (shiftPressDuration <= 0.25f && dodgeCooldown->IsReady()) { // if let go within time limit: dodge
                         currState = DODGE_START;
-                    } else if (ANY_WASD_PRESSED) { // otherwise, if still pressing WASD: walk
+                    } else if (MOVING_PRESSED) { // otherwise, if still pressing WASD: walk
                         currState = WALK;
                     } else { // otherwise: idle
                         currState = IDLE;
@@ -54,8 +55,8 @@ MovementState MovementStateMachine::Update(float deltaTime, char* input) {
         }
         case DODGE: {
             if (dodgeCooldown->IsReady()) {
-                if (ANY_WASD_PRESSED) {
-                    if (SHIFT_PRESSED) currState = RUN;
+                if (MOVING_PRESSED) {
+                    if (LSHIFT_PRESSED) currState = RUN;
                     else currState = WALK;
                 } else {
                     currState = IDLE;

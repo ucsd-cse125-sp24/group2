@@ -14,7 +14,7 @@ set(SERVER_SOURCES
     src/CollisionManager.cpp
     src/Mover.cpp
     components/PlayerCombat.cpp
-    prefabs/Enemy.cpp
+    prefabs/Enemy.cpp 
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
