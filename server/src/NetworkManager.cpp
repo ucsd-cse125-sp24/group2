@@ -121,18 +121,6 @@ void NetworkManager::process_input() {
             }
             currMover->input.x = (float)input[3] - (float)input[1];
             currMover->input.y = (float)input[0] - (float)input[2];
-            if (input[4] == 1) {
-                // CooldownComponent* cooldownComp = currPlayer->GetComponent<CooldownComponent>();
-                // if (cooldownComp->UseAbility("dodge")) {
-                //     // do some dodgy things!
-                //     std::cout << "DODGE" << std::endl;
-                // }
-                // else std::cout << "ON COOLDOWN" << std::endl;
-
-                // currMover->speed = 9.0f; // overridden in Mover
-            } else {
-                // currMover->speed = 4.0f; // overridden in Mover
-            }
 
             break;
         }

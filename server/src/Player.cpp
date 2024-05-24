@@ -24,9 +24,9 @@ Player::Player() : Entity() {
     playerCombat->AddCombo({74, 74, 74, 74});
     playerCombat->AddCombo({74, 75, 76, 73});
 
-    CooldownComponent* cooldownComponent = new CooldownComponent(this);
-    cooldownComponent->AddCooldown("dodge", 1.0f);
-    AddComponent(cooldownComponent);
+    // CooldownComponent* cooldownComponent = new CooldownComponent(this);
+    // cooldownComponent->AddCooldown("dodge", 1.0f);
+    // AddComponent(cooldownComponent);
 
     MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
     AddComponent(movementStateMachine);
