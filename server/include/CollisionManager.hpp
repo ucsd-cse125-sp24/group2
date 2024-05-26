@@ -71,7 +71,7 @@ struct Vector2 {
         return x * other.z - z * other.x;
     }
 
-    static bool isBetween(const Vector2& A, const Vector2& B) {
+    bool isBetween(const Vector2& A, const Vector2& B) {
         // Normalize vectors
         Vector2 nA = A.normalize();
         Vector2 nB = B.normalize();
