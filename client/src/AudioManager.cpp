@@ -42,15 +42,23 @@ void AudioManager::setBpm(int b) {
 void AudioManager::setOffFirst(int off) { offset_first_beat = off; }
 
 void AudioManager::update() {
-    FMOD_System_Update(system);
-
-    FMOD_BOOL isPlaying;
-    FMOD_Channel_IsPlaying(mainChannel, &isPlaying);
-    if (!isPlaying) {
+    if (!game_started) {
         return;
     }
+    FMOD_BOOL isMainPlaying;
+    FMOD_Channel_IsPlaying(mainChannel, &isMainPlaying);
+    // repeat main music track
+    if (!isMainPlaying) {
+        result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
+        FMODErrorCheck(result, "!isMainPlaying");
+    }
+
+    FMOD_System_Update(system);
+
     result = FMOD_Channel_GetPosition(mainChannel, &position, FMOD_TIMEUNIT_MS);
-    FMODErrorCheck(result, "FMOD_Channel_GetPosition");
+    if (result != FMOD_OK) {
+        return;
+    }
     position = position - offset_first_beat;
 
     FMOD_SOUND* selectedSound = nullptr;
@@ -58,16 +66,16 @@ void AudioManager::update() {
     pkt->write_int((int)PacketType::PLAYER_ATTACK);
     if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
         pkt->write_int(GLFW_KEY_J);
-        selectedSound = noteMap.at('i');
+        selectedSound = noteMap.at('j');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
         pkt->write_int(GLFW_KEY_K);
-        selectedSound = noteMap.at('j');
+        selectedSound = noteMap.at('k');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
         pkt->write_int(GLFW_KEY_I);
-        selectedSound = noteMap.at('l');
+        selectedSound = noteMap.at('i');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
         pkt->write_int(GLFW_KEY_L);
-        selectedSound = noteMap.at('k');
+        selectedSound = noteMap.at('l');
     } else {
         return;
     }
@@ -115,4 +123,5 @@ void AudioManager::update() {
 void AudioManager::play() {
     result = FMOD_System_PlaySound(system, main, nullptr, false, &mainChannel);
     FMODErrorCheck(result);
+    game_started = true;
 }

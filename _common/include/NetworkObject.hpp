@@ -7,9 +7,7 @@
 
 class INetworkComponent;
 
-enum NetworkObjectTypeID : int32_t {
-    PLAYER, ENEMY
-};
+enum NetworkObjectTypeID : int32_t { PLAYER, ENEMY, PLAYER_ATTACK, ENEMY_ATTACK };
 class NetworkObject : public GameObject {
 protected:
     int _networkId; // to distinguish each NetworkObject
