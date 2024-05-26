@@ -10,6 +10,17 @@ public:
     void attack();
     std::string ToString() override { return "Enemy"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::ENEMY; }
+
+private:
+    enum EnemyState {
+        PHASE1,
+        PHASE2,
+        PHASE3,
+        PHASE4,
+        PHASE5
+    };
+
+    EnemyState currentPhase;
 };
 
 #endif

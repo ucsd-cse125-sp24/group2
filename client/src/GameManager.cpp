@@ -9,7 +9,7 @@
 #include "AssetManager.hpp"
 
 const std::string path = "../assets/animation/model.gltf";
-const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
+const std::string enemyPath = "../assets/bear/bear.gltf";
 
 void StartGame(Packet*);
 
