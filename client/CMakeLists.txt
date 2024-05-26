@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 #SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L/mnt/c/Users/Shane/Desktop/cse125/client/lib/fmod.dll")
 
-project(menv)
+project(client)
 
 # Add source files
 set(
@@ -57,11 +57,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${COMMON_SOURCES} ${HEADERS})
 
 # Link libraries
 if (CMAKE_SYSTEM_NAME MATCHES OSX)
-    target_link_libraries(${PROJECT_NAME} assimp.5.4.0)
+    set(RPATH "/usr/local/lib")
+    target_link_libraries(${PROJECT_NAME} assimp.5)
     target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW.2.2 glfw.3)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     target_link_libraries(${PROJECT_NAME} fmod)
-    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "menv.app")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "client.exe" LINK_FLAGS "-Wl,-rpath,${RPATH}")
 else()
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
     target_link_libraries(${PROJECT_NAME} assimp zlibstatic)
@@ -76,4 +77,4 @@ add_custom_target(CopyShaders ALL
     "${CMAKE_BINARY_DIR}/shaders"
 )
 
-add_dependencies(menv CopyShaders)
+add_dependencies(client CopyShaders)

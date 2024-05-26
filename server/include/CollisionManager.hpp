@@ -66,7 +66,7 @@ struct Vector2 {
     }
 };
 
-bool isBetween(const Vector2& C, const Vector2& A, const Vector2& B) {
+static bool isBetween(const Vector2& C, const Vector2& A, const Vector2& B) {
     // Normalize vectors
     Vector2 nA = A.normalize();
     Vector2 nB = B.normalize();
