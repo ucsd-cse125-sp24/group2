@@ -4,7 +4,7 @@
 
 Status::Status(GameObject* owner) : 
     IComponent(owner),
-    baseSpeed(owner->GetComponent<Mover>()->speed) // TODO: Update this to be mover->baseSpeed when branch "dodging" is merged in
+    baseSpeed(owner->GetComponent<Mover>()->baseSpeed) // TODO: Update this to be mover->baseSpeed when branch "dodging" is merged in
 {}
 
 void Status::AddStatusEffect(IStatusEffect* statusEffect) {

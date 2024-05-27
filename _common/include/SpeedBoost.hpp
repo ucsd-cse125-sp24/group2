@@ -14,13 +14,13 @@ public:
         // std::cout << "baseSpeed w/ boost: " << status->baseSpeed << std::endl; 
     }
     void OnAdd() override { 
-        // std::cout << "OnAdd(): Updating speed from: " << status->baseSpeed << std::endl;
+        std::cout << "OnAdd(): Updating speed from: " << status->baseSpeed << std::endl;
         status->baseSpeed += 5.0f; 
-        // std::cout << "To: " << status->baseSpeed << std::endl;
+        std::cout << "To: " << status->baseSpeed << std::endl;
     }
     void OnRemove() override { 
-        // std::cout << "OnRemove(): Updating speed from: " << status->baseSpeed << std::endl;
+        std::cout << "OnRemove(): Updating speed from: " << status->baseSpeed << std::endl;
         status->baseSpeed -= 5.0f; 
-        // std::cout << "To: " << status->baseSpeed << std::endl;
+        std::cout << "To: " << status->baseSpeed << std::endl;
     }
 };
