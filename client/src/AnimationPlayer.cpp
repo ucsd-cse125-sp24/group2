@@ -1,43 +1,25 @@
 #include "AnimationPlayer.h"
 
-AnimationPlayer::AnimationPlayer() {}
+AnimationPlayer::AnimationPlayer(GameObject* owner) : IComponent(owner) {}
 
-AnimationPlayer::AnimationPlayer(AnimationClip* clip) : IComponent() {
+AnimationPlayer::AnimationPlayer(GameObject* owner, Model* newModel)
+    : IComponent(owner) {
     currentTime = 0.0f;
     deltaTime = 0.0f;
-    currentAnimation = clip;
+    currentAnimation = nullptr;
+    model = newModel;
     finalBoneMtx.reserve(100);
     for (int i = 0; i < 100; i++) {
         finalBoneMtx.push_back(glm::mat4(1.0f));
     }
 }
 
-AnimationPlayer::AnimationPlayer(std::string path, Model* model) : IComponent() {
-    currentTime = 0.0f;
-    deltaTime = 0.0f;
-    finalBoneMtx.reserve(100);
-    for(int i = 0; i < 100; i++) {
-        finalBoneMtx.push_back(glm::mat4(1.0f));
-    }
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
-    assert(scene && scene->mRootNode);
-    std::cout<<"num animations: " << scene->mNumAnimations << std::endl;
-    animations = std::map<std::string, AnimationClip*>();
-    for(int i = 0; i < scene->mNumAnimations; i++) {
-        aiAnimation* animation = scene->mAnimations[i];
-        AnimationClip* clip = new AnimationClip(animation, model, scene);
-        animations[clip->getName()] = clip;
-        // set default idle animation
-        if(i == 0) {
-            currentAnimation = clip;
-        }
-    }
+void AnimationPlayer::AddClip(AnimationClip* clip) {
+    animations.emplace(clip->getName(), clip);
 }
 
 void AnimationPlayer::update(float dt) {
     deltaTime = dt;
-    // std::cout<<"DeltaTime: " << deltaTime << std::endl;
     if (currentAnimation) {
         currentTime += currentAnimation->getTicksPerSecond() * deltaTime;
         currentTime = fmod(currentTime, currentAnimation->getDuration());
@@ -82,4 +64,6 @@ const std::vector<glm::mat4>& AnimationPlayer::getFinalBoneMatrices() const {
     return finalBoneMtx;
 }
 
-std::string AnimationPlayer::ToString() { return "AnimationPlayer"; }
+std::string AnimationPlayer::ToString() { 
+    return "AnimationPlayer"; 
+}

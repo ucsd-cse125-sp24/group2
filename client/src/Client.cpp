@@ -35,12 +35,14 @@ void Client::receive() {
     do {
         read_bytes = psocket.recv((char*)buf, 4096, 0);
         if (read_bytes > 0) {
+            /*
             for (int i = 0; i < read_bytes; i++) {
                 // std::cout << std::setfill('0') << std::setw(2) << std::hex
                         //   << (int)buf[i] << " ";
             }
-            // std::cout << std::endl;
-            // printf("[CLIENT] received %d bytes from server\n", read_bytes);
+            std::cout << std::endl;
+            printf("[CLIENT] received %d bytes from server\n", read_bytes);
+            */
 
             Packet* pkt = new Packet();
             pkt->write((uint8_t*)buf, read_bytes);

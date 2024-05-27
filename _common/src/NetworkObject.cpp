@@ -1,9 +1,17 @@
 #include "NetworkObject.hpp"
 #include <algorithm>
+#include <iostream>
+
+#include "NetTransform.hpp"
+#include "Mover.hpp"
+#include "Health.hpp"
 
 int NetworkObject::nextNetworkId = 0;
 
 NetworkObject::NetworkObject() : GameObject() { _networkId = nextNetworkId++; }
+NetworkObject::NetworkObject(int networkId) : GameObject() {
+    _networkId = networkId;
+}
 
 void NetworkObject::AddComponent(IComponent* newComp) {
     if (INetworkComponent* newNetComp =
@@ -14,6 +22,7 @@ void NetworkObject::AddComponent(IComponent* newComp) {
         components.push_back(newComp);
         typeToComponentMap.emplace(typeid(*newComp), newComp);
     }
+    newComp->SetOwner(this);
 }
 
 void NetworkObject::RemoveComponent(IComponent* comp) {
@@ -22,8 +31,62 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
                     netComp);
         typeToComponentMap.erase(typeid(*comp));
     } else {
-        // components.push_back(comp);
         std::remove(components.begin(), components.end(), comp);
         typeToComponentMap.erase(typeid(*comp));
+    }
+    comp->SetOwner(nullptr);
+}
+
+void NetworkObject::serialize(Packet* packet) {
+    packet->write_int(_networkId);
+    for (INetworkComponent* netComp : networkComponents) {
+        packet->write_int(netComp->TypeID());
+        netComp->Serialize(packet);
+    }
+}
+
+// NOTE: make sure to extend to support all descendants of INetworkComponents
+void NetworkObject::deserialize(Packet* packet) {
+    for (int i = 0; i < networkComponents.size(); ++i) {
+        int32_t compTypeID;
+        packet->read_int(&compTypeID);
+
+        switch (compTypeID) {
+        case NetworkComponentTypeID::TRANSFORM: {
+            NetTransform* transform = GetComponent<NetTransform>();
+            if (transform == nullptr)
+                std::cout << "ERROR in NetworkObject::deserialize(): No "
+                             "NetTransform found in current NetworkObject"
+                          << std::endl;
+            transform->Deserialize(packet);
+            break;
+        }
+        case NetworkComponentTypeID::MOVER: {
+            Mover* mover = GetComponent<Mover>();
+            if (mover == nullptr)
+                std::cout << "ERROR in NetworkObject::deserialize(): No Mover "
+                             "found in current NetworkObject"
+                          << std::endl;
+            mover->Deserialize(packet);
+            break;
+        }
+        case NetworkComponentTypeID::HEALTH: {
+            Health* health = GetComponent<Health>();
+            if (health == nullptr)
+                std::cout << "ERROR in NetworkObject::deserialize(): No Health "
+                             "found in current NetworkObject"
+                          << std::endl;
+            health->Deserialize(packet);
+            break;
+        }
+        default: {
+            std::cout << "      ERROR in NetworkObject::deserialize(): TypeID: "
+                      << compTypeID
+                      << " not currently supported in "
+                         "NetworkObject::deserialize(Packet*)"
+                      << std::endl;
+            break;
+        }
+        }
     }
 }

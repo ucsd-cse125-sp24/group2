@@ -6,7 +6,7 @@
 #include "core.h"
 #include "InputManager.h"
 
-#include "Mover.h"
+#include "Mover.hpp"
 
 #include "HUD.h"
 
@@ -35,5 +35,4 @@ public:
 
     static void mouse_callback(GLFWwindow* window, int button, int action,
                                int mods);
-    static void cursor_callback(GLFWwindow* window, double currX, double currY);
 };
