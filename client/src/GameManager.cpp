@@ -10,6 +10,7 @@
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
+const std::string testModelPath = "../assets/testModel/testModel2.gltf";
 
 void StartGame(Packet*);
 
@@ -103,9 +104,7 @@ void GameManager::update(Packet* pkt) {
                     std::cout << "Adding clip: " << clip->getName() << std::endl;
                     playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
                     if (i == 0) {
-                        // std::cout << "PLAY THE DAMN CLIP" << std::endl;
                         playerPrefab->GetComponent<AnimationPlayer>()->play(clip);
-                        // std::cout << "Now playing: " << playerPrefab->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
                     }
                 }
                 
@@ -137,7 +136,7 @@ void GameManager::update(Packet* pkt) {
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
                     glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
 
-                players[network_id]->GetComponent<AnimationPlayer>()->play("run");
+                // players[network_id]->GetComponent<AnimationPlayer>()->play("run");
             }
 
             // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
