@@ -1,6 +1,8 @@
 #include "Player.hpp"
-#include "components/PlayerCombat.hpp"
 #include <iostream>
+#include "components/PlayerCombat.hpp"
+#include "Status.hpp"
+#include "SpeedBoost.hpp"
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
 #include "CooldownComponent.hpp"
@@ -18,6 +20,9 @@ Player::Player() : Entity() {
     collider->SetHeight(10);
     AddComponent(collider);
     CollisionManager::instance().add(this);
+    Status* status = new Status(this);
+    AddComponent(status);
+    status->AddStatusEffect(new SpeedBoost(status));
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
@@ -37,4 +42,6 @@ void Player::update(float deltaTime) {
         GetComponent<Mover>()->Update(deltaTime);
     if (GetComponent<CooldownComponent>())
         GetComponent<CooldownComponent>()->Update(deltaTime);
+    if (GetComponent<Status>())
+        GetComponent<Status>()->Update(deltaTime);
 }       
