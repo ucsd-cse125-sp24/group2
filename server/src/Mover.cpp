@@ -21,7 +21,7 @@ void Mover::Update(float deltaTime) {
         MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
         movementStateMachine->Update(deltaTime, inputs);
 
-        std::cout << movementStateMachine->ToString() << std::endl;
+        // std::cout << movementStateMachine->ToString() << std::endl;
 
         switch(movementStateMachine->GetState()) {
             case IDLE: {

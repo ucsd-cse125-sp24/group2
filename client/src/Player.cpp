@@ -40,5 +40,5 @@ void Player::update(float deltaTime) {
         GetComponent<AnimationPlayer>()->play("idle");
     }
 
-    // std::cout << "In Player::update(): " << GetComponent<MovementStateMachine>()->ToString() << std::endl;
+    std::cout << "In Player::update(): " << GetComponent<MovementStateMachine>()->ToString() << std::endl;
 }

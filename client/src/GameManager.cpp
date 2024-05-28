@@ -140,6 +140,7 @@ void GameManager::update(Packet* pkt) {
             }
 
             // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+            // std::cout << "MvmtSM: " << players[network_id]->GetComponent<MovementS>()
 
             break;
         }
