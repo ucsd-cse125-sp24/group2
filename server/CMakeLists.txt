@@ -17,6 +17,8 @@ set(SERVER_SOURCES
     prefabs/Enemy.cpp
     prefabs/PlayerAttack.cpp
     prefabs/AttackManager.cpp
+    prefabs/EnemyAttack.cpp
+    prefabs/enemySkills/LaserAttack.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
@@ -31,6 +33,7 @@ include_directories(
     "../_common/"
     "../_common/include"
     "./prefabs"
+    "./prefabs/enemySkills"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)

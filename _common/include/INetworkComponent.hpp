@@ -12,7 +12,7 @@ class NetworkObject;
 enum NetworkComponentTypeID : int32_t {
     TRANSFORM = 8,
     MOVER = 9,
-    HEALTH = 10,
+    HEALTH = 10
 };
 
 class INetworkComponent : public IComponent {

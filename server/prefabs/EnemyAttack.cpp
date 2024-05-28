@@ -1,16 +1,18 @@
 #include "EnemyAttack.hpp"
 #include "NetTransform.hpp"
 #include "Health.hpp"
-#include "CollisionManager.hpp"
+
 #include <iostream>
 
-# define PI           3.14159265358979323846
+EnemyAttack::EnemyAttack(Enemy* owner) : Entity() { 
+    enemy = owner;
+    exist = true;
+}
 
-std::vector<double> right_angles = {0, 0.5 * PI, PI, 1.5 * PI};
-
-EnemyAttack::EnemyAttack() : Entity() { exist = true; }
-
-EnemyAttack::EnemyAttack(int networkId) : Entity(networkId) { exist = true; }
+EnemyAttack::EnemyAttack(Enemy* owner, int networkId) : Entity(networkId) { 
+    enemy = owner;
+    exist = true;
+}
 
 
 // attack_id: 
@@ -52,12 +54,13 @@ EnemyAttack::EnemyAttack(int networkId) : Entity(networkId) { exist = true; }
 // }
 
 
-void EnemyAttack::DealDamage(std::vector<GameObject*> players_hit) {
+void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
     if (exist) {
-        for (GameObject* player : players_hit) {
-            player->GetComponent<Health>()->ChangeHealth(-damage);
+        for (GameObject* entity : entity_hit) {
+            if (entity != enemy) {
+                entity->GetComponent<Health>()->ChangeHealth(-damage);
+                std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
+            }
         }
-        exist = false;
-        CollisionManager::instance().remove(this);
     }
 }

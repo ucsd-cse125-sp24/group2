@@ -38,17 +38,13 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
 }
 
 // return a list of GameObjects that boss swipe hits (swiping lasers, swiping attack)
-std::vector<GameObject*> CollisionManager::moveBossSwipe(GameObject* owner, float newCenterAngle) {
+std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, float amount) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
 
     float oldCenterAngle = (attCollider->GetStartAngle() + attCollider->GetEndAngle())/2;
-    attCollider->SetStartAngle(attCollider->GetStartAngle() + (newCenterAngle - oldCenterAngle));
-    attCollider->SetEndAngle(attCollider->GetEndAngle() + (newCenterAngle - oldCenterAngle));
-    glm::vec3 newRotation = glm::normalize(glm::vec3(std::cos(newCenterAngle), 0, std::sin(newCenterAngle)));
-    attTransform->SetRotation(newRotation);
+    attCollider->SetStartAngle(attCollider->GetStartAngle() + amount);
+    attCollider->SetEndAngle(attCollider->GetEndAngle() + amount);
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 

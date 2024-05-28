@@ -2,9 +2,10 @@
 #include "AttackManager.hpp"
 #include <iostream>
 #include "Health.hpp"
+#include "LaserAttack.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
-    std::lock_guard<std::mutex> lock(_attack_mutex);
+    std::lock_guard<std::mutex> lock(_player_attack_mutex);
     PlayerAttack* playerAtt = new PlayerAttack();
     playerAtt->init(p);
     playerAtt->setTarget(enemyPrefab);
@@ -25,20 +26,33 @@ void AttackManager::addPlayer(Player* p) {
 
 void AttackManager::addEnemy(Enemy* e) {
     enemyPrefab = e;
-    // Initialize and Register Enemy Collider in CollisionManager
-    Collider* c = new Collider(enemyPrefab, enemyPrefab->GetComponent<NetTransform>());
-    // for testing purposes
-    c->SetRadius(20);
-    c->SetHeight(50);
-    // end testing purposes
-    enemyPrefab->AddComponent(c);
-    CollisionManager::instance().add(enemyPrefab);
-    Health* h = new Health(enemyPrefab, 100);
-    enemyPrefab->AddComponent(h);
 }
 
+void AttackManager::newLaserAttack() {
+    LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
+    enemyAttackList.push_back(laserAtt);
+}
+
+// TODO
+// void AttackManager::newStompAttack() {
+//     StompAttack* stompAtt = new StompAttack();
+//     enemyAttackList.push_back(stompAtt);
+// }
+
+// TODO
+// void AttackManager::newMarkedAttack() {
+//     MarkedAttack* markedAtt = new MarkedAttack();
+//     enemyAttackList.push_back(markedAtt);
+// }
+
+// TODO
+// void AttackManager::newSwipeAttack() {
+//     SwipeAttack* swipeAtt = new SwipeAttack();
+//     enemyAttackList.push_back(swipeAtt);
+// }
+
 void AttackManager::update(float deltaTime) {
-    std::lock_guard<std::mutex> lock(_attack_mutex);
+    std::lock_guard<std::mutex> playerlock(_player_attack_mutex);
     for(int i = playerAttackList.size() - 1; i >= 0; i--) {
         // iterate from the back to take care of the situ of removing inside loop
         if(!playerAttackList.at(i)->isExist()) {
@@ -46,5 +60,14 @@ void AttackManager::update(float deltaTime) {
             continue;
         }
         playerAttackList.at(i)->update(deltaTime);
+    }
+
+    for(int i = enemyAttackList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside loop
+        if(!enemyAttackList.at(i)->exist) {
+            enemyAttackList.erase( enemyAttackList.begin() + i );
+            continue;
+        }
+        enemyAttackList.at(i)->update(deltaTime);
     }
 }

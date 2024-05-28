@@ -24,6 +24,7 @@ Server server;
 Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
+Enemy* enemyPrefab;
 std::vector<glm::vec3> spawnPoints = {
     glm::vec3(500, 0, 0), glm::vec3(0, 0, 500), glm::vec3(-500, 0, 0),
     glm::vec3(0, 0, -500)};
@@ -178,8 +179,7 @@ void NetworkManager::process_input() {
             if (playersReady == MAX_CLIENTS) {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
-                Enemy* enemyPrefab = new Enemy();
-                enemyPrefab->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+                enemyPrefab = new Enemy();
                 AttackManager::instance().addEnemy(enemyPrefab);
                 // scene.Instantiate(enemyPrefab);
 
@@ -202,6 +202,8 @@ void NetworkManager::process_input() {
 void NetworkManager::update(float deltaTime) { 
     scene.Update(deltaTime); 
     AttackManager::instance().update(deltaTime);
+    if (enemyPrefab != nullptr)
+        enemyPrefab->update(deltaTime);
 }
 
 // TODO send state of all networked entities
