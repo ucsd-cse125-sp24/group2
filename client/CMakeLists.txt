@@ -26,6 +26,7 @@ set(
     src/Bone.cpp
     src/components/Model.cpp
     src/components/RendererComponent.cpp
+    src/components/PlayerComponent.cpp
     prefabs/Enemy.cpp
 
     # HUD

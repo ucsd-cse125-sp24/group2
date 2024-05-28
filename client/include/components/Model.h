@@ -41,6 +41,7 @@ private:
 
 public:
     Model(GameObject* owner);
+    Model(Model* other);
     Model(GameObject* owner, std::string path, bool hasAnimation);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;

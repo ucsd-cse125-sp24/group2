@@ -12,11 +12,11 @@ class NetworkObject : public GameObject {
 protected:
     int _networkId; // to distinguish each NetworkObject
     static int nextNetworkId;
+
+public:
     std::vector<INetworkComponent*>
         networkComponents; // container for all INetworkComponents, disjoint
                            // from GameObject::components
-
-public:
     // Constructors
 
     NetworkObject();

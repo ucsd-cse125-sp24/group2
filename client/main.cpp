@@ -14,7 +14,8 @@
 #include "AudioManager.hpp"
 #include "ColorCodes.hpp"
 #include "AssetManager.hpp"
-
+#include "components/RendererComponent.hpp"
+#include "EntityBase.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -119,14 +120,15 @@ int main(int argc, char** argv) {
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
         Model* model = new Model(nullptr, path, true);
-        AssetManager::Instance().AddMapping(path, {});
+        AssetManager::Instance().AddMapping(path, model, {});
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
-        
+
         std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
-        // std::map<std::string, AnimationClip*> animations = std::map<std::string, AnimationClip*>();
+        // std::map<std::string, AnimationClip*> animations =
+        // std::map<std::string, AnimationClip*>();
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
@@ -134,13 +136,21 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
+    EntityBase* go = new EntityBase();
+    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    go->AddComponent(model);
+    RendererComponent* renderer =
+        new RendererComponent(go, ShaderType::STANDARD);
+    go->AddComponent(renderer);
+    GameManager::instance().scene.Instantiate(go);
+
     std::cout << "  Finished updating AssetManager" << std::endl;
 
-
     // AssetManager::instance().AddModelPathToClips("hello", {
-    //     new AnimationClip(nullptr, 
-    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", 
-    //         new Model(nullptr, "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
+    //     new AnimationClip(nullptr,
+    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf",
+    //         new Model(nullptr,
+    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
     //     ),
 
     // });
