@@ -6,6 +6,7 @@
 
 #include "PlayerAttack.hpp"
 #include "Enemy.hpp"
+#include "EnemyAttack.hpp"
 
 class AttackManager {
     private:
@@ -14,6 +15,7 @@ class AttackManager {
 
     public:
     std::vector<PlayerAttack*> playerAttackList;
+    std::vector<EnemyAttack*> enemyAttackList;
     std::vector<Player*> playerList;
     Enemy* enemyPrefab;
     

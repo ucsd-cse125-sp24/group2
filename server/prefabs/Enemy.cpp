@@ -2,6 +2,14 @@
 #include "NetTransform.hpp"
 #include "CollisionManager.hpp"
 #include "Player.hpp"
+
+// Types of Attacks
+#include "prefabs/enemySkills/LaserAttack.hpp"
+#include "prefabs/enemySkills/MarkAttack.hpp"
+#include "prefabs/enemySkills/StompAttack.hpp"
+#include "prefabs/enemySkills/SwipeAttack.hpp"
+#include "prefabs/EnemyAttack.hpp"
+
 //#include "Health.hpp"
 
 Enemy::Enemy() : Entity() {
@@ -20,7 +28,7 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     //TODO: test size values
     hitbox->SetRadius(50);
     hitbox->SetHeight(20);
-    
+
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
@@ -48,5 +56,36 @@ void Enemy::update(float deltaTime) {
  * rotating lasers
 */
 void Enemy::attack(){
-    return;
+    // Always check for proximity
+    /* if (close to player)
+            SwipeAttack(player.position)
+    */
+    
+    EnemyAttack phaseAttack;
+
+    // if(this->currentPhase != PHASE1){
+    //     // also attack
+    //     EnemyAttack newAttack = new EnemyAttack();
+    // }
+
+// TODO: Do this in enemy attack?
+    switch(this->currentPhase){
+        case PHASE1: // Default? Do nothing for now
+            break;
+        
+        case PHASE2: // Stomp / shockwave
+            phaseAttack = new StompAttack();
+            break;
+
+        case PHASE3: // Mark / projectile
+            phaseAttack = new MarkAttack();
+            break;
+
+        case PHASE4: // Laser beams
+            phaseAttack = new LaserAttack();
+            break;
+
+        default: // For now, nothing. Possibly a phase 5?
+            break;
+    }
 }
