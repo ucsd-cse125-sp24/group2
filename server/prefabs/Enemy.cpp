@@ -52,29 +52,31 @@ void Enemy::update(float deltaTime) {
     GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
-    if(std::fmod(s, 5000.0) <= deltaTime){
+    if(std::fmod(s, 5.0) <= deltaTime){
         attack();
-        s = std::fmod(s, 5000.0);
+        s = std::fmod(s, 5.0);
     }
 }
 
 /**
- * TODO: attack with type based on enemy phase:
+ * attack with type based on enemy phase:
  * swipe (based on proximity)
  * expanding shockwaves
  * throw boulders/AoE targeted attacks
  * rotating lasers
 */
 void Enemy::attack(){
-    // Always check for proximity
+    // TODO: check for proximity
     /* if (close to player)
             SwipeAttack(player.position)
     */
 
-   // TODO: AttackManager::instance().newSwipeAttack();
+    AttackManager::instance().newSwipeAttack();
+    std::cout << "SwipeAttack!" << std::endl;
 
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now
+            this->currentPhase = PHASE4;
             break;
         
         case PHASE2: // Stomp / shockwave
@@ -89,6 +91,7 @@ void Enemy::attack(){
             AttackManager::instance().newLaserAttack();
             std::cout << "LaserAttack!" << std::endl;
 
+            this->currentPhase = PHASE1;
             break;
 
         default: // For now, nothing. Possibly a phase 5?
