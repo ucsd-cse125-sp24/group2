@@ -33,6 +33,7 @@ set(
     src/Mover.cpp
     src/GameManager.cpp
     src/Player.cpp
+    src/MovementStateMachine.cpp
 )
 FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 
