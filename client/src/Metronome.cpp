@@ -5,8 +5,8 @@ Metronome::Metronome() {
     shader = Shader::GetShader(ShaderType::HUD);
 }
 
-Metronome::Metronome(float bpm) : bpm(bpm) {
-    beatDuration = 60.0f / bpm;
+Metronome::Metronome(int bpm) : bpm(bpm) {
+    beatDuration = 60.0f / float(bpm);
     quad = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), 0.05f);
     quad->setTexture("square-red.png", "../assets/HUD/metronome");
     quad2 = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), 0.1f);
@@ -50,4 +50,9 @@ void Metronome::draw(float aspectRatio) {
     glUniform1i(glGetUniformLocation(shader, "isHealthBar"), 0);
     quad->draw(aspectRatio);
     quad2->draw(aspectRatio);
+}
+
+void Metronome::setBpm(int bpm) {
+    this->bpm = bpm;
+    beatDuration = 60.0f / float(bpm);
 }

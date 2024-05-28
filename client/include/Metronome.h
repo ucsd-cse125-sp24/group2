@@ -2,17 +2,19 @@
 #include "core.h"
 #include "Shader.h"
 #include "Quad.h"
+#include "../../_common/include/States.hpp"
 
-class Metronome {
+class Metronome : public States{
 public: 
     Metronome();
-    Metronome(float bpm);
+    Metronome(int bpm);
     ~Metronome();
     void draw(float aspectRatio);
     void update(float dt);
     void setPosition(glm::vec3 pos);
+    void setBpm(int bpm);
 private:
-    float bpm;
+    int bpm;
     glm::mat4 modelMtx;
     GLuint shader;
     float beatDuration;

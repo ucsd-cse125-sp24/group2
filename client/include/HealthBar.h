@@ -4,8 +4,9 @@
 #include <stb_image.h>
 #include <iostream>
 #include "Quad.h"
+#include "../../_common/include/States.hpp"
 
-class HealthBar {
+class HealthBar : public States{
 public:
     HealthBar();
     HealthBar(glm::vec3 pos, float size);

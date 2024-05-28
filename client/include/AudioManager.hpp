@@ -25,6 +25,8 @@ public:
     void setOffFirst(int off);
     void play();
     void update();
+    int getBpm() const;
+    bool isStarted() const;
 
 private:
     FMOD_SYSTEM* system;

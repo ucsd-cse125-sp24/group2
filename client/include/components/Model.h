@@ -6,12 +6,12 @@
 
 #include "core.h"
 #include "Mesh.h"
-#include "stb_image.h"
-#include "Helper.h"
 
 #include "IComponent.hpp"
 #include "AnimationClip.h"
 #include "AnimationPlayer.h"
+
+#include "Helper.h"
 
 class AnimationPlayer;
 class AnimationClip;

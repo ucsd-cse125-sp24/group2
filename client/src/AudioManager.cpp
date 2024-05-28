@@ -125,3 +125,7 @@ void AudioManager::play() {
     FMODErrorCheck(result);
     game_started = true;
 }
+
+int AudioManager::getBpm() const { return bpm; }
+
+bool AudioManager::isStarted() const { return game_started;}

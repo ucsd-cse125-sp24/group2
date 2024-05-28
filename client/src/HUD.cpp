@@ -7,9 +7,11 @@ HUDs::HUDs() {
 }
 
 void HUDs::draw(float aspectRatio) {
-    healthBar->draw(aspectRatio);
-    teamInfo->draw(aspectRatio);
-    metronome->draw(aspectRatio);
+    if(this->checkState(VISIBLE)) {
+        healthBar->draw(aspectRatio);
+        teamInfo->draw(aspectRatio);
+        metronome->draw(aspectRatio);
+    }
 }
 
 void HUDs::update(float dt) {

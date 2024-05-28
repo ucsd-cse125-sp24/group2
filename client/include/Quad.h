@@ -2,8 +2,9 @@
 #include "core.h"
 #include "Shader.h"
 #include "Helper.h"
+#include "../../_common/include/States.hpp"
 
-class Quad {
+class Quad : public States{
 public:
     Quad();
     Quad(glm::vec3 pos, float size);

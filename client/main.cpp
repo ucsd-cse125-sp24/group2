@@ -1,10 +1,10 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "Window.h"
 #include "Client.h"
 #include "core.h"
 #include "InputManager.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include "GameManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include "GameObject.hpp"
@@ -111,11 +111,11 @@ int main(int argc, char** argv) {
         "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
     AudioManager::instance().setBpm(232);
     // AudioManager::instance().play();
-
+    
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::string> modelPaths;
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    modelPaths.push_back("../assets/animation/model.gltf");
+    modelPaths.push_back("../assets/robot/untitled.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
         Model* model = new Model(nullptr, path, true);

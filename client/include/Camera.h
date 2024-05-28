@@ -31,6 +31,7 @@ public:
     float GetAzimuth() { return Azimuth; }
     float GetIncline() { return Incline; }
     glm::vec3 GetTarget() { return target; }
+    float GetAspect() { return Aspect; }
 
     const glm::mat4& GetViewProjectMtx() { return ViewProjectMtx; }
 

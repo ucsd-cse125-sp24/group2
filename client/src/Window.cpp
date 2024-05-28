@@ -33,6 +33,7 @@ bool Window::initializeProgram() {
         return false;
     }
     hud = new HUDs();
+    
     // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
     // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
     // metronome = new Metronome(60.0f);
@@ -115,6 +116,7 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
         if (auto renderer = entity->GetComponent<RendererComponent>()) 
             renderer->Render(camera->GetViewProjectMtx());
     }
+    
     hud->update(deltaTime);
     hud->draw(camera->GetAspect());
     // if(InputManager::isKeyPressed(GLFW_KEY_Q))
