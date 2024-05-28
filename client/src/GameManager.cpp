@@ -11,7 +11,7 @@
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
-const std::string testModelPath = "../assets/testModel/testModel2.gltf";
+const std::string robotPath = "../assets/robot/untitled.glth";
 
 void StartGame(Packet*);
 
@@ -23,6 +23,7 @@ void GameManager::handle_packet(Packet* packet) {
     packet->read_int(&packet_id);
     PacketType p = (PacketType)packet_id;
 
+    std::cout << "HERE GM::handle" << std::endl;
     switch (p) {
     case PacketType::STATE_UPDATE:
         // std::cout << "  PacketType: STATE_UPD" << std::endl;
@@ -53,6 +54,7 @@ int test = 0;
 void GameManager::update(Packet* pkt) {
     int num_updates;
     pkt->read_int(&num_updates);
+    std::cout << "HERE GM::upd()" << std::endl;
     while (num_updates) {
         NetworkObjectTypeID _typeid;
         pkt->read_int((int*)&_typeid);
