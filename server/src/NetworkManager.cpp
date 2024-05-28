@@ -16,6 +16,7 @@
 #include "PlayerCombat.hpp"
 #include "prefabs/Enemy.hpp"
 #include "Mover.hpp"
+#include "AttackManager.hpp"
 #include "CooldownComponent.hpp"
 #include "MovementStateMachine.hpp"
 
@@ -166,6 +167,7 @@ void NetworkManager::process_input() {
                     key)) {
                 printf(YLW "COMBO HIT\n" RST);
                 // TODO enemy take damage
+                AttackManager::instance().newPlayerAttack(clients[client_id]->p);
             }
 
             break;
@@ -178,6 +180,8 @@ void NetworkManager::process_input() {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
                 Enemy* enemyPrefab = new Enemy();
+                enemyPrefab->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+                AttackManager::instance().addEnemy(enemyPrefab);
                 // scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
@@ -196,7 +200,10 @@ void NetworkManager::process_input() {
     }
 }
 
-void NetworkManager::update(float deltaTime) { scene.Update(deltaTime); }
+void NetworkManager::update(float deltaTime) { 
+    scene.Update(deltaTime); 
+    AttackManager::instance().update(deltaTime);
+}
 
 // TODO send state of all networked entities
 void NetworkManager::send_state() {
@@ -259,8 +266,9 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
     // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    p->GetComponent<NetTransform>()->position =
-        spawnPoints[spawnIndex++ % spawnPoints.size()];
+    glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    p->GetComponent<NetTransform>()->SetPosition(position);
+    AttackManager::instance().addPlayer(p);
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);

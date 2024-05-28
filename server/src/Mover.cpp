@@ -17,6 +17,8 @@ Mover::Mover(NetworkObject* owner)
 void Mover::Update(float deltaTime) {
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // +y
 
+    // movementHeading = glm::vec3(input.x, 0, input.y);
+
     if (owner->GetComponent<MovementStateMachine>()) {
         MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
         movementStateMachine->Update(deltaTime, inputs);
@@ -85,10 +87,9 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle = oldAngle;
     }
 
-    owner->GetComponent<NetTransform>()->SetPosition(owner->GetComponent<Transform>()->GetPosition());
-
-    float angleAboutY = 180.0f-glm::degrees(angle);
-    owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(0.0f, angleAboutY, 0.0f));
+    float angleAboutY = 180.0f - glm::degrees(angle);
+    owner->GetComponent<NetTransform>()->SetRotation(
+        glm::vec3(0.0f, angleAboutY, 0.0f));
 }
 
 std::string Mover::ToString() { return "Mover"; }

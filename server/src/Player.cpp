@@ -7,8 +7,6 @@
 #include "MovementStateMachine.hpp"
 
 Player::Player() : Entity() {
-    Transform* transform = new Transform(this);
-    AddComponent(transform);
     Mover* mover = new Mover(this);
     AddComponent(mover);
     PlayerCombat* playerCombat = new PlayerCombat();
