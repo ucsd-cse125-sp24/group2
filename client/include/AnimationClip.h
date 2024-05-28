@@ -27,9 +27,11 @@ private:
 
     void readMissingBones(const aiAnimation* animation, Model* model);
     void readHierarchyData(AssimpNodeData& dest, const aiNode* src);
+    void copyHierarchyData(AssimpNodeData&, AssimpNodeData&);
 
 public:
     AnimationClip() = default;
+    AnimationClip(AnimationClip* other);
     AnimationClip(GameObject* owner, std::string path, Model* model);
     AnimationClip(aiAnimation* clip, Model* model, const aiScene* scene);
 

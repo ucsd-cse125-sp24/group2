@@ -4,9 +4,7 @@
 #include "GameObject.hpp"
 #include <string>
 
-
 class GameObject;
-
 
 class IComponent {
 
@@ -17,9 +15,10 @@ public:
     IComponent() : owner(nullptr) {}
     IComponent(GameObject* newOwner) : owner(newOwner) {}
 
-    void SetOwner(GameObject* newOwner) {owner = newOwner; }
-    virtual std::string ToString() = 0; //might not work as pure virtual function
+    void SetOwner(GameObject* newOwner) { owner = newOwner; }
+    virtual std::string
+    ToString() = 0; // might not work as pure virtual function
+    virtual void Update(float deltaTime);
 };
-
 
 #endif // I_COMPONENT_H
