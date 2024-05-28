@@ -22,7 +22,7 @@ Player::Player() : Entity() {
     CollisionManager::instance().add(this);
     Status* status = new Status(this);
     AddComponent(status);
-    status->AddStatusEffect(new SpeedBoost(status)); // test
+    // status->AddStatusEffect(new SpeedBoost(status)); // test
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
