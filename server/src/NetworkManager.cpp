@@ -166,7 +166,8 @@ void NetworkManager::process_input() {
                     key)) {
                 printf(YLW "COMBO HIT\n" RST);
                 // TODO enemy take damage
-                AttackManager::instance().newPlayerAttack(clients[client_id]->p);
+                AttackManager::instance().newPlayerAttack(
+                    clients[client_id]->p);
             }
 
             break;
@@ -179,7 +180,8 @@ void NetworkManager::process_input() {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
                 Enemy* enemyPrefab = new Enemy();
-                enemyPrefab->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+                enemyPrefab->GetComponent<NetTransform>()->SetPosition(
+                    glm::vec3(0, 0, 0));
                 AttackManager::instance().addEnemy(enemyPrefab);
                 // scene.Instantiate(enemyPrefab);
 
@@ -199,8 +201,8 @@ void NetworkManager::process_input() {
     }
 }
 
-void NetworkManager::update(float deltaTime) { 
-    scene.Update(deltaTime); 
+void NetworkManager::update(float deltaTime) {
+    scene.Update(deltaTime);
     AttackManager::instance().update(deltaTime);
 }
 

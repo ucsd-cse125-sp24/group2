@@ -106,6 +106,20 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
             renderer->Render(camera->GetViewProjectMtx());
         }
     }
+
+    for (auto& go : scene->gameObjects) {
+        if (auto model = go->GetComponent<Model>()) {
+            Transform* transform = go->GetComponent<Transform>();
+            model->update(deltaTime);
+        }
+        if (auto animationPlayer = go->GetComponent<AnimationPlayer>()) {
+            animationPlayer->update(deltaTime);
+        }
+
+        if (auto renderer = go->GetComponent<RendererComponent>()) {
+            renderer->Render(camera->GetViewProjectMtx());
+        }
+    }
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);

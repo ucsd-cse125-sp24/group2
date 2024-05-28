@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
-    EntityBase* go = new EntityBase();
+    GameObject* go = new GameObject();
     Model* model = new Model(go, "../assets/ground/plane.gltf", false);
     go->AddComponent(model);
     RendererComponent* renderer =
