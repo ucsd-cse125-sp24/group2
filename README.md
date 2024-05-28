@@ -39,7 +39,7 @@ If you've compiled for Windows, remove the CMake cache first by running `rm -rf 
 1. `cd` into one of the projects (server or client), like `cd server`
 2. Run `cmake . --toolchain=../tc-osx.cmake` (see footnote for more info).
 3. Run `make` to build the project.
-4. Run the server with `./server.app`.
+4. Run the server with `./server.exe`.
 
 ### Compiling for Windows
 
