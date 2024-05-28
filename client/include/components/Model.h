@@ -51,6 +51,7 @@ public:
     void update(float dt);
     void setPosition(glm::vec3 pos);
     void setRotation(glm::vec3 rot);
+    void setScale(glm::vec3 scale);
 
     std::string ToString() override;
 };

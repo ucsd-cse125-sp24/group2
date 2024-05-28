@@ -117,6 +117,7 @@ int main(int argc, char** argv) {
     std::vector<std::string> modelPaths;
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
     modelPaths.push_back("../assets/robot/untitled.gltf");
+    modelPaths.push_back("../assets/Bear2/bear.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
         Model* model = new Model(nullptr, path, true);
@@ -138,22 +139,35 @@ int main(int argc, char** argv) {
     }
 
     // ground
-    EntityBase* go = new EntityBase();
-    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
-    go->AddComponent(model);
-    RendererComponent* renderer =
-        new RendererComponent(go, ShaderType::STANDARD);
-    go->AddComponent(renderer);
-    GameManager::instance().scene.Instantiate(go);
+    // EntityBase* go = new EntityBase();
+    // Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    // go->AddComponent(model);
+    // RendererComponent* renderer =
+    //     new RendererComponent(go, ShaderType::STANDARD);
+    // go->AddComponent(renderer);
+    // GameManager::instance().scene.Instantiate(go);
 
     // bear
-    // EntityBase* bear = new EntityBase();
-    // Model* bearModel = new Model(bear, "../assets/Bear2/bear-3.gltf", false);
-    // bear->AddComponent(bearModel);
-    // RendererComponent* bearRenderer =
-    //     new RendererComponent(bear, ShaderType::STANDARD);
-    // bear->AddComponent(bearRenderer);
-    // GameManager::instance().scene.Instantiate(bear);
+    EntityBase* bear = new EntityBase(); 
+    Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
+    // bearModel->setScale(glm::vec3(100.0f));
+    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    bear->AddComponent(bearModel);
+    AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
+    bear->AddComponent(bearAnimationPlayer);
+    std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
+                for (int i = 0; i < prefabClips.size(); ++i) {
+                    AnimationClip* clip = new AnimationClip(prefabClips[i]);
+                    // std::cout << "Adding clip: " << clip->getName()
+                    //           << std::endl;
+                    bear->GetComponent<AnimationPlayer>()->AddClip(
+                        clip);
+                }
+    RendererComponent* bearRenderer =
+        new RendererComponent(bear, ShaderType::ANIMATED);
+    bear->AddComponent(bearRenderer);
+    bear->GetComponent<AnimationPlayer>()->play("attack");
+    GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
 
     // AssetManager::instance().AddModelPathToClips("hello", {

@@ -40,7 +40,6 @@ void main()
    }
     TexCoords = texCoords;
     // OpenGL maintains the D matrix so you only need to multiply by P, V (aka C inverse), and M
-    gl_Position = viewProj * model * vec4(position, 1.0);
     gl_Position = viewProj * model * totalPosition;
 
     // for shading
