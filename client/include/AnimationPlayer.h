@@ -4,7 +4,7 @@
 #include "AnimationClip.h"
 #include "../../_common/include/IComponent.hpp"
 
-    class AnimationClip;
+class AnimationClip;
 class AssimpNodeData;
 class Model;
 class AnimationPlayer : public IComponent {
@@ -12,12 +12,12 @@ class AnimationPlayer : public IComponent {
 private:
     std::vector<glm::mat4> finalBoneMtx;
     std::map<std::string, AnimationClip*> animations;
-    AnimationClip* currentAnimation;
     float currentTime;
     float deltaTime;
     Model* model;
 
 public:
+    AnimationClip* currentAnimation;
     AnimationPlayer(GameObject* owner);
     AnimationPlayer(GameObject* owner, Model* model);
 
