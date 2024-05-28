@@ -27,7 +27,5 @@ void NetTransform::Deserialize(Packet* packet) {
 }
 
 std::string NetTransform::ToString() {
-    return "Networked Transform: pos(" + glm::to_string(position) + ") rot(" +
-           glm::to_string(position) + ") scale(" + glm::to_string(position) +
-           ")";
+    return "NetTransform";
 }

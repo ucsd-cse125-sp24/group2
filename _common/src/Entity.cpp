@@ -1,12 +1,13 @@
 #include "Entity.hpp"
 #include "NetTransform.hpp"
+#include "Transform.hpp"
 
 Entity::Entity() : NetworkObject() {
-    NetTransform* transform = new NetTransform(this);
-    AddComponent(transform);
+    NetTransform* nettransform = new NetTransform(this);
+    AddComponent(nettransform);
 }
 
 Entity::Entity(int networkId) : NetworkObject(networkId) {
-    NetTransform* transform = new NetTransform(this);
-    AddComponent(transform);
+    NetTransform* nettransform = new NetTransform(this);
+    AddComponent(nettransform);
 }
