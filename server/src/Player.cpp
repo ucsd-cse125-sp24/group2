@@ -3,6 +3,7 @@
 #include <iostream>
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
+#include "Health.hpp"
 
 Player::Player() : Entity() {
     Mover* mover = new Mover(this);
@@ -14,6 +15,8 @@ Player::Player() : Entity() {
     collider->SetHeight(10);
     AddComponent(collider);
     CollisionManager::instance().add(this);
+    Health* h = new Health(this, 100);
+    AddComponent(h);
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
