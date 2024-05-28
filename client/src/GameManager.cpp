@@ -15,19 +15,12 @@ const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
-void GameManager::Init() {
-    /*
-    model = new Model(nullptr, path, true);
-    enemy = new Model(nullptr, enemyPath, false);
-    */
-}
+void GameManager::Init() {}
 
 void GameManager::handle_packet(Packet* packet) {
     int packet_id;
     packet->read_int(&packet_id);
     PacketType p = (PacketType)packet_id;
-
-    // std::cout << "GameManager::handle_packet():" << std::endl;
 
     switch (p) {
     case PacketType::STATE_UPDATE:
@@ -66,29 +59,6 @@ void GameManager::update(Packet* pkt) {
         // TODO deserialize
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
-            /*
-            int network_id;
-            pkt->read_int(&network_id);
-            auto it = std::find_if(scene.entities.begin(), scene.entities.end(),
-                                   [network_id](Entity* entity) {
-                                       return entity->networkId() == network_id;
-                                   });
-            Entity* enemyPrefab;
-            if (it == scene.entities.end()) {
-                enemyPrefab = new Enemy(network_id);
-                enemyPrefab->AddComponent(enemy);
-                RendererComponent* meshRenderer =
-                    new RendererComponent(enemyPrefab, ShaderType::STANDARD);
-                enemyPrefab->AddComponent(meshRenderer);
-                scene.Instantiate(enemyPrefab);
-            } else {
-                enemyPrefab = *it;
-            }
-
-            enemyPrefab->deserialize(pkt);
-
-
-            */
             break;
         }
         case NetworkObjectTypeID::PLAYER: {
@@ -104,14 +74,11 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     std::cout << "Adding clip: " << clip->getName()
                               << std::endl;
-                    std::cout << clip << std::endl;
                     playerPrefab->GetComponent<AnimationPlayer>()->AddClip(
                         clip);
                 }
 
                 players[network_id] = playerPrefab;
-                printf("player network id: %d\n",
-                       players[network_id]->networkId());
                 scene.Instantiate(playerPrefab);
 
                 if (players.size() == 3) {
@@ -125,8 +92,6 @@ void GameManager::update(Packet* pkt) {
 
             cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
-                std::cout << "local player object: " << localPlayerObject
-                          << std::endl;
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
