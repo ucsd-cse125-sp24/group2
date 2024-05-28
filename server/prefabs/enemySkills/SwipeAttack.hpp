@@ -16,8 +16,19 @@ private:
     Player* target; // TODO: remove eventually if not needed
 
 public:
-    SwipeAttack(Player* target);
-    SwipeAttack(Player* target, int networkId) : EnemyAttack(networkId){
+    SwipeAttack(Enemy* owner, Player* target) : EnemyAttack(owner){
+        Collider* attackC = new Collider(this, target->GetComponent<Collider>());
+
+        // TODO: test and refactor magic numbers
+        attackC->makeSector(0.01);
+        attackC->SetStartAngle(attackC->GetStartAngle() + right_angles[0]);
+        attackC->SetEndAngle(attackC->GetEndAngle() + right_angles[1]);
+        attackC->SetHeight(3);
+        attackC->SetRadius(500);
+        this->AddComponent(attackC);
+    };
+
+    SwipeAttack(Enemy* owner, Player* target, int networkId) : EnemyAttack(owner, networkId){
         Collider* attackC = new Collider(this, target->GetComponent<Collider>());
 
         // TODO: test and refactor magic numbers

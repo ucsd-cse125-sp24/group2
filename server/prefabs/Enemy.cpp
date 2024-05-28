@@ -5,7 +5,7 @@
 
 // Types of Attacks
 #include "prefabs/enemySkills/LaserAttack.hpp"
-#include "prefabs/enemySkills/MarkAttack.hpp"
+#include "prefabs/enemySkills/MarkedAttack.hpp"
 #include "prefabs/enemySkills/StompAttack.hpp"
 #include "prefabs/enemySkills/SwipeAttack.hpp"
 #include "prefabs/EnemyAttack.hpp"
@@ -66,36 +66,29 @@ void Enemy::update(float deltaTime) {
  * rotating lasers
 */
 void Enemy::attack(){
-    AttackManager::instance().newLaserAttack();
-    std::cout << "LaserAttack!" << std::endl;
-    
     // Always check for proximity
     /* if (close to player)
             SwipeAttack(player.position)
     */
-    
-    EnemyAttack phaseAttack;
 
-    // if(this->currentPhase != PHASE1){
-    //     // also attack
-    //     EnemyAttack newAttack = new EnemyAttack();
-    // }
+   // TODO: AttackManager::instance().newSwipeAttack();
 
-// TODO: Do this in enemy attack?
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now
             break;
         
         case PHASE2: // Stomp / shockwave
-            phaseAttack = new StompAttack();
+            // TODO: AttackManager::instance().newStompAttack();
             break;
 
         case PHASE3: // Mark / projectile
-            phaseAttack = new MarkAttack();
+            // TODO: AttackManager::instance().newMarkedAttack();
             break;
 
         case PHASE4: // Laser beams
-            phaseAttack = new LaserAttack();
+            AttackManager::instance().newLaserAttack();
+            std::cout << "LaserAttack!" << std::endl;
+
             break;
 
         default: // For now, nothing. Possibly a phase 5?
