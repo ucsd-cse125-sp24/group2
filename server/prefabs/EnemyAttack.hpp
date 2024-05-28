@@ -4,17 +4,18 @@
 #include "Entity.hpp"
 #include "Enemy.hpp"
 #include "Collider.hpp"
+#include "CollisionManager.hpp"
 #include <vector>
 
 class EnemyAttack : public Entity {
 private:
     int damage;
-    bool exist;
-    Collider* attackC;
+    Enemy* enemy;
 
 public:
-    EnemyAttack();
-    EnemyAttack(int networkId);
+    bool exist;
+    EnemyAttack(Enemy* owner);
+    EnemyAttack(Enemy* owner, int networkId);
     void DealDamage(std::vector<GameObject*> players_hit);
 
     std::string ToString() override { return "EnemyAttack"; }

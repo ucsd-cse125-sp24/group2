@@ -10,10 +10,14 @@
 #include "prefabs/enemySkills/SwipeAttack.hpp"
 #include "prefabs/EnemyAttack.hpp"
 
-//#include "Health.hpp"
+#include "Health.hpp"
+#include "AttackManager.hpp"
+#include <iostream>
 
 Enemy::Enemy() : Entity() {
-    Collider* hitbox = new Collider(this);
+    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);
     hitbox->SetHeight(20);
@@ -21,10 +25,14 @@ Enemy::Enemy() : Entity() {
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
+    Health* h = new Health(this, 100);
+    this->AddComponent(h);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId){
-    Collider* hitbox = new Collider(this);
+    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);
     hitbox->SetHeight(20);
@@ -32,9 +40,10 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
+    Health* h = new Health(this, 100);
+    this->AddComponent(h);
 }
 
-float s = 0; // time in milliseconds
 void Enemy::update(float deltaTime) {
     s += deltaTime;
 
@@ -43,8 +52,9 @@ void Enemy::update(float deltaTime) {
     GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
-    if(std::fmod(s, 5000.0) == 0.0){
+    if(std::fmod(s, 5000.0) <= deltaTime){
         attack();
+        s = std::fmod(s, 5000.0);
     }
 }
 
@@ -56,6 +66,9 @@ void Enemy::update(float deltaTime) {
  * rotating lasers
 */
 void Enemy::attack(){
+    AttackManager::instance().newLaserAttack();
+    std::cout << "LaserAttack!" << std::endl;
+    
     // Always check for proximity
     /* if (close to player)
             SwipeAttack(player.position)

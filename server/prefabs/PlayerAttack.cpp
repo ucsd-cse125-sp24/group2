@@ -42,6 +42,5 @@ void PlayerAttack::DealDamage() {
             target->GetComponent<Health>()->ChangeHealth(-damage);
         }
         exist = false;
-        CollisionManager::instance().remove(this);
     }
 }

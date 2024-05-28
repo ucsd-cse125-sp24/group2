@@ -141,6 +141,14 @@ void GameManager::update(Packet* pkt) {
 
             break;
         }
+        case NetworkObjectTypeID::PLAYER_ATTACK: {
+            std::cout << "    PlayerAttack" << std::endl;
+            break;
+        }
+        case NetworkObjectTypeID::ENEMY_ATTACK: {
+            std::cout << "    EnemyAttack" << std::endl;
+            break;
+        }
         default:
             std::cout << "    ObjTypeID: ERROR" << std::endl;
             break;

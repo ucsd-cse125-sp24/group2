@@ -10,7 +10,7 @@
 
 class AttackManager {
     private:
-    std::mutex _attack_mutex;
+    std::mutex _player_attack_mutex;
     std::mutex _player_mutex;
 
     public:
@@ -22,6 +22,10 @@ class AttackManager {
     void addEnemy(Enemy* e);
     void addPlayer(Player* p);
     void newPlayerAttack(Player* p);
+    void newLaserAttack();
+    void newStompAttack();
+    void newMarkedAttack();
+    void newSwipeAttack();
     void update(float deltaTime);
 
     static AttackManager& instance() {
