@@ -136,6 +136,8 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
+
+    // ground
     EntityBase* go = new EntityBase();
     Model* model = new Model(go, "../assets/ground/plane.gltf", false);
     go->AddComponent(model);
@@ -144,6 +146,14 @@ int main(int argc, char** argv) {
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
 
+    // bear
+    // EntityBase* bear = new EntityBase();
+    // Model* bearModel = new Model(bear, "../assets/Bear2/bear-3.gltf", false);
+    // bear->AddComponent(bearModel);
+    // RendererComponent* bearRenderer =
+    //     new RendererComponent(bear, ShaderType::STANDARD);
+    // bear->AddComponent(bearRenderer);
+    // GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
 
     // AssetManager::instance().AddModelPathToClips("hello", {

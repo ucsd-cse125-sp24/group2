@@ -8,6 +8,7 @@
 #include "components/RendererComponent.hpp"
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "HUD.h"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     Mover* mover = new Mover(this);
@@ -21,6 +22,9 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(animationPlayer);
     PlayerComponent* playerComponent = new PlayerComponent(this);
     AddComponent(playerComponent);
+    HUDs* hudComponent = new HUDs(this);
+    AddComponent(hudComponent);
+    
 }
 
 void Player::update(float deltaTime) {}

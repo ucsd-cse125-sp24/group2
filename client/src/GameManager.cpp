@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "HUD.h"
 
 const std::string path = "../assets/robot/untitled.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
@@ -72,8 +73,8 @@ void GameManager::update(Packet* pkt) {
                     AssetManager::Instance().GetClips(path);
                 for (int i = 0; i < prefabClips.size(); ++i) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
-                    std::cout << "Adding clip: " << clip->getName()
-                              << std::endl;
+                    // std::cout << "Adding clip: " << clip->getName()
+                    //           << std::endl;
                     playerPrefab->GetComponent<AnimationPlayer>()->AddClip(
                         clip);
                 }
@@ -86,8 +87,20 @@ void GameManager::update(Packet* pkt) {
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
                 }
-            }
 
+                /* adds the rest of the players to the local player's teamInfo if local player exists */
+                if(players.find(localPlayerObject) != players.end()) {
+                    players[localPlayerObject]->GetComponent<HUDs>()->enableState(VISIBLE);
+                    for(auto it = players.begin(); it != players.end(); it++) {
+                        auto map = players[localPlayerObject]->GetComponent<HUDs>()->teamInfo->teamHealthMap;
+                        // std::cout<<"net id: " << it->first << std::endl;
+                        if(it->first != localPlayerObject && map.find(it->first) == map.end()) {
+                            std::cout << "add player " << it->first << " to " << "player " << localPlayerObject << std::endl;
+                            players[localPlayerObject]->GetComponent<HUDs>()->teamInfo->addTeamMember(it->first);
+                        }
+                    }
+                }
+            }
             players[network_id]->deserialize(pkt);
 
             cam->SetTarget(glm::vec3(0, 0, 0));
@@ -147,4 +160,7 @@ void GameManager::destroy_object(Packet* pkt) {
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
     AudioManager::instance().play();
+    
+    // set the BPM once it plays the music
+    players[localPlayerObject]->GetComponent<HUDs>()->metronome->setBpm(AudioManager::instance().getBpm());
 }

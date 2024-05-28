@@ -32,7 +32,7 @@ bool Window::initializeProgram() {
         std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
-    hud = new HUDs();
+    // hud = new HUDs();
     
     // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
     // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
@@ -115,10 +115,15 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
 
         if (auto renderer = entity->GetComponent<RendererComponent>()) 
             renderer->Render(camera->GetViewProjectMtx());
+        
+        if(auto huds = entity->GetComponent<HUDs>()) {
+            huds->update(deltaTime);
+            huds->draw(camera->GetAspect());
+        }
     }
     
-    hud->update(deltaTime);
-    hud->draw(camera->GetAspect());
+    // hud->update(deltaTime);
+    // hud->draw(camera->GetAspect());
     // if(InputManager::isKeyPressed(GLFW_KEY_Q))
     //     healthBar->currHealth -= 0.05f; 
     // if(InputManager::isKeyPressed(GLFW_KEY_E))

@@ -21,5 +21,6 @@ private:
     float currentTime;
     Quad* quad;
     Quad* quad2;
-
+    float min;
+    float max;
 };
