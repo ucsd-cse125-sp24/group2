@@ -1,6 +1,13 @@
 #include "SwipeAttack.hpp"
 #include "CollisionManager.hpp"
 
+# define DAMAGE       15
+
+void SwipeAttack::init(Player* p){
+    this->target = p;
+    this->SetDamage(DAMAGE);
+}
+
 void SwipeAttack::addCollider(){
     Collider* attackC = new Collider(this, target->GetComponent<Collider>());
 
@@ -14,12 +21,12 @@ void SwipeAttack::addCollider(){
 }
 
 SwipeAttack::SwipeAttack(Enemy* owner, Player* target) : EnemyAttack(owner){
-    this->target = target;
+    init(target);
     addCollider();
 };
 
 SwipeAttack::SwipeAttack(Enemy* owner, Player* target, int networkId) : EnemyAttack(owner, networkId){
-    this->target = target;
+    init(target);
     addCollider();
 };
 
@@ -30,5 +37,6 @@ void SwipeAttack::update(float deltaTime) {
     
     // instantaneous
     DealDamage(playersHit);
+    printf("HIT a swipe attack!\n");
     exist = false;
 }

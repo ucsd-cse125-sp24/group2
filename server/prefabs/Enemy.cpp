@@ -1,4 +1,4 @@
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 #include "NetTransform.hpp"
 #include "CollisionManager.hpp"
 #include "Player.hpp"

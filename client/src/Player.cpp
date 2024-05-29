@@ -11,6 +11,7 @@
 #include "components/PlayerComponent.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
+    alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
     RendererComponent* meshRenderer =

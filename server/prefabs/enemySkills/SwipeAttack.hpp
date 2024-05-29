@@ -9,12 +9,13 @@
 
 # define PI           3.14159265358979323846
 
-static std::vector<double> right_angles = {0, 0.5 * PI, PI, 1.5 * PI};
+//std::vector<double> right_angles = {0, 0.5 * PI, PI, 1.5 * PI};
 
 class SwipeAttack : public EnemyAttack {
 private:
     Player* target; // TODO: remove eventually if not needed
     void addCollider();
+    void init(Player* p);
 
 public:
     SwipeAttack(Enemy* owner, Player* target);

@@ -4,7 +4,7 @@
 #include "components/RendererComponent.hpp"
 #include "components/Model.h"
 #include <AudioManager.hpp>
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 #include <algorithm>
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
@@ -155,4 +155,5 @@ void GameManager::destroy_object(Packet* pkt) {
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
     AudioManager::instance().play();
+    scene.gameActive = true;
 }

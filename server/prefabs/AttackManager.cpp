@@ -48,8 +48,8 @@ void AttackManager::newLaserAttack() {
 
 void AttackManager::newSwipeAttack() {
     if(!playerList.empty()){
-       // SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab, playerList.at(0));
-        //enemyAttackList.push_back(swipeAtt);
+        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab, playerList.at(0));
+        enemyAttackList.push_back(swipeAtt);
     }
 }
 

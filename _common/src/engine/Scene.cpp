@@ -1,17 +1,59 @@
 #include "engine/Scene.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "Health.hpp"
 #include <algorithm>
+
 void Scene::Update(float deltaTime) {
-    int count = 0;
+    int alive = 0;
+    bool enemyAlive = true;
     for (auto const& entity : entities) {
-        entity->update(deltaTime);
-        for (int i = 0; i < entity->components.size(); i++) {
-            entity->components[i]->Update(deltaTime);
+
+        // If it's a player or enemy, check if alive
+        // TOOD: destroy dead player object?
+        Player* p = dynamic_cast<Player*>(entity);
+        if(p != nullptr){
+            alive = p->alive ? alive + 1 : alive;
         }
-        for (int i = 0; i < entity->networkComponents.size(); i++) {
-            entity->networkComponents[i]->Update(deltaTime);
+        else{
+            Enemy* e = dynamic_cast<Enemy*>(entity);
+            if(e != nullptr){
+                enemyAlive = e->GetComponent<Health>()->GetHealth() > 0;
+
+                // if enemy is dead, break and "end"
+                if(!enemyAlive)
+                    break;
+            }
         }
-        count++;
+
+        // otherwise, if game and current entity are active, update
+        if(gameActive){
+            entity->update(deltaTime);
+            for (int i = 0; i < entity->components.size(); i++) {
+                entity->components[i]->Update(deltaTime);
+            }
+            for (int i = 0; i < entity->networkComponents.size(); i++) {
+                entity->networkComponents[i]->Update(deltaTime);
+            }
+        }
     }
+
+    if(gameActive){
+        // Check losing condition
+        if(alive == 0){
+            printf("YOU LOSE :[\n");
+            gameActive = false;
+            // TODO: end the game
+        }
+
+        // Check win condition
+        if(!enemyAlive){
+            printf("YOU WIN :D\n");
+            gameActive = false;
+            // TODO: end the game
+        }
+    }
+
 }
 
 void Scene::Instantiate(Entity* e) {

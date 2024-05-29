@@ -19,6 +19,8 @@ set(SERVER_SOURCES
     prefabs/AttackManager.cpp
     prefabs/EnemyAttack.cpp
     prefabs/enemySkills/LaserAttack.cpp
+    prefabs/enemySkills/SwipeAttack.cpp
+    prefabs/enemySkills/StompAttack.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
