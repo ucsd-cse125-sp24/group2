@@ -14,10 +14,12 @@ void SwipeAttack::addCollider(){
 }
 
 SwipeAttack::SwipeAttack(Enemy* owner, Player* target) : EnemyAttack(owner){
+    this->target = target;
     addCollider();
 };
 
 SwipeAttack::SwipeAttack(Enemy* owner, Player* target, int networkId) : EnemyAttack(owner, networkId){
+    this->target = target;
     addCollider();
 };
 
