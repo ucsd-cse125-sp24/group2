@@ -29,12 +29,14 @@ public:
 
     virtual void Serialize(Packet* packet) override {
         packet->write_float(speed);
-        packet->write_vec3(movementHeading);
+        packet->write_float(input.x);
+        packet->write_float(input.y);
     }
 
     virtual void Deserialize(Packet* packet) override {
         packet->read_float(&speed);
-        packet->read_vec3(&movementHeading);
+        packet->read_float(&input.x);
+        packet->read_float(&input.y);
     }
 
     virtual int32_t TypeID() const override { return MOVER; }
