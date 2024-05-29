@@ -1,6 +1,7 @@
 #include "Player.hpp"
 
 #include "Mover.hpp"
+#include "Health.hpp"
 #include "components/Model.h"
 #include "AnimationClip.h"
 #include "AnimationPlayer.h"
@@ -19,8 +20,8 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(model);
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
-    PlayerComponent* playerComponent = new PlayerComponent(this);
-    AddComponent(playerComponent);
+    Health* h = new Health(this);
+    AddComponent(h);
 }
 
 void Player::update(float deltaTime) {}

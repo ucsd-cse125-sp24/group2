@@ -115,7 +115,7 @@ void GameManager::update(Packet* pkt) {
             break;
         }
         default:
-            std::cout << "    ObjTypeID: ERROR" << std::endl;
+            std::cout << "    ObjTypeID: ERROR: " << _typeid << std::endl;
             break;
         }
 

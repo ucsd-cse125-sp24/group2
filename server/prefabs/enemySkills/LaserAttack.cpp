@@ -5,8 +5,9 @@
 # define ANGRANGE     0.01
 # define RADIUS       500
 # define HEIGHT       3
-# define ANGSPEED     PI/200
-# define LIFE         10000
+# define ANGSPEED     PI/16
+# define LIFE         4
+# define DAMAGE       10
 
 
 // std::vector<double> right_angles = {0, 0.5 * PI, PI, 1.5 * PI};
@@ -16,6 +17,7 @@ LaserAttack::LaserAttack(Enemy* owner) : EnemyAttack(owner) {
     this->GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     initCollider(owner);
     lifetime = LIFE;
+    SetDamage(DAMAGE);
 }
 
 LaserAttack::LaserAttack(Enemy* owner, int networkId) : EnemyAttack(owner, networkId) {
@@ -23,6 +25,7 @@ LaserAttack::LaserAttack(Enemy* owner, int networkId) : EnemyAttack(owner, netwo
     this->GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     initCollider(owner);
     lifetime = LIFE;
+    SetDamage(DAMAGE);
 }
 
 void LaserAttack::initCollider(Enemy* owner) {
@@ -54,16 +57,16 @@ void LaserAttack::update(float deltaTime) {
     std::vector<GameObject*> players_hit;
     players_hit = CollisionManager::instance().moveBossSwipe(attackFront, deltaTime * ANGSPEED);
     DealDamage(players_hit);
-    std::cout << "Front: " << attackFront->GetStartAngle() << " " << attackFront->GetEndAngle() << std::endl;
+    // std::cout << "Front: " << attackFront->GetStartAngle() << " " << attackFront->GetEndAngle() << std::endl;
     players_hit = CollisionManager::instance().moveBossSwipe(attackLeft, deltaTime * ANGSPEED);
     DealDamage(players_hit);
-    std::cout << "Left: " << attackLeft->GetStartAngle() << " " << attackLeft->GetEndAngle() << std::endl;
+    // std::cout << "Left: " << attackLeft->GetStartAngle() << " " << attackLeft->GetEndAngle() << std::endl;
     players_hit = CollisionManager::instance().moveBossSwipe(attackBack, deltaTime * ANGSPEED);
     DealDamage(players_hit);
-    std::cout << "Back: " << attackBack->GetStartAngle() << " " << attackBack->GetEndAngle() << std::endl;
+    // std::cout << "Back: " << attackBack->GetStartAngle() << " " << attackBack->GetEndAngle() << std::endl;
     players_hit = CollisionManager::instance().moveBossSwipe(attackRight, deltaTime * ANGSPEED);
     DealDamage(players_hit);
-    std::cout << "Right: " << attackRight->GetStartAngle() << " " << attackRight->GetEndAngle() << std::endl;
+    // std::cout << "Right: " << attackRight->GetStartAngle() << " " << attackRight->GetEndAngle() << std::endl;
 
     float newCenterAngle = (attackFront->GetStartAngle() + attackFront->GetEndAngle())/2;
     glm::vec3 newRotation = glm::normalize(glm::vec3(std::cos(newCenterAngle), 0, std::sin(newCenterAngle)));

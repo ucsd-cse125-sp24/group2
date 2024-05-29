@@ -49,7 +49,7 @@ void Enemy::update(float deltaTime) {
 
     // moves in a circle
     // TODO: use colliderManager.move instead
-    GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
+    // GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
     if(std::fmod(s, 5.0) <= deltaTime){
