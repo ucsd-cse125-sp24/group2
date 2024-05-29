@@ -11,7 +11,7 @@
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
-const std::string robotPath = "../assets/robot/untitled.gltf";
+const std::string robotPath = "../assets/robot/robot.gltf";
 
 void StartGame(Packet*);
 

@@ -24,7 +24,7 @@ void PlayerComponent::Update(float deltaTime) {
                 } else if (moverDirection.x < 0) {
                     animationPlayer->play("left_strafe_walk");
                 } else if (moverDirection.y > 0) {
-                    animationPlayer->play("running");
+                    animationPlayer->play("walking");
                 } else {
                     animationPlayer->play("walk_backward");
                 }
@@ -59,5 +59,5 @@ void PlayerComponent::Update(float deltaTime) {
         animationPlayer->play("idle");
     }
     // TODO: rotate model by modelRotation
-    // owner->GetComponent<Mover>()->rotation.y += modelRotation; // This don't work
+    // owner->GetComponent<Mover>()->rotation.y += modelRotation; // This don't work (glitching between forward and direction orientations)
 }
