@@ -27,6 +27,7 @@ public:
     void update();
     int getBpm() const;
     bool isStarted() const;
+    unsigned int getPosition() const;
 
 private:
     FMOD_SYSTEM* system;

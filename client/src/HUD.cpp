@@ -13,6 +13,7 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
 }
 
 void HUDs::draw(float aspectRatio) {
+    glEnable(GL_BLEND);
     if(this->checkState(VISIBLE)) {
         healthBar->draw(aspectRatio);
         teamInfo->draw(aspectRatio);

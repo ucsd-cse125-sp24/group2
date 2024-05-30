@@ -22,8 +22,6 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(animationPlayer);
     PlayerComponent* playerComponent = new PlayerComponent(this);
     AddComponent(playerComponent);
-    HUDs* hudComponent = new HUDs(this);
-    AddComponent(hudComponent);
     
 }
 

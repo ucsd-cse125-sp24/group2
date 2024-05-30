@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Quad.h"
 #include "../../_common/include/States.hpp"
+#include "AudioManager.hpp"
 
 class Metronome : public States{
 public: 
@@ -14,13 +15,12 @@ public:
     void setPosition(glm::vec3 pos);
     void setBpm(int bpm);
 private:
-    int bpm;
+    int bpm = 0;
     glm::mat4 modelMtx;
     GLuint shader;
-    float beatDuration;
-    float currentTime;
+    float beatDuration = 0.0f;
     Quad* quad;
     Quad* quad2;
-    float min;
-    float max;
+    float min = 0.0f;
+    float max = 0.0f;
 };

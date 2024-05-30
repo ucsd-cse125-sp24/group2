@@ -10,7 +10,7 @@
 #include "components/PlayerComponent.hpp"
 #include "HUD.h"
 
-const std::string path = "../assets/robot/untitled.gltf";
+const std::string path = "../assets/robot/robot.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
 
 void StartGame(Packet*);
@@ -86,6 +86,10 @@ void GameManager::update(Packet* pkt) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
+                }
+                if(localPlayerObject == network_id) {
+                    HUDs* hudComponent = new HUDs(playerPrefab);
+                        playerPrefab->AddComponent(hudComponent);
                 }
 
                 /* adds the rest of the players to the local player's teamInfo if local player exists */

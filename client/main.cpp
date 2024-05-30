@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::string> modelPaths;
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    modelPaths.push_back("../assets/robot/untitled.gltf");
+    modelPaths.push_back("../assets/robot/robot.gltf");
     modelPaths.push_back("../assets/Bear2/bear.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
@@ -127,30 +127,29 @@ int main(int argc, char** argv) {
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
 
-        std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
+        // std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
         // std::map<std::string, AnimationClip*> animations =
         // std::map<std::string, AnimationClip*>();
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
-            std::cout << "  Clip name: " << clip->getName() << std::endl;
+            // std::cout << "  Clip name: " << clip->getName() << std::endl;
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
 
     // ground
-    // EntityBase* go = new EntityBase();
-    // Model* model = new Model(go, "../assets/ground/plane.gltf", false);
-    // go->AddComponent(model);
-    // RendererComponent* renderer =
-    //     new RendererComponent(go, ShaderType::STANDARD);
-    // go->AddComponent(renderer);
-    // GameManager::instance().scene.Instantiate(go);
+    EntityBase* go = new EntityBase();
+    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    go->AddComponent(model);
+    RendererComponent* renderer =
+        new RendererComponent(go, ShaderType::STANDARD);
+    go->AddComponent(renderer);
+    GameManager::instance().scene.Instantiate(go);
 
     // bear
     EntityBase* bear = new EntityBase(); 
     Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    // bearModel->setScale(glm::vec3(100.0f));
     bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
     bear->AddComponent(bearModel);
     AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
@@ -166,18 +165,9 @@ int main(int argc, char** argv) {
     RendererComponent* bearRenderer =
         new RendererComponent(bear, ShaderType::ANIMATED);
     bear->AddComponent(bearRenderer);
-    bear->GetComponent<AnimationPlayer>()->play("attack");
+    bear->GetComponent<AnimationPlayer>()->play("idle");
     GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
-
-    // AssetManager::instance().AddModelPathToClips("hello", {
-    //     new AnimationClip(nullptr,
-    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf",
-    //         new Model(nullptr,
-    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
-    //     ),
-
-    // });
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;

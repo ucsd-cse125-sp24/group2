@@ -31,7 +31,6 @@ void main()
         if(boneIDs[i] >=MAX_BONES) 
         {
             totalPosition = vec4(position,1.0f);
-            totalNormal = mat3(model);
             break;
         }
         vec4 localPosition = finalBonesMatrices[boneIDs[i]] * vec4(position,1.0f);

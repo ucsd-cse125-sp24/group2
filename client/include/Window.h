@@ -8,8 +8,6 @@
 
 #include "Mover.hpp"
 
-#include "HUD.h"
-
 #include "PlayerManager.hpp"
 #include "Client.h"
 #include "engine/Scene.hpp"
@@ -20,8 +18,6 @@ public:
     static int height;
     static const char* windowTitle;
 
-    static HUDs* hud;
-    // static HealthBar* healthBar;
     // Act as Constructors and desctructors
     static bool initializeProgram();
     static void cleanUp();

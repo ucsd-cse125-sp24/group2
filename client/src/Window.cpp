@@ -2,12 +2,7 @@
 #include "Window.h"
 #include "GameManager.hpp"
 #include "components/RendererComponent.hpp"
-
-// HealthBar* Window::healthBar;
-// Metronome* Window::metronome;
-// TeamInfo* Window::teamInfo;
-HUDs* Window::hud;
-
+#include "HUD.h"
 // Window Properties
 int Window::width;
 int Window::height;
@@ -105,6 +100,7 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
 
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
+
         if (auto model = entity->GetComponent<Model>()) {
             NetTransform* transform = entity->GetComponent<NetTransform>();
             model->update(deltaTime);
@@ -115,26 +111,19 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
 
         if (auto renderer = entity->GetComponent<RendererComponent>()) 
             renderer->Render(camera->GetViewProjectMtx());
-        
+    }
+
+    // Render 2D screen
+    glDisable(GL_DEPTH_TEST);
+    for (auto& entity : scene->entities) {
         if(auto huds = entity->GetComponent<HUDs>()) {
             huds->update(deltaTime);
             huds->draw(camera->GetAspect());
         }
     }
-    
-    // hud->update(deltaTime);
-    // hud->draw(camera->GetAspect());
-    // if(InputManager::isKeyPressed(GLFW_KEY_Q))
-    //     healthBar->currHealth -= 0.05f; 
-    // if(InputManager::isKeyPressed(GLFW_KEY_E))
-    //     healthBar->currHealth += 0.05f;
-    // metronome->update(deltaTime);
-    // healthBar->update();
-    // teamInfo->update();
- 
-    // healthBar->draw(camera->GetAspect());
-    // metronome->draw(camera->GetAspect());
-    // teamInfo->draw(camera->GetAspect());
+    glEnable(GL_DEPTH_TEST);
+
+
     glfwPollEvents();
     // Swap buffers.
     glfwSwapBuffers(window);

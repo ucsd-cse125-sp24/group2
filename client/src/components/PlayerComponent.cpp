@@ -6,7 +6,7 @@
 
 void PlayerComponent::Update(float deltaTime) {
     if (glm::length(owner->GetComponent<Mover>()->movementHeading) > 0) {
-        owner->GetComponent<AnimationPlayer>()->play("running");
+        owner->GetComponent<AnimationPlayer>()->play("walking");
     } else {
         owner->GetComponent<AnimationPlayer>()->play("idle");
     }
