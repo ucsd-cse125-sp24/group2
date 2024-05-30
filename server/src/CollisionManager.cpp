@@ -5,6 +5,7 @@
 #include "CollisionManager.hpp"
 #include "NetTransform.hpp"
 #include "Transform.hpp"
+#include "Invincible.hpp"
 
 // four enemy attacks: 
 // 1. jump and stomp, shockwave expanding 
@@ -48,7 +49,8 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -67,7 +69,8 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider) 
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -75,14 +78,14 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 }
 
 // return a list of GameObjects that mark-attack hits
-std::vector<GameObject*> CollisionManager::moveBossMark(GameObject* owner) {
+std::vector<GameObject*> CollisionManager::moveBossMark(Collider* attCollider) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
     std::vector<GameObject*> hitObjects;
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider)
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -110,16 +113,6 @@ bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
         }
         return false;
     }
-}
-
-void CollisionManager::setInvincible(GameObject* owner) {
-    std::lock_guard<std::mutex> lock(inv_mutex);
-    invincibles.insert(owner);
-}
-
-void CollisionManager::unsetInvincible(GameObject* owner) {
-    std::lock_guard<std::mutex> lock(inv_mutex);
-    invincibles.erase(owner);
 }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,

@@ -1,20 +1,18 @@
 #ifndef MARKEDATTACK_HPP
 #define MARKEDATTACK_HPP
 
-#include "Player.hpp"
-#include "Enemy.hpp"
 #include "EnemyAttack.hpp"
+#include "Player.hpp"
 
 class MarkedAttack : public EnemyAttack {
-private:
-    Player* target;
-
 public:
-    MarkedAttack(Enemy* owner, Player* player) : EnemyAttack(owner){target = player;};
-    MarkedAttack(Enemy* owner, Player* player, int networkId) : EnemyAttack(owner, networkId){target = player;};
+    std::vector<Collider*> colliders;
+    float latency;
 
+    MarkedAttack(Enemy* owner, std::vector<Player*> playerList);
+    MarkedAttack(Enemy* owner, std::vector<Player*> playerList, int networkId);
+    
     void update(float deltaTime) override;
-
     std::string ToString() override { return "EnemyAttack - Marked"; }
 };
 

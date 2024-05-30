@@ -1,6 +1,7 @@
 #include "EnemyAttack.hpp"
 #include "NetTransform.hpp"
 #include "Health.hpp"
+#include "Invincible.hpp"
 #include "Player.hpp"
 
 #include <iostream>
@@ -59,12 +60,16 @@ void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
     if (exist) {
         for (GameObject* entity : entity_hit) {
             if (entity != enemy) {
-                entity->GetComponent<Health>()->ChangeHealth(-damage);
-                //std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
+                if (!(entity->GetComponent<Invincible>() != nullptr
+                    && entity->GetComponent<Invincible>()->isInvincible)) {
+                    
+                    entity->GetComponent<Health>()->ChangeHealth(-damage);
+                    std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
+                    entity->GetComponent<Invincible>()->makeInvincible(1);
 
-                // Check for death
-                if(entity->GetComponent<Health>()->GetHealth() <= 0){
-                    dynamic_cast<Player*>(entity)->alive = false;
+                    if(entity->GetComponent<Health>()->GetHealth() <= 0){
+                        dynamic_cast<Player*>(entity)->alive = false;
+                    }
                 }
             }
         }

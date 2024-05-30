@@ -84,7 +84,8 @@ void Enemy::attack(){
             break;
 
         case PHASE3: // Mark / projectile
-            // TODO: AttackManager::instance().newMarkedAttack();
+            AttackManager::instance().newMarkedAttack();
+            // std::cout << "MarkedAttack!" << std::endl;
             break;
 
         case PHASE4: // Laser beams
