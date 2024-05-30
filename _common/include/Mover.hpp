@@ -7,7 +7,7 @@
 
 class Mover : public INetworkComponent {
 public:
-    float baseSpeed = 5.0f;
+    float baseSpeed = 10.0f;
     float speed;
     glm::vec2 input;
     glm::vec3 movementHeading;

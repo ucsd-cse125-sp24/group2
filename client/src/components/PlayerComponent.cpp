@@ -17,15 +17,7 @@ void PlayerComponent::Update(float deltaTime) {
                 break;
             }
             case(WALK): {
-                if (moverDirection.x > 0) {
-                    animationPlayer->play("right_strafe_walk");
-                } else if (moverDirection.x < 0) {
-                    animationPlayer->play("left_strafe_walk");
-                } else if (moverDirection.y > 0) {
-                    animationPlayer->play("walking");
-                } else {
-                    animationPlayer->play("walk_backward");
-                }
+                animationPlayer->play("running");
                 break;
             }
             case(RUN): {
