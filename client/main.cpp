@@ -108,13 +108,14 @@ int main(int argc, char** argv) {
     AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
     AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
 
-    //AudioManager::instance().AddPhase("../assets/audio/futuristic02-116bpm-Gbm.wav");
-    AudioManager::instance().AddPhase("../assets/audio/phase1.wav");
-    AudioManager::instance().AddPhase("../assets/audio/phase1transition2.wav");
-    AudioManager::instance().AddPhase("../assets/audio/phase2.wav");
-    AudioManager::instance().AddPhase("../assets/audio/phase3.wav");
-    AudioManager::instance().AddPhase("../assets/audio/endgame.wav");
-    AudioManager::instance().AddPhase("../assets/audio/final.wav");
+    AudioManager::instance().AddPhase(
+        "../assets/audio/futuristic02-116bpm-Gbm.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/phase1.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/phase1transition2.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/phase2.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/phase3.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/endgame.wav");
+    // AudioManager::instance().AddPhase("../assets/audio/final.wav");
 
     AudioManager::instance().SetBpm(232);
 

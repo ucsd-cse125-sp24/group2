@@ -26,7 +26,12 @@ public:
     void SetOffFirst(int off);
     void Play();
     void Update();
-    static FMOD_RESULT F_CALLBACK ChannelControlCallback(FMOD_CHANNELCONTROL* channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void* commanddata1, void* commanddata2);
+    void GoToNextAudioPhase();
+    static FMOD_RESULT F_CALLBACK
+    ChannelControlCallback(FMOD_CHANNELCONTROL* channelcontrol,
+                           FMOD_CHANNELCONTROL_TYPE controltype,
+                           FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                           void* commanddata1, void* commanddata2);
     void CheckPhase(int syncPoint);
 
 private:
@@ -52,8 +57,7 @@ private:
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {
             std::cerr << "FMOD error " << result << ": "
-                      << FMOD_ErrorString(result) << "in: "
-                      << s << std::endl;
+                      << FMOD_ErrorString(result) << "in: " << s << std::endl;
             exit(-1);
         }
     }
