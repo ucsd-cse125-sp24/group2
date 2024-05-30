@@ -13,16 +13,17 @@ set(SERVER_SOURCES
     main.cpp
     src/CollisionManager.cpp
     src/Mover.cpp
+    src/Health.cpp
     components/PlayerCombat.cpp
     prefabs/Enemy.cpp
     prefabs/PlayerAttack.cpp
     prefabs/AttackManager.cpp
     prefabs/EnemyAttack.cpp
-    prefabs/enemySkills/LaserAttack.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
+FILE(GLOB ENEMY_SKILLS prefabs/enemySkills/*.cpp)
 
-add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
+add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES} ${ENEMY_SKILLS})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
     "${CMAKE_CURRENT_LIST_DIR}/components"

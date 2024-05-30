@@ -31,6 +31,7 @@ set(
     # 125-Starter
     src/Player.cpp
     src/Mover.cpp
+    src/Health.cpp
     src/GameManager.cpp
     src/Player.cpp
 )
