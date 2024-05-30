@@ -37,6 +37,6 @@ void SwipeAttack::update(float deltaTime) {
     
     // instantaneous
     DealDamage(playersHit);
-    printf("HIT a swipe attack!\n");
+    // printf("HIT a swipe attack!\n");
     exist = false;
 }

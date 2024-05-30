@@ -4,6 +4,7 @@
 #include "Health.hpp"
 #include "LaserAttack.hpp"
 #include "SwipeAttack.hpp"
+#include "NetworkManager.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);
@@ -54,6 +55,15 @@ void AttackManager::newSwipeAttack() {
 }
 
 void AttackManager::update(float deltaTime) {
+    // this is such a wacky way to keep track of number of players alive rn
+    int numAlive = 0;
+    for (Player* player : playerList) {
+        if (player->GetComponent<Health>()->GetHealth() > 0) {
+            numAlive++;
+        }
+    }
+    NetworkManager::instance().numAlive = numAlive;
+
     std::lock_guard<std::mutex> playerlock(_player_attack_mutex);
     for(int i = playerAttackList.size() - 1; i >= 0; i--) {
         // iterate from the back to take care of the situ of removing inside loop

@@ -60,7 +60,7 @@ void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
         for (GameObject* entity : entity_hit) {
             if (entity != enemy) {
                 entity->GetComponent<Health>()->ChangeHealth(-damage);
-                //std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
+                std::cout << "New player " << dynamic_cast<Player*>(entity)->networkId() << " health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
 
                 // Check for death
                 if(entity->GetComponent<Health>()->GetHealth() <= 0){

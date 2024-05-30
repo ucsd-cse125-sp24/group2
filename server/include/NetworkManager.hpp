@@ -14,6 +14,7 @@ private:
     std::deque<std::pair<int, Packet*>> message_queue;
 
 public:
+    int numAlive = 0;
     void init();
     void update(float deltaTime);
     void send_state();
