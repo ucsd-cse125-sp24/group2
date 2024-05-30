@@ -51,7 +51,7 @@ void AudioManager::Update() {
 
     FMOD_System_Update(system);
 
-    result = FMOD_Channel_GetPosition(musicPhaseChannels[currentPhase], &position, FMOD_TIMEUNIT_MS);
+    result = FMOD_Channel_GetPosition(mainChannel, &position, FMOD_TIMEUNIT_MS);
     if (result != FMOD_OK) {
         return;
     }
@@ -117,30 +117,22 @@ void AudioManager::Update() {
 }
 
 void AudioManager::Play() {
-    for (int i = 0; i < musicPhases.size(); i++) {
-        result = FMOD_System_PlaySound(system, musicPhases[i], nullptr, false, &musicPhaseChannels[i]);
-        FMOD_Channel_SetVolume(musicPhaseChannels[i], 0.0f);
-        FMODErrorCheck(result);
-        result = FMOD_Channel_SetMode(musicPhaseChannels[i], FMOD_LOOP_NORMAL);
-        FMODErrorCheck(result);
-        
-        FMOD_RESULT result = FMOD_Channel_SetCallback(musicPhaseChannels[i], AudioManager::ChannelControlCallback);
-        FMODErrorCheck(result);
-
-        if (i == 0)
-            FMOD_Channel_SetVolume(musicPhaseChannels[i], 1.0f);
-    }
+    FMOD_Channel_SetVolume(musicPhasesChannels[0], 1.0f);
+    result = FMOD_System_PlaySound(system, musicPhases[0], nullptr, false, &musicPhaseChannels[0]);
+    FMODErrorCheck(result);
+    result = FMOD_Channel_SetMode(musicPhaseChannels[0], FMOD_LOOP_NORMAL);
+    FMODErrorCheck(result);
+    
+    FMOD_RESULT result = FMOD_Channel_SetCallback(mainChannel, AudioManager::ChannelControlCallback);
+    FMODErrorCheck(result);
     game_started = true;
 }
 
 void AudioManager::CheckPhase(int syncPoint) {
-    if (nextPhase > currentPhase) {
+    if (nextPhase > currentPhase && currentPhase == syncPoint) {
         // Set next phase's channel volume to 1
-        FMOD_Channel_SetVolume(musicPhaseChannels[nextPhase], 1.0f);
+        
         // Set current phase's channel volume to 0
-        FMOD_Channel_SetVolume(musicPhaseChannels[currentPhase], 0.0f);
-
-        currentPhase = nextPhase;
     }
 }
 
@@ -155,6 +147,9 @@ FMOD_RESULT F_CALLBACK AudioManager::ChannelControlCallback(FMOD_CHANNELCONTROL*
         printf("sync point %d\n", (intptr_t) commanddata1);
         int point = (intptr_t) commanddata1;
         AudioManager::instance().CheckPhase(point);
+        // Dequeue
+        /*
+        */
    }
 
     return FMOD_OK;
