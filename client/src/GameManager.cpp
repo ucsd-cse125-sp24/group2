@@ -159,5 +159,5 @@ void GameManager::destroy_object(Packet* pkt) {
 
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
-    AudioManager::instance().play();
+    //AudioManager::instance().play();
 }
