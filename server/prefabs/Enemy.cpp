@@ -76,7 +76,7 @@ void Enemy::attack(){
 
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now
-            this->currentPhase = PHASE4;
+            this->currentPhase = PHASE5;
             break;
         
         case PHASE2: // Stomp / shockwave
@@ -84,12 +84,22 @@ void Enemy::attack(){
             break;
 
         case PHASE3: // Mark / projectile
-            // TODO: AttackManager::instance().newMarkedAttack();
+            AttackManager::instance().newMarkedAttack();
+            std::cout << "MarkedAttack!" << std::endl;
+
+            this->currentPhase = PHASE1;
             break;
 
         case PHASE4: // Laser beams
             AttackManager::instance().newLaserAttack();
             std::cout << "LaserAttack!" << std::endl;
+
+            this->currentPhase = PHASE1;
+            break;
+        
+        case PHASE5: // Swipe
+            AttackManager::instance().newSwipeAttack();
+            std::cout << "SwipeAttack!" << std::endl;
 
             this->currentPhase = PHASE1;
             break;

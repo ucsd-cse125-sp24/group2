@@ -4,6 +4,7 @@
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
 #include "Health.hpp"
+#include "Invincible.hpp"
 
 Player::Player() : Entity() {
     alive = true;
@@ -18,6 +19,8 @@ Player::Player() : Entity() {
     CollisionManager::instance().add(this);
     Health* h = new Health(this, 100);
     AddComponent(h);
+    Invincible* invinc = new Invincible(this);
+    AddComponent(invinc);
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
@@ -28,4 +31,6 @@ Player::Player() : Entity() {
 void Player::update(float deltaTime) {
     if (GetComponent<Mover>() != nullptr)
         GetComponent<Mover>()->Update();
+    if (GetComponent<Invincible>() != nullptr)
+        GetComponent<Invincible>()->update(deltaTime);
 }

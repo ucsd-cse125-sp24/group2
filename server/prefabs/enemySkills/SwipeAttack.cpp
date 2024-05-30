@@ -1,42 +1,51 @@
 #include "SwipeAttack.hpp"
 #include "CollisionManager.hpp"
 
+# define PI           3.14159265358979323846
+# define EFFECTRANGE  2*PI/3
+# define DAMAGERANGE  PI/3
+# define RADIUS       50
+# define HEIGHT       5
+# define ANGSPEED     PI/3
+# define LIFE         (EFFECTRANGE-DAMAGERANGE)/ANGSPEED
 # define DAMAGE       15
 
-void SwipeAttack::init(Player* p){
-    this->target = p;
-    this->SetDamage(DAMAGE);
-}
 
-void SwipeAttack::addCollider(){
-    Collider* attackC = new Collider(this, target->GetComponent<Collider>());
+void SwipeAttack::addCollider(Enemy* owner){
+    Collider* attackC = new Collider(this, owner->GetComponent<Collider>());
 
-    // TODO: test and refactor magic numbers
-    attackC->makeSector(6);
-    //attackC->SetStartAngle(attackC->GetStartAngle() + right_angles[0]);
-    //attackC->SetEndAngle(attackC->GetEndAngle() + right_angles[1]);
-    attackC->SetHeight(3);
-    attackC->SetRadius(500);
+    attackC->makeSector(DAMAGERANGE);
+    // swipe starting from right to left because moveBossSwipe 
+    attackC->SetStartAngle(attackC->GetStartAngle() - (EFFECTRANGE - DAMAGERANGE)/2);
+    attackC->SetEndAngle(attackC->GetEndAngle() - (EFFECTRANGE - DAMAGERANGE)/2);
+    attackC->SetHeight(HEIGHT);
+    attackC->SetRadius(RADIUS);
     this->AddComponent(attackC);
 }
 
-SwipeAttack::SwipeAttack(Enemy* owner, Player* target) : EnemyAttack(owner){
-    init(target);
-    addCollider();
+// Note: enemy should be facing target player
+SwipeAttack::SwipeAttack(Enemy* owner) : EnemyAttack(owner){
+    this->SetDamage(DAMAGE);
+    lifetime = LIFE;
+    addCollider(owner);
 };
 
-SwipeAttack::SwipeAttack(Enemy* owner, Player* target, int networkId) : EnemyAttack(owner, networkId){
-    init(target);
-    addCollider();
+// Note: enemy should be facing target player
+SwipeAttack::SwipeAttack(Enemy* owner, int networkId) : EnemyAttack(owner, networkId){
+    this->SetDamage(DAMAGE);
+    lifetime = LIFE;
+    addCollider(owner);
 };
 
-// TODO : make it sweep
+
 void SwipeAttack::update(float deltaTime) {
+    lifetime -= deltaTime;
+    if (lifetime <= 0) {
+        exist = false;
+        return;
+    }
     Collider* EnemyAttackCollider = this->GetComponent<Collider>();
-    std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, 0.0); // get players hit at this instant
-    
-    // instantaneous
+    std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, deltaTime * ANGSPEED); // get players hit at this instant
+
     DealDamage(playersHit);
-    // printf("HIT a swipe attack!\n");
-    exist = false;
 }
