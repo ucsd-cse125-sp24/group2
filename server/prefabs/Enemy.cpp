@@ -58,6 +58,7 @@ void Enemy::update(float deltaTime) {
  * rotating lasers
 */
 void Enemy::attack(){
-    AttackManager::instance().newLaserAttack();
-    std::cout << "LaserAttack!" << std::endl;
+    // AttackManager::instance().newLaserAttack();
+    AttackManager::instance().newMarkedAttack();
+    std::cout << "MarkedAttack!" << std::endl;
 }

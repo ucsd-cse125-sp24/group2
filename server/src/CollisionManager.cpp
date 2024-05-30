@@ -49,8 +49,8 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 
-            && pair.second->GetComponent<Invincible>() != nullptr
-            && !pair.second->GetComponent<Invincible>()->isInvincible) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -69,8 +69,8 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider) 
-            && pair.second->GetComponent<Invincible>() != nullptr
-            && !pair.second->GetComponent<Invincible>()->isInvincible) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -78,15 +78,14 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 }
 
 // return a list of GameObjects that mark-attack hits
-std::vector<GameObject*> CollisionManager::moveBossMark(GameObject* owner) {
+std::vector<GameObject*> CollisionManager::moveBossMark(Collider* attCollider) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
     std::vector<GameObject*> hitObjects;
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider)
-            && pair.second->GetComponent<Invincible>() != nullptr
-            && !pair.second->GetComponent<Invincible>()->isInvincible) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }

@@ -34,7 +34,7 @@ public:
 
     std::vector<GameObject*> moveBossSwipe(Collider* attCollider, float amount);
     std::vector<GameObject*> moveBossShockwave(GameObject* owner, float newRadius);
-    std::vector<GameObject*> moveBossMark(GameObject* owner);
+    std::vector<GameObject*> moveBossMark(Collider* attCollider);
     bool move(GameObject* owner, glm::vec3 newPosition);
 
     // These may not need to be public in the future

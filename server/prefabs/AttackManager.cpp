@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Health.hpp"
 #include "LaserAttack.hpp"
+#include "MarkedAttack.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);
@@ -14,13 +15,6 @@ void AttackManager::newPlayerAttack(Player* p) {
 
 void AttackManager::addPlayer(Player* p) {
     std::lock_guard<std::mutex> lock(_player_mutex);
-    // Initialize and Register Player Collider in CollisionManager
-    Collider* c = new Collider(p, p->GetComponent<NetTransform>());
-    c->SetRadius(10);
-    c->SetHeight(10);
-    c->SetRotation(glm::vec3(1, 0, 0));
-    p->AddComponent(c);
-    CollisionManager::instance().add(p);
     playerList.push_back(p);
 }
 
@@ -39,11 +33,10 @@ void AttackManager::newLaserAttack() {
 //     enemyAttackList.push_back(stompAtt);
 // }
 
-// TODO
-// void AttackManager::newMarkedAttack() {
-//     MarkedAttack* markedAtt = new MarkedAttack();
-//     enemyAttackList.push_back(markedAtt);
-// }
+void AttackManager::newMarkedAttack() {
+    MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
+    enemyAttackList.push_back(markedAtt);
+}
 
 // TODO
 // void AttackManager::newSwipeAttack() {

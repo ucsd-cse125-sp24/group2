@@ -59,8 +59,9 @@ void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
     if (exist) {
         for (GameObject* entity : entity_hit) {
             if (entity != enemy) {
-                if (entity->GetComponent<Invincible>() != nullptr
-                && !entity->GetComponent<Invincible>()->isInvincible) {
+                if (!(entity->GetComponent<Invincible>() != nullptr
+                    && entity->GetComponent<Invincible>()->isInvincible)) {
+                    
                     entity->GetComponent<Health>()->ChangeHealth(-damage);
                     std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
                     entity->GetComponent<Invincible>()->makeInvincible(1);
