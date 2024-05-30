@@ -60,6 +60,12 @@ void AudioManager::Update() {
     }
     position = position - offset_first_beat;
 
+    if (position - lastPosition >= interval) {
+        EventArgs* e = new BeatEventArgs(position / interval);
+        Beat.invoke(e);
+        lastPosition = position;
+    }
+
     FMOD_SOUND* selectedSound = nullptr;
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::PLAYER_ATTACK);
@@ -124,7 +130,7 @@ void AudioManager::Play() {
     result = FMOD_System_PlaySound(system, musicPhases[0], nullptr, false,
                                    &musicPhaseChannels[0]);
     FMODErrorCheck(result);
-    result = FMOD_Channel_SetMode(musicPhaseChannels[0], FMOD_LOOP_NORMAL);
+    result = FMOD_Channel_SetMode(musicPhaseChannels[0], FMOD_LOOP_OFF);
     FMODErrorCheck(result);
 
     FMOD_RESULT result = FMOD_Channel_SetCallback(
@@ -139,7 +145,6 @@ void AudioManager::CheckPhase(int syncPoint) {
         return;
     }
 
-    printf("sync point %d\n", syncPoint);
     FMOD_SYNCPOINT* sp;
     unsigned int nextOffset;
     if (nextPhase > currentPhase) {
@@ -151,6 +156,8 @@ void AudioManager::CheckPhase(int syncPoint) {
 
     FMOD_Sound_GetSyncPointInfo(musicPhases[0], sp, nullptr, 0, &nextOffset,
                                 FMOD_TIMEUNIT_PCM);
+    position = nextOffset;
+    lastPosition = position;
     FMOD_Channel_SetPosition(musicPhaseChannels[0], nextOffset,
                              FMOD_TIMEUNIT_PCM);
 

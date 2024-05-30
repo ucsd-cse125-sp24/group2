@@ -27,6 +27,7 @@ set(
     src/components/Model.cpp
     src/components/RendererComponent.cpp
     src/components/PlayerComponent.cpp
+    src/components/BeatSyncComponent.cpp
     prefabs/Enemy.cpp
 
     # 125-Starter

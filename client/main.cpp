@@ -16,6 +16,7 @@
 #include "AssetManager.hpp"
 #include "components/RendererComponent.hpp"
 #include "EntityBase.hpp"
+#include "components/BeatSyncComponent.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -154,6 +155,12 @@ int main(int argc, char** argv) {
     AudioManager::instance().Play();
     // Loop phase 1 because intro has a cymbal crash
     AudioManager::instance().GoToNextAudioPhase();
+
+    GameObject* x = new GameObject();
+
+    IComponent* beat = new BeatSyncComponent();
+    x->AddComponent(beat);
+    GameManager::instance().scene.Instantiate(x);
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
