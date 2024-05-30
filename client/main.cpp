@@ -151,6 +151,8 @@ int main(int argc, char** argv) {
     std::cout << "  Finished updating AssetManager" << std::endl;
 
     AudioManager::instance().Play();
+    // Loop phase 1 because intro has a cymbal crash
+    AudioManager::instance().GoToNextAudioPhase();
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
