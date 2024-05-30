@@ -16,7 +16,7 @@
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
-    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);
@@ -31,7 +31,7 @@ Enemy::Enemy() : Entity() {
 
 Enemy::Enemy(int networkId) : Entity(networkId){
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
-    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);

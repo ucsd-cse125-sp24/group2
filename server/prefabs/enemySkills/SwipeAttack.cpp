@@ -1,7 +1,7 @@
 #include "SwipeAttack.hpp"
 #include "CollisionManager.hpp"
 
-# define PI           3.14159265358979323846
+# define PI           180
 # define EFFECTRANGE  2*PI/3
 # define DAMAGERANGE  PI/3
 # define RADIUS       50
@@ -45,7 +45,7 @@ void SwipeAttack::update(float deltaTime) {
         return;
     }
     Collider* EnemyAttackCollider = this->GetComponent<Collider>();
-    std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, deltaTime * ANGSPEED); // get players hit at this instant
+    std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, deltaTime * ANGSPEED);
 
     DealDamage(playersHit);
 }

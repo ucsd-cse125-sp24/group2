@@ -1,8 +1,9 @@
 #include "LaserAttack.hpp"
 #include <iostream>
 
-# define PI           3.14159265358979323846
-# define ANGRANGE     0.01
+// PI is in degree, not radian, as rotation is in degree
+# define PI           180
+# define ANGRANGE     1
 # define RADIUS       500
 # define HEIGHT       3
 # define ANGSPEED     PI/16
@@ -69,6 +70,6 @@ void LaserAttack::update(float deltaTime) {
     // std::cout << "Right: " << attackRight->GetStartAngle() << " " << attackRight->GetEndAngle() << std::endl;
 
     float newCenterAngle = (attackFront->GetStartAngle() + attackFront->GetEndAngle())/2;
-    glm::vec3 newRotation = glm::normalize(glm::vec3(std::cos(newCenterAngle), 0, std::sin(newCenterAngle)));
+    glm::vec3 newRotation = glm::vec3(0, newCenterAngle, 0);
     this->GetComponent<NetTransform>()->SetRotation(newRotation);
 }
