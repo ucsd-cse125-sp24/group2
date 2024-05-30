@@ -17,6 +17,8 @@
 #include "prefabs/Enemy.hpp"
 #include "Mover.hpp"
 #include "AttackManager.hpp"
+#include "CooldownComponent.hpp"
+#include "MovementStateMachine.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -99,8 +101,8 @@ void NetworkManager::process_input() {
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
         case PacketType::PLAYER_INPUT: {
-            char input[5];
-            for (int i = 0; i < 5; i++) {
+            char input[INPUT_LEN];
+            for (int i = 0; i < INPUT_LEN; i++) {
                 packet->read_byte(&input[i]);
             }
 
@@ -112,15 +114,14 @@ void NetworkManager::process_input() {
             //           << (float)input[1] << ", " << (float)input[2] << ", "
             //           << (float)input[3] << std::endl;
 
-            clients[client_id]->p->GetComponent<Mover>()->input.x =
-                (float)input[3] - (float)input[1];
-            clients[client_id]->p->GetComponent<Mover>()->input.y =
-                (float)input[0] - (float)input[2];
-            if (input[4] == 1) {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 9.0f;
-            } else {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 4.0f;
+            Player* currPlayer = clients[client_id]->p;
+            Mover* currMover = currPlayer->GetComponent<Mover>();
+
+            for (int i = 0; i < INPUT_LEN; ++i) {
+                currMover->inputs[i] = input[i];
             }
+            currMover->input.x = (float)input[3] - (float)input[1];
+            currMover->input.y = (float)input[0] - (float)input[2];
 
             break;
         }
