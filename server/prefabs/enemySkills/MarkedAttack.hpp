@@ -1,3 +1,6 @@
+#ifndef MARKEDATTACK_HPP
+#define MARKEDATTACK_HPP
+
 #include "EnemyAttack.hpp"
 #include "Player.hpp"
 
@@ -8,5 +11,9 @@ public:
 
     MarkedAttack(Enemy* owner, std::vector<Player*> playerList);
     MarkedAttack(Enemy* owner, std::vector<Player*> playerList, int networkId);
+    
     void update(float deltaTime) override;
+    std::string ToString() override { return "EnemyAttack - Marked"; }
 };
+
+#endif // MARKEDATTACK_HPP

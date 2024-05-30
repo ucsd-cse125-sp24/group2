@@ -5,9 +5,6 @@
 #include "AnimationClip.h"
 
 void RendererComponent::Render(glm::mat4 view) {
-    Model* modelComponent = owner->GetComponent<Model>();
-    modelComponent->draw(view, Shader::GetShader(type));
-
     // Render animations, if applicable
     if (auto anim = owner->GetComponent<AnimationPlayer>()) {
         auto transforms = anim->getFinalBoneMatrices();
@@ -20,4 +17,7 @@ void RendererComponent::Render(glm::mat4 view) {
                 1, GL_FALSE, glm::value_ptr(transforms[i]));
         }
     }
+
+    Model* modelComponent = owner->GetComponent<Model>();
+    modelComponent->draw(view, Shader::GetShader(type));
 }

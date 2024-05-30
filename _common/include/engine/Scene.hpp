@@ -7,7 +7,9 @@
 
 class Scene {
 public:
-    Scene() {}
+    bool gameActive;
+    
+    Scene() {gameActive = false;}
 
     EventHandler<ObjectEventArgs> object_removed;
     EventHandler<ObjectEventArgs> object_added;

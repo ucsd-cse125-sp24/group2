@@ -7,6 +7,7 @@
 #include "Invincible.hpp"
 
 Player::Player() : Entity() {
+    alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
     PlayerCombat* playerCombat = new PlayerCombat();

@@ -1,7 +1,15 @@
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 #include "NetTransform.hpp"
 #include "CollisionManager.hpp"
 #include "Player.hpp"
+
+// Types of Attacks
+#include "prefabs/enemySkills/LaserAttack.hpp"
+#include "prefabs/enemySkills/MarkedAttack.hpp"
+#include "prefabs/enemySkills/StompAttack.hpp"
+#include "prefabs/enemySkills/SwipeAttack.hpp"
+#include "prefabs/EnemyAttack.hpp"
+
 #include "Health.hpp"
 #include "AttackManager.hpp"
 #include <iostream>
@@ -28,7 +36,7 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     //TODO: test size values
     hitbox->SetRadius(50);
     hitbox->SetHeight(20);
-    
+
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
@@ -51,14 +59,43 @@ void Enemy::update(float deltaTime) {
 }
 
 /**
- * TODO: attack with type based on enemy phase:
+ * attack with type based on enemy phase:
  * swipe (based on proximity)
  * expanding shockwaves
  * throw boulders/AoE targeted attacks
  * rotating lasers
 */
 void Enemy::attack(){
-    // AttackManager::instance().newLaserAttack();
-    AttackManager::instance().newMarkedAttack();
-    std::cout << "MarkedAttack!" << std::endl;
+    // TODO: check for proximity
+    /* if (close to player)
+            SwipeAttack(player.position)
+    */
+
+    AttackManager::instance().newSwipeAttack();
+    std::cout << "SwipeAttack!" << std::endl;
+
+    switch(this->currentPhase){
+        case PHASE1: // Default? Do nothing for now
+            this->currentPhase = PHASE4;
+            break;
+        
+        case PHASE2: // Stomp / shockwave
+            // TODO: AttackManager::instance().newStompAttack();
+            break;
+
+        case PHASE3: // Mark / projectile
+            AttackManager::instance().newMarkedAttack();
+            // std::cout << "MarkedAttack!" << std::endl;
+            break;
+
+        case PHASE4: // Laser beams
+            AttackManager::instance().newLaserAttack();
+            std::cout << "LaserAttack!" << std::endl;
+
+            this->currentPhase = PHASE1;
+            break;
+
+        default: // For now, nothing. Possibly a phase 5?
+            break;
+    }
 }

@@ -4,6 +4,7 @@
 #include "Health.hpp"
 #include "LaserAttack.hpp"
 #include "MarkedAttack.hpp"
+#include "SwipeAttack.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);
@@ -38,11 +39,12 @@ void AttackManager::newMarkedAttack() {
     enemyAttackList.push_back(markedAtt);
 }
 
-// TODO
-// void AttackManager::newSwipeAttack() {
-//     SwipeAttack* swipeAtt = new SwipeAttack();
-//     enemyAttackList.push_back(swipeAtt);
-// }
+void AttackManager::newSwipeAttack() {
+    if(!playerList.empty()){
+        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab, playerList.at(0));
+        enemyAttackList.push_back(swipeAtt);
+    }
+}
 
 void AttackManager::update(float deltaTime) {
     std::lock_guard<std::mutex> playerlock(_player_attack_mutex);

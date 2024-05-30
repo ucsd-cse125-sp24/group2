@@ -2,6 +2,7 @@
 #include "NetTransform.hpp"
 #include "Health.hpp"
 #include "Invincible.hpp"
+#include "Player.hpp"
 
 #include <iostream>
 
@@ -65,6 +66,10 @@ void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
                     entity->GetComponent<Health>()->ChangeHealth(-damage);
                     std::cout << "New player health: " << entity->GetComponent<Health>()->GetHealth() << std::endl;
                     entity->GetComponent<Invincible>()->makeInvincible(1);
+
+                    if(entity->GetComponent<Health>()->GetHealth() <= 0){
+                        dynamic_cast<Player*>(entity)->alive = false;
+                    }
                 }
             }
         }
