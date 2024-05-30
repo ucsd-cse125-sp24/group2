@@ -268,6 +268,7 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
     // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    
     glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
     p->GetComponent<NetTransform>()->SetPosition(position);
     AttackManager::instance().addPlayer(p);

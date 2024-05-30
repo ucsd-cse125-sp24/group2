@@ -29,6 +29,13 @@ set(
     src/components/PlayerComponent.cpp
     prefabs/Enemy.cpp
 
+    # HUD
+    src/HealthBar.cpp
+    src/Metronome.cpp
+    src/Quad.cpp
+    src/TeamInfo.cpp
+    src/HUD.cpp
+
     # 125-Starter
     src/Player.cpp
     src/Mover.cpp

@@ -1,10 +1,10 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "Window.h"
 #include "Client.h"
 #include "core.h"
 #include "InputManager.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include "GameManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include "GameObject.hpp"
@@ -110,13 +110,6 @@ int main(int argc, char** argv) {
 
     AudioManager::instance().AddPhase(
         "../assets/audio/futuristic02-116bpm-Gbm.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/phase1.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/phase1transition2.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/phase2.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/phase3.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/endgame.wav");
-    // AudioManager::instance().AddPhase("../assets/audio/final.wav");
-
     AudioManager::instance().SetBpm(232);
 
     std::cout << "Updating AssetManager" << std::endl;
@@ -133,15 +126,16 @@ int main(int argc, char** argv) {
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
 
-        std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
-            std::cout << "  Clip name: " << clip->getName() << std::endl;
+            // std::cout << "  Clip name: " << clip->getName() << std::endl;
             AssetManager::Instance().AddClipToMapping(path, clip);
         }
     }
-    GameObject* go = new GameObject();
+
+    // ground
+    EntityBase* go = new EntityBase();
     Model* model = new Model(go, "../assets/ground/plane.gltf", false);
     go->AddComponent(model);
     RendererComponent* renderer =
@@ -149,11 +143,27 @@ int main(int argc, char** argv) {
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
 
+    // bear
+    EntityBase* bear = new EntityBase();
+    Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
+    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    bear->AddComponent(bearModel);
+    AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
+    bear->AddComponent(bearAnimationPlayer);
+    std::vector<AnimationClip*> prefabClips =
+        AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
+    for (int i = 0; i < prefabClips.size(); ++i) {
+        AnimationClip* clip = new AnimationClip(prefabClips[i]);
+        // std::cout << "Adding clip: " << clip->getName()
+        //           << std::endl;
+        bear->GetComponent<AnimationPlayer>()->AddClip(clip);
+    }
+    RendererComponent* bearRenderer =
+        new RendererComponent(bear, ShaderType::ANIMATED);
+    bear->AddComponent(bearRenderer);
+    bear->GetComponent<AnimationPlayer>()->play("idle");
+    GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
-
-    AudioManager::instance().Play();
-    // Loop phase 1 because intro has a cymbal crash
-    AudioManager::instance().GoToNextAudioPhase();
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;

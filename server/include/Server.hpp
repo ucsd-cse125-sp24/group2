@@ -12,7 +12,7 @@
 #include "psocket.hpp"
 #include "EventArgs.hpp"
 
-#define MAX_CLIENTS 3
+#define MAX_CLIENTS 1
 #define SERVER_PORT 25565
 class Server {
 private:

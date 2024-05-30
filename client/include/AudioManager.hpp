@@ -20,6 +20,9 @@ public:
         static AudioManager a;
         return a;
     }
+    int getBpm() const;
+    bool isStarted() const;
+    unsigned int getPosition() const;
     void AddNote(const char* filename, char key);
     void AddPhase(const char* filename);
     void SetBpm(int b);

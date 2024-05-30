@@ -4,6 +4,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
            std::vector<Texture> textures)
     : vertices(vertices), indices(indices), textures(textures) {
     modelMtx = glm::mat4(1.0f);
+    scale = glm::vec3(1.0f);
     // rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
     // rotation = glm::rotate(rotation, glm::radians(-90.0f), glm::vec3(1.0f,
     // 0.0f, 0.0f));
@@ -20,6 +21,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
     : vertices(vertices), indices(indices) {
     modelMtx = glm::mat4(1.0f);
+    scale = glm::vec3(1.0f);
     color = glm::vec3(1.0f, 0.95f, 0.1f);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -58,6 +60,7 @@ void Mesh::binding() {
 
 void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     // bind appropriate textures
+    glUseProgram(shader);
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
@@ -85,7 +88,6 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
-    glUseProgram(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false,
                        (float*)&viewProjMtx);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
@@ -96,21 +98,26 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-    glUseProgram(0);
-
     glActiveTexture(GL_TEXTURE0);
+    glUseProgram(0);
 }
 
 void Mesh::setPosition(glm::vec3 pos) { position = pos; }
 
 void Mesh::setRotation(glm::vec3 rot) { rotation = rot; }
 
-void Mesh::update(float dt, glm::vec3 pos, glm::vec3 rot) {
+void Mesh::update(float dt, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale) {
     position = pos;
     rotation = rot;
+    this->scale = scale;
+    // std::cout<<"Scale in mesh: " << glm::to_string(this->scale) << std::endl;
     // std::cout<<"position: "<<glm::to_string(position)<<std::endl;
-    modelMtx = glm::translate(position);
+    modelMtx = glm::translate(position) * glm::scale(glm::mat4(1.0f), this->scale);
+    // modelMtx = glm::translate(position);
+    // std::cout<<"position matrix" << glm::to_string(modelMtx) << std::endl;
     modelMtx = glm::rotate(modelMtx, glm::radians(rot.y), glm::vec3(0, 1, 0));
     modelMtx = glm::rotate(modelMtx, glm::radians(rot.x), glm::vec3(1, 0, 0));
     modelMtx = glm::rotate(modelMtx, glm::radians(rot.z), glm::vec3(0, 0, 1));
 }
+
+void Mesh::setScale(glm::vec3 scale) { this->scale = scale; }

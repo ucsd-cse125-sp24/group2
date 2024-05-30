@@ -58,7 +58,8 @@ void AudioManager::Update() {
     if (result != FMOD_OK) {
         return;
     }
-    position = position - offset_first_beat;
+    // std::cout<<"position: "<< position << std::endl;
+    // position = position - offset_first_beat;
 
     FMOD_SOUND* selectedSound = nullptr;
     Packet* pkt = new Packet();
@@ -133,6 +134,12 @@ void AudioManager::Play() {
 
     game_started = true;
 }
+
+int AudioManager::getBpm() const { return bpm; }
+
+bool AudioManager::isStarted() const { return game_started; }
+
+unsigned int AudioManager::getPosition() const { return position; }
 
 void AudioManager::CheckPhase(int syncPoint) {
     if (syncPoint != currentPhase + 1) {
