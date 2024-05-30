@@ -103,15 +103,20 @@ int main(int argc, char** argv) {
     });
     GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
-    AudioManager::instance().addNote("../assets/audio/Fsharp.wav", 'i');
-    AudioManager::instance().addNote("../assets/audio/Gsharp.wav", 'j');
-    AudioManager::instance().addNote("../assets/audio/A.wav", 'k');
-    AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
+    AudioManager::instance().AddNote("../assets/audio/Fsharp.wav", 'i');
+    AudioManager::instance().AddNote("../assets/audio/Gsharp.wav", 'j');
+    AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
+    AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
 
-    AudioManager::instance().setMain(
-        "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
-    AudioManager::instance().setBpm(232);
-    // AudioManager::instance().play();
+    //AudioManager::instance().AddPhase("../assets/audio/futuristic02-116bpm-Gbm.wav");
+    AudioManager::instance().AddPhase("../assets/audio/phase1.wav");
+    AudioManager::instance().AddPhase("../assets/audio/phase1transition2.wav");
+    AudioManager::instance().AddPhase("../assets/audio/phase2.wav");
+    AudioManager::instance().AddPhase("../assets/audio/phase3.wav");
+    AudioManager::instance().AddPhase("../assets/audio/endgame.wav");
+    AudioManager::instance().AddPhase("../assets/audio/final.wav");
+
+    AudioManager::instance().SetBpm(232);
 
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::string> modelPaths;
@@ -127,8 +132,6 @@ int main(int argc, char** argv) {
         assert(scene && scene->mRootNode);
 
         std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
-        // std::map<std::string, AnimationClip*> animations =
-        // std::map<std::string, AnimationClip*>();
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
@@ -146,14 +149,7 @@ int main(int argc, char** argv) {
 
     std::cout << "  Finished updating AssetManager" << std::endl;
 
-    // AssetManager::instance().AddModelPathToClips("hello", {
-    //     new AnimationClip(nullptr,
-    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf",
-    //         new Model(nullptr,
-    //         "../assets/male_basic_walk_30_frames_loop/scene.gltf", true)
-    //     ),
-
-    // });
+    AudioManager::instance().Play();
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
@@ -165,7 +161,7 @@ int main(int argc, char** argv) {
         deltaTime = newTime - currentTime;
         currentTime = newTime;
 
-        AudioManager::instance().update();
+        AudioManager::instance().Update();
 
         // send input
         timer += deltaTime;
