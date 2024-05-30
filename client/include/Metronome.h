@@ -18,9 +18,10 @@ private:
     int bpm = 0;
     glm::mat4 modelMtx;
     GLuint shader;
-    float beatDuration = 0.0f;
+    int beatDuration = 0;
     Quad* quad;
     Quad* quad2;
     float min = 0.0f;
     float max = 0.0f;
+    float sumTime = 0.0f;
 };

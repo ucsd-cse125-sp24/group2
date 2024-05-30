@@ -12,6 +12,7 @@ public:
     ~Quad();
     void draw(float aspectRatio);
     void update();
+    void setRotation(float angle, glm::vec3 axis);
     void setPosition(glm::vec3 pos);
     void setTexture(const char* path, const std::string& directory);
     void setSize(float size);
@@ -27,6 +28,7 @@ private:
     std::vector<unsigned int> indices;
     GLuint VBO_Pos, VBO_TexCoods, EBO;
     glm::vec3 position;
+    glm::quat rotation;
     float size;
     GLuint VAO;
     GLuint shader;

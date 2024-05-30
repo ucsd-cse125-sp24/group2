@@ -82,12 +82,13 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 3) {
+                if (players.size() == 1) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
                 }
                 if(localPlayerObject == network_id) {
+                    std::cout<<"HERE"<<std::endl;
                     HUDs* hudComponent = new HUDs(playerPrefab);
                         playerPrefab->AddComponent(hudComponent);
                 }
@@ -119,6 +120,7 @@ void GameManager::update(Packet* pkt) {
                     playerPos +
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
                     glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
+                
             }
 
             break;

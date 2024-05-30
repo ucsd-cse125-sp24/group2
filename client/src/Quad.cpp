@@ -140,7 +140,7 @@ void Quad::setSize(float width, float height) {
 }
     
 const glm::mat4& Quad::getModelMtx(){
-    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), scale);
+    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1.0f), scale);
     return modelMtx;
 }
 
@@ -151,4 +151,8 @@ void Quad::update() {
 void Quad::setTexture(const char* path, const std::string& directory) {
     unsigned int texture = Helper::textureFromFile(path, directory);
     textures.push_back(texture);
+}
+
+void Quad::setRotation(float angle, glm::vec3 axis) {
+    rotation =  glm::rotate(rotation, angle, axis);
 }
