@@ -12,7 +12,7 @@ Player::Player() : Entity() {
     Collider* collider = new Collider(this);
     collider->SetRadius(30);
     collider->SetHeight(10);
-    // AddComponent(collider);
+    AddComponent(collider);
     CollisionManager::instance().add(this);
 
     // I = 73, J = 74, K = 75, L = 76
