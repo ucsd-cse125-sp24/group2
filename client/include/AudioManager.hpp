@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdlib>
 #include <thread>
+#include <deque>
 
 class AudioManager {
 
@@ -19,24 +20,34 @@ public:
         static AudioManager a;
         return a;
     }
-    void setMain(const char* filename, double volume);
-    void addNote(const char* filename, char key);
-    void setBpm(int b);
-    void setOffFirst(int off);
-    void play();
-    void update();
     int getBpm() const;
     bool isStarted() const;
     unsigned int getPosition() const;
+    void AddNote(const char* filename, char key);
+    void AddPhase(const char* filename);
+    void SetBpm(int b);
+    void SetOffFirst(int off);
+    void Play();
+    void Update();
+    void GoToNextAudioPhase();
+    static FMOD_RESULT F_CALLBACK
+    ChannelControlCallback(FMOD_CHANNELCONTROL* channelcontrol,
+                           FMOD_CHANNELCONTROL_TYPE controltype,
+                           FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype,
+                           void* commanddata1, void* commanddata2);
+    void CheckPhase(int syncPoint);
 
 private:
     FMOD_SYSTEM* system;
-    FMOD_SOUND* main;
     FMOD_CHANNEL* mainChannel = nullptr;
+    std::vector<FMOD_CHANNEL*> musicPhaseChannels;
+    std::vector<FMOD_SOUND*> musicPhases;
     FMOD_CHANNEL* noteChannel = nullptr;
     FMOD_RESULT result;
     std::unordered_map<char, FMOD_SOUND*> noteMap;
 
+    int currentPhase = 0;
+    int nextPhase = 0;
     int bpm;
     int interval;
     int offset_first_beat = 0;
@@ -49,8 +60,7 @@ private:
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {
             std::cerr << "FMOD error " << result << ": "
-                      << FMOD_ErrorString(result) << "in: "
-                      << s << std::endl;
+                      << FMOD_ErrorString(result) << "in: " << s << std::endl;
             exit(-1);
         }
     }

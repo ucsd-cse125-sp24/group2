@@ -20,15 +20,15 @@ bool Window::initializeProgram() {
                              "shaders/model.frag");
     res = Shader::LoadShader(ShaderType::ANIMATED, "shaders/shader.vert",
                              "shaders/shader.frag");
-    res = Shader::LoadShader(ShaderType::HUD, "shaders/HUD.vert", 
-                            "shaders/HUD.frag");
+    res = Shader::LoadShader(ShaderType::HUD, "shaders/HUD.vert",
+                             "shaders/HUD.frag");
     // Check the shader program.
     if (!res) {
         std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
     // hud = new HUDs();
-    
+
     // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
     // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
     // metronome = new Metronome(60.0f);
@@ -109,20 +109,19 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
             animationPlayer->update(deltaTime);
         }
 
-        if (auto renderer = entity->GetComponent<RendererComponent>()) 
+        if (auto renderer = entity->GetComponent<RendererComponent>())
             renderer->Render(camera->GetViewProjectMtx());
     }
 
     // Render 2D screen
     glDisable(GL_DEPTH_TEST);
     for (auto& entity : scene->entities) {
-        if(auto huds = entity->GetComponent<HUDs>()) {
+        if (auto huds = entity->GetComponent<HUDs>()) {
             huds->update(deltaTime);
             huds->draw(camera->GetAspect());
         }
     }
     glEnable(GL_DEPTH_TEST);
-
 
     glfwPollEvents();
     // Swap buffers.

@@ -26,6 +26,7 @@ public:
     virtual std::string ToString();
     virtual void AddComponent(IComponent* newComponent);
     virtual void RemoveComponent(IComponent* comp);
+    virtual void update(float deltaTime) {};
 
     /**
      * Takes type as "argument" in template, returns IComponent*
