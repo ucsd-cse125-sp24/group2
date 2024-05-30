@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <thread>
 #include <deque>
+#include "Event.hpp"
+
+#define SONG_SAMPLE_RATE 48000
 
 class AudioManager {
 
@@ -23,6 +26,7 @@ public:
     int getBpm() const;
     bool isStarted() const;
     unsigned int getPosition() const;
+    EventHandler<EventArgs> Beat;
     void AddNote(const char* filename, char key);
     void AddPhase(const char* filename);
     void SetBpm(int b);
@@ -53,6 +57,7 @@ private:
     int offset_first_beat = 0;
     bool isRunning = true;
     unsigned int position = 0;
+    unsigned int lastPosition = 0;
     bool pressed = false;
     bool waspressed = false;
     bool game_started = false;

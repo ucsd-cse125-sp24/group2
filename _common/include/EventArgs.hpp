@@ -33,4 +33,10 @@ typedef struct DestroyedEventArgs : public EventArgs {
     DestroyedEventArgs(std::vector<int> destroyedObjectIds)
         : destroyedObjectIds(destroyedObjectIds) {}
 } DestroyedEventArgs;
+
+typedef struct BeatEventArgs : public EventArgs {
+    int beat;
+
+    BeatEventArgs(int beat) : beat(beat) {}
+} BeatEventArgs;
 #endif
