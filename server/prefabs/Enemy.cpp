@@ -4,11 +4,11 @@
 #include "Player.hpp"
 
 // Types of Attacks
-#include "prefabs/enemySkills/LaserAttack.hpp"
-#include "prefabs/enemySkills/MarkedAttack.hpp"
-#include "prefabs/enemySkills/StompAttack.hpp"
-#include "prefabs/enemySkills/SwipeAttack.hpp"
-#include "prefabs/EnemyAttack.hpp"
+#include "LaserAttack.hpp"
+#include "MarkedAttack.hpp"
+#include "StompAttack.hpp"
+#include "SwipeAttack.hpp"
+#include "EnemyAttack.hpp"
 
 #include "Health.hpp"
 #include "AttackManager.hpp"

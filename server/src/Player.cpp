@@ -34,3 +34,7 @@ void Player::update(float deltaTime) {
     if (GetComponent<Invincible>() != nullptr)
         GetComponent<Invincible>()->update(deltaTime);
 }
+
+void Player::onDestroy() {
+    CollisionManager::instance().remove(this);
+}

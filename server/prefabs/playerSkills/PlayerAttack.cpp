@@ -5,9 +5,9 @@
 #include "CollisionManager.hpp"
 #include <iostream>
 
-PlayerAttack::PlayerAttack() : Entity() { exist = true; }
+PlayerAttack::PlayerAttack() : PlayerSkill() { exist = true; }
 
-PlayerAttack::PlayerAttack(int networkId) : Entity(networkId) { exist = true; }
+PlayerAttack::PlayerAttack(int networkId) : PlayerSkill(networkId) { exist = true; }
 
 void PlayerAttack::init(Player* player) {
     playerOwner = player;

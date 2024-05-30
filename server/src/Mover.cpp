@@ -18,6 +18,7 @@ void Mover::Update() {
 
     movementHeading = glm::vec3(input.x, 0, input.y);
 
+    // everything below is specific for player
     float oldRadius = radius;
     float oldAngle = angle;
     if (input.y != 0) {

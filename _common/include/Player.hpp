@@ -24,6 +24,7 @@ public:
 
     // Used by server
     Player();
+    void onDestroy();
 
     virtual void update(float deltaTime) override;
 

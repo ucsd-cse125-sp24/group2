@@ -31,6 +31,7 @@ public:
     void remove(GameObject* owner);
 
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
+    std::vector<GameObject*> movePlayerHeal(Collider* healCollider);
 
     std::vector<GameObject*> moveBossSwipe(Collider* attCollider, float amount);
     std::vector<GameObject*> moveBossShockwave(GameObject* owner, float newRadius);

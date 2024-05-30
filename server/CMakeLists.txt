@@ -16,14 +16,13 @@ set(SERVER_SOURCES
     src/Health.cpp
     components/PlayerCombat.cpp
     prefabs/Enemy.cpp
-    prefabs/PlayerAttack.cpp
     prefabs/AttackManager.cpp
-    prefabs/EnemyAttack.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 FILE(GLOB ENEMY_SKILLS prefabs/enemySkills/*.cpp)
+FILE(GLOB PLAYER_SKILLS prefabs/playerSkills/*.cpp)
 
-add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES} ${ENEMY_SKILLS})
+add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES} ${ENEMY_SKILLS} ${PLAYER_SKILLS})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
     "${CMAKE_CURRENT_LIST_DIR}/components"
@@ -34,7 +33,7 @@ include_directories(
     "../_common/"
     "../_common/include"
     "./prefabs"
-    "./prefabs/enemySkills"
+    "../_common/include/skills"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)

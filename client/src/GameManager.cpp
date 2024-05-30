@@ -117,7 +117,7 @@ void GameManager::update(Packet* pkt) {
 
             break;
         }
-        case NetworkObjectTypeID::PLAYER_ATTACK: {
+        case NetworkObjectTypeID::PLAYER_SKILL: {
             std::cout << "    PlayerAttack" << std::endl;
             break;
         }

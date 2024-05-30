@@ -28,3 +28,5 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
 }
 
 void Player::update(float deltaTime) {}
+
+void Player::onDestroy() {}
