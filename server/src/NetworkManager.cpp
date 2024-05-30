@@ -267,9 +267,10 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Give client control over player
     Player* p = new Player();
     server.clients[args->clientId]->p = p;
-    // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    glm::vec3 position = glm::vec3(0.0);//spawnPoints[spawnIndex++ % spawnPoints.size()];
+    glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
+    // glm::vec3 position = glm::vec3(0.0);//spawnPoints[spawnIndex++ % spawnPoints.size()];
     p->GetComponent<NetTransform>()->SetPosition(position);
+    p->GetComponent<Collider>()->SetPosition(position);
     AttackManager::instance().addPlayer(p);
 
     Packet* pkt = new Packet();
