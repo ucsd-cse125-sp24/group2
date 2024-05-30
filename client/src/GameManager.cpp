@@ -47,10 +47,10 @@ void GameManager::handle_packet(Packet* packet) {
         int win;
         packet->read_int(&win);
         if (win == (int)GameState::WIN) {
-            // stop updating scene, move to win screen
+            // TODO: stop updating scene, move to win screen
             std::cout << "YOU WIN" << std::endl;
         } else if (win == (int)GameState::LOSE) {
-            // stop update scene, move to lose scren
+            // TODO: stop update scene, move to lose scren
             std::cout << "GAME OVER" << std::endl;
         }
         break;

@@ -10,7 +10,6 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
 #include "PlayerCombat.hpp"
@@ -23,7 +22,6 @@
 #define MAX_NETWORK_OBJECTS 4096
 
 Server server;
-Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
 Enemy* enemyPrefab;
