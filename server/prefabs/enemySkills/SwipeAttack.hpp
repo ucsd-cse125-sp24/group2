@@ -13,13 +13,12 @@
 
 class SwipeAttack : public EnemyAttack {
 private:
-    Player* target; // TODO: remove eventually if not needed
-    void addCollider();
-    void init(Player* p);
+    float lifetime;
+    void addCollider(Enemy* owner);
 
 public:
-    SwipeAttack(Enemy* owner, Player* target);
-    SwipeAttack(Enemy* owner, Player* target, int networkId);
+    SwipeAttack(Enemy* owner);
+    SwipeAttack(Enemy* owner, int networkId);
 
     void update(float deltaTime) override;
 

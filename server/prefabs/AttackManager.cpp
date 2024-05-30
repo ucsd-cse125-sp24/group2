@@ -41,7 +41,7 @@ void AttackManager::newMarkedAttack() {
 
 void AttackManager::newSwipeAttack() {
     if(!playerList.empty()){
-        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab, playerList.at(0));
+        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
         enemyAttackList.push_back(swipeAtt);
     }
 }
