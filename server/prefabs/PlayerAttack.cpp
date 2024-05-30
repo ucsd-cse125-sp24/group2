@@ -40,6 +40,7 @@ void PlayerAttack::DealDamage() {
     if (exist) {
         if (target != nullptr) {
             target->GetComponent<Health>()->ChangeHealth(-damage);
+            std::cout << "New enemy health: " << target->GetComponent<Health>()->GetHealth() << std::endl;
         }
         exist = false;
     }

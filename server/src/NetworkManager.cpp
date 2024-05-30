@@ -10,18 +10,18 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
 #include "PlayerCombat.hpp"
 #include "Enemy.hpp"
 #include "Mover.hpp"
 #include "AttackManager.hpp"
+#include "Health.hpp"
+#include "GameState.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
 Server server;
-Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
 Enemy* enemyPrefab;
@@ -33,6 +33,8 @@ union FloatUnion {
     float f;
     uint32_t l;
 } num;
+
+GameState gameState = GameState::READY;
 
 void NetworkManager::init() {
     // Setup event handlers
@@ -177,11 +179,11 @@ void NetworkManager::process_input() {
             playersReady++;
 
             if (playersReady == MAX_CLIENTS) {
+                gameState = GameState::START;
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
                 enemyPrefab = new Enemy();
                 AttackManager::instance().addEnemy(enemyPrefab);
-                scene.gameActive = true;
                 // scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
@@ -246,6 +248,20 @@ void NetworkManager::send_state() {
         }
         server.send(client->id, destroy);
     }
+
+    // maybe also keep track of game state now
+    if (gameState == GameState::START && (enemyPrefab->GetComponent<Health>()->GetHealth() <= 0 || numAlive == 0)) {
+        // i hope this doesn't get called before any clients connect.
+        gameState = numAlive > 0 ? GameState::WIN : GameState::LOSE;
+        for (const auto& kv : clients) {
+            Client* client = kv.second;
+            Packet* endGame = new Packet();
+            endGame->write_int((int)PacketType::END_GAME);
+            endGame->write_int((int)gameState);
+            // TODO: write lose
+            server.send(client->id, endGame);
+        }
+    }
 }
 
 // FIXME handle incomplete packets or multiple packets per send() call
@@ -272,6 +288,7 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     p->GetComponent<NetTransform>()->SetPosition(position);
     p->GetComponent<Collider>()->SetPosition(position);
     AttackManager::instance().addPlayer(p);
+    numAlive++;
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);

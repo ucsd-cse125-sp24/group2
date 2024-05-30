@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "GameState.hpp"
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/bear/bear.gltf";
@@ -42,7 +43,17 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::START_GAME:
         StartGame(packet);
         break;
-
+    case PacketType::END_GAME:
+        int win;
+        packet->read_int(&win);
+        if (win == (int)GameState::WIN) {
+            // TODO: stop updating scene, move to win screen
+            std::cout << "YOU WIN" << std::endl;
+        } else if (win == (int)GameState::LOSE) {
+            // TODO: stop update scene, move to lose scren
+            std::cout << "GAME OVER" << std::endl;
+        }
+        break;
     default:
         std::cout << "  PacketType: ERROR" << std::endl;
         break;
@@ -81,7 +92,7 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 3) {
+                if (players.size() == 2) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -155,5 +166,4 @@ void GameManager::destroy_object(Packet* pkt) {
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
     AudioManager::instance().play();
-    scene.gameActive = true;
 }
