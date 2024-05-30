@@ -9,6 +9,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 // assimp
 #include <assimp/Importer.hpp>
@@ -17,3 +18,4 @@
 #include <assimp/quaternion.h>
 #include <assimp/vector3.h>
 #include <assimp/matrix4x4.h>
+

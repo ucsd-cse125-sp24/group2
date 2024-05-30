@@ -27,7 +27,11 @@ public:
     void SetPosition(glm::vec3 pos) { position = pos; }
     void SetTarget(glm::vec3 target) { target = target; }
 
+    float GetDistance() { return Distance; }
+    float GetAzimuth() { return Azimuth; }
+    float GetIncline() { return Incline; }
     glm::vec3 GetTarget() { return target; }
+    float GetAspect() { return Aspect; }
 
     const glm::mat4& GetViewProjectMtx() { return ViewProjectMtx; }
 

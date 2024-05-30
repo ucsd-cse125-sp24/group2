@@ -8,6 +8,7 @@
 #include "components/RendererComponent.hpp"
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "HUD.h"
 #include "MovementStateMachine.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
@@ -28,6 +29,7 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
 
 void Player::update(float deltaTime) {
     // stuff moved to player component
-    
-    //std::cout << "In Player::update(): " << GetComponent<MovementStateMachine>()->ToString() << std::endl;
+
+    // std::cout << "In Player::update(): " <<
+    // GetComponent<MovementStateMachine>()->ToString() << std::endl;
 }

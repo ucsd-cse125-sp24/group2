@@ -6,10 +6,11 @@
 #include <MovementStateMachine.hpp>
 
 void PlayerComponent::Update(float deltaTime) {
-    MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
+    MovementStateMachine* movementStateMachine =
+        owner->GetComponent<MovementStateMachine>();
     AnimationPlayer* animationPlayer = owner->GetComponent<AnimationPlayer>();
     glm::vec2 moverDirection = owner->GetComponent<Mover>()->input;
-    
+
     if (movementStateMachine) {
         switch(movementStateMachine->GetState()) {
             case(IDLE): {
