@@ -16,7 +16,7 @@ Mover::Mover(NetworkObject* owner)
 
 void Mover::Update(float deltaTime) {
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // +y
-
+    float modelRotation = 0;
     // movementHeading = glm::vec3(input.x, 0, input.y);
 
     if (owner->GetComponent<MovementStateMachine>()) {
@@ -29,16 +29,24 @@ void Mover::Update(float deltaTime) {
             case IDLE: {
                 // do nothing
                 UpdatePhysics(deltaTime);
+                // float angleAboutY = 180.0f - glm::degrees(angle);
+                // rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case WALK: {
                 speed = baseSpeed;
                 UpdatePhysics(deltaTime);
+                float angleAboutY = glm::degrees(glm::pi<float>() - angle);
+                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case RUN: {
                 speed = 2.0f * baseSpeed;
                 UpdatePhysics(deltaTime);
+                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
+                if (input.x < 0) modelRotation = -modelRotation;
+                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
+                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case DODGE_START: {
@@ -46,12 +54,20 @@ void Mover::Update(float deltaTime) {
                 dodgeInput = movementStateMachine->GetDodgeDirection();
                 std::cout << "dodgeInput: " << glm::to_string(dodgeInput) << std::endl;
                 UpdatePhysics(deltaTime);
+                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
+                if (input.x < 0) modelRotation = -modelRotation;
+                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
+                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case DODGE: {
                 speed = 2.5f * baseSpeed;
                 input = dodgeInput;
                 UpdatePhysics(deltaTime);
+                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
+                if (input.x < 0) modelRotation = -modelRotation;
+                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
+                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             default: {
@@ -59,7 +75,6 @@ void Mover::Update(float deltaTime) {
             }
         }
     } else {
-        // std::cout << "No MovementSM" << std::endl;
         UpdatePhysics(deltaTime);
     }
 }
@@ -87,9 +102,8 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle = oldAngle;
     }
 
-    float angleAboutY = 180.0f - glm::degrees(angle);
-    owner->GetComponent<NetTransform>()->SetRotation(
-        glm::vec3(0.0f, angleAboutY, 0.0f));
+    // float angleAboutY = 180.0f - glm::degrees(angle);
+    // rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
 }
 
 std::string Mover::ToString() { return "Mover"; }
