@@ -44,10 +44,10 @@ void PlayerComponent::Update(float deltaTime) {
                 animationPlayer->play("forward_roll");
                 break;
             }
-            case(DEAD): {
-                animationPlayer->play("dying");
-                break;
-            }
+            // case(DEAD): {
+            //     animationPlayer->play("dying");
+            //     break;
+            // }
             default: {
                 animationPlayer->play("idle");
             }
