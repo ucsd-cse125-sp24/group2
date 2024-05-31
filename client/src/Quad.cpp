@@ -101,29 +101,32 @@ Quad::~Quad() {
 }
 
 void Quad::draw(float aspectRatio) {
-    glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glUseProgram(shader);
-    for(unsigned int i = 0; i < textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
-        std::string name = "texture" + std::to_string(i);
-        // std::cout<<"texture name: "<< (name).c_str() << std::endl;
-        glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
-        glBindTexture(GL_TEXTURE_2D, textures[i]);
+    if(checkState(VISIBLE)) {
+        glEnable(GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glUseProgram(shader);
+        for(unsigned int i = 0; i < textures.size(); i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            std::string name = "texture" + std::to_string(i);
+            // std::cout<<"texture name: "<< (name).c_str() << std::endl;
+            glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+        }
+        glUniform1f(glGetUniformLocation(shader, "opacity"), opacity);
+        glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
+        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
+
+        // Bind the VAO
+        glBindVertexArray(VAO);
+
+        // draw the points using triangles, indexed with the EBO
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+        // Unbind the VAO and shader program
+        glBindVertexArray(0);
+        glActiveTexture(GL_TEXTURE0);
+        glUseProgram(0);
     }
-    glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
-
-    // Bind the VAO
-    glBindVertexArray(VAO);
-
-    // draw the points using triangles, indexed with the EBO
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-    // Unbind the VAO and shader program
-    glBindVertexArray(0);
-    glActiveTexture(GL_TEXTURE0);
-    glUseProgram(0);
 }
 
 void Quad::setPosition(glm::vec3 pos) {
@@ -140,7 +143,7 @@ void Quad::setSize(float width, float height) {
 }
     
 const glm::mat4& Quad::getModelMtx(){
-    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1.0f), scale);
+    modelMtx = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), scale);
     return modelMtx;
 }
 
@@ -155,4 +158,8 @@ void Quad::setTexture(const char* path, const std::string& directory) {
 
 void Quad::setRotation(float angle, glm::vec3 axis) {
     rotation =  glm::rotate(rotation, angle, axis);
+}
+
+void Quad::setOpacity(float opacity) {
+    this->opacity = opacity;
 }

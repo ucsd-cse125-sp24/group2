@@ -7,18 +7,18 @@ Metronome::Metronome() {
 
 Metronome::Metronome(int bpm) : bpm(bpm) {
     beatDuration = 60000 / bpm;
-    std::cout<<"bpm: "<< beatDuration<<std::endl;
+    // std::cout<<"bpm: "<< beatDuration<<std::endl;
     min = 0.05f;
     max = 0.15f;
     // quad = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), max);
     // quad->setTexture("square-red.png", "../assets/HUD/metronome");
-    // quad->setRotation(45.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     quad2 = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), max);
     quad2->setTexture("square-red.png", "../assets/HUD/metronome");
-    // quad->setRotation(45.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    // set initial size
-    // quad->update();
+
+    quad2->enableState(VISIBLE);
+
     quad2->update();
+
  
 }
 
@@ -38,43 +38,15 @@ void Metronome::update(float dt) {
         // float t = (currentTime / (beatDuration ) - floor(currentTime / (beatDuration )));
         t = glm::clamp(t, 0.0f, 1.0f);
         // std::cout<<"t: "<<t<<std::endl;
-
-
+        // float t2 = elapsedTime/ 1.0f;
+        // float a = glm::mix(1, 0, t2);
+        // std::cout<<"a: "<<a <<std::endl;
         glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
+        
         quad2->setSize(size.x);
-        // quad->update();
+    
         quad2->update();
 
-        // if(sumTime > beatDuration) {
-        //     sumTime = 0.0f;
-        //     quad2->setSize(max);
-        // } else {
-        //     float t = timeInCurrentBeat / beatDuration;
-        //     t = glm::clamp(t, 0.0f, 1.0f);
-        //     glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
-        //     quad2->setSize(size.x);
-        // }
-        // float t = timeInCurrentBeat / beatDuration;
-        // t = glm::clamp(t, 0.0f, 1.0f);
-        // glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
-        // quad2->setSize(size.x);
-        // quad->update();
-        // quad2->update();
-        // float ratio = min/max;
-        // float adjustSpeed = 0.5f;
-        // currentTime += dt * adjustSpeed;
-        // quad->update();
-        // quad2->update();
-        // if (currentTime > beatDuration) {
-        //     currentTime = 0.0f;
-        //     quad2->setSize(max);
-        // } else {
-        //     float t = currentTime / beatDuration;
-
-        //     t = glm::clamp(t, 0.0f, 1.0f);
-        //     glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
-        //     quad2->setSize(size.x);
-        // }
     }
 }
 

@@ -15,4 +15,5 @@ public:
     TeamInfo* teamInfo;
     Metronome* metronome;
     HealthBar* healthBar;
+    Quad* text;
 };

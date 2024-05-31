@@ -8,6 +8,7 @@ uniform float ratio;
 out vec4 fragColor;
 uniform vec3 color;
 uniform bool isHealthBar;
+uniform float opacity;
 
 void main()
 {
@@ -19,6 +20,6 @@ void main()
 			fragColor = texture(texture1, TexCoords);
 		}
 	} else {
-		fragColor = texture(texture0, TexCoords);
+		fragColor = vec4(1.0f, 1.0f, 1.0f, opacity) * texture(texture0, TexCoords);
 	}
 }
