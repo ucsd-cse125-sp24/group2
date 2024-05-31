@@ -39,7 +39,7 @@ Player::Player() : Entity() {
 
 void Player::update(float deltaTime) {
     if (GetComponent<Mover>() != nullptr)
-        GetComponent<Mover>()->Update();
+        GetComponent<Mover>()->Update(deltaTime);
     if (GetComponent<Invincible>() != nullptr)
         GetComponent<Invincible>()->update(deltaTime);
     if (GetComponent<CooldownComponent>())
