@@ -7,7 +7,6 @@ class Entity : public NetworkObject {
 public:
     Entity();
     Entity(int networkId);
-    virtual void update(float deltaTime) = 0;
 };
 
 #endif // ENTITY_H

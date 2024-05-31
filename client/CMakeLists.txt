@@ -27,7 +27,15 @@ set(
     src/components/Model.cpp
     src/components/RendererComponent.cpp
     src/components/PlayerComponent.cpp
+    src/components/BeatSyncComponent.cpp
     prefabs/Enemy.cpp
+
+    # HUD
+    src/HealthBar.cpp
+    src/Metronome.cpp
+    src/Quad.cpp
+    src/TeamInfo.cpp
+    src/HUD.cpp
 
     # 125-Starter
     src/Player.cpp
@@ -35,6 +43,7 @@ set(
     src/Health.cpp
     src/GameManager.cpp
     src/Player.cpp
+    src/MovementStateMachine.cpp
 )
 FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 

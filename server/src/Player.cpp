@@ -5,6 +5,8 @@
 #include "Collider.hpp"
 #include "Health.hpp"
 #include "Invincible.hpp"
+#include "CooldownComponent.hpp"
+#include "MovementStateMachine.hpp"
 
 Player::Player() : Entity() {
     alive = true;
@@ -26,6 +28,13 @@ Player::Player() : Entity() {
     // TODO make player-specific combos
     playerCombat->AddCombo({74, 74, 74, 74});
     playerCombat->AddCombo({74, 75, 76, 73});
+
+    // CooldownComponent* cooldownComponent = new CooldownComponent(this);
+    // cooldownComponent->AddCooldown("dodge", 1.0f);
+    // AddComponent(cooldownComponent);
+
+    MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
+    AddComponent(movementStateMachine);
 }
 
 void Player::update(float deltaTime) {
@@ -33,4 +42,6 @@ void Player::update(float deltaTime) {
         GetComponent<Mover>()->Update();
     if (GetComponent<Invincible>() != nullptr)
         GetComponent<Invincible>()->update(deltaTime);
-}
+    if (GetComponent<CooldownComponent>())
+        GetComponent<CooldownComponent>()->Update(deltaTime);
+}       

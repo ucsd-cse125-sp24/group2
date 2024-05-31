@@ -8,8 +8,8 @@ void RendererComponent::Render(glm::mat4 view) {
     // Render animations, if applicable
     if (auto anim = owner->GetComponent<AnimationPlayer>()) {
         auto transforms = anim->getFinalBoneMatrices();
+        glUseProgram(Shader::GetShader(type));
         for (int i = 0; i < transforms.size(); i++) {
-            glUseProgram(Shader::GetShader(type));
             glUniformMatrix4fv(
                 glGetUniformLocation(
                     Shader::GetShader(type),
