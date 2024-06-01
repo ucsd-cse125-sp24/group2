@@ -44,10 +44,17 @@ void PlayerComponent::Update(float deltaTime) {
                 animationPlayer->play("forward_roll");
                 break;
             }
-            // case(DEAD): {
-            //     animationPlayer->play("dying");
-            //     break;
-            // }
+            case(DEAD_START): {
+                animationPlayer->play("dying");
+                break;
+            }
+            case(DEAD): {
+                animationPlayer->play("idle");
+                owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+                // TODO: also need a dead kind of idle animation;
+                // we actually need to states for dead like dead_start and dead
+                break;
+            }
             default: {
                 animationPlayer->play("idle");
             }

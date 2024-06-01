@@ -262,7 +262,6 @@ void NetworkManager::send_state() {
             Packet* endGame = new Packet();
             endGame->write_int((int)PacketType::END_GAME);
             endGame->write_int((int)gameState);
-            // TODO: write lose
             server.send(client->id, endGame);
         }
     }

@@ -13,6 +13,8 @@ enum MovementState : int32_t {
     RUN,
     DODGE_START,
     DODGE,
+    DEAD_START,
+    DEAD,
 };
 
 class MovementStateMachine : public INetworkComponent {
@@ -21,6 +23,7 @@ protected:
 
     float shiftPressDuration = -1.0;
     Cooldown* dodgeCooldown = new Cooldown(1.0f);
+    float deathAnimationTime = 3.0f;
     bool dodgeQueued = false;
     glm::vec2 lastNonZeroInput;
 
@@ -28,6 +31,7 @@ public:
     MovementStateMachine(NetworkObject* owner) : INetworkComponent(owner) {}
     MovementState Update(float deltaTime, char* input);
     MovementState GetState() { return currState; }
+    void SetState(MovementState state) { currState = state; }
     glm::vec2 GetDodgeDirection() { return lastNonZeroInput; }
 
     void Serialize(Packet* packet) override {
