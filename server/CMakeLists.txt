@@ -16,6 +16,7 @@ set(SERVER_SOURCES
     components/PlayerCombat.cpp
     prefabs/Enemy.cpp 
     src/MovementStateMachine.cpp
+    src/Status.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 

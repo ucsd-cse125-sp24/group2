@@ -34,6 +34,7 @@ set(
     src/GameManager.cpp
     src/Player.cpp
     src/MovementStateMachine.cpp
+    src/Status.cpp
 )
 FILE(GLOB COMMON_SOURCES ../_common/src/**/*.cpp ../_common/src/*.cpp)
 

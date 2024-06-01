@@ -4,11 +4,12 @@
 #include <cstdint>
 #include "Status.hpp"
 
-
 class Status;
+
 
 enum StatusEffectTypeID : int32_t {
     // ADD NEW TYPE IDs HERE FOR EACH UNIQUE VARIANT OF A STATUS EFFECT
+    PLACEHOLDER_STATUS_EFFECT,
     SPEED_BOOST,
 };
 
