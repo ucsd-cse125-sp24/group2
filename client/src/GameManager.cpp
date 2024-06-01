@@ -7,6 +7,7 @@
 #include "prefabs/Enemy.hpp"
 #include <algorithm>
 #include "AssetManager.hpp"
+#include "Status.hpp" // TODO: remove
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
@@ -140,6 +141,7 @@ void GameManager::update(Packet* pkt) {
             }
 
             // std::cout << "playinnn: " << players[network_id]->GetComponent<AnimationPlayer>()->currentAnimation->getName() << std::endl;
+            std::cout << "Player " << players[network_id]->GetComponent<Status>()->ToString();
 
             break;
         }

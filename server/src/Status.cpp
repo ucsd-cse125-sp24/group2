@@ -1,22 +1,17 @@
 #include "Status.hpp"
 #include "Mover.hpp"
 
-
-Status::Status(NetworkObject* owner) : 
-    INetworkComponent(owner),
-    baseSpeed(owner->GetComponent<Mover>()->baseSpeed) // TODO: Update this to be mover->baseSpeed when branch "dodging" is merged in
-{}
-
 void Status::AddStatusEffect(IStatusEffect* statusEffect) {
     StatusEffectTypeID typeIndex = statusEffect->TypeID();
     if (typeToStatusEffect.find(typeIndex) == typeToStatusEffect.end()) { // if not found
         typeToStatusEffect.emplace(typeIndex, statusEffect);
         typeToStatusEffect[typeIndex]->OnAdd();
+        typeToStatusEffect[typeIndex]->StartTimer();
     } else if (statusEffect->isStackable) { // if found, and can stack
         typeToStatusEffect[typeIndex]->stacks++;
-        typeToStatusEffect[typeIndex]->OnAdd();
+        std::cout << "Adding stack" << std::endl;
+        // typeToStatusEffect[typeIndex]->OnAdd();
     }
-    typeToStatusEffect[typeIndex]->StartTimer();
 }
 
 void Status::RemoveStatusEffect(IStatusEffect* statusEffect) {
@@ -24,10 +19,12 @@ void Status::RemoveStatusEffect(IStatusEffect* statusEffect) {
     if (typeToStatusEffect.find(typeIndex) != typeToStatusEffect.end()) {
         if (typeToStatusEffect[typeIndex]->stacks > 1) {
             typeToStatusEffect[typeIndex]->stacks--;
+            typeToStatusEffect[typeIndex]->StartTimer();
         } else {
             typeToStatusEffect.erase(typeIndex);
+            statusEffect->OnRemove();
         }
-        statusEffect->OnRemove();
+        // statusEffect->OnRemove();
     }
 }
 
@@ -40,3 +37,5 @@ void Status::Update(float deltaTime) {
         }
     }
 }
+
+std::string Status::ToString() { return "Status"; }

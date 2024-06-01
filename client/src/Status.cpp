@@ -1,8 +1,12 @@
 #include "Status.hpp"
-#include "Mover.hpp"
 
 
-Status::Status(NetworkObject* owner) : 
-    INetworkComponent(owner),
-    baseSpeed(owner->GetComponent<Mover>()->baseSpeed) // TODO: Update this to be mover->baseSpeed when branch "dodging" is merged in
-{}
+std::string Status::ToString() {
+    std::string output = "Status:";
+    for (auto kvPair : typeToStatusEffect) {
+        output += "\n  Type: " + std::to_string(kvPair.first);
+        output += "\n    Stacks: " + std::to_string(kvPair.second->stacks);
+        output += "\n    currTimer: " + std::to_string(kvPair.second->currTimer);
+    }
+    return output += "\n";
+}

@@ -9,7 +9,7 @@ class Status;
 
 enum StatusEffectTypeID : int32_t {
     // ADD NEW TYPE IDs HERE FOR EACH UNIQUE VARIANT OF A STATUS EFFECT
-    PLACEHOLDER_STATUS_EFFECT,
+    DISPLAY_STATUS_EFFECT,
     SPEED_BOOST,
 };
 
@@ -29,9 +29,9 @@ public:
 
     void Update(float deltaTime);
     virtual StatusEffectTypeID TypeID() = 0;
-    virtual void OnUpdate(float deltaTime) = 0;
-    virtual void OnAdd() = 0;
-    virtual void OnRemove() = 0;
+    virtual void OnUpdate(float deltaTime) {};
+    virtual void OnAdd() {};
+    virtual void OnRemove() {};
 
     void StartTimer();
     void StartTimer(float timeStart);
