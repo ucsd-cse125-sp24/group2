@@ -117,6 +117,12 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     glDisable(GL_DEPTH_TEST);
     for (auto& entity : scene->entities) {
         if (auto huds = entity->GetComponent<HUDs>()) {
+            if(InputManager::IsKeyPressed(GLFW_KEY_Q))
+                huds->healthBar->setHealth(70.0f);
+            if(InputManager::IsKeyPressed(GLFW_KEY_E))
+                huds->healthBar->setHealth(50.0f);
+            if(InputManager::IsKeyPressed(GLFW_KEY_R))
+                huds->healthBar->setHealth(100.0f);
             huds->update(deltaTime);
             huds->draw(camera->GetAspect());
         }

@@ -11,7 +11,7 @@ public:
     Metronome(int bpm);
     ~Metronome();
     void draw(float aspectRatio);
-    void update(float dt);
+    void update();
     void setPosition(glm::vec3 pos);
     void setBpm(int bpm);
 private:

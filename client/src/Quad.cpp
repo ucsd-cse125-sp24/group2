@@ -107,11 +107,12 @@ void Quad::draw(float aspectRatio) {
         glUseProgram(shader);
         for(unsigned int i = 0; i < textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
-            std::string name = "texture" + std::to_string(i);
+            std::string name = "textures[" + std::to_string(i) + "]";
             // std::cout<<"texture name: "<< (name).c_str() << std::endl;
             glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
             glBindTexture(GL_TEXTURE_2D, textures[i]);
         }
+        glUniform1i(glGetUniformLocation(shader, "textureIndex"), textureIndex);
         glUniform1f(glGetUniformLocation(shader, "opacity"), opacity);
         glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
         glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
@@ -162,4 +163,8 @@ void Quad::setRotation(float angle, glm::vec3 axis) {
 
 void Quad::setOpacity(float opacity) {
     this->opacity = opacity;
+}
+
+void Quad::activateTexture(int index) {
+    textureIndex = index;
 }

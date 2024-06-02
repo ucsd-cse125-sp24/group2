@@ -152,7 +152,6 @@ void NetworkManager::process_input() {
             int judgment;
             packet->read_int(&judgment);
             // printf("  judgment: %d\n", judgment);
-
             std::map<int, Client*> clients = server.get_clients();
             // TODO set miss time to variable
             if (abs(judgment) > 100) {

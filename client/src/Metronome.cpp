@@ -27,7 +27,7 @@ Metronome::~Metronome() {
     delete quad2;
 }
 
-void Metronome::update(float dt) {
+void Metronome::update() {
     // std::cout<<"dt: "<<dt<<std::endl;
     if(AudioManager::instance().getPosition() > 0) {
         unsigned int currentTime = AudioManager::instance().getPosition();
@@ -54,12 +54,11 @@ void Metronome::draw(float aspectRatio) {
     GLuint shader = quad2->getShader();
     glUseProgram(shader);
     glUniform1i(glGetUniformLocation(shader, "isHealthBar"), 0);
-    // quad->draw(aspectRatio);
     quad2->draw(aspectRatio);
 }
 
 void Metronome::setBpm(int bpm) {
     this->bpm = bpm;
     beatDuration = 60000 / bpm;
-    // this->enableState(VISIBLE);
+    this->enableState(VISIBLE);
 }
