@@ -7,6 +7,10 @@ Collider::Collider(GameObject* owner, Transform* transform)
     : IComponent(owner), position(transform->GetPosition()), radius(transform->GetScale().x),
       height(transform->GetScale().y), rotation(transform->GetRotation()) {}
 
+Collider::Collider(GameObject* owner, NetTransform* transform)
+    : IComponent(owner), position(transform->GetPosition()), radius(transform->GetScale().x),
+      height(transform->GetScale().y), rotation(transform->GetRotation()) {}
+
 Collider::Collider(GameObject* owner, Collider* copyfrom) 
     : IComponent(owner), position(copyfrom->GetPosition()), radius(copyfrom->GetRadius()),
       height(copyfrom->GetHeight()), rotation(copyfrom->GetRotation()), 

@@ -17,6 +17,17 @@ AnimationClip::AnimationClip(GameObject* owner, std::string path, Model* model)
     readMissingBones(animation, model);
 }
 
+AnimationClip::AnimationClip(AnimationClip* other) {
+    duration = other->duration;
+    name = other->name;
+    ticksPerSecond = other->ticksPerSecond;
+    globalInverseTransform = glm::mat4(other->globalInverseTransform);
+
+    bones = other->bones;
+    boneInfoMap = other->boneInfoMap;
+    copyHierarchyData(rootNode, other->rootNode);
+}
+
 AnimationClip::AnimationClip(aiAnimation* clip, Model* model,
                              const aiScene* scene) {
     duration = clip->mDuration;
@@ -49,6 +60,18 @@ const AssimpNodeData& AnimationClip::getRootNode() const { return rootNode; }
 
 const std::map<std::string, BoneInfo>& AnimationClip::getBoneInfoMap() const {
     return boneInfoMap;
+}
+
+void AnimationClip::copyHierarchyData(AssimpNodeData& dest,
+                                      AssimpNodeData& src) {
+    dest.name = src.name;
+    dest.transformation = glm::mat4(src.transformation);
+
+    for (int i = 0; i < src.children.size(); i++) {
+        AssimpNodeData child;
+        copyHierarchyData(child, src.children[i]);
+        dest.children.push_back(child);
+    }
 }
 
 void AnimationClip::readMissingBones(const aiAnimation* animation,

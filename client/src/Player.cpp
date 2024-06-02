@@ -6,6 +6,9 @@
 #include "AnimationPlayer.h"
 #include "InputManager.h"
 #include "components/RendererComponent.hpp"
+#include "AssetManager.hpp"
+#include "components/PlayerComponent.hpp"
+#include "HUD.h"
 #include "MovementStateMachine.hpp"
 #include "Status.hpp"
 
@@ -17,31 +20,19 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     RendererComponent* meshRenderer =
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
-    Model* model = new Model(this, path, true);
+    Model* model = new Model(AssetManager::Instance().GetModel(path));
     AddComponent(model);
-    AnimationClip* animationClip = new AnimationClip(this, path, model);
-    AddComponent(animationClip);
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
     Status* status = new Status(this);
     AddComponent(status);
+    PlayerComponent* playerComponent = new PlayerComponent(this);
+    AddComponent(playerComponent);
 }
 
 void Player::update(float deltaTime) {
-    if ((InputManager::IsKeyDown(GLFW_KEY_W) ||
-         InputManager::IsKeyDown(GLFW_KEY_A) ||
-         InputManager::IsKeyDown(GLFW_KEY_S) ||
-         InputManager::IsKeyDown(GLFW_KEY_D)) &&
-        InputManager::IsKeyDown(GLFW_KEY_LEFT_SHIFT)) {
-        GetComponent<AnimationPlayer>()->play("run");
-    } else if (InputManager::IsKeyDown(GLFW_KEY_W) ||
-               InputManager::IsKeyDown(GLFW_KEY_A) ||
-               InputManager::IsKeyDown(GLFW_KEY_S) ||
-               InputManager::IsKeyDown(GLFW_KEY_D)) {
-        GetComponent<AnimationPlayer>()->play("walk");
-    } else {
-        GetComponent<AnimationPlayer>()->play("idle");
-    }
+    // stuff moved to player component
 
-    // std::cout << "In Player::update(): " << GetComponent<MovementStateMachine>()->ToString() << std::endl;
+    // std::cout << "In Player::update(): " <<
+    // GetComponent<MovementStateMachine>()->ToString() << std::endl;
 }

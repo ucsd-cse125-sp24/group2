@@ -5,6 +5,7 @@
 #include "NetTransform.hpp"
 #include "Mover.hpp"
 #include "MovementStateMachine.hpp"
+#include "Health.hpp"
 #include "Status.hpp"
 
 int NetworkObject::nextNetworkId = 0;
@@ -69,6 +70,25 @@ void NetworkObject::deserialize(Packet* packet) {
                              "found in current NetworkObject"
                           << std::endl;
             mover->Deserialize(packet);
+            break;
+        }
+        case NetworkComponentTypeID::HEALTH: {
+            Health* health = GetComponent<Health>();
+            if (health == nullptr)
+                std::cout << "ERROR in NetworkObject::deserialize(): No Health "
+                             "found in current NetworkObject"
+                          << std::endl;
+            health->Deserialize(packet);
+            break;
+        }
+        case NetworkComponentTypeID::MOVEMENT_STATE_MACHINE: {
+            MovementStateMachine* movementStateMachine = GetComponent<MovementStateMachine>();
+            if (!movementStateMachine) {
+                std::cout << "ERROR in NetworkObject::deserialize(): No "
+                             "Status found in current NetworkObject"
+                          << std::endl;
+            }
+            movementStateMachine->Deserialize(packet);
             break;
         }
         case NetworkComponentTypeID::MOVEMENT_STATE_MACHINE: {

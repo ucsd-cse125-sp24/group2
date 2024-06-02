@@ -4,6 +4,8 @@
 #include "IComponent.hpp"
 #include "glm/glm.hpp"
 #include "Transform.hpp"
+#include "NetTransform.hpp"
+
 
 class Collider : public IComponent {
     glm::vec3 position = glm::vec3();
@@ -21,6 +23,8 @@ public:
     // default constructor for cylinder, use functions to change it to
     // sectors/point
     Collider(GameObject* owner, Transform* transform);
+
+    Collider(GameObject* owner, NetTransform* transform);
 
     Collider(GameObject* owner, Collider* copyfrom);
 

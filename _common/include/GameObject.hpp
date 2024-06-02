@@ -14,10 +14,11 @@ class IComponent;
 class GameObject {
 
 protected:
-    std::vector<IComponent*> components;
     std::unordered_map<std::type_index, IComponent*> typeToComponentMap;
 
 public:
+    std::vector<IComponent*> components;
+
     GameObject();
     GameObject(glm::vec3 newPosition, glm::vec3 newRotation,
                glm::vec3 newScale);
@@ -25,6 +26,7 @@ public:
     virtual std::string ToString();
     virtual void AddComponent(IComponent* newComponent);
     virtual void RemoveComponent(IComponent* comp);
+    virtual void update(float deltaTime) {};
 
     /**
      * Takes type as "argument" in template, returns IComponent*
@@ -34,7 +36,7 @@ public:
             return static_cast<T*>(typeToComponentMap.at(typeid(T)));
         } else {
             return nullptr;
-        } 
+        }
     }
 };
 
