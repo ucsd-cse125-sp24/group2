@@ -7,7 +7,7 @@
 #include "prefabs/Enemy.hpp"
 #include <algorithm>
 #include "AssetManager.hpp"
-#include "Status.hpp" // TODO: remove
+// #include "Status.hpp" // TODO: remove
 #include "components/PlayerComponent.hpp"
 #include "HUD.h"
 
@@ -135,6 +135,8 @@ void GameManager::update(Packet* pkt) {
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
                     glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
             }
+
+            // std::cout << players[network_id]->GetComponent<Status>()->ToString() << std::endl;
 
             break;
         }

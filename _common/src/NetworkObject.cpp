@@ -85,16 +85,6 @@ void NetworkObject::deserialize(Packet* packet) {
             MovementStateMachine* movementStateMachine = GetComponent<MovementStateMachine>();
             if (!movementStateMachine) {
                 std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "Status found in current NetworkObject"
-                          << std::endl;
-            }
-            movementStateMachine->Deserialize(packet);
-            break;
-        }
-        case NetworkComponentTypeID::MOVEMENT_STATE_MACHINE: {
-            MovementStateMachine* movementStateMachine = GetComponent<MovementStateMachine>();
-            if (!movementStateMachine) {
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
                              "MovementStateMachine found in current NetworkObject"
                           << std::endl;
             }
@@ -105,7 +95,7 @@ void NetworkObject::deserialize(Packet* packet) {
             Status* status = GetComponent<Status>();
             if (!status) {
                 std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "MovementStateMachine found in current NetworkObject"
+                             "Status found in current NetworkObject"
                           << std::endl;
             }
             status->Deserialize(packet);
