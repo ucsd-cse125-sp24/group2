@@ -37,8 +37,8 @@ void Client::receive() {
         if (read_bytes > 0) {
             /*
             for (int i = 0; i < read_bytes; i++) {
-                std::cout << std::setfill('0') << std::setw(2) << std::hex
-                          << (int)buf[i] << " ";
+                // std::cout << std::setfill('0') << std::setw(2) << std::hex
+                        //   << (int)buf[i] << " ";
             }
             std::cout << std::endl;
             printf("[CLIENT] received %d bytes from server\n", read_bytes);

@@ -9,18 +9,58 @@ Model::Model(GameObject* owner, std::string path, bool hasAnimation)
     loadModel(path);
 }
 
+Model::Model(Model* other) : Model(owner) {
+    for (int i = 0; i < other->meshes.size(); i++) {
+        std::vector<Vertex> verts;
+        std::vector<unsigned int> inds;
+        std::vector<Texture> tex;
+
+        for (int j = 0; j < other->meshes[i].vertices.size(); j++) {
+            Vertex v;
+
+            v.normal = glm::vec3(other->meshes[i].vertices[j].normal);
+            v.position = glm::vec3(other->meshes[i].vertices[j].position);
+            v.texCoords = glm::vec2(other->meshes[i].vertices[j].texCoords);
+
+            for (int k = 0; k < 4; k++) {
+                v.weights[k] = other->meshes[i].vertices[j].weights[k];
+                v.boneIDs[k] = other->meshes[i].vertices[j].boneIDs[k];
+            }
+            verts.push_back(v);
+        }
+
+        for (int j = 0; j < other->meshes[i].indices.size(); j++) {
+            inds.push_back(other->meshes[i].indices[j]);
+        }
+
+        for (auto texture : other->meshes[i].textures) {
+            Texture t;
+            t.id = texture.id;
+            t.path = texture.path;
+            t.type = texture.type;
+
+            tex.push_back(t);
+        }
+
+        meshes.push_back(Mesh(verts, inds, tex));
+    }
+}
+
 void Model::update(float dt) {
     for (int i = 0; i < meshes.size(); i++) {
         glm::vec3 pos;
         glm::vec3 rot;
+        glm::vec3 scale;
         if (auto netTransform = owner->GetComponent<NetTransform>()) {
             pos = netTransform->GetPosition();
             rot = netTransform->GetRotation();
+            scale = netTransform->GetScale();
         } else {
             pos = owner->GetComponent<Transform>()->GetPosition();
             rot = owner->GetComponent<Transform>()->GetRotation();
+            scale = owner->GetComponent<Transform>()->GetScale();
         }
-        meshes[i].update(dt, pos, rot);
+        meshes[i].update(dt, pos, rot, scale);
     }
 }
 
@@ -143,7 +183,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat,
         }
         if (!skip) { // if texture hasn't been loaded already, load it
             Texture texture;
-            texture.id = textureFromFile(str.C_Str(), this->directory);
+            texture.id = Helper::textureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);
@@ -176,7 +216,7 @@ unsigned int Model::textureFromFile(const char* path,
             format = GL_RGB;
         else if (nrComponents == 4)
             format = GL_RGBA;
-
+        std::cout<<"texture id: "<< textureID<< std::endl;
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                      GL_UNSIGNED_BYTE, data);
@@ -256,6 +296,12 @@ void Model::setPosition(glm::vec3 pos) {
 void Model::setRotation(glm::vec3 rot) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].setRotation(rot);
+    }
+}
+
+void Model::setScale(glm::vec3 scale) {
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].setScale(scale);
     }
 }
 

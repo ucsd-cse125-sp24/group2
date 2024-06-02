@@ -17,6 +17,9 @@ set(SERVER_SOURCES
     prefabs/Enemy.cpp 
     src/MovementStateMachine.cpp
     src/Status.cpp
+    prefabs/PlayerAttack.cpp
+    prefabs/AttackManager.cpp
+    src/MovementStateMachine.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 
@@ -30,6 +33,7 @@ include_directories(
     .
     "../_common/"
     "../_common/include"
+    "./prefabs"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)

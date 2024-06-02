@@ -6,12 +6,12 @@
 
 #include "core.h"
 #include "Mesh.h"
-#include "stb_image.h"
-#include "Helper.h"
 
 #include "IComponent.hpp"
 #include "AnimationClip.h"
 #include "AnimationPlayer.h"
+
+#include "Helper.h"
 
 class AnimationPlayer;
 class AnimationClip;
@@ -41,6 +41,7 @@ private:
 
 public:
     Model(GameObject* owner);
+    Model(Model* other);
     Model(GameObject* owner, std::string path, bool hasAnimation);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;
@@ -50,6 +51,7 @@ public:
     void update(float dt);
     void setPosition(glm::vec3 pos);
     void setRotation(glm::vec3 rot);
+    void setScale(glm::vec3 scale);
 
     std::string ToString() override;
 };

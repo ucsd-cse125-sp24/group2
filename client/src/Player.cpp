@@ -6,8 +6,6 @@
 #include "AnimationPlayer.h"
 #include "InputManager.h"
 #include "components/RendererComponent.hpp"
-#include "MovementStateMachine.hpp"
-#include "Status.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     Mover* mover = new Mover(this);
@@ -17,14 +15,10 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     RendererComponent* meshRenderer =
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
-    Model* model = new Model(this, path, true);
+    Model* model = new Model(AssetManager::Instance().GetModel(path));
     AddComponent(model);
-    AnimationClip* animationClip = new AnimationClip(this, path, model);
-    AddComponent(animationClip);
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
-    Status* status = new Status(this);
-    AddComponent(status);
 }
 
 void Player::update(float deltaTime) {
@@ -42,6 +36,4 @@ void Player::update(float deltaTime) {
     } else {
         GetComponent<AnimationPlayer>()->play("idle");
     }
-
-    // std::cout << "In Player::update(): " << GetComponent<MovementStateMachine>()->ToString() << std::endl;
 }
