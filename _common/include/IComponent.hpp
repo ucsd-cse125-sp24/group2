@@ -16,8 +16,7 @@ public:
     IComponent(GameObject* newOwner) : owner(newOwner) {}
 
     void SetOwner(GameObject* newOwner) { owner = newOwner; }
-    virtual std::string
-    ToString() = 0; // might not work as pure virtual function
+    virtual std::string ToString() = 0; // might not work as pure virtual function
     virtual void Update(float deltaTime);
 };
 

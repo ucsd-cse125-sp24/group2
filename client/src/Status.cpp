@@ -1,6 +1,8 @@
 #include "Status.hpp"
 
 
+void Status::Update(float deltaTime) {}
+
 std::string Status::ToString() {
     std::string output = "Status:";
     for (auto kvPair : typeToStatusEffect) {

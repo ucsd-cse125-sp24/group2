@@ -40,18 +40,23 @@ void NetworkObject::RemoveComponent(IComponent* comp) {
 }
 
 void NetworkObject::serialize(Packet* packet) {
+    std::cout << "serialize()" << std::endl;
     packet->write_int(_networkId);
     for (INetworkComponent* netComp : networkComponents) {
         packet->write_int(netComp->TypeID());
+        std::cout << "  SERIALIZING: " << netComp->TypeID() << std::endl;
         netComp->Serialize(packet);
     }
 }
 
 // NOTE: make sure to extend to support all descendants of INetworkComponents
 void NetworkObject::deserialize(Packet* packet) {
+    std::cout << "deserialize()" << std::endl;
     for (int i = 0; i < networkComponents.size(); ++i) {
         int32_t compTypeID;
         packet->read_int(&compTypeID);
+
+        std::cout << "  DESERIALIZING: " << compTypeID << std::endl;
 
         switch (compTypeID) {
         case NetworkComponentTypeID::TRANSFORM: {
@@ -95,7 +100,7 @@ void NetworkObject::deserialize(Packet* packet) {
             Status* status = GetComponent<Status>();
             if (!status) {
                 std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "MovementStateMachine found in current NetworkObject"
+                             "Status found in current NetworkObject"
                           << std::endl;
             }
             status->Deserialize(packet);
