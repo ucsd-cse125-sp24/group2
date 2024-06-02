@@ -16,6 +16,7 @@
 #include "AssetManager.hpp"
 #include "components/RendererComponent.hpp"
 #include "EntityBase.hpp"
+#include "components/BeatSyncComponent.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -103,21 +104,20 @@ int main(int argc, char** argv) {
     });
     GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
-    AudioManager::instance().addNote("../assets/audio/Fsharp.wav", 'i');
-    AudioManager::instance().addNote("../assets/audio/Gsharp.wav", 'j');
-    AudioManager::instance().addNote("../assets/audio/A.wav", 'k');
-    AudioManager::instance().addNote("../assets/audio/Csharp.wav", 'l');
+    AudioManager::instance().AddNote("../assets/audio/Fsharp.wav", 'i');
+    AudioManager::instance().AddNote("../assets/audio/Gsharp.wav", 'j');
+    AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
+    AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
 
-    AudioManager::instance().setMain(
-        "../assets/audio/futuristic02-116bpm-Gbm.wav", 1.0f);
-    AudioManager::instance().setBpm(232);
-    // AudioManager::instance().play();
-    
+    AudioManager::instance().AddPhase(
+        "../assets/audio/futuristic02-116bpm-Gbm.wav");
+    AudioManager::instance().SetBpm(232);
+
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::string> modelPaths;
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
+    modelPaths.push_back("../assets/animation/model.gltf");
     modelPaths.push_back("../assets/robot/robot.gltf");
-    modelPaths.push_back("../assets/Bear2/bear.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
         Model* model = new Model(nullptr, path, true);
@@ -127,9 +127,6 @@ int main(int argc, char** argv) {
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
 
-        // std::cout << "  Num animations: " << scene->mNumAnimations << std::endl;
-        // std::map<std::string, AnimationClip*> animations =
-        // std::map<std::string, AnimationClip*>();
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
@@ -148,26 +145,31 @@ int main(int argc, char** argv) {
     GameManager::instance().scene.Instantiate(go);
 
     // bear
-    EntityBase* bear = new EntityBase(); 
+    EntityBase* bear = new EntityBase();
     Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
     bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
     bear->AddComponent(bearModel);
     AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
     bear->AddComponent(bearAnimationPlayer);
-    std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
-                for (int i = 0; i < prefabClips.size(); ++i) {
-                    AnimationClip* clip = new AnimationClip(prefabClips[i]);
-                    // std::cout << "Adding clip: " << clip->getName()
-                    //           << std::endl;
-                    bear->GetComponent<AnimationPlayer>()->AddClip(
-                        clip);
-                }
+    std::vector<AnimationClip*> prefabClips =
+        AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
+    for (int i = 0; i < prefabClips.size(); ++i) {
+        AnimationClip* clip = new AnimationClip(prefabClips[i]);
+        // std::cout << "Adding clip: " << clip->getName()
+        //           << std::endl;
+        bear->GetComponent<AnimationPlayer>()->AddClip(clip);
+    }
     RendererComponent* bearRenderer =
         new RendererComponent(bear, ShaderType::ANIMATED);
     bear->AddComponent(bearRenderer);
     bear->GetComponent<AnimationPlayer>()->play("idle");
     GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
+
+    GameObject* x = new GameObject();
+    IComponent* beat = new BeatSyncComponent();
+    x->AddComponent(beat);
+    GameManager::instance().scene.Instantiate(x);
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
@@ -179,7 +181,7 @@ int main(int argc, char** argv) {
         deltaTime = newTime - currentTime;
         currentTime = newTime;
 
-        AudioManager::instance().update();
+        AudioManager::instance().Update();
 
         // send input
         timer += deltaTime;

@@ -9,10 +9,13 @@
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
 #include "HUD.h"
+#include "MovementStateMachine.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     Mover* mover = new Mover(this);
     AddComponent(mover);
+    MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
+    AddComponent(movementStateMachine);
     RendererComponent* meshRenderer =
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
@@ -22,7 +25,11 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(animationPlayer);
     PlayerComponent* playerComponent = new PlayerComponent(this);
     AddComponent(playerComponent);
-    
 }
 
-void Player::update(float deltaTime) {}
+void Player::update(float deltaTime) {
+    // stuff moved to player component
+
+    // std::cout << "In Player::update(): " <<
+    // GetComponent<MovementStateMachine>()->ToString() << std::endl;
+}
