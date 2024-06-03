@@ -12,38 +12,30 @@ void PlayerComponent::Update(float deltaTime) {
     glm::vec2 moverDirection = owner->GetComponent<Mover>()->input;
 
     if (movementStateMachine) {
-        switch (movementStateMachine->GetState()) {
-        case (IDLE): {
-            animationPlayer->play("idle");
-            break;
-        }
-        case (WALK): {
-            if (moverDirection.x > 0) {
-                animationPlayer->play("right_strafe_walk");
-            } else if (moverDirection.x < 0) {
-                animationPlayer->play("left_strafe_walk");
-            } else if (moverDirection.y > 0) {
-                animationPlayer->play("walking");
-            } else {
-                animationPlayer->play("walk_backward");
+        switch(movementStateMachine->GetState()) {
+            case(IDLE): {
+                animationPlayer->play("idle");
+                break;
             }
-            break;
-        }
-        case (RUN): {
-            animationPlayer->play("running");
-            break;
-        }
-        case (DODGE_START): {
-            animationPlayer->play("forward_roll");
-            break;
-        }
-        case (DODGE): {
-            animationPlayer->play("forward_roll");
-            break;
-        }
-        default: {
-            animationPlayer->play("idle");
-        }
+            case(WALK): {
+                animationPlayer->play("running");
+                break;
+            }
+            case(RUN): {
+                animationPlayer->play("running");
+                break;
+            }
+            case(DODGE_START): {
+                animationPlayer->play("forward_roll");
+                break;
+            }
+            case(DODGE): {
+                animationPlayer->play("forward_roll");
+                break;
+            }
+            default: {
+                animationPlayer->play("idle");
+            }
         }
     } else {
         animationPlayer->play("idle");
