@@ -13,7 +13,7 @@
 const std::string path = "../assets/robot/robot.gltf";
 const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
-
+const std::string smallRobotPath = "../assets/small_robot/robot.gltf";
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
@@ -127,9 +127,10 @@ void GameManager::update(Packet* pkt) {
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
+                // std::cout<<"player's pos :" << glm::to_string(playerPos)<<std::endl;
                 auto playerRightVector = glm::normalize(glm::cross(
                     cam->GetTarget() - playerPos, glm::vec3(0, 1, 0)));
-
+            
                 cam->SetPosition(
                     playerPos +
                     glm::normalize(playerPos - cam->GetTarget()) * 250.0f +

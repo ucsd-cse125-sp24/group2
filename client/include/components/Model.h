@@ -12,6 +12,7 @@
 #include "AnimationPlayer.h"
 
 #include "Helper.h"
+#include "Cube.h"
 
 class AnimationPlayer;
 class AnimationClip;
@@ -25,6 +26,12 @@ private:
     int boneCounter = 0;
     bool hasAnimation = false;
     const aiScene* scene;
+
+    // bounding box
+    glm::vec3 AABBmin = glm::vec3(999, 999, 999);
+    glm::vec3 AABBmax = glm:: vec3(-999, -999, -999);
+    Cube* boundingBox;
+    bool drawBoundingBox = true;
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
@@ -52,6 +59,11 @@ public:
     void setPosition(glm::vec3 pos);
     void setRotation(glm::vec3 rot);
     void setScale(glm::vec3 scale);
-
+    void setDrawBoundingBox(bool draw);
+    const glm::vec3& getAABBmin() const;
+    const glm::vec3& getAABBmax() const;
+    void setAABBmin(glm::vec3 min);
+    void setAABBmax(glm::vec3 max);
+    
     std::string ToString() override;
 };

@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::string> modelPaths;
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    modelPaths.push_back("../assets/animation/model.gltf");
+    modelPaths.push_back("../assets/small_robot/robot.gltf");
     modelPaths.push_back("../assets/robot/robot.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
@@ -146,13 +146,13 @@ int main(int argc, char** argv) {
 
     // bear
     EntityBase* bear = new EntityBase();
-    Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    Model* bearModel = new Model(bear, "../assets/small_robot/robot.gltf", true);
+    // bear->GetComponent<NetTransform>()->SetScale(glm::vec3(1.0f));
     bear->AddComponent(bearModel);
     AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
     bear->AddComponent(bearAnimationPlayer);
     std::vector<AnimationClip*> prefabClips =
-        AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
+        AssetManager::Instance().GetClips("../assets/small_robot/robot.gltf");
     for (int i = 0; i < prefabClips.size(); ++i) {
         AnimationClip* clip = new AnimationClip(prefabClips[i]);
         // std::cout << "Adding clip: " << clip->getName()

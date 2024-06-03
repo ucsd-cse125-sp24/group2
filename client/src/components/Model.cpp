@@ -1,6 +1,7 @@
 #include "components/Model.h"
 #include "NetTransform.hpp"
 #include "Transform.hpp"
+#include "Shader.h"
 
 Model::Model(GameObject* owner) : IComponent(owner) {}
 
@@ -14,7 +15,7 @@ Model::Model(Model* other) : Model(owner) {
         std::vector<Vertex> verts;
         std::vector<unsigned int> inds;
         std::vector<Texture> tex;
-
+        
         for (int j = 0; j < other->meshes[i].vertices.size(); j++) {
             Vertex v;
 
@@ -61,6 +62,9 @@ void Model::update(float dt) {
             scale = owner->GetComponent<Transform>()->GetScale();
         }
         meshes[i].update(dt, pos, rot, scale);
+        if(boundingBox && drawBoundingBox) {
+            boundingBox->update(dt, pos, rot, scale);
+        }
     }
 }
 
@@ -68,17 +72,22 @@ void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].draw(viewProjMtx, shader);
     }
+
+    if (boundingBox && drawBoundingBox) {
+        boundingBox->draw(viewProjMtx, Shader::GetShader(STANDARD));
+    }
 }
 
 void Model::loadModel(std::string path) {
     Assimp::Importer importer;
     if (hasAnimation) {
         scene =
-            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+            importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenBoundingBoxes);
     } else {
         scene =
             importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs |
-                                        aiProcess_PreTransformVertices);
+                                        aiProcess_PreTransformVertices | 
+                                        aiProcess_GenBoundingBoxes);
     }
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
@@ -88,10 +97,12 @@ void Model::loadModel(std::string path) {
     } else {
         std::cout << "SUCCESS::ASSIMP:: LOADING FILE " << std::endl;
     }
-    std::cout << "meshes count: " << scene->mNumMeshes << std::endl;
+    std::cout << "meshes count: " << path << " " << scene->mNumMeshes << std::endl;
     directory = path.substr(0, path.find_last_of('/'));
-
+    
     processNode(scene->mRootNode, scene);
+    std::cout<<"min: "<< glm::to_string(AABBmin) << " max: " << glm::to_string(AABBmax) << std::endl;
+    boundingBox = new Cube(AABBmin, AABBmax);
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene) {
@@ -109,6 +120,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
+
+    AABBmin = min(glm::vec3(mesh->mAABB.mMin.x, mesh->mAABB.mMin.y, mesh->mAABB.mMin.z), AABBmin);
+    AABBmax = max(glm::vec3(mesh->mAABB.mMax.x, mesh->mAABB.mMax.y, mesh->mAABB.mMax.z), AABBmax);
+        // std::cout<<"min: "<< glm::to_string(AABBmin) << " max: " << glm::to_string(AABBmax) << std::endl;
+    
     // setting vertices
     for (int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -128,6 +144,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         } else {
             vertex.texCoords = glm::vec2(0.0f, 0.0f);
         }
+
         vertices.push_back(vertex);
     }
 
@@ -308,3 +325,19 @@ void Model::setScale(glm::vec3 scale) {
 std::string Model::ToString() { return "Model"; }
 
 const aiScene* Model::getScene() const { return scene; }
+
+void Model::setDrawBoundingBox(bool draw) {
+    drawBoundingBox = draw;
+}
+
+const glm::vec3& Model::getAABBmin() const { return AABBmin; }
+
+const glm::vec3& Model::getAABBmax() const { return AABBmax; }
+
+void Model::setAABBmin(glm::vec3 min) {
+    AABBmin = min;
+}
+
+void Model::setAABBmax(glm::vec3 max) {
+    AABBmax = max;
+}

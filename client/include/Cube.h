@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "core.h"
+#include <iostream>
 
 class Cube {
 private:
@@ -11,6 +12,10 @@ private:
 
     glm::mat4 model;
     glm::vec3 color;
+
+    glm::vec3 position;
+    glm::vec3 scale;
+    glm::vec3 rotation;
 
     // Cube Information
     std::vector<glm::vec3> positions;
@@ -22,7 +27,11 @@ public:
     ~Cube();
 
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
-    void update();
+    void update(float dt, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
+    const glm::mat4& getModelMtx();
+    void setPosition(glm::vec3 pos);
+    void setRotation(glm::vec3 rot);
+    void setScale(glm::vec3 scale);
 
     void spin(float deg);
 };
