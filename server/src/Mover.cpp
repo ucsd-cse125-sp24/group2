@@ -88,6 +88,7 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle += -input.x * speed / radius;
     }
 
+    // TODO: set changeable center of rotation
     glm::vec3 position =
         glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
 

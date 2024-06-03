@@ -12,12 +12,13 @@
 #include "HUD.h"
 
 const std::string path = "../assets/robot/robot.gltf";
-const std::string enemyPath = "../assets/bear/bear.gltf";
+const std::string enemyPath = "../assets/Bear2/bear.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
 
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
+Enemy* boss;
 void GameManager::Init() {}
 
 void GameManager::handle_packet(Packet* packet) {
@@ -74,6 +75,22 @@ void GameManager::update(Packet* pkt) {
         // TODO deserialize
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
+            int network_id;
+            pkt->read_int(&network_id); // J: I did not thoroughly check if this is set correctly
+            if (!boss) {
+                boss = new Enemy(enemyPath, network_id);
+                std::vector<AnimationClip*> prefabClips = 
+                    AssetManager::Instance().GetClips(enemyPath);
+                for (int i = 0; i < prefabClips.size(); i++) {
+                    AnimationClip* clip = new AnimationClip(prefabClips[i]);
+                    boss->GetComponent<AnimationPlayer>()->AddClip(clip);
+                }
+
+                scene.Instantiate(boss);
+            }
+
+            // cam->SetTarget(boss->GetComponent<NetTransform>()->GetPosition());
+
             break;
         }
         case NetworkObjectTypeID::PLAYER: {
@@ -132,6 +149,7 @@ void GameManager::update(Packet* pkt) {
             }
             players[network_id]->deserialize(pkt);
 
+            // TODO: set cam target to boss target
             cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
                 auto playerPos = players[localPlayerObject]

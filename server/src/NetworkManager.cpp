@@ -183,12 +183,13 @@ void NetworkManager::process_input() {
             if (playersReady == MAX_CLIENTS) {
                 gameState = GameState::START;
                 // TODO Spawn enemy
+                // network enemy here
                 printf("Spawn enemy!\n");
                 enemyPrefab = new Enemy();
                 enemyPrefab->GetComponent<NetTransform>()->SetPosition(
                     glm::vec3(0, 0, 0));
                 AttackManager::instance().addEnemy(enemyPrefab);
-                // scene.Instantiate(enemyPrefab);
+                scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
                 for (auto& kv : server.get_clients()) {

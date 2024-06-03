@@ -145,26 +145,26 @@ int main(int argc, char** argv) {
     GameManager::instance().scene.Instantiate(go);
 
     // bear
-    EntityBase* bear = new EntityBase();
-    Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
-    bear->AddComponent(bearModel);
-    AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
-    bear->AddComponent(bearAnimationPlayer);
-    std::vector<AnimationClip*> prefabClips =
-        AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
-    for (int i = 0; i < prefabClips.size(); ++i) {
-        AnimationClip* clip = new AnimationClip(prefabClips[i]);
-        // std::cout << "Adding clip: " << clip->getName()
-        //           << std::endl;
-        bear->GetComponent<AnimationPlayer>()->AddClip(clip);
-    }
-    RendererComponent* bearRenderer =
-        new RendererComponent(bear, ShaderType::ANIMATED);
-    bear->AddComponent(bearRenderer);
-    bear->GetComponent<AnimationPlayer>()->play("idle");
-    GameManager::instance().scene.Instantiate(bear);
-    std::cout << "  Finished updating AssetManager" << std::endl;
+    // EntityBase* bear = new EntityBase();
+    // Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
+    // bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    // bear->AddComponent(bearModel);
+    // AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
+    // bear->AddComponent(bearAnimationPlayer);
+    // std::vector<AnimationClip*> prefabClips =
+    //     AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     // std::cout << "Adding clip: " << clip->getName()
+    //     //           << std::endl;
+    //     bear->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
+    // RendererComponent* bearRenderer =
+    //     new RendererComponent(bear, ShaderType::ANIMATED);
+    // bear->AddComponent(bearRenderer);
+    // bear->GetComponent<AnimationPlayer>()->play("idle");
+    // GameManager::instance().scene.Instantiate(bear);
+    // std::cout << "  Finished updating AssetManager" << std::endl;
 
     GameObject* x = new GameObject();
     IComponent* beat = new BeatSyncComponent();
