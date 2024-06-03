@@ -11,6 +11,7 @@
 #include "prefabs/EnemyAttack.hpp"
 
 #include "Health.hpp"
+#include "EnemyComponent.hpp"
 #include "AttackManager.hpp"
 #include <iostream>
 
@@ -27,6 +28,8 @@ Enemy::Enemy() : Entity() {
     this->currentPhase = PHASE1;
     Health* h = new Health(this, 100);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId){
@@ -42,6 +45,8 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     this->currentPhase = PHASE1;
     Health* h = new Health(this, 100);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {
@@ -49,12 +54,15 @@ void Enemy::update(float deltaTime) {
 
     // moves in a circle
     // TODO: use colliderManager.move instead
-    // GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
+    // GetComponent<NetTransform>()->position += 10.0f * glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
     if(std::fmod(s, 5.0) <= deltaTime){
         attack();
         s = std::fmod(s, 5.0);
+    } else {
+        // J: want to play idle animation when we are not attacking
+        GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
     }
 }
 

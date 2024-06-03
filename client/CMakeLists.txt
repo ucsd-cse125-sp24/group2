@@ -28,6 +28,7 @@ set(
     src/components/RendererComponent.cpp
     src/components/PlayerComponent.cpp
     src/components/BeatSyncComponent.cpp
+    src/components/EnemyComponent.cpp
     prefabs/Enemy.cpp
 
     # HUD

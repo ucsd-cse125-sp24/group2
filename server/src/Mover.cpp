@@ -111,6 +111,7 @@ void Mover::SetCenter(glm::vec3 newCenter) {
     // TODO: !!! J: we have to reset radius and angle relative to center when it gets moved
     // radius = glm::distance(position, center);
     // angle = glm::acos(glm::dot(position - center, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
+    // if ((position - center).x < 0) angle = -angle;
 }
 
 std::string Mover::ToString() { return "Mover"; }

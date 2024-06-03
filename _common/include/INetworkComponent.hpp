@@ -15,6 +15,7 @@ enum NetworkComponentTypeID : int32_t {
     HEALTH = 10,
     MOVEMENT_STATE_MACHINE,
     STATUS,
+    ENEMY_COMPONENT,
 };
 
 class INetworkComponent : public IComponent {

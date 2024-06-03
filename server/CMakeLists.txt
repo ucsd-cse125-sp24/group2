@@ -14,6 +14,7 @@ set(SERVER_SOURCES
     src/CollisionManager.cpp
     src/Mover.cpp
     src/Health.cpp
+    components/EnemyComponent.cpp
     components/PlayerCombat.cpp
     prefabs/Enemy.cpp 
     prefabs/PlayerAttack.cpp

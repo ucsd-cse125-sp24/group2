@@ -5,6 +5,7 @@
 #include "AnimationPlayer.h"
 #include "components/RendererComponent.hpp"
 #include "Health.hpp"
+#include "EnemyComponent.hpp"
 
 
 Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
@@ -17,8 +18,8 @@ Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
     AddComponent(renderer);
     Health* health = new Health(this);
     AddComponent(health);
-    // create enemy animation controller component
-    animationPlayer->play("idle");
+    EnemyComponent* ec = new EnemyComponent(this);
+    AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {}

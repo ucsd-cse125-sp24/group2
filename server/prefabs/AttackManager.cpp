@@ -6,6 +6,7 @@
 #include "MarkedAttack.hpp"
 #include "SwipeAttack.hpp"
 #include "NetworkManager.hpp"
+#include "EnemyComponent.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);
@@ -27,23 +28,29 @@ void AttackManager::addEnemy(Enemy* e) {
 void AttackManager::newLaserAttack() {
     LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
     enemyAttackList.push_back(laserAtt);
+    // J: this functionality could be placed in the attack initializations
+    // idk this seems a bit more centralized and is less work
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
 }
 
 // TODO
 // void AttackManager::newStompAttack() {
 //     StompAttack* stompAtt = new StompAttack();
 //     enemyAttackList.push_back(stompAtt);
+//     enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
 // }
 
 void AttackManager::newMarkedAttack() {
     MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
     enemyAttackList.push_back(markedAtt);
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::MARK);
 }
 
 void AttackManager::newSwipeAttack() {
     if(!playerList.empty()){
         SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
         enemyAttackList.push_back(swipeAtt);
+        enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::SWIPE);
     }
 }
 
@@ -71,6 +78,7 @@ void AttackManager::update(float deltaTime) {
             playerAttackList.erase( playerAttackList.begin() + i );
             continue;
         }
+        // TODO: Network attacks
         playerAttackList.at(i)->update(deltaTime);
     }
 
