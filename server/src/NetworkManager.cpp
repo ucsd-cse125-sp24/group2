@@ -18,6 +18,8 @@
 #include "AttackManager.hpp"
 #include "Health.hpp"
 #include "GameState.hpp"
+#include "CooldownComponent.hpp"
+#include "MovementStateMachine.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
@@ -102,8 +104,8 @@ void NetworkManager::process_input() {
         // but for now, we do this to set input manually
         switch ((PacketType)packet_type) {
         case PacketType::PLAYER_INPUT: {
-            char input[5];
-            for (int i = 0; i < 5; i++) {
+            char input[INPUT_LEN];
+            for (int i = 0; i < INPUT_LEN; i++) {
                 packet->read_byte(&input[i]);
             }
 
@@ -115,15 +117,14 @@ void NetworkManager::process_input() {
             //           << (float)input[1] << ", " << (float)input[2] << ", "
             //           << (float)input[3] << std::endl;
 
-            clients[client_id]->p->GetComponent<Mover>()->input.x =
-                (float)input[3] - (float)input[1];
-            clients[client_id]->p->GetComponent<Mover>()->input.y =
-                (float)input[0] - (float)input[2];
-            if (input[4] == 1) {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 9.0f;
-            } else {
-                clients[client_id]->p->GetComponent<Mover>()->speed = 4.0f;
+            Player* currPlayer = clients[client_id]->p;
+            Mover* currMover = currPlayer->GetComponent<Mover>();
+
+            for (int i = 0; i < INPUT_LEN; ++i) {
+                currMover->inputs[i] = input[i];
             }
+            currMover->input.x = (float)input[3] - (float)input[1];
+            currMover->input.y = (float)input[0] - (float)input[2];
 
             break;
         }
@@ -169,7 +170,8 @@ void NetworkManager::process_input() {
                     key)) {
                 printf(YLW "COMBO HIT\n" RST);
                 // TODO enemy take damage
-                AttackManager::instance().newPlayerAttack(clients[client_id]->p);
+                AttackManager::instance().newPlayerAttack(
+                    clients[client_id]->p);
             }
 
             break;
@@ -183,6 +185,8 @@ void NetworkManager::process_input() {
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
                 enemyPrefab = new Enemy();
+                enemyPrefab->GetComponent<NetTransform>()->SetPosition(
+                    glm::vec3(0, 0, 0));
                 AttackManager::instance().addEnemy(enemyPrefab);
                 // scene.Instantiate(enemyPrefab);
 
@@ -202,8 +206,8 @@ void NetworkManager::process_input() {
     }
 }
 
-void NetworkManager::update(float deltaTime) { 
-    scene.Update(deltaTime); 
+void NetworkManager::update(float deltaTime) {
+    scene.Update(deltaTime);
     AttackManager::instance().update(deltaTime);
     if (enemyPrefab != nullptr)
         enemyPrefab->update(deltaTime);

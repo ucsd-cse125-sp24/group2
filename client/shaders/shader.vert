@@ -23,6 +23,7 @@ out vec2 TexCoords;
 void main()
 {
     vec4 totalPosition = vec4(0.0f);
+    mat3 totalNormal = mat3(0.0f);
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
         if(boneIDs[i] == -1) 
@@ -34,12 +35,13 @@ void main()
         }
         vec4 localPosition = finalBonesMatrices[boneIDs[i]] * vec4(position,1.0f);
         totalPosition += localPosition * weights[i];
-        //vec3 localNormal = mat3(finalBonesMatrices[boneIDs[i]]) * norm;
+        totalNormal += mat3(transpose(inverse(finalBonesMatrices[boneIDs[i]]))) * weights[i];
    }
     TexCoords = texCoords;
     // OpenGL maintains the D matrix so you only need to multiply by P, V (aka C inverse), and M
-    gl_Position = viewProj * model * vec4(position, 1.0);
     gl_Position = viewProj * model * totalPosition;
+
     // for shading
-	fragNormal = vec3(model * vec4(normal, 0));
+    vec3 norm = normalize(totalNormal * normal);
+	fragNormal = vec3(model * vec4(norm, 0));
 }

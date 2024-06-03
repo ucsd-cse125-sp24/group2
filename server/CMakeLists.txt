@@ -15,10 +15,11 @@ set(SERVER_SOURCES
     src/Mover.cpp
     src/Health.cpp
     components/PlayerCombat.cpp
-    prefabs/Enemy.cpp
+    prefabs/Enemy.cpp 
     prefabs/PlayerAttack.cpp
     prefabs/AttackManager.cpp
     prefabs/EnemyAttack.cpp
+    src/MovementStateMachine.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 FILE(GLOB ENEMY_SKILLS prefabs/enemySkills/*.cpp)

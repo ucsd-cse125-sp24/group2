@@ -9,9 +9,11 @@
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
 #include "GameState.hpp"
+#include "HUD.h"
 
-const std::string path = "../assets/animation/model.gltf";
+const std::string path = "../assets/robot/robot.gltf";
 const std::string enemyPath = "../assets/bear/bear.gltf";
+const std::string robotPath = "../assets/robot/robot.gltf";
 
 void StartGame(Packet*);
 
@@ -23,6 +25,7 @@ void GameManager::handle_packet(Packet* packet) {
     packet->read_int(&packet_id);
     PacketType p = (PacketType)packet_id;
 
+    // std::cout << "HERE GM::handle" << std::endl;
     switch (p) {
     case PacketType::STATE_UPDATE:
         // std::cout << "  PacketType: STATE_UPD" << std::endl;
@@ -63,6 +66,7 @@ int test = 0;
 void GameManager::update(Packet* pkt) {
     int num_updates;
     pkt->read_int(&num_updates);
+    // std::cout << "HERE GM::upd()" << std::endl;
     while (num_updates) {
         NetworkObjectTypeID _typeid;
         pkt->read_int((int*)&_typeid);
@@ -78,13 +82,13 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                Player* playerPrefab = new Player(path, network_id);
+                Player* playerPrefab = new Player(robotPath, network_id);
                 std::vector<AnimationClip*> prefabClips =
-                    AssetManager::Instance().GetClips(path);
+                    AssetManager::Instance().GetClips(robotPath);
                 for (int i = 0; i < prefabClips.size(); ++i) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
-                    std::cout << "Adding clip: " << clip->getName()
-                              << std::endl;
+                    // std::cout << "Adding clip: " << clip->getName()
+                    //           << std::endl;
                     playerPrefab->GetComponent<AnimationPlayer>()->AddClip(
                         clip);
                 }
@@ -97,8 +101,35 @@ void GameManager::update(Packet* pkt) {
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
                 }
-            }
+                if (localPlayerObject == network_id) {
+                    std::cout << "HERE" << std::endl;
+                    HUDs* hudComponent = new HUDs(playerPrefab);
+                    playerPrefab->AddComponent(hudComponent);
+                }
 
+                /* adds the rest of the players to the local player's teamInfo
+                 * if local player exists */
+                if (players.find(localPlayerObject) != players.end()) {
+                    players[localPlayerObject]
+                        ->GetComponent<HUDs>()
+                        ->enableState(VISIBLE);
+                    for (auto it = players.begin(); it != players.end(); it++) {
+                        auto map = players[localPlayerObject]
+                                       ->GetComponent<HUDs>()
+                                       ->teamInfo->teamHealthMap;
+                        // std::cout<<"net id: " << it->first << std::endl;
+                        if (it->first != localPlayerObject &&
+                            map.find(it->first) == map.end()) {
+                            std::cout << "add player " << it->first << " to "
+                                      << "player " << localPlayerObject
+                                      << std::endl;
+                            players[localPlayerObject]
+                                ->GetComponent<HUDs>()
+                                ->teamInfo->addTeamMember(it->first);
+                        }
+                    }
+                }
+            }
             players[network_id]->deserialize(pkt);
 
             cam->SetTarget(glm::vec3(0, 0, 0));
@@ -165,5 +196,10 @@ void GameManager::destroy_object(Packet* pkt) {
 
 void GameManager::StartGame(Packet* packet) {
     printf(GRN "Starting game!\n" RST);
-    AudioManager::instance().play();
+    AudioManager::instance().Play();
+    AudioManager::instance().GoToNextAudioPhase();
+
+    // set the BPM once it plays the music
+    players[localPlayerObject]->GetComponent<HUDs>()->metronome->setBpm(
+        AudioManager::instance().getBpm());
 }
