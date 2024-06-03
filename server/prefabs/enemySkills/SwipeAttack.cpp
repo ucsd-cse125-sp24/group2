@@ -1,12 +1,16 @@
 #include "SwipeAttack.hpp"
 #include "CollisionManager.hpp"
+#include <iostream>
 
-# define PI           180
-# define EFFECTRANGE  2*PI/3
-# define DAMAGERANGE  PI/3
-# define RADIUS       50
+// use degrees instead of radian
+# define PI           180.0
+// brackets in the macro are really really important. 
+// Otherwise algebra order mistake. since it'll substitute the whole thing into the expression
+# define EFFECTRANGE  (2*PI/3)
+# define DAMAGERANGE  (PI/3)
+# define RADIUS       500
 # define HEIGHT       5
-# define ANGSPEED     PI/3
+# define ANGSPEED     (PI/3)
 # define LIFE         (EFFECTRANGE-DAMAGERANGE)/ANGSPEED
 # define DAMAGE       15
 

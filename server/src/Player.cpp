@@ -6,13 +6,14 @@
 #include "Health.hpp"
 #include "Invincible.hpp"
 
-Player::Player() : Entity() {
+Player::Player(glm::vec3 position) : Entity() {
+    this->GetComponent<NetTransform>()->SetPosition(position);
     alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
     PlayerCombat* playerCombat = new PlayerCombat();
     AddComponent(playerCombat);
-    Collider* collider = new Collider(this);
+    Collider* collider = new Collider(this, this->GetComponent<NetTransform>());
     collider->SetRadius(30);
     collider->SetHeight(10);
     AddComponent(collider);
