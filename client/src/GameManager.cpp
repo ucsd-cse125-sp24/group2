@@ -71,9 +71,9 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (players.find(network_id) == players.end()) {
-                Player* playerPrefab = new Player(robotPath, network_id);
+                Player* playerPrefab = new Player(smallRobotPath, network_id);
                 std::vector<AnimationClip*> prefabClips =
-                    AssetManager::Instance().GetClips(robotPath);
+                    AssetManager::Instance().GetClips(smallRobotPath);
                 for (int i = 0; i < prefabClips.size(); ++i) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     // std::cout << "Adding clip: " << clip->getName()
@@ -133,8 +133,8 @@ void GameManager::update(Packet* pkt) {
             
                 cam->SetPosition(
                     playerPos +
-                    glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
-                    glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
+                    glm::normalize(playerPos - cam->GetTarget()) * 1.0f +
+                    glm::vec3(0, 1, 0) + playerRightVector * 1.0f);
             }
 
             break;
