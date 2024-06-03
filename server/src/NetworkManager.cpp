@@ -184,7 +184,7 @@ void NetworkManager::process_input() {
                 printf("Spawn enemy!\n");
                 enemyPrefab = new Enemy();
                 AttackManager::instance().addEnemy(enemyPrefab);
-                // scene.Instantiate(enemyPrefab);
+                scene.Instantiate(enemyPrefab);
 
                 // Start game for all players
                 for (auto& kv : server.get_clients()) {
@@ -205,8 +205,6 @@ void NetworkManager::process_input() {
 void NetworkManager::update(float deltaTime) { 
     scene.Update(deltaTime); 
     AttackManager::instance().update(deltaTime);
-    if (enemyPrefab != nullptr)
-        enemyPrefab->update(deltaTime);
 }
 
 // TODO send state of all networked entities

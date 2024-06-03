@@ -13,6 +13,7 @@ void AttackManager::newPlayerAttack(Player* p) {
     playerAtt->init(p);
     playerAtt->setTarget(enemyPrefab);
     playerAttackList.push_back(playerAtt);
+    NetworkManager::instance().scene.Instantiate(playerAtt);
 }
 
 void AttackManager::addPlayer(Player* p) {
@@ -27,24 +28,26 @@ void AttackManager::addEnemy(Enemy* e) {
 void AttackManager::newLaserAttack() {
     LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
     enemyAttackList.push_back(laserAtt);
+    NetworkManager::instance().scene.Instantiate(laserAtt);
 }
 
 // TODO
 // void AttackManager::newStompAttack() {
 //     StompAttack* stompAtt = new StompAttack();
 //     enemyAttackList.push_back(stompAtt);
+//     NetworkManager::instance().scene.Instantiate(stompAtt);
 // }
 
 void AttackManager::newMarkedAttack() {
     MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
     enemyAttackList.push_back(markedAtt);
+    NetworkManager::instance().scene.Instantiate(markedAtt);
 }
 
 void AttackManager::newSwipeAttack() {
-    if(!playerList.empty()){
-        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
-        enemyAttackList.push_back(swipeAtt);
-    }
+    SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
+    enemyAttackList.push_back(swipeAtt);
+    NetworkManager::instance().scene.Instantiate(swipeAtt);
 }
 
 void AttackManager::update(float deltaTime) {
@@ -62,17 +65,17 @@ void AttackManager::update(float deltaTime) {
         // iterate from the back to take care of the situ of removing inside loop
         if(!playerAttackList.at(i)->isExist()) {
             playerAttackList.erase( playerAttackList.begin() + i );
+            NetworkManager::instance().scene.Destroy(playerAttackList.at(i));
             continue;
         }
-        playerAttackList.at(i)->update(deltaTime);
     }
 
     for(int i = enemyAttackList.size() - 1; i >= 0; i--) {
         // iterate from the back to take care of the situ of removing inside loop
         if(!enemyAttackList.at(i)->exist) {
             enemyAttackList.erase( enemyAttackList.begin() + i );
+            NetworkManager::instance().scene.Destroy(enemyAttackList.at(i));
             continue;
         }
-        enemyAttackList.at(i)->update(deltaTime);
     }
 }
