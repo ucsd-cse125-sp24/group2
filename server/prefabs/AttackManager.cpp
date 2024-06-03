@@ -48,11 +48,18 @@ void AttackManager::newSwipeAttack() {
 }
 
 void AttackManager::update(float deltaTime) {
-    // this is such a wacky way to keep track of number of players alive rn
+    // J: this is such a wacky way to keep track of number of players alive rn
+    // okay we are also going to use this to set player's centers uhhhh
+    // we should really probably just keep a list of players in networkmanager
     int numAlive = 0;
     for (Player* player : playerList) {
         if (player->GetComponent<Health>()->GetHealth() > 0) {
             numAlive++;
+        }
+        if (enemyPrefab) {
+            glm::vec3 enemyPosition = enemyPrefab->GetComponent<NetTransform>()->GetPosition();
+            // J: i guess make sure to set the y to 0
+            player->GetComponent<Mover>()->SetCenter(enemyPosition);
         }
     }
     NetworkManager::instance().numAlive = numAlive;

@@ -18,8 +18,8 @@ public:
     glm::vec3& position; // Taken from NetTransform
     glm::vec3& rotation; // Taken from NetTransform
 
-    glm::vec2 center = glm::vec2();
-    float radius = 500; // glm::distance(center, glm::vec2(position.x, position.z));
+    glm::vec3 center = glm::vec3();
+    float radius = 500; // glm::distance(center, position);
     float angle = 0;
 
     Mover(NetworkObject* owner);
@@ -41,7 +41,6 @@ public:
 
     virtual int32_t TypeID() const override { return MOVER; }
 
-    void SetCenter(glm::vec2 newCenter) { center = newCenter; }
-
+    void SetCenter(glm::vec3 newCenter);
     std::string ToString() override;
 };

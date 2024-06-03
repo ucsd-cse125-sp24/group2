@@ -210,8 +210,6 @@ void NetworkManager::process_input() {
 void NetworkManager::update(float deltaTime) {
     scene.Update(deltaTime);
     AttackManager::instance().update(deltaTime);
-    if (enemyPrefab != nullptr)
-        enemyPrefab->update(deltaTime);
 }
 
 // TODO send state of all networked entities
@@ -263,7 +261,6 @@ void NetworkManager::send_state() {
             Packet* endGame = new Packet();
             endGame->write_int((int)PacketType::END_GAME);
             endGame->write_int((int)gameState);
-            // TODO: write lose
             server.send(client->id, endGame);
         }
     }

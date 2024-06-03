@@ -4,6 +4,7 @@
 #include "components/Model.h"
 #include "AnimationPlayer.h"
 #include "components/RendererComponent.hpp"
+#include "Health.hpp"
 
 
 Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
@@ -14,6 +15,8 @@ Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
     AddComponent(animationPlayer);
     RendererComponent* renderer = new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(renderer);
+    Health* health = new Health(this);
+    AddComponent(health);
     // create enemy animation controller component
     animationPlayer->play("idle");
 }

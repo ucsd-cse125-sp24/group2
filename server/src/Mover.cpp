@@ -85,12 +85,15 @@ void Mover::UpdatePhysics(float deltaTime) {
         radius += -input.y * speed;
     }
     if (input.x != 0) {
+        // angle goes clockwise starting from z axis
         angle += -input.x * speed / radius;
     }
 
-    // TODO: set changeable center of rotation
-    glm::vec3 position =
-        glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
+    if (glm::length(input) != 0) {
+        // J: feels kind of bad to set nettransform position here directly but works right now ig;
+        position =
+            center + glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
+    }
 
     // check for collisions
     if (CollisionManager::instance().move(owner, position)) {
@@ -101,6 +104,13 @@ void Mover::UpdatePhysics(float deltaTime) {
 
     // float angleAboutY = 180.0f - glm::degrees(angle);
     // rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
+}
+
+void Mover::SetCenter(glm::vec3 newCenter) {
+    center = newCenter;
+    // TODO: !!! J: we have to reset radius and angle relative to center when it gets moved
+    // radius = glm::distance(position, center);
+    // angle = glm::acos(glm::dot(position - center, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
 }
 
 std::string Mover::ToString() { return "Mover"; }

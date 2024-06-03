@@ -76,7 +76,7 @@ void GameManager::update(Packet* pkt) {
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
             int network_id;
-            pkt->read_int(&network_id); // J: I did not thoroughly check if this is set correctly
+            pkt->read_int(&network_id); // J: I did not thoroughly check if the packet is read correctly
             if (!boss) {
                 boss = new Enemy(enemyPath, network_id);
                 std::vector<AnimationClip*> prefabClips = 
@@ -89,7 +89,11 @@ void GameManager::update(Packet* pkt) {
                 scene.Instantiate(boss);
             }
 
-            // cam->SetTarget(boss->GetComponent<NetTransform>()->GetPosition());
+            boss->deserialize(pkt);
+
+            // also look up at the boss, probably needs to be the center of it which is like 1000 or something rn
+            glm::vec3 bossPos = boss->GetComponent<NetTransform>()->GetPosition();
+            cam->SetTarget(glm::vec3(bossPos.x, 1000.0f, bossPos.z));
 
             break;
         }
@@ -149,8 +153,6 @@ void GameManager::update(Packet* pkt) {
             }
             players[network_id]->deserialize(pkt);
 
-            // TODO: set cam target to boss target
-            cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
