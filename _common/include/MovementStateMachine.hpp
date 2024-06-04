@@ -23,7 +23,7 @@ protected:
 
     float shiftPressDuration = -1.0;
     Cooldown* dodgeCooldown = new Cooldown(1.0f);
-    float deathAnimationTime = 3.0f;
+    float deathAnimationTime = 6.0f; // 6 seconds hopefully
     bool dodgeQueued = false;
     glm::vec2 lastNonZeroInput;
 
