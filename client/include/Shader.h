@@ -11,7 +11,7 @@
 
 #include "core.h"
 
-enum ShaderType { STANDARD, ANIMATED, HUD };
+enum ShaderType { STANDARD, ANIMATED, HUD, SKYBOX };
 
 class Shader {
 private:

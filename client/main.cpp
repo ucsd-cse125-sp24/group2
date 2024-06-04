@@ -17,6 +17,7 @@
 #include "components/RendererComponent.hpp"
 #include "EntityBase.hpp"
 #include "components/BeatSyncComponent.hpp"
+#include "SkyBox.hpp"
 
 ConcurrentQueue<std::function<void(void)>> task_queue;
 
@@ -215,12 +216,15 @@ int main(int argc, char** argv) {
         Window::Render(window, &GameManager::instance().scene,
                        GameManager::instance().cam, deltaTime);
 
+
+
         // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
         }
 
         GameManager::instance().scene.Update(deltaTime);
+
     }
 
     Window::cleanUp();

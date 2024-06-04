@@ -30,6 +30,9 @@ set(
     src/components/BeatSyncComponent.cpp
     prefabs/Enemy.cpp
 
+    #SkyBox
+    src/SkyBox.cpp
+
     # HUD
     src/HealthBar.cpp
     src/Metronome.cpp
