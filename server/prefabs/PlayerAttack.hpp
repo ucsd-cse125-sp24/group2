@@ -14,8 +14,10 @@ private:
 public:
     PlayerAttack();
     PlayerAttack(int networkId);
-    void init(Player* player);
     void update(float deltaTime) override;
+
+    // used by server
+    void init(Player* player);
     void DealDamage();
 
     void SetDamage(int newDamage) { damage = newDamage; }

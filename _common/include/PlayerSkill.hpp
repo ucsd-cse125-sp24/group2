@@ -3,13 +3,18 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "PlayerSkillType.hpp"
 
 class PlayerSkill : public Entity {
 
 public:
-    PlayerSkill() : Entity() {}
-    PlayerSkill(int networkId) : Entity(networkId) {}
+    PlayerSkill();
+    PlayerSkill(int networkId);
 
+    // used by client
+    void initComponent(int skillType);
+
+    void update(float deltaTime) override {}
     std::string ToString() override { return "PlayerSkill"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::PLAYER_SKILL; }  
 };

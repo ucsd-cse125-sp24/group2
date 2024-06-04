@@ -13,13 +13,18 @@ private:
     Enemy* enemy;
 
 public:
+    // used by server
     bool exist;
     EnemyAttack(Enemy* owner);
     EnemyAttack(Enemy* owner, int networkId);
     void DealDamage(std::vector<GameObject*> players_hit);
 
+    // used by client
+    EnemyAttack(int attackType, int networkId);
+
     std::string ToString() override { return "EnemyAttack"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::ENEMY_ATTACK; }
+    void update(float deltaTime) override {}
     
     void SetDamage(int newDamage) { damage = newDamage; }
 

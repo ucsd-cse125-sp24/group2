@@ -16,6 +16,8 @@ EnemyAttack::EnemyAttack(Enemy* owner, int networkId) : Entity(networkId) {
     exist = true;
 }
 
+EnemyAttack::EnemyAttack(int attackType, int networkId) {}
+
 void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
     if (exist) {
         for (GameObject* entity : entity_hit) {

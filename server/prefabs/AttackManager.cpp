@@ -29,6 +29,7 @@ void AttackManager::newLaserAttack() {
     LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
     enemyAttackList.push_back(laserAtt);
     NetworkManager::instance().scene.Instantiate(laserAtt);
+    laserAtt->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
 }
 
 // TODO
@@ -42,12 +43,14 @@ void AttackManager::newMarkedAttack() {
     MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
     enemyAttackList.push_back(markedAtt);
     NetworkManager::instance().scene.Instantiate(markedAtt);
+    markedAtt->GetComponent<EnemyComponent>()->SetState(AttackState::MARK);
 }
 
 void AttackManager::newSwipeAttack() {
     SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
     enemyAttackList.push_back(swipeAtt);
     NetworkManager::instance().scene.Instantiate(swipeAtt);
+    swipeAtt->GetComponent<EnemyComponent>()->SetState(AttackState::SWIPE);
 }
 
 void AttackManager::update(float deltaTime) {

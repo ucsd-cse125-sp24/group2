@@ -22,6 +22,7 @@ void PlayerAttack::init(Player* player) {
     attackC->makePoint();
     this->AddComponent(attackC);
     this->GetComponent<NetTransform>()->SetPosition(newPosition);
+    this->GetComponent<PlayerSkillType>()->SetState(SkillType::PLAYER_ATTACK);
 }
 
 void PlayerAttack::update(float deltaTime) {

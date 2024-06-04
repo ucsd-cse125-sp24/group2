@@ -28,6 +28,8 @@ set(
     src/components/RendererComponent.cpp
     src/components/PlayerComponent.cpp
     prefabs/Enemy.cpp
+    prefabs/EnemyAttack.cpp
+    prefabs/PlayerSkill.cpp
 
     # 125-Starter
     src/Player.cpp

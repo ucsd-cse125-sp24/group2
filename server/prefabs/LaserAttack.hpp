@@ -11,6 +11,8 @@ private:
 public:
     LaserAttack(Enemy* owner);
     LaserAttack(Enemy* owner, int networkId);
-    void initCollider(Enemy* owner);
     void update(float deltaTime) override;
+
+    // used by server
+    void initCollider(Enemy* owner);
 };

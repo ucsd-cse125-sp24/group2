@@ -8,11 +8,13 @@
 #include <algorithm>
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "EnemyComponent.hpp"
 #include "GameState.hpp"
 
 const std::string path = "../assets/animation/model.gltf";
 const std::string enemyPath = "../assets/bear/bear.gltf";
 
+Enemy* boss;
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
@@ -118,11 +120,37 @@ void GameManager::update(Packet* pkt) {
             break;
         }
         case NetworkObjectTypeID::PLAYER_SKILL: {
-            std::cout << "    PlayerAttack" << std::endl;
+            // std::cout << "    ObjTypeID: PlayerSkill" << std::endl;
+            int network_id;
+            pkt->read_int(&network_id);
+            // Could not find object, create it
+            if (playerSkills.find(network_id) == playerSkills.end()) {
+                PlayerSkill* playerSkillPrefab = new PlayerSkill(network_id);
+                playerSkillPrefab->deserialize(pkt);
+                playerSkillPrefab->initComponent(playerSkillPrefab->GetComponent<PlayerSkillType>()->getState());
+                playerSkills[network_id] = playerSkillPrefab;
+                scene.Instantiate(playerSkillPrefab);
+            }
+            else {
+                playerSkills[network_id]->deserialize(pkt);
+            }
+            
             break;
         }
         case NetworkObjectTypeID::ENEMY_ATTACK: {
-            std::cout << "    EnemyAttack" << std::endl;
+            // std::cout << "    ObjTypeID: EnemyAttack" << std::endl;
+            int network_id;
+            pkt->read_int(&network_id);
+            // Could not find object, create it
+            if (enemyAttacks.find(network_id) == enemyAttacks.end()) {
+                EnemyAttack* enemyAttackPrefab = new EnemyAttack(boss->GetComponent<EnemyComponent>()->getState(), network_id);
+
+                enemyAttacks[network_id] = enemyAttackPrefab;
+                scene.Instantiate(enemyAttackPrefab);
+            }
+
+            enemyAttacks[network_id]->deserialize(pkt);
+
             break;
         }
         default:
