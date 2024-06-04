@@ -8,7 +8,7 @@ private:
     int damage = 10;
     bool exist;
     GameObject* target = nullptr;
-    float speed = 50.0f;
+    float speed = 200.0f;
     Player* playerOwner;
 
 public:
