@@ -6,6 +6,7 @@ class Enemy : public Entity {
 public:
     Enemy();
     Enemy(int networkId);
+    Enemy(std::string path, int networkId);
     void update(float deltaTime) override;
     void attack();
     std::string ToString() override { return "Enemy"; }

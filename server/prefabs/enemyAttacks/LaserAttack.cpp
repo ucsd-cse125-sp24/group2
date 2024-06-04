@@ -3,11 +3,11 @@
 #include "CollisionManager.hpp"
 
 // PI is in degree, not radian, as rotation is in degree
-# define PI           180
+# define PI           180.0
 # define ANGRANGE     1
 # define RADIUS       500
 # define HEIGHT       3
-# define ANGSPEED     PI/16
+# define ANGSPEED     (PI/16)
 # define LIFE         4
 # define DAMAGE       10
 

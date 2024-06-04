@@ -31,6 +31,9 @@ void AttackManager::newLaserAttack() {
     enemyAttackList.push_back(laserAtt);
     NetworkManager::instance().scene.Instantiate(laserAtt);
     laserAtt->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
+    // J: this functionality could be placed in the attack initializations
+    // idk this seems a bit more centralized and is less work
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
 }
 
 // TODO
@@ -38,6 +41,7 @@ void AttackManager::newLaserAttack() {
 //     StompAttack* stompAtt = new StompAttack();
 //     enemyAttackList.push_back(stompAtt);
 //     NetworkManager::instance().scene.Instantiate(stompAtt);
+//     enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
 // }
 
 void AttackManager::newMarkedAttack() {
@@ -45,21 +49,30 @@ void AttackManager::newMarkedAttack() {
     enemyAttackList.push_back(markedAtt);
     NetworkManager::instance().scene.Instantiate(markedAtt);
     markedAtt->GetComponent<EnemyComponent>()->SetState(AttackState::MARK);
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::MARK);
 }
 
 void AttackManager::newSwipeAttack() {
     SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
     enemyAttackList.push_back(swipeAtt);
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::SWIPE);
     NetworkManager::instance().scene.Instantiate(swipeAtt);
     swipeAtt->GetComponent<EnemyComponent>()->SetState(AttackState::SWIPE);
 }
 
 void AttackManager::update(float deltaTime) {
-    // this is such a wacky way to keep track of number of players alive rn
+    // J: this is such a wacky way to keep track of number of players alive rn
+    // okay we are also going to use this to set player's centers uhhhh
+    // we should really probably just keep a list of players in networkmanager
     int numAlive = 0;
     for (Player* player : playerList) {
         if (player->GetComponent<Health>()->GetHealth() > 0) {
             numAlive++;
+        }
+        if (enemyPrefab) {
+            glm::vec3 enemyPosition = enemyPrefab->GetComponent<NetTransform>()->GetPosition();
+            // J: i guess make sure to set the y to 0
+            player->GetComponent<Mover>()->SetCenter(enemyPosition);
         }
     }
     NetworkManager::instance().numAlive = numAlive;
@@ -72,6 +85,7 @@ void AttackManager::update(float deltaTime) {
             NetworkManager::instance().scene.Destroy(playerAttackList.at(i));
             continue;
         }
+        // TODO: Network attacks
     }
 
     for(int i = enemyAttackList.size() - 1; i >= 0; i--) {

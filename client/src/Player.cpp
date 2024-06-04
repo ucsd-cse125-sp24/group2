@@ -9,11 +9,15 @@
 #include "components/RendererComponent.hpp"
 #include "AssetManager.hpp"
 #include "components/PlayerComponent.hpp"
+#include "HUD.h"
+#include "MovementStateMachine.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
+    MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
+    AddComponent(movementStateMachine);
     RendererComponent* meshRenderer =
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);

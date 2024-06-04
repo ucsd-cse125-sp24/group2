@@ -11,6 +11,7 @@
 #include "EnemyAttack.hpp"
 
 #include "Health.hpp"
+#include "EnemyComponent.hpp"
 #include "AttackManager.hpp"
 #include <iostream>
 
@@ -25,8 +26,10 @@ Enemy::Enemy() : Entity() {
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
-    Health* h = new Health(this, 100);
+    Health* h = new Health(this, 500);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId){
@@ -42,6 +45,8 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     this->currentPhase = PHASE1;
     Health* h = new Health(this, 100);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {
@@ -49,12 +54,15 @@ void Enemy::update(float deltaTime) {
 
     // moves in a circle
     // TODO: use colliderManager.move instead
-    // GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
+    // GetComponent<NetTransform>()->position += 10.0f * glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
     if(std::fmod(s, 5.0) <= deltaTime){
         attack();
         s = std::fmod(s, 5.0);
+    } else {
+        // J: want to play idle animation when we are not attacking
+        GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
     }
 }
 
@@ -70,9 +78,6 @@ void Enemy::attack(){
     /* if (close to player)
             SwipeAttack(player.position)
     */
-
-    AttackManager::instance().newSwipeAttack();
-    std::cout << "SwipeAttack!" << std::endl;
 
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now

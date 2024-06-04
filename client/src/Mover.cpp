@@ -6,6 +6,6 @@ Mover::Mover(NetworkObject* owner)
       position(owner->GetComponent<NetTransform>()->position),
       rotation(owner->GetComponent<NetTransform>()->rotation) {}
 
-void Mover::Update() {}
+void Mover::Update(float deltaTime) {}
 
 std::string Mover::ToString() { return "Mover"; }

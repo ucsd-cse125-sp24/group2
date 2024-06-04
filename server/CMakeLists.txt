@@ -14,11 +14,13 @@ set(SERVER_SOURCES
     src/CollisionManager.cpp
     src/Mover.cpp
     src/Health.cpp
+    components/EnemyComponent.cpp
     components/PlayerCombat.cpp
     components/PlayerSkillType.cpp
     components/EnemyComponent.cpp
     prefabs/Enemy.cpp
     prefabs/AttackManager.cpp
+    src/MovementStateMachine.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 FILE(GLOB ENEMY_ATTACKS prefabs/enemyAttacks/*.cpp)

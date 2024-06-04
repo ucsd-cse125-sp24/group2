@@ -4,12 +4,12 @@
 #include "../glm/gtx/string_cast.hpp"
 
 NetTransform::NetTransform()
-    : INetworkComponent(), position(glm::vec3()), rotation(glm::vec3()),
-      scale(glm::vec3()) {}
+    : INetworkComponent(), position(glm::vec3(1.0f)), rotation(glm::vec3(1.0f)),
+      scale(glm::vec3(1.0f)) {}
 
 NetTransform::NetTransform(NetworkObject* owner)
-    : INetworkComponent(owner), position(glm::vec3()), rotation(glm::vec3()),
-      scale(glm::vec3()) {}
+    : INetworkComponent(owner), position(glm::vec3(1.0f)), rotation(glm::vec3(1.0f)),
+      scale(glm::vec3(1.0f)) {}
 
 NetTransform::NetTransform(NetworkObject* owner, glm::vec3 newPosition,
                            glm::vec3 newRotation, glm::vec3 newScale)

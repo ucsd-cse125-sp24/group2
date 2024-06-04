@@ -23,7 +23,7 @@ public:
     int32_t TypeID() const override { return PLAYER; }
 
     // Used by server
-    Player();
+    Player(glm::vec3 position);
     void onDestroy();
 
     virtual void update(float deltaTime) override;
