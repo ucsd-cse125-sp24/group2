@@ -16,8 +16,8 @@ Player::Player(glm::vec3 position) : Entity() {
     PlayerCombat* playerCombat = new PlayerCombat();
     AddComponent(playerCombat);
     Collider* collider = new Collider(this, this->GetComponent<NetTransform>());
-    collider->SetRadius(30);
-    collider->SetHeight(10);
+    collider->SetRadius(1);
+    collider->SetHeight(2);
     AddComponent(collider);
     CollisionManager::instance().add(this);
     Health* h = new Health(this, 100);

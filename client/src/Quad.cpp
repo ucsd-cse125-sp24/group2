@@ -8,7 +8,7 @@ Quad::Quad(glm::vec3 pos, float width, float height) : position(pos){
     modelMtx = glm::mat4(1.0f);
     scale = glm::vec3(width, height, 1.0f);
     shader = Shader::GetShader(ShaderType::HUD);
-    rotation = glm::quat(0, 0, 0, 1);
+    rotation = glm::quat(0, 0, 0, 0);
     positions = {
         glm::vec3(-1.0f - width/2.0f, -1.0f - height/2.0f, 0.0f), // bottom left
         glm::vec3(-1.0f - width/2.0f, 1.0f + height/2.0f, 0.0f), // top left

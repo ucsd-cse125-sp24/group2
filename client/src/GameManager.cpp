@@ -110,8 +110,7 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     // std::cout << "Adding clip: " << clip->getName()
                     //           << std::endl;
-                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(
-                        clip);
+                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
                 }
 
                 players[network_id] = playerPrefab;
@@ -162,8 +161,8 @@ void GameManager::update(Packet* pkt) {
 
                 cam->SetPosition(
                     playerPos +
-                    glm::normalize(playerPos - cam->GetTarget()) * 250.0f +
-                    glm::vec3(0, 250, 0) + playerRightVector * 100.0f);
+                    glm::normalize(playerPos - cam->GetTarget()) * 3.0f +
+                    glm::vec3(0, 2.0f, 0) + playerRightVector * 0.7f);
             }
 
             break;

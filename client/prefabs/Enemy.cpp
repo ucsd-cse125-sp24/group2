@@ -11,7 +11,7 @@
 Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
     Model* model = new Model(this, path, true);
     AddComponent(model);
-    GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    GetComponent<NetTransform>()->SetScale(glm::vec3(200.0f));
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
     RendererComponent* renderer = new RendererComponent(this, ShaderType::ANIMATED);

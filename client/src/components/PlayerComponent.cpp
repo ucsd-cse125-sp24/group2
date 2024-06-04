@@ -40,10 +40,7 @@ void PlayerComponent::Update(float deltaTime) {
                 break;
             }
             case(DEAD): {
-                animationPlayer->play("idle");
-                owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
-                // TODO: also need a dead kind of idle animation;
-                // we actually need to states for dead like dead_start and dead
+                animationPlayer->play("dead");
                 break;
             }
             default: {
