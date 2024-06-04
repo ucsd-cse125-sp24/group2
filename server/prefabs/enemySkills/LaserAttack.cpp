@@ -38,11 +38,12 @@ void LaserAttack::initCollider(Enemy* owner) {
 }
 
 void LaserAttack::update(float deltaTime) {
-    lifetime -= deltaTime;
     if (lifetime <= 0) {
         exist = false;
         return;
     }
+    lifetime -= deltaTime;
+    
     std::vector<GameObject*> players_hit;
     players_hit = CollisionManager::instance().moveBossSwipe(attackFront, deltaTime * L_ANGSPEED);
     DealDamage(players_hit);

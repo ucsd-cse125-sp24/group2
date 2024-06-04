@@ -4,6 +4,7 @@
 #include "Health.hpp"
 #include "LaserAttack.hpp"
 #include "MarkedAttack.hpp"
+#include "StompAttack.hpp"
 #include "SwipeAttack.hpp"
 #include "NetworkManager.hpp"
 
@@ -29,11 +30,10 @@ void AttackManager::newLaserAttack() {
     enemyAttackList.push_back(laserAtt);
 }
 
-// TODO
-// void AttackManager::newStompAttack() {
-//     StompAttack* stompAtt = new StompAttack();
-//     enemyAttackList.push_back(stompAtt);
-// }
+void AttackManager::newStompAttack() {
+    StompAttack* stompAtt = new StompAttack(enemyPrefab);
+    enemyAttackList.push_back(stompAtt);
+}
 
 void AttackManager::newMarkedAttack() {
     MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);

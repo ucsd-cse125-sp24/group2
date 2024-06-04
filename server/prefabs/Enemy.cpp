@@ -39,7 +39,7 @@ Enemy::Enemy(int networkId) : Entity(networkId){
 
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
     CollisionManager::instance().add(this);
-    this->currentPhase = PHASE1;
+    this->currentPhase = PHASE2;
     Health* h = new Health(this, 100);
     this->AddComponent(h);
 }
@@ -47,15 +47,15 @@ Enemy::Enemy(int networkId) : Entity(networkId){
 void Enemy::update(float deltaTime) {
     s += deltaTime;
 
-    // moves in a circle
-    // TODO: use colliderManager.move instead
-    // GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
+    // TODO: use colliderManager.move
 
     // every 5 seconds, attack
     if(std::fmod(s, 5.0) <= deltaTime){
         attack();
         s = std::fmod(s, 5.0);
     }
+
+    // TODO: enemy phase logic
 }
 
 /**
@@ -72,31 +72,30 @@ void Enemy::attack(){
     */
 
     switch(this->currentPhase){
-        case PHASE1: // Default? Do nothing for now
-            this->currentPhase = PHASE5;
+        case PHASE1: // Swipe
+            AttackManager::instance().newSwipeAttack();
+            std::cout << "SwipeAttack!" << std::endl;
+
+            this->currentPhase = PHASE2;
             break;
         
         case PHASE2: // Stomp / shockwave
-            // TODO: AttackManager::instance().newStompAttack();
+            AttackManager::instance().newStompAttack();
+            std::cout << "StompAttack!" << std::endl;
+
+            //this->currentPhase = PHASE3;
             break;
 
         case PHASE3: // Mark / projectile
             AttackManager::instance().newMarkedAttack();
             std::cout << "MarkedAttack!" << std::endl;
 
-            this->currentPhase = PHASE1;
+            this->currentPhase = PHASE4;
             break;
 
         case PHASE4: // Laser beams
             AttackManager::instance().newLaserAttack();
             std::cout << "LaserAttack!" << std::endl;
-
-            this->currentPhase = PHASE1;
-            break;
-        
-        case PHASE5: // Swipe
-            AttackManager::instance().newSwipeAttack();
-            std::cout << "SwipeAttack!" << std::endl;
 
             this->currentPhase = PHASE1;
             break;

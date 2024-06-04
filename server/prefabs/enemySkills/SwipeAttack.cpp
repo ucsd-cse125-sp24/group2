@@ -31,11 +31,12 @@ SwipeAttack::SwipeAttack(Enemy* owner, int networkId) : EnemyAttack(owner, netwo
 
 
 void SwipeAttack::update(float deltaTime) {
-    lifetime -= deltaTime;
     if (lifetime <= 0) {
         exist = false;
         return;
     }
+    lifetime -= deltaTime;
+    
     Collider* EnemyAttackCollider = this->GetComponent<Collider>();
     std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, deltaTime * SW_ANGSPEED);
 
