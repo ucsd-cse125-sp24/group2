@@ -118,6 +118,7 @@ int main(int argc, char** argv) {
     modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
     modelPaths.push_back("../assets/animation/model.gltf");
     modelPaths.push_back("../assets/robot/robot.gltf");
+    modelPaths.push_back("../assets/sphere/sphere.gltf");
     for (std::string path : modelPaths) {
         std::cout << "  path: " << path << std::endl;
         Model* model = new Model(nullptr, path, true);
@@ -147,7 +148,7 @@ int main(int argc, char** argv) {
     // bear
     EntityBase* bear = new EntityBase();
     Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
+    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(50.0f));
     bear->AddComponent(bearModel);
     AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
     bear->AddComponent(bearAnimationPlayer);
@@ -166,10 +167,16 @@ int main(int argc, char** argv) {
     GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
 
-    GameObject* x = new GameObject();
+    EntityBase* sphereObject = new EntityBase();
+    Model* sphereModel =
+        new Model(sphereObject, "../assets/sphere/sphere.gltf", false);
+    sphereObject->AddComponent(sphereModel);
+    auto sphereRenderer =
+        new RendererComponent(sphereObject, ShaderType::STANDARD);
+    sphereObject->AddComponent(sphereRenderer);
     IComponent* beat = new BeatSyncComponent();
-    x->AddComponent(beat);
-    GameManager::instance().scene.Instantiate(x);
+    sphereObject->AddComponent(beat);
+    GameManager::instance().scene.Instantiate(sphereObject);
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
