@@ -115,31 +115,37 @@ int main(int argc, char** argv) {
     AudioManager::instance().SetBpm(232);
 
     std::cout << "Updating AssetManager" << std::endl;
-    std::vector<std::string> modelPaths;
-    modelPaths.push_back("../assets/male_basic_walk_30_frames_loop/scene.gltf");
-    modelPaths.push_back("../assets/animation/model.gltf");
-    modelPaths.push_back("../assets/robot/robot.gltf");
-    modelPaths.push_back("../assets/sphere/sphere.gltf");
-    for (std::string path : modelPaths) {
-        std::cout << "  path: " << path << std::endl;
-        Model* model = new Model(nullptr, path, true);
-        AssetManager::Instance().AddMapping(path, model, {});
+    std::vector<std::pair<std::string, bool>> modelPaths;
+    modelPaths.push_back(
+        {"../assets/male_basic_walk_30_frames_loop/scene.gltf", true});
+    modelPaths.push_back({"../assets/animation/model.gltf", true});
+    modelPaths.push_back({"../assets/robot/robot.gltf", true});
+    modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
+    modelPaths.push_back({"../assets/ground/plane.gltf", false});
+    modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
+
+    for (std::pair<string, bool> kv : modelPaths) {
+        std::cout << "  path: " << kv.first << std::endl;
+        Model* model = new Model(nullptr, kv.first, kv.second);
+        AssetManager::Instance().AddMapping(kv.first, model, {});
 
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene =
+            importer.ReadFile(kv.first, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
 
         for (int i = 0; i < scene->mNumAnimations; ++i) {
             aiAnimation* animation = scene->mAnimations[i];
             AnimationClip* clip = new AnimationClip(animation, model, scene);
             // std::cout << "  Clip name: " << clip->getName() << std::endl;
-            AssetManager::Instance().AddClipToMapping(path, clip);
+            AssetManager::Instance().AddClipToMapping(kv.first, clip);
         }
     }
 
     // ground
-    EntityBase* go = new EntityBase();
-    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    GameObject* go = new GameObject();
+    Model* model = new Model(
+        AssetManager::Instance().GetModel("../assets/ground/plane.gltf"));
     go->AddComponent(model);
     RendererComponent* renderer =
         new RendererComponent(go, ShaderType::STANDARD);
@@ -148,8 +154,9 @@ int main(int argc, char** argv) {
 
     // bear
     EntityBase* bear = new EntityBase();
-    Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(50.0f));
+    Model* bearModel = new Model(
+        AssetManager::Instance().GetModel("../assets/Bear2/bear.gltf"));
+    bear->GetComponent<NetTransform>()->SetScale(glm::vec3(750.0f));
     bear->AddComponent(bearModel);
     AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
     bear->AddComponent(bearAnimationPlayer);
@@ -168,16 +175,22 @@ int main(int argc, char** argv) {
     GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
 
-    EntityBase* sphereObject = new EntityBase();
-    Model* sphereModel =
-        new Model(sphereObject, "../assets/sphere/sphere.gltf", false);
-    sphereObject->AddComponent(sphereModel);
-    auto sphereRenderer =
-        new RendererComponent(sphereObject, ShaderType::STANDARD);
-    sphereObject->AddComponent(sphereRenderer);
-    IComponent* beat = new BeatSyncComponent();
-    sphereObject->AddComponent(beat);
-    GameManager::instance().scene.Instantiate(sphereObject);
+    for (int i = 0; i < 20; i++) {
+        GameObject* sphereObject = new GameObject();
+        Model* sphereModel = new Model(
+            AssetManager::Instance().GetModel("../assets/sphere/sphere.gltf"));
+        sphereObject->AddComponent(sphereModel);
+        auto sphereRenderer =
+            new RendererComponent(sphereObject, ShaderType::STANDARD);
+        sphereObject->AddComponent(sphereRenderer);
+        IComponent* beat = new BeatSyncComponent();
+        sphereObject->AddComponent(beat);
+
+        sphereObject->GetComponent<Transform>()->SetPosition(
+            glm::vec3(glm::cos(2 * i * glm::pi<float>() / 20) * 2000, 500,
+                      glm::sin(2 * i * glm::pi<float>() / 20) * 2000));
+        GameManager::instance().scene.Instantiate(sphereObject);
+    }
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;
@@ -216,15 +229,12 @@ int main(int argc, char** argv) {
         Window::Render(window, &GameManager::instance().scene,
                        GameManager::instance().cam, deltaTime);
 
-
-
         // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
         }
 
         GameManager::instance().scene.Update(deltaTime);
-
     }
 
     Window::cleanUp();

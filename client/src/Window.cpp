@@ -4,7 +4,6 @@
 #include "components/RendererComponent.hpp"
 #include "HUD.h"
 
-
 // Window Properties
 int Window::width;
 int Window::height;
@@ -98,10 +97,9 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
                     float deltaTime) {
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
-
         if (auto model = entity->GetComponent<Model>()) {
             NetTransform* transform = entity->GetComponent<NetTransform>();
             model->update(deltaTime);
@@ -116,7 +114,24 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
         if (auto renderer = entity->GetComponent<RendererComponent>())
             renderer->Render(camera->GetViewProjectMtx());
     }
-    
+
+    for (auto& go : scene->gameObjects) {
+        if (auto model = go->GetComponent<Model>()) {
+            Transform* transform = go->GetComponent<Transform>();
+            model->update(deltaTime);
+        }
+        if (auto animationPlayer = go->GetComponent<AnimationPlayer>()) {
+            animationPlayer->update(deltaTime);
+        }
+        if (auto huds = go->GetComponent<HUDs>()) {
+            huds->update(deltaTime);
+        }
+
+        if (auto renderer = go->GetComponent<RendererComponent>()) {
+            renderer->Render(camera->GetViewProjectMtx());
+        }
+    }
+
     skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
 
     // Render 2D screen
