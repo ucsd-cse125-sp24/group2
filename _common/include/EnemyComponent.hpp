@@ -11,6 +11,8 @@ enum class AttackState {
 };
 
 class EnemyComponent : public INetworkComponent {
+    private:
+        float animationDuration = 0.0f;
     protected:
         int atk;
     public:

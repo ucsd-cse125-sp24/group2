@@ -3,28 +3,38 @@
 
 void EnemyComponent::Update(float deltaTime) {
     AnimationPlayer* animationPlayer = owner->GetComponent<AnimationPlayer>();
-    // TODO:
+
     // switch attack animations
     switch (atk) {
         case ((int) AttackState::SWIPE): {
-            // std::cout << "playing swipe" << std::endl;
+            owner->GetComponent<AnimationPlayer>()->play("attack");
+            animationDuration = 4.0f;
             break;
         }
         case ((int) AttackState::LASER): {
-            // std::cout << "playing laser" << std::endl;
+            owner->GetComponent<AnimationPlayer>()->play("spell");
+            animationDuration = 5.0f;
             break;
         }
         case ((int) AttackState::MARK): {
-            // std::cout << "playing mark" << std::endl;
+            owner->GetComponent<AnimationPlayer>()->play("attack2");
+            animationDuration = 5.0f;
             break;
         }
         case ((int) AttackState::STOMP): {
-            // std::cout << "playing stomp" << std::endl;
+            // owner->GetComponent<AnimationPlayer>()->play("");
+            animationDuration = 5.0f;
+            break;
+        }
+        case ((int) AttackState::IDLE): {
+            if (animationDuration <= 0) {
+                animationPlayer->play("idle");
+            } else {
+                animationDuration -= deltaTime;
+            }
             break;
         }
         default: {
-            // No attack just idle
-            animationPlayer->play("idle");
             break;
         }
     }
