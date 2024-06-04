@@ -7,7 +7,7 @@
 
 class Scene {
 public:
-    Scene() {}
+    Scene() {};
 
     EventHandler<ObjectEventArgs> object_removed;
     EventHandler<ObjectEventArgs> object_added;

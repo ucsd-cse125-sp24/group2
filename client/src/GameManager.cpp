@@ -4,15 +4,16 @@
 #include "components/RendererComponent.hpp"
 #include "components/Model.h"
 #include <AudioManager.hpp>
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 #include <algorithm>
 #include "AssetManager.hpp"
 // #include "Status.hpp" // TODO: remove
 #include "components/PlayerComponent.hpp"
+#include "GameState.hpp"
 #include "HUD.h"
 
 const std::string path = "../assets/robot/robot.gltf";
-const std::string enemyPath = "../assets/donut-042524-02/donut.gltf";
+const std::string enemyPath = "../assets/bear/bear.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
 
 void StartGame(Packet*);
@@ -46,7 +47,17 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::START_GAME:
         StartGame(packet);
         break;
-
+    case PacketType::END_GAME:
+        int win;
+        packet->read_int(&win);
+        if (win == (int)GameState::WIN) {
+            // TODO: stop updating scene, move to win screen
+            std::cout << "YOU WIN" << std::endl;
+        } else if (win == (int)GameState::LOSE) {
+            // TODO: stop update scene, move to lose scren
+            std::cout << "GAME OVER" << std::endl;
+        }
+        break;
     default:
         std::cout << "  PacketType: ERROR" << std::endl;
         break;
@@ -86,7 +97,7 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 1) {
+                if (players.size() == 2) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -140,8 +151,16 @@ void GameManager::update(Packet* pkt) {
 
             break;
         }
+        case NetworkObjectTypeID::PLAYER_ATTACK: {
+            std::cout << "    PlayerAttack" << std::endl;
+            break;
+        }
+        case NetworkObjectTypeID::ENEMY_ATTACK: {
+            std::cout << "    EnemyAttack" << std::endl;
+            break;
+        }
         default:
-            std::cout << "    ObjTypeID: ERROR" << std::endl;
+            std::cout << "    ObjTypeID: ERROR: " << _typeid << std::endl;
             break;
         }
 

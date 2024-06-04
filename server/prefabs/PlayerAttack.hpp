@@ -3,7 +3,6 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
-#include "Collider.hpp"
 
 class PlayerAttack : public Entity {
 private:

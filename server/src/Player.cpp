@@ -5,21 +5,29 @@
 #include "SpeedBoost.hpp"
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
+#include "Health.hpp"
+#include "Invincible.hpp"
 #include "CooldownComponent.hpp"
 #include "MovementStateMachine.hpp"
 
-Player::Player() : Entity() {
+Player::Player(glm::vec3 position) : Entity() {
+    this->GetComponent<NetTransform>()->SetPosition(position);
+    alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
     PlayerCombat* playerCombat = new PlayerCombat();
     AddComponent(playerCombat);
-    Collider* collider = new Collider(this);
+    Collider* collider = new Collider(this, this->GetComponent<NetTransform>());
     collider->SetRadius(30);
     collider->SetHeight(10);
     AddComponent(collider);
     CollisionManager::instance().add(this);
+    Health* h = new Health(this, 100);
+    AddComponent(h);
+    Invincible* invinc = new Invincible(this);
+    AddComponent(invinc);
     Status* status = new Status(this);
-    AddComponent((INetworkComponent*)status);
+    AddComponent(status);
     status->AddStatusEffect(new SpeedBoost(status)); // test
     status->AddStatusEffect(new SpeedBoost(status)); // test
     status->AddStatusEffect(new SpeedBoost(status)); // test
@@ -38,8 +46,10 @@ Player::Player() : Entity() {
 }
 
 void Player::update(float deltaTime) {
-    if (GetComponent<Mover>())
+    if (GetComponent<Mover>() != nullptr)
         GetComponent<Mover>()->Update(deltaTime);
+    if (GetComponent<Invincible>() != nullptr)
+        GetComponent<Invincible>()->update(deltaTime);
     if (GetComponent<CooldownComponent>())
         GetComponent<CooldownComponent>()->Update(deltaTime);
     if (GetComponent<Status>())

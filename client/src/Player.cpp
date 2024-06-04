@@ -1,6 +1,7 @@
 #include "Player.hpp"
 
 #include "Mover.hpp"
+#include "Health.hpp"
 #include "components/Model.h"
 #include "AnimationClip.h"
 #include "AnimationPlayer.h"
@@ -13,6 +14,7 @@
 #include "Status.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
+    alive = true;
     Mover* mover = new Mover(this);
     AddComponent(mover);
     MovementStateMachine* movementStateMachine = new MovementStateMachine(this);
@@ -28,6 +30,8 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(status);
     PlayerComponent* playerComponent = new PlayerComponent(this);
     AddComponent(playerComponent);
+    Health* h = new Health(this);
+    AddComponent(h);
 }
 
 void Player::update(float deltaTime) {

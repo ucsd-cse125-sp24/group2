@@ -18,11 +18,12 @@ public:
     // glm::vec2 inputs = glm::vec2();
     // glm::vec3 velocity = glm::vec3();
     // float speed = 0.2f;
+    bool alive;
 
     int32_t TypeID() const override { return PLAYER; }
 
     // Used by server
-    Player();
+    Player(glm::vec3 position);
 
     virtual void update(float deltaTime) override;
 

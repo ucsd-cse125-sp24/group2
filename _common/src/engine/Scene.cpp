@@ -1,5 +1,9 @@
 #include "engine/Scene.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "Health.hpp"
 #include <algorithm>
+
 void Scene::Update(float deltaTime) {
     for (auto const& entity : entities) {
         entity->update(deltaTime);

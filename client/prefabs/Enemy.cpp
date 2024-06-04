@@ -1,3 +1,3 @@
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 
 void Enemy::update(float deltaTime) {}

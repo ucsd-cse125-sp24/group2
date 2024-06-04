@@ -13,16 +13,19 @@ set(SERVER_SOURCES
     main.cpp
     src/CollisionManager.cpp
     src/Mover.cpp
+    src/Health.cpp
     components/PlayerCombat.cpp
     prefabs/Enemy.cpp 
     prefabs/PlayerAttack.cpp
     prefabs/AttackManager.cpp
+    prefabs/EnemyAttack.cpp
     src/MovementStateMachine.cpp
     src/Status.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
+FILE(GLOB ENEMY_SKILLS prefabs/enemySkills/*.cpp)
 
-add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES})
+add_executable(server ${SERVER_SOURCES} ${COMMON_SOURCES} ${ENEMY_SKILLS})
 set(SERVER_INCLUDE_DIRECTORIES
     "${CMAKE_CURRENT_LIST_DIR}/include"
     "${CMAKE_CURRENT_LIST_DIR}/components"
@@ -33,6 +36,7 @@ include_directories(
     "../_common/"
     "../_common/include"
     "./prefabs"
+    "./prefabs/enemySkills"
     )
 
 if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
@@ -40,6 +44,6 @@ if (CMAKE_SYSTEM_NAME MATCHES WINDOWS)
   target_link_libraries(server PUBLIC ws2_32)
   target_link_libraries(server PRIVATE pthread)
 else()
-  target_link_libraries(${PROJECT_NAME} assimp.5)
-  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "server.app")
+  #target_link_libraries(${PROJECT_NAME} assimp.5.4.0)
+  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "server.exe")
 endif()
