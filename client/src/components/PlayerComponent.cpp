@@ -3,6 +3,17 @@
 #include <AnimationPlayer.h>
 #include <Mover.hpp>
 #include <NetTransform.hpp>
+#include <Health.hpp>
+
+// void PlayerComponent::Update(float deltaTime) {
+//     if (owner->GetComponent<Health>()->GetHealth() <= 0) {
+//         // TODO: add animation for death
+//         // TODO: stop player movement, probably just set speed in mover.
+//         owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+//         //owner->GetComponent<AnimationPlayer>()->play("dead");
+//         owner->GetComponent<AnimationPlayer>()->play("idle");
+//     } else if (glm::length(owner->GetComponent<Mover>()->movementHeading) > 0) {
+//         owner->GetComponent<AnimationPlayer>()->play("run");
 #include <MovementStateMachine.hpp>
 
 void PlayerComponent::Update(float deltaTime) {
@@ -31,6 +42,17 @@ void PlayerComponent::Update(float deltaTime) {
             }
             case(DODGE): {
                 animationPlayer->play("forward_roll");
+                break;
+            }
+            case(DEAD_START): {
+                animationPlayer->play("dying");
+                break;
+            }
+            case(DEAD): {
+                animationPlayer->play("idle");
+                owner->GetComponent<NetTransform>()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+                // TODO: also need a dead kind of idle animation;
+                // we actually need to states for dead like dead_start and dead
                 break;
             }
             default: {

@@ -10,22 +10,23 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "engine/Scene.hpp"
 #include "NetworkObjectState.hpp"
 #include "ColorCodes.hpp"
 #include "PlayerCombat.hpp"
-#include "prefabs/Enemy.hpp"
+#include "Enemy.hpp"
 #include "Mover.hpp"
 #include "AttackManager.hpp"
+#include "Health.hpp"
+#include "GameState.hpp"
 #include "CooldownComponent.hpp"
 #include "MovementStateMachine.hpp"
 
 #define MAX_NETWORK_OBJECTS 4096
 
 Server server;
-Scene scene;
 bool isServerReady = false;
 int playersReady = 0;
+Enemy* enemyPrefab;
 std::vector<glm::vec3> spawnPoints = {
     glm::vec3(500, 0, 0), glm::vec3(0, 0, 500), glm::vec3(-500, 0, 0),
     glm::vec3(0, 0, -500)};
@@ -34,6 +35,8 @@ union FloatUnion {
     float f;
     uint32_t l;
 } num;
+
+GameState gameState = GameState::READY;
 
 void NetworkManager::init() {
     // Setup event handlers
@@ -178,9 +181,10 @@ void NetworkManager::process_input() {
             playersReady++;
 
             if (playersReady == MAX_CLIENTS) {
+                gameState = GameState::START;
                 // TODO Spawn enemy
                 printf("Spawn enemy!\n");
-                Enemy* enemyPrefab = new Enemy();
+                enemyPrefab = new Enemy();
                 enemyPrefab->GetComponent<NetTransform>()->SetPosition(
                     glm::vec3(0, 0, 0));
                 AttackManager::instance().addEnemy(enemyPrefab);
@@ -205,6 +209,8 @@ void NetworkManager::process_input() {
 void NetworkManager::update(float deltaTime) {
     scene.Update(deltaTime);
     AttackManager::instance().update(deltaTime);
+    if (enemyPrefab != nullptr)
+        enemyPrefab->update(deltaTime);
 }
 
 // TODO send state of all networked entities
@@ -246,6 +252,19 @@ void NetworkManager::send_state() {
         }
         server.send(client->id, destroy);
     }
+
+    // maybe also keep track of game state now
+    if (gameState == GameState::START && (enemyPrefab->GetComponent<Health>()->GetHealth() <= 0 || numAlive == 0)) {
+        // i hope this doesn't get called before any clients connect.
+        gameState = numAlive > 0 ? GameState::WIN : GameState::LOSE;
+        for (const auto& kv : clients) {
+            Client* client = kv.second;
+            Packet* endGame = new Packet();
+            endGame->write_int((int)PacketType::END_GAME);
+            endGame->write_int((int)gameState);
+            server.send(client->id, endGame);
+        }
+    }
 }
 
 // FIXME handle incomplete packets or multiple packets per send() call
@@ -265,13 +284,11 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     ClientEventArgs* args = (ClientEventArgs*)e;
 
     // Give client control over player
-    Player* p = new Player();
-    server.clients[args->clientId]->p = p;
-    // p->position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    
     glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    p->GetComponent<NetTransform>()->SetPosition(position);
+    Player* p = new Player(position);
+    server.clients[args->clientId]->p = p;
     AttackManager::instance().addPlayer(p);
+    numAlive++;
 
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::SET_LOCAL_PLAYER);

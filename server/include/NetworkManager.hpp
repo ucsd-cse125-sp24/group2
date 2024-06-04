@@ -7,13 +7,15 @@
 #include "Packet.hpp"
 #include "Entity.hpp"
 #include "NetworkObject.hpp"
-#include "EventArgs.hpp"
+#include "engine/Scene.hpp"
 class NetworkManager {
 private:
     std::mutex _mutex;
     std::deque<std::pair<int, Packet*>> message_queue;
 
 public:
+    Scene scene;
+    int numAlive = 0;
     void init();
     void update(float deltaTime);
     void send_state();

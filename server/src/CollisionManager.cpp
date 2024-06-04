@@ -5,8 +5,9 @@
 #include "CollisionManager.hpp"
 #include "NetTransform.hpp"
 #include "Transform.hpp"
+#include "Invincible.hpp"
 
-// four attacks: 
+// four enemy attacks: 
 // 1. jump and stomp, shockwave expanding 
 // 2. mark players and cause damage
 // 3. 4 lasers swiping
@@ -38,21 +39,18 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
 }
 
 // return a list of GameObjects that boss swipe hits (swiping lasers, swiping attack)
-std::vector<GameObject*> CollisionManager::moveBossSwipe(GameObject* owner, float newCenterAngle) {
+std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, float amount) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
 
     float oldCenterAngle = (attCollider->GetStartAngle() + attCollider->GetEndAngle())/2;
-    attCollider->SetStartAngle(attCollider->GetStartAngle() + (newCenterAngle - oldCenterAngle));
-    attCollider->SetEndAngle(attCollider->GetEndAngle() + (newCenterAngle - oldCenterAngle));
-    glm::vec3 newRotation = glm::normalize(glm::vec3(std::cos(newCenterAngle), 0, std::sin(newCenterAngle)));
-    attTransform->SetRotation(newRotation);
+    attCollider->SetStartAngle(attCollider->GetStartAngle() + amount);
+    attCollider->SetEndAngle(attCollider->GetEndAngle() + amount);
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -71,7 +69,8 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider) 
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -79,14 +78,14 @@ std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, 
 }
 
 // return a list of GameObjects that mark-attack hits
-std::vector<GameObject*> CollisionManager::moveBossMark(GameObject* owner) {
+std::vector<GameObject*> CollisionManager::moveBossMark(Collider* attCollider) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
     std::vector<GameObject*> hitObjects;
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider)
-            && invincibles.find(pair.second) == invincibles.end()) {
+            && !(pair.second->GetComponent<Invincible>() != nullptr
+                && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -114,16 +113,6 @@ bool CollisionManager::move(GameObject* owner, glm::vec3 newPosition) {
         }
         return false;
     }
-}
-
-void CollisionManager::setInvincible(GameObject* owner) {
-    std::lock_guard<std::mutex> lock(inv_mutex);
-    invincibles.insert(owner);
-}
-
-void CollisionManager::unsetInvincible(GameObject* owner) {
-    std::lock_guard<std::mutex> lock(inv_mutex);
-    invincibles.erase(owner);
 }
 
 bool CollisionManager::collisionCylinderCylinder(const Collider* cyl1,
@@ -160,10 +149,10 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
-    Vector2 edge1 = {sec->GetRadius() * cos(sec->GetStartAngle()),
-                     sec->GetRadius() * sin(sec->GetStartAngle())};
-    Vector2 edge2 = {sec->GetRadius() * cos(sec->GetEndAngle()),
-                     sec->GetRadius() * sin(sec->GetEndAngle())};
+    Vector2 edge1 = {-sec->GetRadius() * sin(glm::radians(sec->GetStartAngle())),
+                     sec->GetRadius() * cos(glm::radians(sec->GetStartAngle()))};
+    Vector2 edge2 = {-sec->GetRadius() * sin(glm::radians(sec->GetEndAngle())),
+                     sec->GetRadius() * cos(glm::radians(sec->GetEndAngle()))};
     Vector2 conn = {position1.x - position2.x, position1.z - position2.z};
     if (conn.isBetween(edge1, edge2)) {
         if (sqrt(conn.dot(conn)) < cyl->GetRadius() + sec->GetRadius()) {

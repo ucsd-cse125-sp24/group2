@@ -6,13 +6,12 @@
 
 
 class Health : public INetworkComponent {
-private:
-    int hp;
 
 public:
-    Health() : INetworkComponent(), hp(0) {}
-    Health(NetworkObject* owner) : INetworkComponent(owner), hp(0) {}
-    Health(NetworkObject* owner, int newHp) : INetworkComponent(owner), hp(newHp) {}
+    int hp;
+
+    Health(NetworkObject* owner);
+    Health(NetworkObject* owner, int newHp);
 
     virtual void Serialize(Packet* packet) override {
         packet->write_int(hp);
@@ -26,9 +25,9 @@ public:
 
     int GetHealth() const { return hp; }
 
-    void SetHealth(int newHp) { hp = newHp; }
+    void SetHealth(int newHp);
 
-    void ChangeHealth(int amount) { hp += amount; }
+    void ChangeHealth(int amount);
 };
 
 
