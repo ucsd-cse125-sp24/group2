@@ -23,14 +23,14 @@ void Status::Deserialize(Packet* packet) {
     int numStatusEffects;
     packet->read_int(&numStatusEffects);
     for (int i = 0; i < numStatusEffects; ++i) {
-        StatusEffectTypeID currTypeID;
-        packet->read_int((int*)&currTypeID);
+        int currTypeID;
+        packet->read_int(&currTypeID);
         // Add the new status effects
-        if (typeToStatusEffect.find(currTypeID) == typeToStatusEffect.end()) {
-            typeToStatusEffect[currTypeID] = new DisplayStatusEffect(this);
+        if (typeToStatusEffect.find((StatusEffectTypeID)currTypeID) == typeToStatusEffect.end()) {
+            typeToStatusEffect[(StatusEffectTypeID)currTypeID] = new DisplayStatusEffect(this);
         }
-        packet->read_float(&(typeToStatusEffect[currTypeID]->currTimer));
-        packet->read_int(&(typeToStatusEffect[currTypeID]->stacks)); // CLEANSED
+        packet->read_float(&(typeToStatusEffect[(StatusEffectTypeID)currTypeID]->currTimer));
+        packet->read_int(&(typeToStatusEffect[(StatusEffectTypeID)currTypeID]->stacks)); // CLEANSED
     }
 
     // Cull the old status effects

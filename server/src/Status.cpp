@@ -29,12 +29,17 @@ void Status::RemoveStatusEffect(IStatusEffect* statusEffect) {
 }
 
 void Status::Update(float deltaTime) {
+    std::vector<IStatusEffect*> toBeRemoved;
     for (auto kvPair : typeToStatusEffect) {
         IStatusEffect* currStatusEffect = kvPair.second;
         currStatusEffect->Update(deltaTime);
         if (!currStatusEffect->isActive) {
-            RemoveStatusEffect(currStatusEffect);
+            toBeRemoved.push_back(currStatusEffect);
         }
+    }
+
+    for (IStatusEffect* currSE : toBeRemoved) {
+        RemoveStatusEffect(currSE);
     }
 }
 
