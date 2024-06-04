@@ -13,6 +13,10 @@ Mover::Mover(NetworkObject* owner)
     // TODO: handle multiple speeds
     speed = 10.0f;
     // SetCenter(glm::vec2(100.0f, 100.0f));
+    glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
+    radius = glm::distance(owner->GetComponent<NetTransform>()->position, origin);
+    float arccosAngle = glm::acos(glm::dot(owner->GetComponent<NetTransform>()->position - origin, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
+    angle = owner->GetComponent<NetTransform>()->position.x > 0 ? -arccosAngle : arccosAngle;
 }
 
 void Mover::Update(float deltaTime) {
@@ -112,8 +116,11 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle = oldAngle;
     }
 
-    // float angleAboutY = 180.0f - glm::degrees(angle);
-    // rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
+    float angleAboutY = 180.0f - glm::degrees(angle);
+    owner->GetComponent<NetTransform>()->SetRotation(
+        glm::vec3(0.0f, angleAboutY, 0.0f));
+    owner->GetComponent<Collider>()->SetRotation(
+        glm::vec3(0.0f, angleAboutY, 0.0f));
 }
 
 std::string Mover::ToString() { return "Mover"; }

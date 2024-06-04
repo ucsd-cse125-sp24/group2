@@ -4,11 +4,11 @@
 #include "Player.hpp"
 
 // Types of Attacks
-#include "prefabs/enemySkills/LaserAttack.hpp"
-#include "prefabs/enemySkills/MarkedAttack.hpp"
-#include "prefabs/enemySkills/StompAttack.hpp"
-#include "prefabs/enemySkills/SwipeAttack.hpp"
-#include "prefabs/EnemyAttack.hpp"
+#include "LaserAttack.hpp"
+#include "MarkedAttack.hpp"
+#include "StompAttack.hpp"
+#include "SwipeAttack.hpp"
+#include "EnemyAttack.hpp"
 
 #include "Health.hpp"
 #include "AttackManager.hpp"
@@ -16,7 +16,7 @@
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
-    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);
@@ -25,13 +25,13 @@ Enemy::Enemy() : Entity() {
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
-    Health* h = new Health(this, 100);
+    Health* h = new Health(this, 500);
     this->AddComponent(h);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId){
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
-    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(1, 0, 0));
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
     hitbox->SetRadius(50);
@@ -70,9 +70,6 @@ void Enemy::attack(){
     /* if (close to player)
             SwipeAttack(player.position)
     */
-
-    AttackManager::instance().newSwipeAttack();
-    std::cout << "SwipeAttack!" << std::endl;
 
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now
