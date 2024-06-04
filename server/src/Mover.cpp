@@ -12,12 +12,13 @@ Mover::Mover(NetworkObject* owner)
       rotation(owner->GetComponent<NetTransform>()->rotation) {
     // TODO: handle multiple speeds
     speed = 10.0f;
-    // SetCenter(glm::vec2(100.0f, 100.0f));
-    glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
-    radius = glm::distance(owner->GetComponent<NetTransform>()->position, origin);
-    float arccosAngle = glm::acos(glm::dot(owner->GetComponent<NetTransform>()->position - origin, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
-    angle = owner->GetComponent<NetTransform>()->position.x > 0 ? -arccosAngle : arccosAngle;
-}
+
+    // set rotation on spawn
+    // glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
+    // radius = glm::distance(owner->GetComponent<NetTransform>()->position, origin);
+    // float arccosAngle = glm::acos(glm::dot(owner->GetComponent<NetTransform>()->position - origin, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
+    // angle = owner->GetComponent<NetTransform>()->position.x > 0 ? -arccosAngle : arccosAngle;
+} 
 
 void Mover::Update(float deltaTime) {
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); // +y
@@ -34,6 +35,11 @@ void Mover::Update(float deltaTime) {
 
         movementStateMachine->Update(deltaTime, inputs);
 
+        UpdatePhysics(deltaTime);
+        modelRotation = glm::degrees(glm::acos(glm::dot(input, glm::vec2(0,1))));
+        if (input.x > 0) modelRotation = -modelRotation;
+        rotation += glm::vec3(0.0f, modelRotation, 0.0f);
+
         switch(movementStateMachine->GetState()) {
             case IDLE: {
                 UpdatePhysics(deltaTime);
@@ -41,41 +47,21 @@ void Mover::Update(float deltaTime) {
             }
             case WALK: { // this state is technically not real for mover, but it is for movement state machine.
                 speed = baseSpeed;
-                UpdatePhysics(deltaTime);
-                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
-                if (input.x < 0) modelRotation = -modelRotation;
-                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
-                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case RUN: {
                 speed = baseSpeed;
-                UpdatePhysics(deltaTime);
-                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
-                if (input.x < 0) modelRotation = -modelRotation;
-                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
-                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case DODGE_START: {
                 speed = baseSpeed;
                 dodgeInput = movementStateMachine->GetDodgeDirection();
                 std::cout << "dodgeInput: " << glm::to_string(dodgeInput) << std::endl;
-                UpdatePhysics(deltaTime);
-                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
-                if (input.x < 0) modelRotation = -modelRotation;
-                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
-                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case DODGE: {
                 speed = 1.5 * baseSpeed;
                 input = dodgeInput;
-                UpdatePhysics(deltaTime);
-                modelRotation = glm::acos(glm::dot(input, glm::vec2(0,1)) / glm::length(input));
-                if (input.x < 0) modelRotation = -modelRotation;
-                float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
-                rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
             case DEAD: {
@@ -94,33 +80,23 @@ void Mover::Update(float deltaTime) {
 }
 
 void Mover::UpdatePhysics(float deltaTime) {
-    float oldRadius = radius;
-    float oldAngle = angle;
+    glm::vec3 newPosition = position;
+    glm::vec3 direction = glm::normalize(center - position);
     if (glm::length(input) != 0) {
         input = glm::normalize(input);
-    }
-    if (input.y != 0) {
-        radius += -input.y * speed;
-    }
-    if (input.x != 0) {
-        // angle goes clockwise starting from z axis
-        angle += -input.x * speed / radius;
-    }
-
-    if (glm::length(input) != 0) {
-        // J: feels kind of bad to set nettransform position here directly but works right now ig;
-        position =
-            center + glm::vec3(-radius * glm::sin(angle), 0.0f, radius * glm::cos(angle));
+        // this really relies on y = 0
+        glm::vec3 right = glm::normalize(glm::cross(direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+        newPosition += direction * input.y * speed + right * input.x * speed;
     }
 
     // check for collisions
-    if (CollisionManager::instance().move(owner, position)) {
+    if (CollisionManager::instance().move(owner, newPosition)) {
         // collision detected
-        radius = oldRadius;
-        angle = oldAngle;
     }
 
-    float angleAboutY = 180.0f - glm::degrees(angle);
+    // both direction and z unit vector have length 1
+    float angleAboutY = glm::degrees(glm::acos(glm::dot(direction, glm::vec3(0.0f, 0.0f, 1.0f))));
+    if (direction.x < 0) angleAboutY = -angleAboutY;
     owner->GetComponent<NetTransform>()->SetRotation(
         glm::vec3(0.0f, angleAboutY, 0.0f));
     owner->GetComponent<Collider>()->SetRotation(
