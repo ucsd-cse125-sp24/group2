@@ -64,15 +64,6 @@ SkyBox::SkyBox() {
         "../assets/skybox/nz.png"   // back
     };
 
-    // faces = {
-    //     "../assets/skybox2/right.jpg",  // right
-    //     "../assets/skybox2/left.jpg",  // left
-    //     "../assets/skybox2/top.jpg",  // top
-    //     "../assets/skybox2/bottom.jpg",  // bottom
-    //     "../assets/skybox2/front.jpg",  // front
-    //     "../assets/skybox2/back.jpg"   // back
-    // };
-
     this->textureID = loadCubemap();
 
 }
