@@ -33,7 +33,7 @@ public:
     bool movePlayerAttack(GameObject* owner, GameObject* target, glm::vec3 newPosition);
 
     std::vector<GameObject*> moveBossSwipe(Collider* attCollider, float amount);
-    std::vector<GameObject*> moveBossShockwave(GameObject* owner, float newRadius);
+    std::vector<GameObject*> moveBossStomp(Collider* attOuter, Collider* attInner, float deltaRadius);
     std::vector<GameObject*> moveBossMark(Collider* attCollider);
     bool move(GameObject* owner, glm::vec3 newPosition);
 

@@ -58,17 +58,19 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
 }
 
 // return a list of GameObjects that shockwave hits
-std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, float newRadius) {
+std::vector<GameObject*> CollisionManager::moveBossStomp(Collider* attOuter, Collider* attInner, float deltaRadius) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
 
-    attCollider->SetRadius(newRadius);
-    attTransform->SetScale(glm::vec3(newRadius, attTransform->GetScale().y, newRadius));
+    attOuter->SetRadius(attOuter->GetRadius() + deltaRadius);
+    attInner->SetRadius(attInner->GetRadius() + deltaRadius);
 
     for (const auto& pair : colliderOwners) {
-        if (collisionCylinderCylinder(pair.first, attCollider) 
+        // if Player between edges of shockwave and not invincible, take damage
+        // TODO: what if partially overlapped?
+        // TODO: check if Player?
+        if (collisionCylinderCylinder(pair.first, attOuter) 
+            &&  !collisionCylinderCylinder(pair.first, attOuter)
             && !(pair.second->GetComponent<Invincible>() != nullptr
                 && pair.second->GetComponent<Invincible>()->isInvincible)) {
             hitObjects.push_back(pair.second);

@@ -1,0 +1,58 @@
+DYLD_FALLBACK_LIBRARY_PATH
+              This is a colon
+              separated list of
+              directories that
+              contain libraries.  If
+              a dylib is not found
+              at its install  path,
+              dyld uses this as a
+              list of directories to
+              search for the dylib.
+
+              For new binaries (Fall
+              2023 or later) there
+              is no default.  For
+              older binaries, their
+              is a default fallback
+              search path of:
+              /usr/local/lib:/usr/lib.
+
+BUG
+evanhansen@MacBook-Pro-3 client % ./client.exe 127.0.0.1 25565
+dyld[38409]: Library not loaded: @rpath/libassimp.5.dylib
+  Referenced from: <D1CAF86A-BA5B-34F9-9453-EAA325D34644> /Users/evanhansen/Desktop/Academics/Spring 2024/group2/client/client.exe
+  Reason: no LC_RPATH's found
+zsh: abort      ./client.exe 127.0.0.1 25565
+
+otool -l client.exe | grep LC_RPATH
+ -A2
+
+ install_name_tool -add_rpath "$(pwd)/lib" client.exe
+
+DOESN'T WORK:
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+
+===== May 28 2024 =====
+- shockwave can be two cylinders (some small width)
+
+WORKS:
+if (CMAKE_SYSTEM_NAME MATCHES OSX)
+    set(RPATH "/usr/local/lib")
+    target_link_libraries(${PROJECT_NAME} assimp.5)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW.2.2 glfw.3)
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(${PROJECT_NAME} fmod)
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "client.exe" LINK_FLAGS "-Wl,-rpath,${RPATH}")
+
+
+===== May 30 2024 =====
+- Test on demo machines
+- Need to have TypeID + override for new status effects
+- Multi packet
+- shockwave attack
+- swipe attack in CollisionManager
