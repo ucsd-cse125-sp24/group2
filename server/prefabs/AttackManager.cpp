@@ -2,9 +2,13 @@
 #include "AttackManager.hpp"
 #include <iostream>
 #include "Health.hpp"
+#include "LaserAttack.hpp"
+#include "MarkedAttack.hpp"
+#include "SwipeAttack.hpp"
+#include "NetworkManager.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
-    std::lock_guard<std::mutex> lock(_attack_mutex);
+    std::lock_guard<std::mutex> lock(_player_attack_mutex);
     PlayerAttack* playerAtt = new PlayerAttack();
     playerAtt->init(p);
     playerAtt->setTarget(enemyPrefab);
@@ -13,32 +17,47 @@ void AttackManager::newPlayerAttack(Player* p) {
 
 void AttackManager::addPlayer(Player* p) {
     std::lock_guard<std::mutex> lock(_player_mutex);
-    // Initialize and Register Player Collider in CollisionManager
-    Collider* c = new Collider(p, p->GetComponent<NetTransform>());
-    c->SetRadius(10);
-    c->SetHeight(10);
-    c->SetRotation(glm::vec3(1, 0, 0));
-    p->AddComponent(c);
-    CollisionManager::instance().add(p);
     playerList.push_back(p);
 }
 
 void AttackManager::addEnemy(Enemy* e) {
     enemyPrefab = e;
-    // Initialize and Register Enemy Collider in CollisionManager
-    Collider* c = new Collider(enemyPrefab, enemyPrefab->GetComponent<NetTransform>());
-    // for testing purposes
-    c->SetRadius(20);
-    c->SetHeight(50);
-    // end testing purposes
-    enemyPrefab->AddComponent(c);
-    CollisionManager::instance().add(enemyPrefab);
-    Health* h = new Health(enemyPrefab, 100);
-    enemyPrefab->AddComponent(h);
+}
+
+void AttackManager::newLaserAttack() {
+    LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
+    enemyAttackList.push_back(laserAtt);
+}
+
+// TODO
+// void AttackManager::newStompAttack() {
+//     StompAttack* stompAtt = new StompAttack();
+//     enemyAttackList.push_back(stompAtt);
+// }
+
+void AttackManager::newMarkedAttack() {
+    MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
+    enemyAttackList.push_back(markedAtt);
+}
+
+void AttackManager::newSwipeAttack() {
+    if(!playerList.empty()){
+        SwipeAttack* swipeAtt = new SwipeAttack(enemyPrefab);
+        enemyAttackList.push_back(swipeAtt);
+    }
 }
 
 void AttackManager::update(float deltaTime) {
-    std::lock_guard<std::mutex> lock(_attack_mutex);
+    // this is such a wacky way to keep track of number of players alive rn
+    int numAlive = 0;
+    for (Player* player : playerList) {
+        if (player->GetComponent<Health>()->GetHealth() > 0) {
+            numAlive++;
+        }
+    }
+    NetworkManager::instance().numAlive = numAlive;
+
+    std::lock_guard<std::mutex> playerlock(_player_attack_mutex);
     for(int i = playerAttackList.size() - 1; i >= 0; i--) {
         // iterate from the back to take care of the situ of removing inside loop
         if(!playerAttackList.at(i)->isExist()) {
@@ -46,5 +65,14 @@ void AttackManager::update(float deltaTime) {
             continue;
         }
         playerAttackList.at(i)->update(deltaTime);
+    }
+
+    for(int i = enemyAttackList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside loop
+        if(!enemyAttackList.at(i)->exist) {
+            enemyAttackList.erase( enemyAttackList.begin() + i );
+            continue;
+        }
+        enemyAttackList.at(i)->update(deltaTime);
     }
 }

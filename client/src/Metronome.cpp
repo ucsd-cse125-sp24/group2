@@ -1,13 +1,13 @@
 #include "Metronome.h"
 
-
 Metronome::Metronome() {
     shader = Shader::GetShader(ShaderType::HUD);
+    quad2->update();
 }
 
 Metronome::Metronome(int bpm) : bpm(bpm) {
     beatDuration = 60000 / bpm;
-    // std::cout<<"bpm: "<< beatDuration<<std::endl;
+    std::cout << "bpm: " << beatDuration << std::endl;
     min = 0.05f;
     max = 0.15f;
     // quad = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), max);
@@ -18,8 +18,6 @@ Metronome::Metronome(int bpm) : bpm(bpm) {
     quad2->enableState(VISIBLE);
 
     quad2->update();
-
- 
 }
 
 Metronome::~Metronome() {
@@ -29,18 +27,17 @@ Metronome::~Metronome() {
 
 void Metronome::update() {
     // std::cout<<"dt: "<<dt<<std::endl;
-    if(AudioManager::instance().getPosition() > 0) {
+    if (AudioManager::instance().getPosition() > 0) {
         unsigned int currentTime = AudioManager::instance().getPosition();
         // std::cout<<"beatDuration: "<<beatDuration<<std::endl;
         // std::cout<<"curr/duration:" << currentTime/517<<std::endl;
         float timeInCurrentBeat = fmod(currentTime, beatDuration * 2);
         float t = timeInCurrentBeat / (beatDuration);
-        // float t = (currentTime / (beatDuration ) - floor(currentTime / (beatDuration )));
+        // float t = (currentTime / (beatDuration ) - floor(currentTime /
+        // (beatDuration )));
         t = glm::clamp(t, 0.0f, 1.0f);
         // std::cout<<"t: "<<t<<std::endl;
-        // float t2 = elapsedTime/ 1.0f;
-        // float a = glm::mix(1, 0, t2);
-        // std::cout<<"a: "<<a <<std::endl;
+
         glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
         
         quad2->setSize(size.x);

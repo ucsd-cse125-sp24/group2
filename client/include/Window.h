@@ -7,6 +7,7 @@
 #include "InputManager.h"
 
 #include "Mover.hpp"
+#include "SkyBox.hpp"
 
 #include "PlayerManager.hpp"
 #include "Client.h"
@@ -17,6 +18,8 @@ public:
     static int width;
     static int height;
     static const char* windowTitle;
+
+    static SkyBox* skybox;
 
     // Act as Constructors and desctructors
     static bool initializeProgram();

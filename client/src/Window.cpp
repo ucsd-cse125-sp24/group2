@@ -3,6 +3,7 @@
 #include "GameManager.hpp"
 #include "components/RendererComponent.hpp"
 #include "HUD.h"
+
 // Window Properties
 int Window::width;
 int Window::height;
@@ -11,7 +12,7 @@ const char* Window::windowTitle = "Model Environment";
 // Interaction Variables
 bool LeftDown, RightDown;
 int MouseX, MouseY;
-
+SkyBox* Window::skybox;
 // Constructors and desctructors
 bool Window::initializeProgram() {
     // Create a shader program with a vertex shader and a fragment shader.
@@ -22,17 +23,16 @@ bool Window::initializeProgram() {
                              "shaders/shader.frag");
     res = Shader::LoadShader(ShaderType::HUD, "shaders/HUD.vert",
                              "shaders/HUD.frag");
+    res = Shader::LoadShader(ShaderType::SKYBOX, "shaders/skybox.vert",
+                             "shaders/skybox.frag");
     // Check the shader program.
     if (!res) {
         std::cerr << "Failed to initialize one or more shaders." << std::endl;
         return false;
     }
-    // hud = new HUDs();
 
-    // healthBar = new HealthBar(glm::vec3(-0.6f, 0.95f, 0.0f), 0.7f);
-    // healthBar = new HealthBar(glm::vec3(-0.60f, 0.98f, 0.0f), 0.45f, 0.4f);
-    // metronome = new Metronome(60.0f);
-    // teamInfo = new TeamInfo(3);
+    skybox = new SkyBox();
+
     return true;
 }
 
@@ -100,7 +100,6 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
 
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
-
         if (auto model = entity->GetComponent<Model>()) {
             NetTransform* transform = entity->GetComponent<NetTransform>();
             model->update(deltaTime);
@@ -108,22 +107,37 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
         if (auto animationPlayer = entity->GetComponent<AnimationPlayer>()) {
             animationPlayer->update(deltaTime);
         }
+        if (auto huds = entity->GetComponent<HUDs>()) {
+            huds->update(deltaTime);
+        }
 
         if (auto renderer = entity->GetComponent<RendererComponent>())
             renderer->Render(camera->GetViewProjectMtx());
     }
 
+    for (auto& go : scene->gameObjects) {
+        if (auto model = go->GetComponent<Model>()) {
+            Transform* transform = go->GetComponent<Transform>();
+            model->update(deltaTime);
+        }
+        if (auto animationPlayer = go->GetComponent<AnimationPlayer>()) {
+            animationPlayer->update(deltaTime);
+        }
+        if (auto huds = go->GetComponent<HUDs>()) {
+            huds->update(deltaTime);
+        }
+
+        if (auto renderer = go->GetComponent<RendererComponent>()) {
+            renderer->Render(camera->GetViewProjectMtx());
+        }
+    }
+
+    skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
+
     // Render 2D screen
     glDisable(GL_DEPTH_TEST);
     for (auto& entity : scene->entities) {
         if (auto huds = entity->GetComponent<HUDs>()) {
-            if(InputManager::IsKeyPressed(GLFW_KEY_Q))
-                huds->healthBar->setHealth(70.0f);
-            if(InputManager::IsKeyPressed(GLFW_KEY_E))
-                huds->healthBar->setHealth(50.0f);
-            if(InputManager::IsKeyPressed(GLFW_KEY_R))
-                huds->healthBar->setHealth(100.0f);
-            huds->update(deltaTime);
             huds->draw(camera->GetAspect());
         }
     }

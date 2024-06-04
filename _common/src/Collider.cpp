@@ -21,13 +21,8 @@ Collider::Collider(GameObject* owner, Collider* copyfrom)
 void Collider::makeSector(float angle) {
     if (isSector)
         return;
-    glm::vec3 projectedVec(rotation.x, 0.0f, rotation.z);
-    glm::vec3 normalizedVec = glm::normalize(projectedVec);
-    glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
-    float dot = glm::dot(normalizedVec, xAxis);
-    float rotationAngle = std::acos(dot);
-    startAngle = rotationAngle - angle / 2;
-    endAngle = rotationAngle + angle / 2;
+    startAngle = rotation.y - angle / 2;
+    endAngle = rotation.y + angle / 2;
     isPoint = false;
     isSector = true;
 }

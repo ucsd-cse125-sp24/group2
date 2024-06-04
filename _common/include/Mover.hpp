@@ -19,8 +19,8 @@ public:
     glm::vec3& rotation; // Taken from NetTransform
 
     glm::vec2 center = glm::vec2();
-    float radius = 500; // glm::distance(center, glm::vec2(position.x, position.z));
-    float angle = 0;
+    float radius;
+    float angle;
 
     Mover(NetworkObject* owner);
 

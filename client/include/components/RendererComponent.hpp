@@ -11,5 +11,5 @@ class RendererComponent : public IComponent {
     public:
         RendererComponent(GameObject* owner, ShaderType type) : IComponent(owner), type(type) {}
         void Render(glm::mat4 view);
-        std::string ToString() {}
+        std::string ToString() { return "RendererComponent"; }
 };

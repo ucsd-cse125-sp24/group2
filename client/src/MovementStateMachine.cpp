@@ -24,6 +24,14 @@ std::string MovementStateMachine::ToString() {
             result += "DODGE";
             break;
         }
+        case DEAD_START: {
+            result += "DEAD_START";
+            break;
+        }
+        case DEAD: {
+            result += "DEAD";
+            break;
+        }
         default: {
             result += "INVALID";
             break;
