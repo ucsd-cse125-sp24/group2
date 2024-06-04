@@ -16,7 +16,7 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     text->setTexture("great.png", "../assets/HUD/text");
     text->setTexture("miss.png", "../assets/HUD/text");
     text->enableState(VISIBLE);
-     text->setOpacity(opacity);
+    text->setOpacity(opacity);
     // perfect 0.15 -> 0.2
     text->update();
 }
