@@ -14,7 +14,7 @@ class PlayerSkillType : public INetworkComponent {
         PlayerSkillType(NetworkObject* owner) : INetworkComponent(owner) {}
         void Update(float deltaTime) override;
         void SetState(SkillType skillType) { type = (int) skillType; }
-        int getState() { return type; }
+        int GetState() { return type; }
         virtual void Serialize(Packet* pkt) {
             pkt->write_int(type);
         }

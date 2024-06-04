@@ -18,19 +18,21 @@ PlayerSkill::PlayerSkill(int networkId) : Entity(networkId) {
 }
 
 void PlayerSkill::initComponent(int skillType) {
-    RendererComponent* meshRenderer =
-        new RendererComponent(this, ShaderType::ANIMATED);
-    AddComponent(meshRenderer);
-    Model* model;
+    // RendererComponent* meshRenderer =
+    //     new RendererComponent(this, ShaderType::ANIMATED);
+    // AddComponent(meshRenderer);
+    // Model* model;
     switch (skillType) {
     case (int) SkillType::PLAYER_ATTACK:
         // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerAttack!\n");
         break;
     case (int) SkillType::HEAL:
         // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerHeal!\n");
         break;
     }
-    AddComponent(model);
-    AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
-    AddComponent(animationPlayer);
+    // AddComponent(model);
+    // AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
+    // AddComponent(animationPlayer);
 }

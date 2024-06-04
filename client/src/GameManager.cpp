@@ -20,7 +20,6 @@ Enemy* boss;
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
-Enemy* boss;
 void GameManager::Init() {}
 
 void GameManager::handle_packet(Packet* packet) {
@@ -77,6 +76,7 @@ void GameManager::update(Packet* pkt) {
         // TODO deserialize
         switch (_typeid) {
         case NetworkObjectTypeID::ENEMY: {
+            // std::cout << "    ObjTypeID: Enemy" << std::endl;
             int network_id;
             pkt->read_int(&network_id); // J: I did not thoroughly check if the packet is read correctly
             if (!boss) {
@@ -178,7 +178,7 @@ void GameManager::update(Packet* pkt) {
             if (playerSkills.find(network_id) == playerSkills.end()) {
                 PlayerSkill* playerSkillPrefab = new PlayerSkill(network_id);
                 playerSkillPrefab->deserialize(pkt);
-                playerSkillPrefab->initComponent(playerSkillPrefab->GetComponent<PlayerSkillType>()->getState());
+                playerSkillPrefab->initComponent(playerSkillPrefab->GetComponent<PlayerSkillType>()->GetState());
                 playerSkills[network_id] = playerSkillPrefab;
                 scene.Instantiate(playerSkillPrefab);
             }
@@ -194,7 +194,7 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (enemyAttacks.find(network_id) == enemyAttacks.end()) {
-                EnemyAttack* enemyAttackPrefab = new EnemyAttack(boss->GetComponent<EnemyComponent>()->getState(), network_id);
+                EnemyAttack* enemyAttackPrefab = new EnemyAttack(boss->GetComponent<EnemyComponent>()->GetState(), network_id);
 
                 enemyAttacks[network_id] = enemyAttackPrefab;
                 scene.Instantiate(enemyAttackPrefab);
@@ -227,6 +227,22 @@ void GameManager::destroy_object(Packet* pkt) {
             scene.Destroy(players[objIdToDestroy]);
             delete players[objIdToDestroy];
             players.erase(objIdToDestroy);
+
+            objIdsDestroyed.push_back(objIdToDestroy);
+        }
+        if (playerSkills.find(objIdToDestroy) != playerSkills.end()) {
+            // printf(RED "DESTROYING OBJECT\n" RST);
+            scene.Destroy(playerSkills[objIdToDestroy]);
+            delete playerSkills[objIdToDestroy];
+            playerSkills.erase(objIdToDestroy);
+
+            objIdsDestroyed.push_back(objIdToDestroy);
+        }
+        if (enemyAttacks.find(objIdToDestroy) != enemyAttacks.end()) {
+            // printf(RED "DESTROYING OBJECT\n" RST);
+            scene.Destroy(enemyAttacks[objIdToDestroy]);
+            delete enemyAttacks[objIdToDestroy];
+            enemyAttacks.erase(objIdToDestroy);
 
             objIdsDestroyed.push_back(objIdToDestroy);
         }

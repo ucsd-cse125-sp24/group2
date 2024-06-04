@@ -13,10 +13,8 @@ void PlayerAttack::init(Player* player) {
     playerOwner = player;
     Collider* attackC = new Collider(this, player->GetComponent<Collider>());
     auto newY = attackC->GetPosition().y + attackC->GetHeight()/2;
-    glm::vec3 rotationXZ(attackC->GetRotation().x, 0, attackC->GetRotation().z);
-    glm::vec3 normRotationXZ = glm::normalize(rotationXZ);
-    auto newX = attackC->GetPosition().x + normRotationXZ.x * attackC->GetRadius();
-    auto newZ = attackC->GetPosition().z + normRotationXZ.z * attackC->GetRadius();
+    auto newX = attackC->GetPosition().x - attackC->GetRadius() * glm::sin(glm::radians(attackC->GetRotation().y));
+    auto newZ = attackC->GetPosition().z + attackC->GetRadius() * glm::cos(glm::radians(attackC->GetRotation().y));
     glm::vec3 newPosition(newX, newY, newZ);
     attackC->SetPosition(newPosition);
     attackC->makePoint();

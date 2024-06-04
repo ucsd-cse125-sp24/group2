@@ -7,11 +7,11 @@ void PlayerSkillType::Update(float deltaTime) {
     // switch attack animations
     switch (type) {
         case ((int) SkillType::PLAYER_ATTACK): {
-            std::cout << "playing swipe" << std::endl;
+            // std::cout << "playing player_attack" << std::endl;
             break;
         }
         case ((int) SkillType::HEAL): {
-            std::cout << "playing laser" << std::endl;
+            // std::cout << "playing heal" << std::endl;
             break;
         }
         default: {

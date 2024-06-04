@@ -120,7 +120,7 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle = oldAngle;
     }
 
-    float angleAboutY = 180.0f - glm::degrees(angle);
+    float angleAboutY =  glm::degrees(angle) - 180.0f;
     owner->GetComponent<NetTransform>()->SetRotation(
         glm::vec3(0.0f, angleAboutY, 0.0f));
     owner->GetComponent<Collider>()->SetRotation(
