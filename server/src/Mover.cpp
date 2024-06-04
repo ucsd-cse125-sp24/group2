@@ -44,7 +44,7 @@ void Mover::Update(float deltaTime) {
                 break;
             }
             case RUN: {
-                speed = baseSpeed;
+                speed = 2 * baseSpeed;
                 break;
             }
             case DODGE_START: {

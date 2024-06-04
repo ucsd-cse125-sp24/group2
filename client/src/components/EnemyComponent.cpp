@@ -8,22 +8,22 @@ void EnemyComponent::Update(float deltaTime) {
     switch (atk) {
         case ((int) AttackState::SWIPE): {
             owner->GetComponent<AnimationPlayer>()->play("attack");
-            animationDuration = 4.0f;
+            animationDuration = 3.75f;
             break;
         }
         case ((int) AttackState::LASER): {
             owner->GetComponent<AnimationPlayer>()->play("spell");
-            animationDuration = 5.0f;
+            animationDuration = 3.75f;
             break;
         }
         case ((int) AttackState::MARK): {
             owner->GetComponent<AnimationPlayer>()->play("attack2");
-            animationDuration = 5.0f;
+            animationDuration = 3.75f;
             break;
         }
         case ((int) AttackState::STOMP): {
             // owner->GetComponent<AnimationPlayer>()->play("");
-            animationDuration = 5.0f;
+            animationDuration = 3.75f;
             break;
         }
         case ((int) AttackState::IDLE): {

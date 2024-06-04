@@ -93,7 +93,7 @@ void GameManager::update(Packet* pkt) {
 
             // also look up at the boss, probably needs to be the center of it which is like 1000 or something rn
             glm::vec3 bossPos = boss->GetComponent<NetTransform>()->GetPosition();
-            cam->SetTarget(glm::vec3(bossPos.x, 0.0f, bossPos.z));
+            cam->SetTarget(glm::vec3(bossPos.x, 50.0f, bossPos.z));
 
             break;
         }

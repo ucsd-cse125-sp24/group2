@@ -16,7 +16,7 @@
 #include <iostream>
 
 Enemy::Enemy() : Entity() {
-    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
+    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 50.0f, 0));
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values

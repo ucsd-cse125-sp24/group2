@@ -138,12 +138,13 @@ int main(int argc, char** argv) {
 
     // ground
     EntityBase* go = new EntityBase();
-    Model* model = new Model(go, "../assets/ground/plane.gltf", false);
+    Model* model = new Model(go, "../assets/floor/floor.gltf", false);
     go->AddComponent(model);
     RendererComponent* renderer =
         new RendererComponent(go, ShaderType::STANDARD);
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
+    go->GetComponent<NetTransform>()->SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
     // bear
     // EntityBase* bear = new EntityBase();
