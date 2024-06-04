@@ -4,6 +4,7 @@
 #include "glm/gtx/string_cast.hpp"
 #include "CollisionManager.hpp"
 #include "MovementStateMachine.hpp"
+#include "Health.hpp"
 
 Mover::Mover(NetworkObject* owner)
     : INetworkComponent(owner),
@@ -12,6 +13,10 @@ Mover::Mover(NetworkObject* owner)
     // TODO: handle multiple speeds
     speed = 10.0f;
     // SetCenter(glm::vec2(100.0f, 100.0f));
+    glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
+    radius = glm::distance(owner->GetComponent<NetTransform>()->position, origin);
+    float arccosAngle = glm::acos(glm::dot(owner->GetComponent<NetTransform>()->position - origin, glm::vec3(0.0f, 0.0f, 1.0f)) / radius);
+    angle = owner->GetComponent<NetTransform>()->position.x > 0 ? -arccosAngle : arccosAngle;
 }
 
 void Mover::Update(float deltaTime) {
@@ -20,6 +25,13 @@ void Mover::Update(float deltaTime) {
 
     if (owner->GetComponent<MovementStateMachine>()) {
         MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
+
+        // probably very bad, because it was decoupled and now i just coupled it :P
+        // TODO: pls help me fix this tim T-T
+        if (owner->GetComponent<Health>()->GetHealth() <= 0) {
+            movementStateMachine->SetState(MovementState::DEAD_START);
+        }
+
         movementStateMachine->Update(deltaTime, inputs);
 
         switch(movementStateMachine->GetState()) {
@@ -66,6 +78,12 @@ void Mover::Update(float deltaTime) {
                 rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
             }
+            case DEAD: {
+                speed = 0;
+                input = glm::vec2(0.0f);
+                // UpdatePhysics(deltaTime);
+                // use old modelRotation and rotation i think
+            }
             default: {
                 break;
             }
@@ -102,8 +120,11 @@ void Mover::UpdatePhysics(float deltaTime) {
         angle = oldAngle;
     }
 
-    // float angleAboutY = 180.0f - glm::degrees(angle);
-    // rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
+    float angleAboutY = 180.0f - glm::degrees(angle);
+    owner->GetComponent<NetTransform>()->SetRotation(
+        glm::vec3(0.0f, angleAboutY, 0.0f));
+    owner->GetComponent<Collider>()->SetRotation(
+        glm::vec3(0.0f, angleAboutY, 0.0f));
 }
 
 void Mover::SetCenter(glm::vec3 newCenter) {
