@@ -6,6 +6,7 @@
 #include "Mover.hpp"
 #include "MovementStateMachine.hpp"
 #include "Health.hpp"
+#include "Status.hpp"
 
 int NetworkObject::nextNetworkId = 0;
 
@@ -88,6 +89,16 @@ void NetworkObject::deserialize(Packet* packet) {
                           << std::endl;
             }
             movementStateMachine->Deserialize(packet);
+            break;
+        }
+        case NetworkComponentTypeID::STATUS: {
+            Status* status = GetComponent<Status>();
+            if (!status) {
+                std::cout << "ERROR in NetworkObject::deserialize(): No "
+                             "Status found in current NetworkObject"
+                          << std::endl;
+            }
+            status->Deserialize(packet);
             break;
         }
         default: {
