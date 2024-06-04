@@ -1,24 +1,29 @@
 #pragma once
 
-
 #include "INetworkComponent.hpp"
 #include "IStatusEffect.hpp"
 #include <iostream>
 
-enum StatusEffectTypeID : int32_t;
 class IStatusEffect;
-
+enum class StatusEffectTypeID : int32_t;
 
 class Status : public INetworkComponent {
+    struct EnumClassHash {
+        template <typename T> std::size_t operator()(T t) const {
+            return static_cast<std::size_t>(t);
+        }
+    };
+
 protected:
-    std::unordered_map<StatusEffectTypeID, IStatusEffect*> typeToStatusEffect;
+    std::unordered_map<StatusEffectTypeID, IStatusEffect*, EnumClassHash>
+        typeToStatusEffect;
 
 public:
-    float health; // should turn this into reference
-    bool isInvincible; // should turn this into reference
+    float health;        // should turn this into reference
+    bool isInvincible;   // should turn this into reference
     float baseMaxHealth; // should turn this into reference
-    float& baseSpeed; // should turn this into reference
-    float armor; // should turn this into reference
+    float& baseSpeed;    // should turn this into reference
+    float armor;         // should turn this into reference
 
     Status(NetworkObject* owner);
 

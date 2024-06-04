@@ -2,18 +2,16 @@
 #include "Mover.hpp"
 #include "DisplayStatusEffect.hpp"
 
-
-Status::Status(NetworkObject* owner) : 
-    INetworkComponent(owner),
-    baseSpeed(owner->GetComponent<Mover>()->baseSpeed)
-{}
+Status::Status(NetworkObject* owner)
+    : INetworkComponent(owner),
+      baseSpeed(owner->GetComponent<Mover>()->baseSpeed) {}
 
 void Status::Serialize(Packet* packet) {
     packet->write_int(typeToStatusEffect.size());
     for (auto kvPair : typeToStatusEffect) {
-        packet->write_int(kvPair.first); // write StatusEffectTypeID
+        packet->write_int((int32_t)kvPair.first); // write StatusEffectTypeID
         packet->write_float(kvPair.second->currTimer); // write currTimer
-        packet->write_int(kvPair.second->stacks); // write stacks
+        packet->write_int(kvPair.second->stacks);      // write stacks
     }
 }
 

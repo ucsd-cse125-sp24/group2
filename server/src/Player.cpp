@@ -1,7 +1,7 @@
 #include "Player.hpp"
 #include <iostream>
 #include "components/PlayerCombat.hpp"
-#include "Status.hpp"
+#include "../_common/include/Status.hpp"
 #include "SpeedBoost.hpp"
 #include "CollisionManager.hpp"
 #include "Collider.hpp"
@@ -19,7 +19,7 @@ Player::Player() : Entity() {
     AddComponent(collider);
     CollisionManager::instance().add(this);
     Status* status = new Status(this);
-    AddComponent(status);
+    AddComponent((INetworkComponent*)status);
     status->AddStatusEffect(new SpeedBoost(status)); // test
     status->AddStatusEffect(new SpeedBoost(status)); // test
     status->AddStatusEffect(new SpeedBoost(status)); // test
@@ -44,4 +44,4 @@ void Player::update(float deltaTime) {
         GetComponent<CooldownComponent>()->Update(deltaTime);
     if (GetComponent<Status>())
         GetComponent<Status>()->Update(deltaTime);
-}       
+}
