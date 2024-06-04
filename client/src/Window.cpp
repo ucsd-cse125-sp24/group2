@@ -26,6 +26,9 @@ bool Window::initializeProgram() {
                              "shaders/HUD.frag");
     res = Shader::LoadShader(ShaderType::SKYBOX, "shaders/skybox.vert",
                              "shaders/skybox.frag");
+    res = Shader::LoadShader(ShaderType::PARTICLE, "shaders/particle.vert",
+                             "shaders/particle.frag");
+
     // Check the shader program.
     if (!res) {
         std::cerr << "Failed to initialize one or more shaders." << std::endl;

@@ -13,6 +13,7 @@ void InputManager::setDefaultKeys() {
     keys[GLFW_KEY_I] = (KeyState)0;
     keys[GLFW_KEY_K] = (KeyState)0;
     keys[GLFW_KEY_L] = (KeyState)0;
+    keys[GLFW_KEY_SPACE] = (KeyState)0;
 }
 
 void InputManager::setUpCallback(GLFWwindow* window) {

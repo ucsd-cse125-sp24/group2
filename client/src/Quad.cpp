@@ -4,9 +4,10 @@ Quad::Quad() {}
 
 Quad::Quad(glm::vec3 pos, float width, float height) : position(pos) {
     modelMtx = glm::mat4(1.0f);
+    color = glm::vec4(1.0f);
     scale = glm::vec3(width, height, 1.0f);
     shader = Shader::GetShader(ShaderType::HUD);
-    rotation = glm::quat(0, 0, 0, 1);
+    rotation = glm::quat(0, 0, 0, 0);
     positions = {
         glm::vec3(-1.0f - width / 2.0f, -1.0f - height / 2.0f,
                   0.0f), // bottom left
@@ -47,8 +48,9 @@ Quad::Quad(glm::vec3 pos, float width, float height) : position(pos) {
 
 Quad::Quad(glm::vec3 pos, float size) : position(pos) {
     modelMtx = glm::mat4(1.0f);
+    color =  glm::vec4(1.0f);
     scale = glm::vec3(size, size, 1.0f);
-    rotation = glm::quat(0, 0, 0, 1);
+    rotation = glm::quat(0, 0, 0, 0);
     shader = Shader::GetShader(ShaderType::HUD);
     positions = {glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(-1.0f, 1.0f, 0.0f),
                  glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f)};
@@ -120,6 +122,40 @@ void Quad::draw(float aspectRatio) {
     glUseProgram(0);
 }
 
+void Quad::draw(const glm::mat4& viewProjMtx) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glUseProgram(shader);
+    if(hasTexture) {
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    } else {
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 0);
+    }
+    for (unsigned int i = 0; i < textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        std::string name = "texture" + std::to_string(i);
+        // std::cout<<"texture name: "<< (name).c_str() << std::endl;
+        glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+    }
+    glUniform4fv(glGetUniformLocation(shader, "DiffuseColor"), 1, (float*)&color);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProjMtx"), 1, GL_FALSE,
+                       (float*)&viewProjMtx);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
+                       (float*)&modelMtx);
+
+    // Bind the VAO
+    glBindVertexArray(VAO);
+
+    // draw the points using triangles, indexed with the EBO
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+    glActiveTexture(GL_TEXTURE0);
+    glUseProgram(0);
+}
+
 void Quad::setPosition(glm::vec3 pos) { position = pos; }
 
 void Quad::setSize(float size) { scale = glm::vec3(size, size, 1.0f); }
@@ -139,8 +175,17 @@ void Quad::update() { getModelMtx(); }
 void Quad::setTexture(const char* path, const std::string& directory) {
     unsigned int texture = Helper::textureFromFile(path, directory);
     textures.push_back(texture);
+    hasTexture = true;
 }
 
 void Quad::setRotation(float angle, glm::vec3 axis) {
     rotation = glm::rotate(rotation, angle, axis);
+}
+
+void Quad::setShader(GLuint shader) {
+    this->shader = shader;
+}
+
+void Quad::setColor(glm::vec4 color) {
+    this->color = color;
 }

@@ -29,6 +29,8 @@ set(
     src/components/PlayerComponent.cpp
     src/components/BeatSyncComponent.cpp
     prefabs/Enemy.cpp
+    src/Particle.cpp
+    src/ParticleSystem.cpp
 
     #SkyBox
     src/SkyBox.cpp
