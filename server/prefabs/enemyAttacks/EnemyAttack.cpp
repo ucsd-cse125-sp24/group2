@@ -3,6 +3,7 @@
 #include "Health.hpp"
 #include "Invincible.hpp"
 #include "Player.hpp"
+#include "CollisionManager.hpp"
 
 #include <iostream>
 

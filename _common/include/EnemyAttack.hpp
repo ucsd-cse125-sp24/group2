@@ -4,7 +4,6 @@
 #include "Entity.hpp"
 #include "Enemy.hpp"
 #include "Collider.hpp"
-#include "CollisionManager.hpp"
 #include <vector>
 
 class EnemyAttack : public Entity {

@@ -6,6 +6,7 @@
 #include "MarkedAttack.hpp"
 #include "SwipeAttack.hpp"
 #include "NetworkManager.hpp"
+#include "EnemyComponent.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);

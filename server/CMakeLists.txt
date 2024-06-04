@@ -15,6 +15,8 @@ set(SERVER_SOURCES
     src/Mover.cpp
     src/Health.cpp
     components/PlayerCombat.cpp
+    components/PlayerSkillType.cpp
+    components/EnemyComponent.cpp
     prefabs/Enemy.cpp
     prefabs/AttackManager.cpp
     )
