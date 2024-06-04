@@ -6,7 +6,7 @@ Quad::Quad(glm::vec3 pos, float width, float height) : position(pos) {
     modelMtx = glm::mat4(1.0f);
     scale = glm::vec3(width, height, 1.0f);
     shader = Shader::GetShader(ShaderType::HUD);
-    rotation = glm::quat(0, 0, 0, 1);
+    rotation = glm::quat(0, 0, 0, 0);
     positions = {
         glm::vec3(-1.0f - width / 2.0f, -1.0f - height / 2.0f,
                   0.0f), // bottom left
@@ -48,7 +48,7 @@ Quad::Quad(glm::vec3 pos, float width, float height) : position(pos) {
 Quad::Quad(glm::vec3 pos, float size) : position(pos) {
     modelMtx = glm::mat4(1.0f);
     scale = glm::vec3(size, size, 1.0f);
-    rotation = glm::quat(0, 0, 0, 1);
+    rotation = glm::quat(0, 0, 0, 0);
     shader = Shader::GetShader(ShaderType::HUD);
     positions = {glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(-1.0f, 1.0f, 0.0f),
                  glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f)};
@@ -94,18 +94,19 @@ Quad::~Quad() {
 
 void Quad::draw(float aspectRatio) {
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glUseProgram(shader);
-    for (unsigned int i = 0; i < textures.size(); i++) {
+    for(unsigned int i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
-        std::string name = "texture" + std::to_string(i);
+        std::string name = "textures[" + std::to_string(i) + "]";
         // std::cout<<"texture name: "<< (name).c_str() << std::endl;
         glUniform1i(glGetUniformLocation(shader, (name).c_str()), i);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
     }
+    glUniform1i(glGetUniformLocation(shader, "textureIndex"), textureIndex);
+    glUniform1f(glGetUniformLocation(shader, "opacity"), opacity);
     glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
-                       (float*)&modelMtx);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
 
     // Bind the VAO
     glBindVertexArray(VAO);
@@ -121,11 +122,8 @@ void Quad::draw(float aspectRatio) {
 
 void Quad::setPosition(glm::vec3 pos) { position = pos; }
 
-void Quad::setSize(float size) { scale = glm::vec3(size, size, 1.0f); }
 
-void Quad::setSize(float width, float height) {
-    scale = glm::vec3(width, height, 1.0f);
-}
+void Quad::setSize(float size) { scale = glm::vec3(size, size, 1.0f); }
 
 const glm::mat4& Quad::getModelMtx() {
     modelMtx = glm::translate(glm::mat4(1.0f), position) *
@@ -142,4 +140,12 @@ void Quad::setTexture(const char* path, const std::string& directory) {
 
 void Quad::setRotation(float angle, glm::vec3 axis) {
     rotation = glm::rotate(rotation, angle, axis);
+}
+
+void Quad::setOpacity(float opacity) {
+    this->opacity = opacity;
+}
+
+void Quad::activateTexture(int index) {
+    textureIndex = index;
 }

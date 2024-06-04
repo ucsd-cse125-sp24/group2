@@ -235,6 +235,7 @@ int main(int argc, char** argv) {
         }
 
         GameManager::instance().scene.Update(deltaTime);
+
     }
 
     Window::cleanUp();

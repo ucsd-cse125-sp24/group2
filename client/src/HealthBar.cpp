@@ -8,7 +8,6 @@ HealthBar::HealthBar(glm::vec3 pos, float width, float height) {
     quad->setTexture("fullBar.png", "../assets/HUD/healthBar");
 
     ratio = currHealth / maxHealth;
-    quad->update();
 }
 
 HealthBar::HealthBar(glm::vec3 pos, float size) {
@@ -17,6 +16,8 @@ HealthBar::HealthBar(glm::vec3 pos, float size) {
     quad->setTexture("emptyBar.png", "../assets/HUD/healthBar");
     quad->setTexture("fullBar.png", "../assets/HUD/healthBar");
     quad->update();
+    
+    quad->enableState(VISIBLE);
 }
 
 HealthBar::~HealthBar() { delete quad; }

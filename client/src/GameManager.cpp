@@ -135,6 +135,7 @@ void GameManager::update(Packet* pkt) {
 
             cam->SetTarget(glm::vec3(0, 0, 0));
             if (localPlayerObject == network_id) {
+               
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
