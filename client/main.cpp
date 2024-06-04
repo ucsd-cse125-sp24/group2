@@ -138,12 +138,13 @@ int main(int argc, char** argv) {
     }
 
     // ground
-    EntityBase* go = new EntityBase();
+    GameObject* go = new GameObject();
     Model* model = new Model(go, "../assets/ground/plane.gltf", false);
     go->AddComponent(model);
     RendererComponent* renderer =
         new RendererComponent(go, ShaderType::STANDARD);
     go->AddComponent(renderer);
+    go->GetComponent<Transform>()->SetScale(glm::vec3(1, 1, 1));
     GameManager::instance().scene.Instantiate(go);
 
     // bear
@@ -168,7 +169,7 @@ int main(int argc, char** argv) {
     GameManager::instance().scene.Instantiate(bear);
     std::cout << "  Finished updating AssetManager" << std::endl;
 
-    EntityBase* sphereObject = new EntityBase();
+    GameObject* sphereObject = new GameObject();
     Model* sphereModel =
         new Model(sphereObject, "../assets/sphere/sphere.gltf", false);
     sphereObject->AddComponent(sphereModel);
@@ -216,15 +217,12 @@ int main(int argc, char** argv) {
         Window::Render(window, &GameManager::instance().scene,
                        GameManager::instance().cam, deltaTime);
 
-
-
         // Update loop
         while (!task_queue.empty()) {
             task_queue.pop_front()();
         }
 
         GameManager::instance().scene.Update(deltaTime);
-
     }
 
     Window::cleanUp();

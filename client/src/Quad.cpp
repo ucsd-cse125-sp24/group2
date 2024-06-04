@@ -106,7 +106,6 @@ void Quad::draw(float aspectRatio) {
     glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
                        (float*)&modelMtx);
-    std::cout << glm::to_string(modelMtx) << std::endl;
 
     // Bind the VAO
     glBindVertexArray(VAO);
