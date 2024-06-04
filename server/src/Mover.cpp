@@ -4,6 +4,7 @@
 #include "glm/gtx/string_cast.hpp"
 #include "CollisionManager.hpp"
 #include "MovementStateMachine.hpp"
+#include "Health.hpp"
 
 Mover::Mover(NetworkObject* owner)
     : INetworkComponent(owner),
@@ -24,6 +25,13 @@ void Mover::Update(float deltaTime) {
 
     if (owner->GetComponent<MovementStateMachine>()) {
         MovementStateMachine* movementStateMachine = owner->GetComponent<MovementStateMachine>();
+
+        // probably very bad, because it was decoupled and now i just coupled it :P
+        // TODO: pls help me fix this tim T-T
+        if (owner->GetComponent<Health>()->GetHealth() <= 0) {
+            movementStateMachine->SetState(MovementState::DEAD_START);
+        }
+
         movementStateMachine->Update(deltaTime, inputs);
 
         switch(movementStateMachine->GetState()) {
@@ -69,6 +77,12 @@ void Mover::Update(float deltaTime) {
                 float angleAboutY = 180.0f - glm::degrees(angle + modelRotation);
                 rotation = glm::vec3(0.0f, angleAboutY, 0.0f);
                 break;
+            }
+            case DEAD: {
+                speed = 0;
+                input = glm::vec2(0.0f);
+                // UpdatePhysics(deltaTime);
+                // use old modelRotation and rotation i think
             }
             default: {
                 break;
