@@ -1,19 +1,13 @@
 #include "MarkedAttack.hpp"
 #include <iostream>
 
-# define LATENCY      3
-# define DAMAGE       10
-
-
-// std::vector<double> right_angles = {0, 0.5 * PI, PI, 1.5 * PI};
-
 MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList) : EnemyAttack(owner) {
     for (Player* p : playerList) {
         Collider* attackC = new Collider(this, p->GetComponent<Collider>());
         colliders.push_back(attackC);
     }
     latency = LATENCY;
-    SetDamage(DAMAGE);
+    SetDamage(M_DAMAGE);
 }
 
 MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList, int networkId) : EnemyAttack(owner, networkId) {
@@ -22,7 +16,7 @@ MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList, int ne
         colliders.push_back(attackC);
     }
     latency = LATENCY;
-    SetDamage(DAMAGE);
+    SetDamage(M_DAMAGE);
 }
 
 void MarkedAttack::update(float deltaTime) {
