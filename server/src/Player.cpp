@@ -46,3 +46,7 @@ void Player::update(float deltaTime) {
     if (GetComponent<CooldownComponent>())
         GetComponent<CooldownComponent>()->Update(deltaTime);
 }       
+
+void Player::onDestroy() {
+    CollisionManager::instance().remove(this);
+}

@@ -1,5 +1,6 @@
 #include "LaserAttack.hpp"
 #include <iostream>
+#include "CollisionManager.hpp"
 
 // PI is in degree, not radian, as rotation is in degree
 # define PI           180.0

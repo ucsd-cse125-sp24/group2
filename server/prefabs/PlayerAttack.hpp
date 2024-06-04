@@ -1,10 +1,9 @@
 #ifndef PLAYERATTACK_HPP
 #define PLAYERATTACK_HPP
 
-#include "Entity.hpp"
-#include "Player.hpp"
+#include "PlayerSkill.hpp"
 
-class PlayerAttack : public Entity {
+class PlayerAttack : public PlayerSkill {
 private:
     int damage = 10;
     bool exist;
@@ -15,13 +14,12 @@ private:
 public:
     PlayerAttack();
     PlayerAttack(int networkId);
-    void init(Player* player);
     void update(float deltaTime) override;
+
+    // used by server
+    void init(Player* player);
     void DealDamage();
 
-    std::string ToString() override { return "PlayerAttack"; }
-    int32_t TypeID() const override { return NetworkObjectTypeID::PLAYER_ATTACK; }
-    
     void SetDamage(int newDamage) { damage = newDamage; }
     void SetSpeed(float newSpeed) { speed = newSpeed; }
     void setTarget(GameObject* newTarget) { target = newTarget; }

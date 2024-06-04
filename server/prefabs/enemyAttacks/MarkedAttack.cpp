@@ -1,5 +1,6 @@
 #include "MarkedAttack.hpp"
 #include <iostream>
+#include "CollisionManager.hpp"
 
 # define LATENCY      3
 # define DAMAGE       10

@@ -7,19 +7,19 @@ void EnemyComponent::Update(float deltaTime) {
     // switch attack animations
     switch (atk) {
         case ((int) AttackState::SWIPE): {
-            std::cout << "playing swipe" << std::endl;
+            // std::cout << "playing swipe" << std::endl;
             break;
         }
         case ((int) AttackState::LASER): {
-            std::cout << "playing laser" << std::endl;
+            // std::cout << "playing laser" << std::endl;
             break;
         }
         case ((int) AttackState::MARK): {
-            std::cout << "playing mark" << std::endl;
+            // std::cout << "playing mark" << std::endl;
             break;
         }
         case ((int) AttackState::STOMP): {
-            std::cout << "playing stomp" << std::endl;
+            // std::cout << "playing stomp" << std::endl;
             break;
         }
         default: {

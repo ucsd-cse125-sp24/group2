@@ -24,6 +24,7 @@ public:
 
     // Used by server
     Player(glm::vec3 position);
+    void onDestroy();
 
     virtual void update(float deltaTime) override;
 

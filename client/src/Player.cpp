@@ -31,9 +31,6 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(h);
 }
 
-void Player::update(float deltaTime) {
-    // stuff moved to player component
+void Player::update(float deltaTime) {}
 
-    // std::cout << "In Player::update(): " <<
-    // GetComponent<MovementStateMachine>()->ToString() << std::endl;
-}
+void Player::onDestroy() {}
