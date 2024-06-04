@@ -85,7 +85,7 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 1) {
+                if (players.size() == 2) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -133,8 +133,8 @@ void GameManager::update(Packet* pkt) {
             
                 cam->SetPosition(
                     playerPos +
-                    glm::normalize(playerPos - cam->GetTarget()) * 1.0f +
-                    glm::vec3(0, 1, 0) + playerRightVector * 1.0f);
+                    glm::normalize(playerPos - cam->GetTarget()) * 3.0f +
+                    glm::vec3(0, 2.0f, 0) + playerRightVector * 1.0f);
             }
 
             break;

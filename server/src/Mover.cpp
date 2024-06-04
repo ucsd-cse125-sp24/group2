@@ -10,7 +10,7 @@ Mover::Mover(NetworkObject* owner)
       position(owner->GetComponent<NetTransform>()->position),
       rotation(owner->GetComponent<NetTransform>()->rotation) {
     // TODO: handle multiple speeds
-    speed = 10.0f;
+    speed = 0.5f;
     // SetCenter(glm::vec2(100.0f, 100.0f));
 }
 
