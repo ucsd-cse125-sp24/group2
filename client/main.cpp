@@ -151,29 +151,7 @@ int main(int argc, char** argv) {
         new RendererComponent(go, ShaderType::STANDARD);
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
-    go->GetComponent<NetTransform>()->SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
-
-    // bear
-    // EntityBase* bear = new EntityBase();
-    // Model* bearModel = new Model(bear, "../assets/Bear2/bear.gltf", true);
-    // bear->GetComponent<NetTransform>()->SetScale(glm::vec3(400.0f));
-    // bear->AddComponent(bearModel);
-    // AnimationPlayer* bearAnimationPlayer = new AnimationPlayer(bear, bearModel);
-    // bear->AddComponent(bearAnimationPlayer);
-    // std::vector<AnimationClip*> prefabClips =
-    //     AssetManager::Instance().GetClips("../assets/Bear2/bear.gltf");
-    // for (int i = 0; i < prefabClips.size(); ++i) {
-    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
-    //     // std::cout << "Adding clip: " << clip->getName()
-    //     //           << std::endl;
-    //     bear->GetComponent<AnimationPlayer>()->AddClip(clip);
-    // }
-    // RendererComponent* bearRenderer =
-    //     new RendererComponent(bear, ShaderType::ANIMATED);
-    // bear->AddComponent(bearRenderer);
-    // bear->GetComponent<AnimationPlayer>()->play("idle");
-    // GameManager::instance().scene.Instantiate(bear);
-    // std::cout << "  Finished updating AssetManager" << std::endl;
+    go->GetComponent<Transform>()->SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
     for (int i = 0; i < 20; i++) {
         GameObject* sphereObject = new GameObject();

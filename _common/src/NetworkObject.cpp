@@ -56,79 +56,82 @@ void NetworkObject::deserialize(Packet* packet) {
         packet->read_int(&compTypeID);
 
         switch (compTypeID) {
-        case NetworkComponentTypeID::TRANSFORM: {
-            NetTransform* transform = GetComponent<NetTransform>();
-            if (transform == nullptr)
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "NetTransform found in current NetworkObject"
-                          << std::endl;
-            transform->Deserialize(packet);
-            break;
-        }
-        case NetworkComponentTypeID::MOVER: {
-            Mover* mover = GetComponent<Mover>();
-            if (mover == nullptr)
-                std::cout << "ERROR in NetworkObject::deserialize(): No Mover "
-                             "found in current NetworkObject"
-                          << std::endl;
-            mover->Deserialize(packet);
-            break;
-        }
-        case NetworkComponentTypeID::HEALTH: {
-            Health* health = GetComponent<Health>();
-            if (health == nullptr)
-                std::cout << "ERROR in NetworkObject::deserialize(): No Health "
-                             "found in current NetworkObject"
-                          << std::endl;
-            health->Deserialize(packet);
-            break;
-        }
-        case NetworkComponentTypeID::MOVEMENT_STATE_MACHINE: {
-            MovementStateMachine* movementStateMachine = GetComponent<MovementStateMachine>();
-            if (!movementStateMachine) {
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "MovementStateMachine found in current NetworkObject"
-                          << std::endl;
+            case NetworkComponentTypeID::TRANSFORM: {
+                NetTransform* transform = GetComponent<NetTransform>();
+                if (transform == nullptr)
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "NetTransform found in current NetworkObject"
+                            << std::endl;
+                transform->Deserialize(packet);
+                break;
             }
-            movementStateMachine->Deserialize(packet);
-            break;
-        }
-        case (NetworkComponentTypeID::ENEMY_COMPONENT): {
-            EnemyComponent* ec = GetComponent<EnemyComponent>();
-            if (!ec) {
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "EnemyComponent found in current NetworkObject"
-                          << std::endl;
+            case NetworkComponentTypeID::MOVER: {
+                Mover* mover = GetComponent<Mover>();
+                if (mover == nullptr)
+                    std::cout << "ERROR in NetworkObject::deserialize(): No Mover "
+                                "found in current NetworkObject"
+                            << std::endl;
+                mover->Deserialize(packet);
+                break;
             }
-            ec->Deserialize(packet);
-            break;
-        }
-        case (NetworkComponentTypeID::SKILL_TYPE): {
-            PlayerSkillType* skill_type = GetComponent<PlayerSkillType>();
-            if (!skill_type) {
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "PlayerSkillType found in current NetworkObject"
-                          << std::endl;
+            case NetworkComponentTypeID::HEALTH: {
+                Health* health = GetComponent<Health>();
+                if (health == nullptr)
+                    std::cout << "ERROR in NetworkObject::deserialize(): No Health "
+                                "found in current NetworkObject"
+                            << std::endl;
+                health->Deserialize(packet);
+                break;
             }
-            skill_type->Deserialize(packet);
-        case NetworkComponentTypeID::STATUS: {
-            Status* status = GetComponent<Status>();
-            if (!status) {
-                std::cout << "ERROR in NetworkObject::deserialize(): No "
-                             "Status found in current NetworkObject"
-                          << std::endl;
+            case NetworkComponentTypeID::MOVEMENT_STATE_MACHINE: {
+                MovementStateMachine* movementStateMachine = GetComponent<MovementStateMachine>();
+                if (!movementStateMachine) {
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "MovementStateMachine found in current NetworkObject"
+                            << std::endl;
+                }
+                movementStateMachine->Deserialize(packet);
+                break;
             }
-            status->Deserialize(packet);
-            break;
-        }
-        default: {
-            std::cout << "      ERROR in NetworkObject::deserialize(): TypeID: "
-                      << compTypeID
-                      << " not currently supported in "
-                         "NetworkObject::deserialize(Packet*)"
-                      << std::endl;
-            break;
-        }
+            case (NetworkComponentTypeID::ENEMY_COMPONENT): {
+                EnemyComponent* ec = GetComponent<EnemyComponent>();
+                if (!ec) {
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "EnemyComponent found in current NetworkObject"
+                            << std::endl;
+                }
+                ec->Deserialize(packet);
+                break;
+            }
+            case (NetworkComponentTypeID::SKILL_TYPE): {
+                PlayerSkillType* skill_type = GetComponent<PlayerSkillType>();
+                if (!skill_type) {
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "PlayerSkillType found in current NetworkObject"
+                            << std::endl;
+                }
+                skill_type->Deserialize(packet);
+                break;
+            }
+            case NetworkComponentTypeID::STATUS: {
+                Status* status = GetComponent<Status>();
+                if (!status) {
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "Status found in current NetworkObject"
+                            << std::endl;
+                    std::cout << networkId() << std::endl;
+                }
+                status->Deserialize(packet);
+                break;
+            }
+            default: {
+                std::cout << "      ERROR in NetworkObject::deserialize(): TypeID: "
+                        << compTypeID
+                        << " not currently supported in "
+                            "NetworkObject::deserialize(Packet*)"
+                        << std::endl;
+                break;
+            }
         }
     }
 }
