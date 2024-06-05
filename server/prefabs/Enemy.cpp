@@ -16,7 +16,7 @@
 #include <iostream>
 
 Enemy::Enemy() : Entity() {
-    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 50.0f, 0));
+    this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
@@ -37,7 +37,7 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
-    hitbox->SetRadius(50);
+    hitbox->SetRadius(25);
     hitbox->SetHeight(20);
 
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
