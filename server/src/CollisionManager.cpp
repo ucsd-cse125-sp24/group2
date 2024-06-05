@@ -39,7 +39,7 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
 }
 
 // return a list of GameObjects that heal affects
-std::vector<GameObject*> CollisionManager::movePlayerHeal(Collider* healCollider) {
+std::vector<GameObject*> CollisionManager::doPlayerEffect(Collider* healCollider) {
     std::lock_guard<std::mutex> lock(_mutex);
     std::vector<GameObject*> hitObjects;
 

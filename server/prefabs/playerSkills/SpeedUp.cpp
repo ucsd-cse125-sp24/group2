@@ -1,26 +1,26 @@
-#include "Heal.hpp"
+#include "SpeedUp.hpp"
 #include "Status.hpp"
-#include "HealEffect.hpp"
+#include "SpeedBoost.hpp"
 
-Heal::Heal(Player* p) : PlayerSkill() {
+SpeedUp::SpeedUp(Player* p) : PlayerSkill() {
     exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
-    this->GetComponent<PlayerSkillType>()->SetState(SkillType::HEAL);
+    this->GetComponent<PlayerSkillType>()->SetState(SkillType::SPEED_BOOST);
 }
 
-Heal::Heal(Player* p, int networkId) : PlayerSkill(networkId) {
+SpeedUp::SpeedUp(Player* p, int networkId) : PlayerSkill(networkId) {
     exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
-    this->GetComponent<PlayerSkillType>()->SetState(SkillType::HEAL);
+    this->GetComponent<PlayerSkillType>()->SetState(SkillType::SPEED_BOOST);
 }
 
-void Heal::update(float deltaTime) {
+void SpeedUp::update(float deltaTime) {
     std::vector<GameObject*> hitObjects = CollisionManager::instance().doPlayerEffect(range);
     for (GameObject* g : hitObjects) {
         if (Player* p = dynamic_cast<Player*>(g)) {
-            p->GetComponent<Status>()->AddStatusEffect(new HealEffect(p->GetComponent<Status>()));
+            p->GetComponent<Status>()->AddStatusEffect(new SpeedBoost(p->GetComponent<Status>()));
         }
     }
     exist = false;

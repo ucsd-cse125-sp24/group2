@@ -4,7 +4,9 @@
 
 enum class SkillType {
     PLAYER_ATTACK,
-    HEAL
+    HEAL,
+    REVIVE,
+    SPEED_BOOST
 };
 
 class PlayerSkillType : public INetworkComponent {

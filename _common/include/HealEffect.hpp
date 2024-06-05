@@ -3,9 +3,9 @@
 #include "IStatusEffect.hpp"
 #include <iostream>
 
-class HealPlayer : public IStatusEffect {
+class HealEffect : public IStatusEffect {
 public:
-    HealPlayer(Status* status) : IStatusEffect(status, 5.0f, true) {}
+    HealEffect(Status* status) : IStatusEffect(status, 5.0f, true) {}
 
     StatusEffectTypeID TypeID() override {
         return StatusEffectTypeID::HEAL;

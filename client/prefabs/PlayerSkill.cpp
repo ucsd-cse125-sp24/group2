@@ -31,6 +31,14 @@ void PlayerSkill::initComponent(int skillType) {
         // model = new Model(AssetManager::Instance().GetModel(path));
         printf("PlayerHeal!\n");
         break;
+    case (int) SkillType::REVIVE:
+        // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerRevive!\n");
+        break;
+    case (int) SkillType::SPEED_BOOST:
+        // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerSpeedBoost!\n");
+        break;
     }
     // AddComponent(model);
     // AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);

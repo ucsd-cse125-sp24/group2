@@ -22,7 +22,6 @@ protected:
 
 public:
     Health* health;        // should turn this into reference
-    Invincible* isInvincible;   // should turn this into reference
     float& baseSpeed;    // should turn this into reference
     float armor;         // should turn this into reference
 
