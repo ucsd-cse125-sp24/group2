@@ -4,7 +4,9 @@
 
 Status::Status(NetworkObject* owner)
     : INetworkComponent(owner),
-      baseSpeed(owner->GetComponent<Mover>()->baseSpeed) {}
+      baseSpeed(owner->GetComponent<Mover>()->baseSpeed),
+      health(owner->GetComponent<Health>()),
+      isInvincible(owner->GetComponent<Invincible>()) {}
 
 void Status::Serialize(Packet* packet) {
     packet->write_int(typeToStatusEffect.size());

@@ -26,7 +26,7 @@ Enemy::Enemy() : Entity() {
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
     this->currentPhase = PHASE1;
-    Health* h = new Health(this, 500);
+    Health* h = new Health(this, 100.0f);
     this->AddComponent(h);
     EnemyComponent* ec = new EnemyComponent(this);
     this->AddComponent(ec);

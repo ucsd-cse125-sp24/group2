@@ -23,8 +23,12 @@ void Mover::Update(float deltaTime) {
 
         // probably very bad, because it was decoupled and now i just coupled it :P
         // TODO: pls help me fix this tim T-T
-        if (owner->GetComponent<Health>()->GetHealth() <= 0) {
+        if (owner->GetComponent<Health>()->GetDead()) {
             movementStateMachine->SetState(MovementState::DEAD_START);
+        }
+
+        if (owner->GetComponent<Health>()->GetJustRevived()) {
+            movementStateMachine->SetState(MovementState::IDLE);
         }
 
         movementStateMachine->Update(deltaTime, inputs);

@@ -8,26 +8,40 @@
 class Health : public INetworkComponent {
 
 public:
-    int hp;
+    float hp;
+    float maxHp;
+    int num_needed_revive;
+    bool dead;
+    bool just_revived;
 
     Health(NetworkObject* owner);
-    Health(NetworkObject* owner, int newHp);
+    Health(NetworkObject* owner, float newHp);
 
     virtual void Serialize(Packet* packet) override {
-        packet->write_int(hp);
+        packet->write_float(hp);
     }
 
     virtual void Deserialize(Packet* packet) override {
-        packet->read_int(&hp);
+        packet->read_float(&hp);
     }
 
     virtual int32_t TypeID() const override { return HEALTH; }
 
-    int GetHealth() const { return hp; }
+    bool GetDead() const { return dead; }
 
-    void SetHealth(int newHp);
+    bool GetJustRevived() {
+        if (just_revived) {
+            just_revived = false;
+            return true;
+        }
+        return false; 
+    }
 
-    void ChangeHealth(int amount);
+    float GetHealth() const { return hp; }
+
+    void ChangeHealth(float amount);
+
+    void revive();
 };
 
 
