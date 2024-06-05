@@ -11,7 +11,7 @@ public:
     Quad(glm::vec3 pos, float width, float height);
     ~Quad();
     void draw(float aspectRatio);
-    void draw(const glm::mat4& viewProjMtx);
+    void draw(const glm::mat4& viewMtx, const glm::mat4& projMtx);
     void update();
     void setRotation(float angle, glm::vec3 axis);
     void setPosition(glm::vec3 pos);

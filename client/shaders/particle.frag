@@ -4,11 +4,11 @@ in vec2 TexCoords;
 
 uniform sampler2D texture0;
 
-out vec4 fragColor;
-
 uniform vec4 color;
 
 uniform bool hasTexture;
+
+out vec4 fragColor;
 
 void main()
 {

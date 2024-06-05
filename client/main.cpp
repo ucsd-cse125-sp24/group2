@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
     bear->AddComponent(bearRenderer);
     bear->GetComponent<AnimationPlayer>()->play("idle");
     GameManager::instance().scene.Instantiate(bear);
-    std::cout << "  Finished updating AssetManager" << std::endl;
+    // std::cout << "  Finished updating AssetManager" << std::endl;
 
     EntityBase* sphereObject = new EntityBase();
     Model* sphereModel =

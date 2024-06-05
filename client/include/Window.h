@@ -8,6 +8,8 @@
 
 #include "Mover.hpp"
 #include "SkyBox.hpp"
+#include "ParticleSystem.hpp"
+#include "PlayerEffects.hpp"
 
 #include "PlayerManager.hpp"
 #include "Client.h"
@@ -20,6 +22,8 @@ public:
     static const char* windowTitle;
 
     static SkyBox* skybox;
+    static ParticleSystem* particleSystem;
+    static PlayerEffects* playerEffects;
 
     // Act as Constructors and desctructors
     static bool initializeProgram();

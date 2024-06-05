@@ -9,6 +9,8 @@
 int Window::width;
 int Window::height;
 const char* Window::windowTitle = "Model Environment";
+ParticleSystem* Window::particleSystem;
+PlayerEffects* Window::playerEffects;
 
 // Interaction Variables
 bool LeftDown, RightDown;
@@ -37,6 +39,8 @@ bool Window::initializeProgram() {
 
     skybox = new SkyBox();
 
+    // particleSystem = new ParticleSystem(glm::vec3(-10.0f, 1.0f, 0.0f), glm::vec3(1.0f, 50.0f, 300.0f), glm::vec3(800.0f), glm::vec4(254/255.0f, 212/255.0f, 123/255.0f, 1.0f), glm::vec4(254/255.0f, 109/255.0f, 41/255.0f, 1.0f), 20.0f, 30.0f, 50, 2.0f);
+    playerEffects = new PlayerEffects();
     return true;
 }
 
@@ -96,12 +100,12 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 
     // Cam->SetAspect(float(width) / float(height));
 }
-
+bool start = false;
 void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
                     float deltaTime) {
     // Clear the color and depth buffers.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
     // Render all objects in the scene
     for (auto& entity : scene->entities) {
 
@@ -120,7 +124,27 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
             renderer->Render(camera->GetViewProjectMtx());
     }
     
-    skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
+    if(InputManager::IsKeyPressed(GLFW_KEY_SPACE)) {
+        // std::cout<<"HERERERERE"<<std::endl;
+        start = true;
+       
+    }
+    if(start) {
+        // playerEffects->playAttack(glm::vec3(-10.0f, 1.0f, 0.0f), glm::vec3(1.0f, 50.0f, 300.0f), deltaTime, 20.0f);
+        // playerEffects->playHeal(glm::vec3(0.0f, 1.0f, 0.0f), deltaTime, 20.0f);
+        playerEffects->playSpeedUp(glm::vec3(0.0f, 1.0f, 0.0f), deltaTime, 20.0f);
+        //  particleSystem->start(deltaTime);
+    }
+        playerEffects->update(deltaTime);
+        playerEffects->draw(camera->GetViewMtx(), camera->GetProjMtx());
+
+
+        // particleSystem->update(deltaTime);
+        // particleSystem->draw(camera->GetViewMtx(), camera->GetProjMtx());
+    // }
+
+    // skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
+
 
     // Render 2D screen
     glDisable(GL_DEPTH_TEST);

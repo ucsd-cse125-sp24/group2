@@ -31,6 +31,7 @@ set(
     prefabs/Enemy.cpp
     src/Particle.cpp
     src/ParticleSystem.cpp
+    src/PlayerEffects.cpp
 
     #SkyBox
     src/SkyBox.cpp
