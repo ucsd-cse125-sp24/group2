@@ -69,6 +69,21 @@ MovementState MovementStateMachine::Update(float deltaTime, char* input) {
             }
             break;
         }
+        case DEAD_START: {
+            // i tried using cooldown, couldn't get it to work :( pls help tim
+            if (deathAnimationTime > 0) {
+                deathAnimationTime -= deltaTime;
+            } else {
+                currState = DEAD;
+            }
+            break;
+        }
+        case DEAD: {
+            // TODO: revive?
+            // if revived
+            // currState = IDLE
+            break;
+        }
         default: {
             std::cout << "INVALID MOVEMENT STATE" << std::endl;
         }
@@ -97,6 +112,14 @@ std::string MovementStateMachine::ToString() {
         }
         case DODGE: {
             result += "DODGE";
+            break;
+        }
+        case DEAD_START: {
+            result += "DEAD_START";
+            break;
+        }
+        case DEAD: {
+            result += "DEAD";
             break;
         }
         default: {
