@@ -23,7 +23,8 @@ enum class PacketType {
     START_GAME,
     SERVER_READY,
     CLIENT_READY,
-    END_GAME
+    END_GAME,
+    NEXT_PHASE,
 };
 class Packet {
 private:

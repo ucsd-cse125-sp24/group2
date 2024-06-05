@@ -108,6 +108,7 @@
     "*.tcc": "cpp",
     "memory_resource": "cpp",
     "cinttypes": "cpp",
-    "__verbose_abort": "cpp"
+    "__verbose_abort": "cpp",
+    "*.inc": "cpp"
   }
 }
