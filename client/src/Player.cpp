@@ -11,6 +11,7 @@
 #include "components/PlayerComponent.hpp"
 #include "HUD.h"
 #include "MovementStateMachine.hpp"
+#include "Status.hpp"
 
 Player::Player(std::string path, int networkId) : Entity(networkId) {
     alive = true;
@@ -25,6 +26,8 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
     AddComponent(model);
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
+    Status* status = new Status(this);
+    AddComponent(status);
     PlayerComponent* playerComponent = new PlayerComponent(this);
     AddComponent(playerComponent);
     Health* h = new Health(this);

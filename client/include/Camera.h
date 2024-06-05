@@ -34,6 +34,8 @@ public:
     float GetAspect() { return Aspect; }
 
     const glm::mat4& GetViewProjectMtx() { return ViewProjectMtx; }
+    const glm::mat4& GetViewMtx() { return viewMtx; }
+    const glm::mat4& GetProjMtx() { return projMtx; }
 
 private:
     // Perspective controls
@@ -55,4 +57,6 @@ private:
 
     // Computed data
     glm::mat4 ViewProjectMtx;
+    glm::mat4 viewMtx;
+    glm::mat4 projMtx;
 };

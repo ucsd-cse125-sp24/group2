@@ -71,18 +71,23 @@ void AudioManager::Update() {
     Packet* pkt = new Packet();
     pkt->write_int((int)PacketType::PLAYER_ATTACK);
     if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
+        pressed = true;
         pkt->write_int(GLFW_KEY_J);
         selectedSound = noteMap.at('j');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
+        pressed = true;
         pkt->write_int(GLFW_KEY_K);
         selectedSound = noteMap.at('k');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
+        pressed = true;
         pkt->write_int(GLFW_KEY_I);
         selectedSound = noteMap.at('i');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
+        pressed = true;
         pkt->write_int(GLFW_KEY_L);
         selectedSound = noteMap.at('l');
     } else {
+        pressed = false;
         return;
     }
 
@@ -91,14 +96,18 @@ void AudioManager::Update() {
                   : -(interval - (position % interval));
     if (abs(off) <= 100) {
         if (abs(off) <= 25) {
+            text = "perfect";
             std::cout << "Perfect! ";
         } else if (abs(off) <= 50) {
+            text = "great";
             std::cout << "Great! ";
         } else {
+            text = "good";
             std::cout << "Good! ";
         }
         std::cout << std::to_string(off) << std::endl;
     } else {
+        text = "offbeat";
         std::cout << "Off Beat! " << std::to_string(off) << std::endl;
     }
     pkt->write_int(off);
@@ -185,3 +194,5 @@ FMOD_RESULT F_CALLBACK AudioManager::ChannelControlCallback(
 
     return FMOD_OK;
 }
+
+std::string AudioManager::GetText() const { return text; }

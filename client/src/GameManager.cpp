@@ -7,6 +7,7 @@
 #include "Enemy.hpp"
 #include <algorithm>
 #include "AssetManager.hpp"
+// #include "Status.hpp" // TODO: remove
 #include "components/PlayerComponent.hpp"
 #include "EnemyComponent.hpp"
 #include "GameState.hpp"
@@ -155,6 +156,7 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->deserialize(pkt);
 
             if (localPlayerObject == network_id) {
+               
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
@@ -166,6 +168,8 @@ void GameManager::update(Packet* pkt) {
                     glm::normalize(playerPos - cam->GetTarget()) * 3.0f +
                     glm::vec3(0, 2.0f, 0) + playerRightVector * 0.7f);
             }
+
+            // std::cout << players[network_id]->GetComponent<Status>()->ToString() << std::endl;
 
             break;
         }

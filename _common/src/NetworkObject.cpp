@@ -8,6 +8,7 @@
 #include "Health.hpp"
 #include "EnemyComponent.hpp"
 #include "PlayerSkillType.hpp"
+#include "Status.hpp"
 
 int NetworkObject::nextNetworkId = 0;
 
@@ -110,6 +111,14 @@ void NetworkObject::deserialize(Packet* packet) {
                           << std::endl;
             }
             skill_type->Deserialize(packet);
+        case NetworkComponentTypeID::STATUS: {
+            Status* status = GetComponent<Status>();
+            if (!status) {
+                std::cout << "ERROR in NetworkObject::deserialize(): No "
+                             "Status found in current NetworkObject"
+                          << std::endl;
+            }
+            status->Deserialize(packet);
             break;
         }
         default: {

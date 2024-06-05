@@ -26,6 +26,7 @@ public:
     int getBpm() const;
     bool isStarted() const;
     unsigned int getPosition() const;
+    std::string GetText() const;
     EventHandler<EventArgs> Beat;
     void AddNote(const char* filename, char key);
     void AddPhase(const char* filename);
@@ -34,6 +35,7 @@ public:
     void Play();
     void Update();
     void GoToNextAudioPhase();
+
     static FMOD_RESULT F_CALLBACK
     ChannelControlCallback(FMOD_CHANNELCONTROL* channelcontrol,
                            FMOD_CHANNELCONTROL_TYPE controltype,
@@ -41,6 +43,7 @@ public:
                            void* commanddata1, void* commanddata2);
     void CheckPhase(int syncPoint);
 
+    bool pressed;
 private:
     FMOD_SYSTEM* system;
     FMOD_CHANNEL* mainChannel = nullptr;
@@ -58,9 +61,9 @@ private:
     bool isRunning = true;
     unsigned int position = 0;
     unsigned int lastPosition = 0;
-    bool pressed = false;
     bool waspressed = false;
     bool game_started = false;
+    std::string text;
 
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {

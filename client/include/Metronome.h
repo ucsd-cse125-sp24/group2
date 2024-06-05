@@ -11,7 +11,7 @@ public:
     Metronome(int bpm);
     ~Metronome();
     void draw(float aspectRatio);
-    void update(float dt);
+    void update();
     void setPosition(glm::vec3 pos);
     void setBpm(int bpm);
 private:
@@ -19,9 +19,9 @@ private:
     glm::mat4 modelMtx;
     GLuint shader;
     int beatDuration = 0;
-    Quad* quad;
     Quad* quad2;
     float min = 0.0f;
     float max = 0.0f;
     float sumTime = 0.0f;
+    Quad* text;
 };

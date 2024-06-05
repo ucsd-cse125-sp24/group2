@@ -17,14 +17,14 @@ void Camera::Update() {
 
     // Compute view matrix (inverse of world matrix)
     // glm::mat4 view = glm::inverse(world);
-    glm::mat4 view = glm::lookAt(position, target, glm::vec3(0, 1, 0));
+    viewMtx = glm::lookAt(position, target, glm::vec3(0, 1, 0));
 
     // Compute perspective projection matrix
-    glm::mat4 project =
+    projMtx =
         glm::perspective(glm::radians(FOV), Aspect, NearClip, FarClip);
 
     // Compute final view-projection matrix
-    ViewProjectMtx = project * view;
+    ViewProjectMtx = projMtx * viewMtx;
 }
 void Camera::Reset() {
     FOV = 45.0f;

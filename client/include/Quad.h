@@ -12,11 +12,13 @@ public:
     ~Quad();
     void draw(float aspectRatio);
     void update();
+    void activateTexture(int index);
     void setRotation(float angle, glm::vec3 axis);
     void setPosition(glm::vec3 pos);
     void setTexture(const char* path, const std::string& directory);
     void setSize(float size);
     void setSize(float width, float height);
+    void setOpacity(float opacity);
     GLuint getShader() { return shader; }
     const glm::mat4& getModelMtx();
     const glm::vec3& getPosition() const { return position; }
@@ -33,4 +35,6 @@ private:
     GLuint VAO;
     GLuint shader;
     glm::vec3 scale;
+    float opacity = 1.0f;
+    int textureIndex = 0;
 };
