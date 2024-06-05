@@ -19,6 +19,7 @@ class EnemyComponent : public INetworkComponent {
         EnemyComponent(NetworkObject* owner) : INetworkComponent(owner) {}
         void Update(float deltaTime) override;
         void SetState(AttackState atk_state) { atk = (int) atk_state; }
+        int GetState() { return atk; }
         virtual void Serialize(Packet* pkt) {
             pkt->write_int(atk);
         }

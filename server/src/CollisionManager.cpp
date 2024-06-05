@@ -38,6 +38,19 @@ bool CollisionManager::movePlayerAttack(GameObject* owner, GameObject* target, g
     return collisionCylinderPoint(targetCollider, attCollider);
 }
 
+// return a list of GameObjects that heal affects
+std::vector<GameObject*> CollisionManager::movePlayerHeal(Collider* healCollider) {
+    std::lock_guard<std::mutex> lock(_mutex);
+    std::vector<GameObject*> hitObjects;
+
+    for (const auto& pair : colliderOwners) {
+        if (collisionCylinderCylinder(pair.first, healCollider)) {
+            hitObjects.push_back(pair.second);
+        }
+    }
+    return hitObjects;
+}
+
 // return a list of GameObjects that boss swipe hits (swiping lasers, swiping attack)
 std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, float amount) {
     std::lock_guard<std::mutex> lock(_mutex);

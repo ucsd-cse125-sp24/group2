@@ -89,22 +89,22 @@ void Enemy::attack(){
             break;
 
         case PHASE3: // Mark / projectile
-            AttackManager::instance().newMarkedAttack();
             std::cout << "MarkedAttack!" << std::endl;
+            AttackManager::instance().newMarkedAttack();
 
             this->currentPhase = PHASE1;
             break;
 
         case PHASE4: // Laser beams
-            AttackManager::instance().newLaserAttack();
             std::cout << "LaserAttack!" << std::endl;
+            AttackManager::instance().newLaserAttack();
 
             this->currentPhase = PHASE1;
             break;
         
         case PHASE5: // Swipe
-            AttackManager::instance().newSwipeAttack();
             std::cout << "SwipeAttack!" << std::endl;
+            AttackManager::instance().newSwipeAttack();
 
             this->currentPhase = PHASE1;
             break;
