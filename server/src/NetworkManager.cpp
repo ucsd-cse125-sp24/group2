@@ -152,13 +152,13 @@ void NetworkManager::process_input() {
             int key;
             packet->read_int(&key);
             // printf("  key: %d\n", key);
-            int judgment;
-            packet->read_int(&judgment);
+            float judgment;
+            packet->read_float(&judgment);
             // printf("  judgment: %d\n", judgment);
 
             std::map<int, Client*> clients = server.get_clients();
             // TODO set miss time to variable
-            if (abs(judgment) > 100) {
+            if (abs(judgment) > 0.3f) {
                 clients[client_id]
                     ->p->GetComponent<PlayerCombat>()
                     ->ResetAllCombos();
@@ -254,7 +254,9 @@ void NetworkManager::send_state() {
     }
 
     // maybe also keep track of game state now
-    if (gameState == GameState::START && (enemyPrefab->GetComponent<Health>()->GetHealth() <= 0 || numAlive == 0)) {
+    if (gameState == GameState::START &&
+        (enemyPrefab->GetComponent<Health>()->GetHealth() <= 0 ||
+         numAlive == 0)) {
         // i hope this doesn't get called before any clients connect.
         gameState = numAlive > 0 ? GameState::WIN : GameState::LOSE;
         for (const auto& kv : clients) {
@@ -264,6 +266,17 @@ void NetworkManager::send_state() {
             endGame->write_int((int)gameState);
             server.send(client->id, endGame);
         }
+    }
+}
+
+void NetworkManager::send_next_phase() {
+    std::map<int, Client*> clients = server.get_clients();
+
+    for (const auto& kv : clients) {
+        Client* client = kv.second;
+        Packet* nextPhase = new Packet();
+        nextPhase->write_int((int)PacketType::NEXT_PHASE);
+        server.send(client->id, nextPhase);
     }
 }
 

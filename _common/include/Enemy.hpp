@@ -13,15 +13,10 @@ public:
     float s = 0; // time in milliseconds
 
 private:
-    enum EnemyState {
-        PHASE1,
-        PHASE2,
-        PHASE3,
-        PHASE4,
-        PHASE5
-    };
+    enum EnemyState { PHASE1, PHASE2, PHASE3, PHASE4, PHASE5 };
 
     EnemyState currentPhase;
+    EnemyState prevPhase;
 };
 
 #endif
