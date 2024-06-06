@@ -18,10 +18,13 @@
 void SwipeAttack::addCollider(Enemy* owner){
     Collider* attackC = new Collider(this, owner->GetComponent<Collider>());
 
-    attackC->makeSector(DAMAGERANGE);
+    std::cout << "boss rotation: " << glm::to_string(attackC->GetRotation()) << std::endl;
+    attackC->makeSector(EFFECTRANGE);
+    std::cout << "effect range: " << attackC->GetStartAngle() << " to " << attackC->GetEndAngle() << std::endl;
     // swipe starting from right to left because moveBossSwipe 
-    attackC->SetStartAngle(attackC->GetStartAngle() - (EFFECTRANGE - DAMAGERANGE)/2);
-    attackC->SetEndAngle(attackC->GetEndAngle() - (EFFECTRANGE - DAMAGERANGE)/2);
+    attackC->SetStartAngle(attackC->GetStartAngle());
+    attackC->SetEndAngle(attackC->GetStartAngle() + DAMAGERANGE);
+    std::cout << "damage range: " << attackC->GetStartAngle() << " to " << attackC->GetEndAngle() << std::endl;
     attackC->SetHeight(HEIGHT);
     attackC->SetRadius(RADIUS);
     this->AddComponent(attackC);
@@ -50,6 +53,10 @@ void SwipeAttack::update(float deltaTime) {
     }
     Collider* EnemyAttackCollider = this->GetComponent<Collider>();
     std::vector<GameObject*> playersHit = CollisionManager::instance().moveBossSwipe(EnemyAttackCollider, deltaTime * ANGSPEED);
+    float newCenterAngle = (EnemyAttackCollider->GetStartAngle() + EnemyAttackCollider->GetEndAngle())/2;
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, newCenterAngle, 0));
+    // std::cout << "damage range: " << EnemyAttackCollider->GetStartAngle() << " to " << EnemyAttackCollider->GetEndAngle() << std::endl;
+    // std::cout << "attack rotation: " << glm::to_string(this->GetComponent<NetTransform>()->GetRotation()) << std::endl;
 
     DealDamage(playersHit);
 }
