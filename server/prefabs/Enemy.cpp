@@ -81,7 +81,7 @@ void Enemy::attack(){
 
     switch(this->currentPhase){
         case PHASE1: // Default? Do nothing for now
-            this->currentPhase = PHASE4;
+            this->currentPhase = PHASE5;
             break;
         
         case PHASE2: // Stomp / shockwave

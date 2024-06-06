@@ -56,9 +56,8 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
     std::lock_guard<std::mutex> lock(_mutex);
     std::vector<GameObject*> hitObjects;
 
-    float oldCenterAngle = (attCollider->GetStartAngle() + attCollider->GetEndAngle())/2;
     attCollider->SetStartAngle(attCollider->GetStartAngle() + amount);
-    attCollider->SetEndAngle(attCollider->GetEndAngle() + amount);
+    attCollider->SetEndAngle(attCollider->GetEndAngle() + amount);    
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 

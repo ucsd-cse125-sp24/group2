@@ -22,6 +22,7 @@ public:
     AnimationPlayer(GameObject* owner, Model* model);
 
     void AddClip(AnimationClip* clip);
+    AnimationClip* GetClip(std::string name);
     void update(float dt);
     void play(AnimationClip* clip);
     void play(std::string name);
