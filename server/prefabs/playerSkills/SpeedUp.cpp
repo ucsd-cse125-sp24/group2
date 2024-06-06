@@ -3,14 +3,12 @@
 #include "SpeedBoost.hpp"
 
 SpeedUp::SpeedUp(Player* p) : PlayerSkill() {
-    exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
     this->GetComponent<PlayerSkillType>()->SetState(SkillType::SPEED_BOOST);
 }
 
 SpeedUp::SpeedUp(Player* p, int networkId) : PlayerSkill(networkId) {
-    exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
     this->GetComponent<PlayerSkillType>()->SetState(SkillType::SPEED_BOOST);

@@ -13,7 +13,7 @@ private:
 
 public:
     void AddCombo(const std::vector<int>& sequence);
-    bool CheckCombo(int input);
+    std::vector<int> CheckCombo(int input);
     void ResetCombo(Combo& combo);
     void ResetAllCombos();
 

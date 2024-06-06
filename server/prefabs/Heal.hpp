@@ -10,7 +10,6 @@ class Heal : public PlayerSkill {
 
 public:
     int amount;
-    bool exist;
     Collider* range;
     float radius = 10.0f;
 

@@ -6,7 +6,6 @@
 class PlayerAttack : public PlayerSkill {
 private:
     int damage = 10;
-    bool exist;
     GameObject* target = nullptr;
     float speed = 200.0f;
     Player* playerOwner;
@@ -23,8 +22,7 @@ public:
     void SetDamage(int newDamage) { damage = newDamage; }
     void SetSpeed(float newSpeed) { speed = newSpeed; }
     void setTarget(GameObject* newTarget) { target = newTarget; }
-
-    bool isExist() { return exist; }
+    
 };
 
 

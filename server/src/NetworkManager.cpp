@@ -165,12 +165,30 @@ void NetworkManager::process_input() {
                 break;
             }
 
-            if (clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(
-                    key)) {
+            std::vector<int> comboSeq = clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(key);
+            if (!comboSeq.empty()) {
                 printf(YLW "COMBO HIT\n" RST);
-                // TODO enemy take damage
-                AttackManager::instance().newPlayerAttack(
-                    clients[client_id]->p);
+                
+                if (comboSeq == clients[client_id]->p->attack1 || 
+                    comboSeq == clients[client_id]->p->attack2) {
+                    AttackManager::instance().newPlayerAttack(
+                        clients[client_id]->p);
+                }
+
+                if (comboSeq == clients[client_id]->p->heal) {
+                    AttackManager::instance().newPlayerHeal(
+                        clients[client_id]->p);
+                }
+
+                if (comboSeq == clients[client_id]->p->revive) {
+                    AttackManager::instance().newPlayerRevive(
+                        clients[client_id]->p);
+                }
+
+                if (comboSeq == clients[client_id]->p->speedBoost) {
+                    AttackManager::instance().newPlayerSpeedUp(
+                        clients[client_id]->p);
+                }
             }
 
             break;
@@ -207,8 +225,10 @@ void NetworkManager::process_input() {
 }
 
 void NetworkManager::update(float deltaTime) {
-    scene.Update(deltaTime);
+    // AttackManager update goes first so that whatever needs to be destroyed
+    // gets destroyed in the next tick, to account for effects that happen instantaneously
     AttackManager::instance().update(deltaTime);
+    scene.Update(deltaTime);
 }
 
 // TODO send state of all networked entities

@@ -3,14 +3,12 @@
 #include "HealEffect.hpp"
 
 Heal::Heal(Player* p) : PlayerSkill() {
-    exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
     this->GetComponent<PlayerSkillType>()->SetState(SkillType::HEAL);
 }
 
 Heal::Heal(Player* p, int networkId) : PlayerSkill(networkId) {
-    exist = true;
     range = new Collider(this, p->GetComponent<Collider>());
     range->SetRadius(radius);
     this->GetComponent<PlayerSkillType>()->SetState(SkillType::HEAL);
