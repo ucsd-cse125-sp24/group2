@@ -9,6 +9,8 @@
 #include "Mover.hpp"
 #include "SkyBox.hpp"
 
+#include "Sector.h"
+
 #include "PlayerManager.hpp"
 #include "Client.h"
 #include "engine/Scene.hpp"
@@ -20,6 +22,8 @@ public:
     static const char* windowTitle;
 
     static SkyBox* skybox;
+
+    static Sector* sector;
 
     // Act as Constructors and desctructors
     static bool initializeProgram();

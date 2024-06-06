@@ -33,6 +33,7 @@ set(
     prefabs/Enemy.cpp
     prefabs/EnemyAttack.cpp
     prefabs/PlayerSkill.cpp
+    src/Sector.cpp
 
     #SkyBox
     src/SkyBox.cpp

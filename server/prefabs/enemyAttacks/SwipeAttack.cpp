@@ -1,7 +1,6 @@
 #include "SwipeAttack.hpp"
 #include "CollisionManager.hpp"
 #include <iostream>
-
 // use degrees instead of radian
 # define PI           180.0
 // brackets in the macro are really really important. 
@@ -24,6 +23,10 @@ void SwipeAttack::addCollider(Enemy* owner){
     attackC->SetEndAngle(attackC->GetStartAngle() + DAMAGERANGE);
     attackC->SetHeight(HEIGHT);
     attackC->SetRadius(RADIUS);
+
+    std::cout<<"start angle: "<<attackC->GetStartAngle()<<std::endl;
+    std::cout<<"end angle: "<<attackC->GetEndAngle()<<std::endl;
+
     this->AddComponent(attackC);
 }
 
@@ -54,6 +57,5 @@ void SwipeAttack::update(float deltaTime) {
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, newCenterAngle, 0));
     // std::cout << "damage range: " << EnemyAttackCollider->GetStartAngle() << " to " << EnemyAttackCollider->GetEndAngle() << std::endl;
     // std::cout << "attack rotation: " << glm::to_string(this->GetComponent<NetTransform>()->GetRotation()) << std::endl;
-
     DealDamage(playersHit);
 }
