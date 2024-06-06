@@ -14,38 +14,38 @@ void PlayerComponent::Update(float deltaTime) {
     glm::vec2 moverDirection = owner->GetComponent<Mover>()->input;
 
     if (movementStateMachine) {
-        switch(movementStateMachine->GetState()) {
-            case(IDLE): {
-                animationPlayer->play("idle");
-                break;
-            }
-            case(WALK): {
-                animationPlayer->play("running");
-                break;
-            }
-            case(RUN): {
-                animationPlayer->play("running");
-                break;
-            }
-            case(DODGE_START): {
-                animationPlayer->play("forward_roll");
-                break;
-            }
-            case(DODGE): {
-                animationPlayer->play("forward_roll");
-                break;
-            }
-            case(DEAD_START): {
-                animationPlayer->play("dying");
-                break;
-            }
-            case(DEAD): {
-                animationPlayer->play("dead");
-                break;
-            }
-            default: {
-                animationPlayer->play("idle");
-            }
+        switch (movementStateMachine->GetState()) {
+        case (IDLE): {
+            animationPlayer->play("idle");
+            break;
+        }
+        case (WALK): {
+            animationPlayer->play("running");
+            break;
+        }
+        case (RUN): {
+            animationPlayer->play("running");
+            break;
+        }
+        case (DODGE_START): {
+            animationPlayer->play("forward_roll");
+            break;
+        }
+        case (DODGE): {
+            animationPlayer->play("forward_roll");
+            break;
+        }
+        case (DEAD_START): {
+            animationPlayer->play("dying");
+            break;
+        }
+        case (DEAD): {
+            animationPlayer->play("dead");
+            break;
+        }
+        default: {
+            animationPlayer->play("idle");
+        }
         }
     } else {
         animationPlayer->play("idle");
