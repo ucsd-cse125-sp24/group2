@@ -16,7 +16,7 @@
 #include <iostream>
 #include <NetworkManager.hpp>
 
-#define ENEMY_MAX_HEALTH 100
+#define ENEMY_MAX_HEALTH 500
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
@@ -28,58 +28,35 @@ Enemy::Enemy() : Entity() {
 
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
-<<<<<<< HEAD
-    this->currentPhase = PHASE1;
-    Health* h = new Health(this, 100.0f);
-    this->AddComponent(h);
-    EnemyComponent* ec = new EnemyComponent(this);
-    this->AddComponent(ec);
-=======
     currentPhase = PHASE1;
     prevPhase = PHASE1;
     Health* h = new Health(this, ENEMY_MAX_HEALTH);
     AddComponent(h);
->>>>>>> enemy-attack
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId) {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
-<<<<<<< HEAD
-    // TODO: test size values
-    hitbox->SetRadius(25);
-=======
     // TODO: test size values
     hitbox->SetRadius(50);
->>>>>>> enemy-attack
     hitbox->SetHeight(20);
 
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss?
     CollisionManager::instance().add(this);
-<<<<<<< HEAD
-    this->currentPhase = PHASE1;
-    Health* h = new Health(this, 100);
-    this->AddComponent(h);
-    EnemyComponent* ec = new EnemyComponent(this);
-    this->AddComponent(ec);
-=======
     currentPhase = PHASE1;
     prevPhase = PHASE1;
     Health* h = new Health(this, ENEMY_MAX_HEALTH);
     AddComponent(h);
->>>>>>> enemy-attack
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {
     s += deltaTime;
 
-<<<<<<< HEAD
-    // moves in a circle
-    // TODO: use colliderManager.move instead
-    // GetComponent<NetTransform>()->position += 10.0f * glm::vec3(glm::sin(s),
-    // 0, 0);
-=======
     // TODO: use colliderManager.move
     int health = GetComponent<Health>()->hp;
 
@@ -111,7 +88,6 @@ void Enemy::update(float deltaTime) {
             NetworkManager::instance().send_next_phase();
         }
     }
->>>>>>> enemy-attack
 
     // every 5 seconds, attack
     if (std::fmod(s, 5.0) <= deltaTime) {

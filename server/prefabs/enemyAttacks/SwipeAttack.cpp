@@ -39,10 +39,9 @@ void SwipeAttack::update(float deltaTime) {
     lifetime -= deltaTime;
 
     Collider* EnemyAttackCollider = this->GetComponent<Collider>();
-<<<<<<< HEAD:server/prefabs/enemyAttacks/SwipeAttack.cpp
     std::vector<GameObject*> playersHit =
         CollisionManager::instance().moveBossSwipe(EnemyAttackCollider,
-                                                   deltaTime * ANGSPEED);
+                                                   deltaTime * SW_ANGSPEED);
     float newCenterAngle = (EnemyAttackCollider->GetStartAngle() +
                             EnemyAttackCollider->GetEndAngle()) /
                            2;
@@ -53,11 +52,6 @@ void SwipeAttack::update(float deltaTime) {
     // "attack rotation: " <<
     // glm::to_string(this->GetComponent<NetTransform>()->GetRotation()) <<
     // std::endl;
-=======
-    std::vector<GameObject*> playersHit =
-        CollisionManager::instance().moveBossSwipe(EnemyAttackCollider,
-                                                   deltaTime * SW_ANGSPEED);
->>>>>>> enemy-attack:server/prefabs/enemySkills/SwipeAttack.cpp
 
     DealDamage(playersHit);
 }
