@@ -38,6 +38,9 @@ void GameManager::handle_packet(Packet* packet) {
         // std::cout << "  PacketType: DESTROY" << std::endl;
         destroy_object(packet);
         break;
+    case PacketType::NEXT_PHASE:
+        AudioManager::instance().GoToNextAudioPhase();
+        break;
     case PacketType::SET_LOCAL_PLAYER:
         int netId;
         packet->read_int(&netId);

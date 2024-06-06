@@ -6,7 +6,7 @@ Metronome::Metronome() {
 }
 
 Metronome::Metronome(int bpm) : bpm(bpm) {
-    beatDuration = 60000 / bpm;
+    beatDuration = 60000 / (float)bpm;
     std::cout << "bpm: " << beatDuration << std::endl;
     min = 0.05f;
     max = 0.15f;
@@ -39,11 +39,10 @@ void Metronome::update() {
         // std::cout<<"t: "<<t<<std::endl;
 
         glm::vec3 size = glm::mix(glm::vec3(max), glm::vec3(min), t);
-        
-        quad2->setSize(size.x);
-    
-        quad2->update();
 
+        quad2->setSize(size.x);
+
+        quad2->update();
     }
 }
 
@@ -56,6 +55,6 @@ void Metronome::draw(float aspectRatio) {
 
 void Metronome::setBpm(int bpm) {
     this->bpm = bpm;
-    beatDuration = 60000 / bpm;
+    beatDuration = 60000 / (float)bpm;
     this->enableState(VISIBLE);
 }
