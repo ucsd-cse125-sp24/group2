@@ -217,18 +217,18 @@ bool CollisionManager::collisionCylinderPoint(const Collider* cyl,
     return true;
 }
 
-// Not used right now
 bool CollisionManager::collisionCylinderBoundary(const Collider* cyl) {
-    glm::vec3 position1 = cyl->GetPosition();
-    if (position1.x - cyl->GetRadius() < 0 ||
-        position1.x + cyl->GetRadius() > BOUNDARY_LEN ||
-        position1.z - cyl->GetRadius() < 0 ||
-        position1.z + cyl->GetRadius() > BOUNDARY_LEN)
+    glm::vec3 position = cyl->GetPosition();
+    if (position.x * position.x + position.z * position.z > 
+        BOUNDARY_LEN * BOUNDARY_LEN)
         return true;
     return false;
 }
 
 bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
+    if (collisionCylinderBoundary(cyl)) {
+        return true;
+    }
     GameObject* cylOwner = colliderOwners.at(cyl);
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second) {
