@@ -158,7 +158,7 @@ unsigned int AudioManager::getPosition() const { return position; }
 
 bool x = false;
 void AudioManager::CheckPhase(int syncPoint) {
-    if (syncPoint != (currentPhase + 1) % 6) {
+    if (syncPoint != (currentPhase + 1) % 7) {
         return;
     }
 
