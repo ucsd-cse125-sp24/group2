@@ -13,10 +13,12 @@
 #include "NetTransform.hpp"
 #include "Mover.hpp"
 
-#define I 73
-#define J 74
-#define K 75
-#define L 76
+enum Keys {
+    I = 73,
+    J = 74,
+    K = 75,
+    L = 76
+};
 
 class Player : public Entity {
 public:

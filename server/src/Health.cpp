@@ -12,6 +12,9 @@ Health::Health(NetworkObject* owner, float newHp)
     }
 
 void Health::ChangeHealth(float amount) { 
+    if (dead) {
+        return;
+    }
     hp += amount;
     if (!dead && hp <= 0) {
         dead = true;
