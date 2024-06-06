@@ -1,5 +1,5 @@
 #include "Health.hpp"
-
+#include "Invincible.hpp"
 
 Health::Health(NetworkObject* owner) 
     : INetworkComponent(owner), hp(100.0f), maxHp(100.0f) {
@@ -32,6 +32,8 @@ void Health::revive() {
             dead = false;
             just_revived = true;
             hp = maxHp;
+            // invincible for 1 seconds immediately after reviving.
+            owner->GetComponent<Invincible>()->makeInvincible(1);
         }
     }
 }
