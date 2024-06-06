@@ -28,7 +28,11 @@ set(
     src/components/RendererComponent.cpp
     src/components/PlayerComponent.cpp
     src/components/BeatSyncComponent.cpp
+    src/components/EnemyComponent.cpp
+    src/components/PlayerSkillType.cpp
     prefabs/Enemy.cpp
+    prefabs/EnemyAttack.cpp
+    prefabs/PlayerSkill.cpp
 
     #SkyBox
     src/SkyBox.cpp

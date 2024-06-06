@@ -11,6 +11,7 @@
 #include "EnemyAttack.hpp"
 
 #include "Health.hpp"
+#include "EnemyComponent.hpp"
 #include "AttackManager.hpp"
 #include <iostream>
 
@@ -27,6 +28,8 @@ Enemy::Enemy() : Entity() {
     this->currentPhase = PHASE1;
     Health* h = new Health(this, 500);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId){
@@ -34,7 +37,7 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     //TODO: test size values
-    hitbox->SetRadius(50);
+    hitbox->SetRadius(25);
     hitbox->SetHeight(20);
 
     AddComponent(hitbox); // TODO: decrement player health if they hit the boss
@@ -42,6 +45,8 @@ Enemy::Enemy(int networkId) : Entity(networkId){
     this->currentPhase = PHASE1;
     Health* h = new Health(this, 100);
     this->AddComponent(h);
+    EnemyComponent* ec = new EnemyComponent(this);
+    this->AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {
@@ -49,12 +54,15 @@ void Enemy::update(float deltaTime) {
 
     // moves in a circle
     // TODO: use colliderManager.move instead
-    // GetComponent<NetTransform>()->position += glm::vec3(glm::sin(s), 0, 0);
+    // GetComponent<NetTransform>()->position += 10.0f * glm::vec3(glm::sin(s), 0, 0);
 
     // every 5 seconds, attack
     if(std::fmod(s, 5.0) <= deltaTime){
         attack();
         s = std::fmod(s, 5.0);
+    } else {
+        // J: want to play idle animation when we are not attacking
+        GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
     }
 }
 
@@ -81,22 +89,22 @@ void Enemy::attack(){
             break;
 
         case PHASE3: // Mark / projectile
-            AttackManager::instance().newMarkedAttack();
             std::cout << "MarkedAttack!" << std::endl;
+            AttackManager::instance().newMarkedAttack();
 
             this->currentPhase = PHASE1;
             break;
 
         case PHASE4: // Laser beams
-            AttackManager::instance().newLaserAttack();
             std::cout << "LaserAttack!" << std::endl;
+            AttackManager::instance().newLaserAttack();
 
             this->currentPhase = PHASE1;
             break;
         
         case PHASE5: // Swipe
-            AttackManager::instance().newSwipeAttack();
             std::cout << "SwipeAttack!" << std::endl;
+            AttackManager::instance().newSwipeAttack();
 
             this->currentPhase = PHASE1;
             break;

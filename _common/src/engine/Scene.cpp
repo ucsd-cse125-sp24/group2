@@ -37,6 +37,9 @@ void Scene::Instantiate(GameObject* go) { gameObjects.push_back(go); }
 void Scene::Destroy(Entity* e) {
     entities.erase(std::remove(entities.begin(), entities.end(), e),
                    entities.end());
+    if (Player* p = dynamic_cast<Player*>(e)) {
+        p->onDestroy();
+    }
     ObjectEventArgs* args = new ObjectEventArgs(e);
     object_removed.invoke(args);
 }

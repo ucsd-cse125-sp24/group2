@@ -25,7 +25,7 @@ public:
     void SetAzimuth(float a) { Azimuth = a; }
     void SetIncline(float i) { Incline = i; }
     void SetPosition(glm::vec3 pos) { position = pos; }
-    void SetTarget(glm::vec3 target) { target = target; }
+    void SetTarget(glm::vec3 t) { target = t; }
 
     float GetDistance() { return Distance; }
     float GetAzimuth() { return Azimuth; }

@@ -7,7 +7,7 @@
 
 class Mover : public INetworkComponent {
 public:
-    float baseSpeed = 10.0f;
+    float baseSpeed = 0.33;
     float speed;
     glm::vec2 input;
     glm::vec3 movementHeading;
@@ -18,7 +18,7 @@ public:
     glm::vec3& position; // Taken from NetTransform
     glm::vec3& rotation; // Taken from NetTransform
 
-    glm::vec2 center = glm::vec2();
+    glm::vec3 center = glm::vec3();
     float radius;
     float angle;
 
@@ -41,7 +41,6 @@ public:
 
     virtual int32_t TypeID() const override { return MOVER; }
 
-    void SetCenter(glm::vec2 newCenter) { center = newCenter; }
-
+    void SetCenter(glm::vec3 newCenter);
     std::string ToString() override;
 };

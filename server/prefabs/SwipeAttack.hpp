@@ -10,6 +10,8 @@
 class SwipeAttack : public EnemyAttack {
 private:
     float lifetime;
+    
+    // used by server
     void addCollider(Enemy* owner);
 
 public:
