@@ -61,6 +61,7 @@ private:
     bool pressed = false;
     bool waspressed = false;
     bool game_started = false;
+    bool newSound = false;
 
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {
         if (result != FMOD_OK) {

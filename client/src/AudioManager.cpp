@@ -72,16 +72,18 @@ void AudioManager::Update() {
     pkt->write_int((int)PacketType::PLAYER_ATTACK);
     if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
         pkt->write_int(GLFW_KEY_J);
-        selectedSound = noteMap.at('j');
+        selectedSound = newSound ? noteMap.at('J') : noteMap.at('j');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
         pkt->write_int(GLFW_KEY_K);
-        selectedSound = noteMap.at('k');
+        selectedSound = newSound ? noteMap.at('K') : noteMap.at('k');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
         pkt->write_int(GLFW_KEY_I);
-        selectedSound = noteMap.at('i');
+        selectedSound = newSound ? noteMap.at('I') : noteMap.at('i');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
         pkt->write_int(GLFW_KEY_L);
-        selectedSound = noteMap.at('l');
+        selectedSound = newSound ? noteMap.at('L') : noteMap.at('l');
+    } else if(InputManager::IsKeyPressed(GLFW_KEY_SPACE)){
+        newSound = !newSound;
     } else {
         return;
     }
@@ -118,11 +120,12 @@ void AudioManager::Update() {
             FMOD_Channel_Stop(noteChannel);
         }
 
-        result = FMOD_System_PlaySound(system, selectedSound, nullptr, false,
+        result = FMOD_System_PlaySound(system, selectedSound, nullptr, true,
                                        &noteChannel);
         FMODErrorCheck(result);
-        result = FMOD_Channel_SetVolume(noteChannel, 0.2f);
+        result = FMOD_Channel_SetVolume(noteChannel, 0.1f);
         FMODErrorCheck(result);
+        result = FMOD_Channel_SetPaused(noteChannel, false);
     }
 }
 
