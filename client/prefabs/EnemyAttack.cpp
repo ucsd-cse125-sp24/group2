@@ -73,7 +73,7 @@ void EnemyAttack::update(float deltaTime) {
         GetComponent<AnimationPlayer>()->play("laser-spin");
         break;
     case (int)AttackState::MARK:
-        GetComponent<AnimationPlayer>()->play("Key.001Action.002");
+        GetComponent<AnimationPlayer>()->play("projectile-bone-anim");
         break;
     case (int)AttackState::STOMP:
         GetComponent<AnimationPlayer>()->play("waveAttack");

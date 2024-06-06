@@ -16,7 +16,7 @@
 #include <iostream>
 #include <NetworkManager.hpp>
 
-#define ENEMY_MAX_HEALTH 500
+#define ENEMY_MAX_HEALTH 100
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
