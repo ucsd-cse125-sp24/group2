@@ -9,7 +9,7 @@
 // note: these are model paths relative to main.cpp
 // as that is where AssetManager initializes its modelpath list
 std::string swipePath = "../assets/swipe-attack-v2/swipe-attack.gltf";
-std::string laserPath = "../assets/laser-attack/gltf-beam/laser-beam-model.gltf";
+std::string laserPath = "../assets/laser-attack/laser-beam-model.gltf";
 std::string markPath = "../assets/projectile-attack/projectile-attack-manual.gltf";
 std::string stompPath = "../assets/wave-attack-v3/WaveAttack.gltf";
 
@@ -31,8 +31,9 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
             printf("SwipeAttack!\n");
             break;
         case (int) AttackState::LASER:
+            GetComponent<NetTransform>()->SetScale(glm::vec3(50.0f));
             meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
-            // model = new Model(AssetManager::Instance().GetModel(laserPath));
+            model = new Model(AssetManager::Instance().GetModel(laserPath));
             path = laserPath;
             printf("LaserAttack!\n");
             break;
@@ -62,12 +63,13 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
 }
 
 void EnemyAttack::update(float deltaTime) {
+    glm::vec3 r;
     switch (attackType) {
         case (int) AttackState::SWIPE:
             // GetComponent<AnimationPlayer>()->play("swipe-animation");
             break;
         case (int) AttackState::LASER:
-            GetComponent<AnimationPlayer>()->play("laser-beamAction");
+            GetComponent<AnimationPlayer>()->play("laser-spin");
             break;
         case (int) AttackState::MARK:
             GetComponent<AnimationPlayer>()->play("Key.001Action.002");

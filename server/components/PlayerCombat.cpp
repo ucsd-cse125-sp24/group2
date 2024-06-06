@@ -1,4 +1,5 @@
 #include "PlayerCombat.hpp"
+#include "Health.hpp"
 
 void PlayerCombat::AddCombo(const std::vector<int>& sequence) {
     Combo combo;
@@ -8,6 +9,9 @@ void PlayerCombat::AddCombo(const std::vector<int>& sequence) {
 }
 
 std::vector<int> PlayerCombat::CheckCombo(int input) {
+    if (owner->GetComponent<Health>()->GetDead()) {
+        return {};
+    }
     for (auto& combo : combos) {
         // Check if current input matches combo's input
         if (combo.sequence[combo.comboIndex] != input) {

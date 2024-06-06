@@ -123,11 +123,12 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
     modelPaths.push_back({"../assets/ground/plane.gltf", false});
     modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
-    // modelPaths.push_back({"../assets/laser-attack/gltf-beam/laser-beam-model.gltf", true});
+    modelPaths.push_back({"../assets/laser-attack/laser-beam-model.gltf", true});
     // modelPaths.push_back({"../assets/projectile-attack/projectile-attack-manual.gltf", true});
     modelPaths.push_back({"../assets/wave-attack-v3/WaveAttack.gltf", true});
     modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", true});
     modelPaths.push_back({"../assets/swipe-attack-v2/swipe-attack.gltf", true});
+    modelPaths.push_back({"../assets/player-note-attack/player-note-attack.gltf", true});
 
     for (std::pair<string, bool> kv : modelPaths) {
         std::cout << "  path: " << kv.first << std::endl;
