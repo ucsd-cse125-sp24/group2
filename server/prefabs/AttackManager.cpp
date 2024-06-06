@@ -7,6 +7,9 @@
 #include "SwipeAttack.hpp"
 #include "NetworkManager.hpp"
 #include "EnemyComponent.hpp"
+#include "Heal.hpp"
+#include "SpeedUp.hpp"
+#include "Revive.hpp"
 
 void AttackManager::newPlayerAttack(Player* p) {
     std::lock_guard<std::mutex> lock(_player_attack_mutex);
@@ -15,6 +18,24 @@ void AttackManager::newPlayerAttack(Player* p) {
     playerAtt->setTarget(enemyPrefab);
     playerAttackList.push_back(playerAtt);
     NetworkManager::instance().scene.Instantiate(playerAtt);
+}
+
+void AttackManager::newPlayerHeal(Player* p) {
+    Heal* playerHeal = new Heal(p);
+    playerSkillList.push_back(playerHeal);
+    NetworkManager::instance().scene.Instantiate(playerHeal);
+}
+
+void AttackManager::newPlayerRevive(Player* p) {
+    Revive* playerRevive = new Revive(p);
+    playerSkillList.push_back(playerRevive);
+    NetworkManager::instance().scene.Instantiate(playerRevive);
+}
+
+void AttackManager::newPlayerSpeedUp(Player* p) {
+    SpeedUp* playerSpeedUp = new SpeedUp(p);
+    playerSkillList.push_back(playerSpeedUp);
+    NetworkManager::instance().scene.Instantiate(playerSpeedUp);
 }
 
 void AttackManager::addPlayer(Player* p) {
@@ -82,7 +103,15 @@ void AttackManager::update(float deltaTime) {
             playerAttackList.erase( playerAttackList.begin() + i );
             continue;
         }
-        // TODO: Network attacks
+    }
+
+    for(int i = playerSkillList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside loop
+        if(!playerSkillList.at(i)->isExist()) {
+            NetworkManager::instance().scene.Destroy(playerSkillList.at(i));
+            playerSkillList.erase( playerSkillList.begin() + i );
+            continue;
+        }
     }
 
     for(int i = enemyAttackList.size() - 1; i >= 0; i--) {

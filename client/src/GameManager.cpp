@@ -234,7 +234,7 @@ void GameManager::destroy_object(Packet* pkt) {
             objIdsDestroyed.push_back(objIdToDestroy);
         }
         if (playerSkills.find(objIdToDestroy) != playerSkills.end()) {
-            // printf(RED "DESTROYING OBJECT\n" RST);
+            // printf(RED "DESTROYING PLAYERSKILL\n" RST);
             scene.Destroy(playerSkills[objIdToDestroy]);
             delete playerSkills[objIdToDestroy];
             playerSkills.erase(objIdToDestroy);
@@ -242,7 +242,7 @@ void GameManager::destroy_object(Packet* pkt) {
             objIdsDestroyed.push_back(objIdToDestroy);
         }
         if (enemyAttacks.find(objIdToDestroy) != enemyAttacks.end()) {
-            // printf(RED "DESTROYING OBJECT\n" RST);
+            // printf(RED "DESTROYING ENEMYATTACK\n" RST);
             scene.Destroy(enemyAttacks[objIdToDestroy]);
             delete enemyAttacks[objIdToDestroy];
             enemyAttacks.erase(objIdToDestroy);

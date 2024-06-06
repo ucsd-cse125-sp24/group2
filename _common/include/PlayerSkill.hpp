@@ -8,12 +8,14 @@
 class PlayerSkill : public Entity {
 
 public:
+    bool exist;
     PlayerSkill();
     PlayerSkill(int networkId);
 
     // used by client
     void initComponent(int skillType);
-
+    bool isExist() { return exist; }
+    
     void update(float deltaTime) override {}
     std::string ToString() override { return "PlayerSkill"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::PLAYER_SKILL; }  

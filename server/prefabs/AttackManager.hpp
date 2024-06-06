@@ -4,6 +4,7 @@
 #include <vector>
 #include <mutex>
 
+#include "PlayerSkill.hpp"
 #include "PlayerAttack.hpp"
 #include "Enemy.hpp"
 #include "EnemyAttack.hpp"
@@ -15,6 +16,7 @@ class AttackManager {
 
     public:
     std::vector<PlayerAttack*> playerAttackList;
+    std::vector<PlayerSkill*> playerSkillList;
     std::vector<EnemyAttack*> enemyAttackList;
     std::vector<Player*> playerList;
     Enemy* enemyPrefab;
@@ -22,6 +24,9 @@ class AttackManager {
     void addEnemy(Enemy* e);
     void addPlayer(Player* p);
     void newPlayerAttack(Player* p);
+    void newPlayerHeal(Player* p);
+    void newPlayerRevive(Player* p);
+    void newPlayerSpeedUp(Player* p);
     void newLaserAttack();
     void newStompAttack();
     void newMarkedAttack();

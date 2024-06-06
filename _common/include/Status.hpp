@@ -2,6 +2,8 @@
 
 #include "INetworkComponent.hpp"
 #include "IStatusEffect.hpp"
+#include "Health.hpp"
+#include "Invincible.hpp"
 #include <iostream>
 
 class IStatusEffect;
@@ -19,9 +21,7 @@ protected:
         typeToStatusEffect;
 
 public:
-    float health;        // should turn this into reference
-    bool isInvincible;   // should turn this into reference
-    float baseMaxHealth; // should turn this into reference
+    Health* health;        // should turn this into reference
     float& baseSpeed;    // should turn this into reference
     float armor;         // should turn this into reference
 

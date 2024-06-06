@@ -34,8 +34,11 @@ Player::Player(glm::vec3 position) : Entity() {
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
-    playerCombat->AddCombo({74, 74, 74, 74});
-    playerCombat->AddCombo({74, 75, 76, 73});
+    playerCombat->AddCombo(attack1);
+    playerCombat->AddCombo(attack2);
+    playerCombat->AddCombo(heal);
+    playerCombat->AddCombo(revive);
+    playerCombat->AddCombo(speedBoost);
 
     // CooldownComponent* cooldownComponent = new CooldownComponent(this);
     // cooldownComponent->AddCooldown("dodge", 1.0f);
