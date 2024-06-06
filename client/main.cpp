@@ -123,6 +123,9 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
     modelPaths.push_back({"../assets/ground/plane.gltf", false});
     modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
+    modelPaths.push_back({"../assets/laser-attack/gltf-beam/laser-beam-model.gltf", true});
+    modelPaths.push_back({"../assets/projectile-attack/projectile-attack-manual.gltf", true});
+    modelPaths.push_back({"../assets/wave-attack/WaveAttack.gltf", true});
 
     for (std::pair<string, bool> kv : modelPaths) {
         std::cout << "  path: " << kv.first << std::endl;
@@ -141,6 +144,42 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(kv.first, clip);
         }
     }
+
+    // test laser-beamAttack
+    // GameObject* laser = new GameObject();
+    // Model* laserModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/laser-attack/gltf-beam/laser-beam-model.gltf"));
+    // laser->AddComponent(laserModel);
+    // RendererComponent* laserRender = new RendererComponent(laser, ShaderType::ANIMATED);
+    // laser->AddComponent(laserRender);
+    // AnimationPlayer* ap = new AnimationPlayer(laser, laserModel);
+    // laser->AddComponent(ap);
+    // ap->play("laser-beamAction");
+    // GameManager::instance().scene.Instantiate(laser);
+
+    // test mark attack
+    // GameObject* mark = new GameObject();
+    // Model* markModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/projectile-attack/projectile-attack-manual.gltf")
+    // );
+    // mark->AddComponent(markModel);
+    // RendererComponent* markRender = new RendererComponent(mark, ShaderType::ANIMATED);
+    // mark->AddComponent(markRender);
+    // AnimationPlayer* markAP = new AnimationPlayer(mark, markModel);
+    // mark->AddComponent(markAP);
+    // GameManager::instance().scene.Instantiate(mark);
+
+    // test stomp attack
+    // GameObject* stomp = new GameObject();
+    // Model* stompModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/wave-attack/WaveAttack.gltf")
+    // );
+    // stomp->AddComponent(stompModel);
+    // RendererComponent* stompRender = new RendererComponent(stomp, ShaderType::ANIMATED);
+    // stomp->AddComponent(stompRender);
+    // AnimationPlayer* stompAP = new AnimationPlayer(stomp, stompModel);
+    // stomp->AddComponent(stompAP);
+    // GameManager::instance().scene.Instantiate(stomp);
 
     // ground
     GameObject* go = new GameObject();

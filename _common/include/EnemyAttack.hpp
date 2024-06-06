@@ -19,11 +19,12 @@ public:
     void DealDamage(std::vector<GameObject*> players_hit);
 
     // used by client
+    int attackType;
     EnemyAttack(int attackType, int networkId);
 
     std::string ToString() override { return "EnemyAttack"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::ENEMY_ATTACK; }
-    void update(float deltaTime) override {}
+    void update(float deltaTime) override;
     
     void SetDamage(int newDamage) { damage = newDamage; }
 

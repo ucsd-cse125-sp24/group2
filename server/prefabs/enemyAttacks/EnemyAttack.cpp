@@ -38,3 +38,7 @@ void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
         }
     }
 }
+
+void EnemyAttack::update(float deltaTime) {
+    
+}
