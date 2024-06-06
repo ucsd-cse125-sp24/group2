@@ -62,13 +62,10 @@ void AudioManager::Update() {
     if (result != FMOD_OK) {
         return;
     }
-    // std::cout<<"position: "<< position << std::endl;
-    // position = position - offset_first_beat;
 
-    if (position - lastPosition >= interval) {
-        EventArgs* e = new BeatEventArgs(position / interval);
-        Beat.invoke(e);
-        lastPosition = position;
+    if ((int)(position / interval) != lastPosition) {
+        lastPosition = (int)(position / interval);
+        Beat.invoke(new BeatEventArgs(lastPosition));
     }
 
     FMOD_SOUND* selectedSound = nullptr;
