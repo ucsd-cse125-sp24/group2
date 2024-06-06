@@ -10,7 +10,8 @@
 #include "CooldownComponent.hpp"
 #include "MovementStateMachine.hpp"
 
-Player::Player(glm::vec3 position) : Entity() {
+Player::Player(glm::vec3 position, int clientId) : Entity() {
+    this->clientId = clientId;
     this->GetComponent<NetTransform>()->SetPosition(position);
     alive = true;
     Mover* mover = new Mover(this);

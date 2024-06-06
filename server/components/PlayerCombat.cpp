@@ -1,5 +1,7 @@
 #include "PlayerCombat.hpp"
 #include "Health.hpp"
+#include <NetworkManager.hpp>
+#include <Player.hpp>
 
 void PlayerCombat::Update(float deltaTime) {
     timeSinceLastInput += deltaTime;
@@ -7,6 +9,8 @@ void PlayerCombat::Update(float deltaTime) {
     if (timeSinceLastInput >= COMBO_RESET_TIME && shouldResetCombo) {
         ResetAllCombos();
         shouldResetCombo = false;
+
+        NetworkManager::instance().send_combo(((Player*)owner)->clientId, 0);
     }
 }
 
@@ -25,6 +29,7 @@ std::vector<int> PlayerCombat::CheckCombo(int input) {
     timeSinceLastInput = 0;
     shouldResetCombo = true;
 
+    int maxComboIndex = 0;
     for (auto& combo : combos) {
         // Check if current input matches combo's input
         if (combo.sequence[combo.comboIndex] != input) {
@@ -35,12 +40,21 @@ std::vector<int> PlayerCombat::CheckCombo(int input) {
 
         combo.comboIndex++;
 
+        if (combo.comboIndex > maxComboIndex) {
+            maxComboIndex = combo.comboIndex;
+        }
+
         // Reached end of combo, success
         if (combo.comboIndex == combo.sequence.size()) {
             ResetAllCombos();
+            NetworkManager::instance().send_combo(((Player*)owner)->clientId,
+                                                  maxComboIndex);
             return combo.sequence;
         }
     }
+
+    NetworkManager::instance().send_combo(((Player*)owner)->clientId,
+                                          maxComboIndex);
 
     return {};
 }
