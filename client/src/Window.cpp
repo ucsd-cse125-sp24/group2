@@ -90,9 +90,11 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
     // Set the viewport size.
     glViewport(0, 0, width, height);
 
-    // Cam->SetAspect(float(width) / float(height));
+    GameManager::instance().cam->SetAspect(float(width) / float(height));
+    //std::cout<<"Window size: " << width << ", " << height<<std::endl;
 }
-
+int h = 100;
+int dh = 5;
 void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
                     float deltaTime) {
     // Clear the color and depth buffers.
@@ -138,6 +140,11 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
     glDisable(GL_DEPTH_TEST);
     for (auto& entity : scene->entities) {
         if (auto huds = entity->GetComponent<HUDs>()) {
+            // if(InputManager::IsKeyPressed(GLFW_KEY_P)) {
+            //     h -= dh;
+            //     huds->healthBar->setHealth(h);
+            //     std::cout<<"health:" << h<<std::endl;
+            // }
             huds->draw(camera->GetAspect());
         }
     }

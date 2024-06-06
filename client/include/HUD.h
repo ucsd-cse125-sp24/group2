@@ -18,10 +18,13 @@ public:
     Metronome* metronome;
     HealthBar* healthBar;
     Quad* text;
+    std::vector<Quad*> musicNotes;
 private:
+    void resetNoteOpacity();
     bool isFade = false;
     float time = 0;
     float opacity = 0.0f;
     glm::vec3 textPos;
+    int beatHitCount = 0;
 
 };

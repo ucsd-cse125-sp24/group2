@@ -12,6 +12,7 @@
 #include "EnemyComponent.hpp"
 #include "GameState.hpp"
 #include "HUD.h"
+#include "Health.hpp"
 
 const std::string path = "../assets/robot/robot.gltf";
 const std::string enemyPath = "../assets/Bear2/bear.gltf";
@@ -156,7 +157,13 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->deserialize(pkt);
 
             if (localPlayerObject == network_id) {
-               
+                for(int i = 0; i < players.size(); i++) {
+                    if(i == localPlayerObject)
+                        players[localPlayerObject]->GetComponent<HUDs>()->healthBar->setHealth(players[i]->GetComponent<Health>()->GetHealth());
+                    else
+                        players[localPlayerObject]->GetComponent<HUDs>()->teamInfo->teamHealthMap[i]->setHealth(players[i]->GetComponent<Health>()->GetHealth());
+                }
+                
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;

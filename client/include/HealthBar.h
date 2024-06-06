@@ -14,6 +14,7 @@ public:
     ~HealthBar();
     void draw(float aspectRatio);
     void setHealth(float health) { currHealth = health; }
+    void setMaxHealth(float health) { maxHealth = health; }
     float getHealth() const { return currHealth; }   
     void update();
     float currHealth = 100.0f;

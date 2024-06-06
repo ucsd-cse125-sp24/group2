@@ -34,7 +34,11 @@ void HealthBar::draw(float aspectRatio) {
         currHealth = maxHealth;
     }
     GLuint shader = quad->getShader();
-    ratio = currHealth / maxHealth;
+ 
+    ratio = ((currHealth) / (maxHealth + 15.0f));
+
+    //std::cout<<"ratio" << ratio << std::endl;
+    //std::cout<<"heath: " << currHealth <<std::endl;
     glUseProgram(shader);
     glUniform1i(glGetUniformLocation(shader, "isHealthBar"), 1);
     glUniform1f(glGetUniformLocation(shader, "ratio"), ratio);

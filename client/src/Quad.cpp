@@ -105,6 +105,7 @@ void Quad::draw(float aspectRatio) {
     }
     glUniform1i(glGetUniformLocation(shader, "textureIndex"), textureIndex);
     glUniform1f(glGetUniformLocation(shader, "opacity"), opacity);
+    // std::cout<<"aspect: " << aspectRatio<<std::endl;
     glUniform1f(glGetUniformLocation(shader, "aspectRatio"), aspectRatio);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
 

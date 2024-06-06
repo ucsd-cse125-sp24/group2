@@ -13,7 +13,7 @@ Metronome::Metronome(int bpm) : bpm(bpm) {
     // quad = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), max);
     // quad->setTexture("square-red.png", "../assets/HUD/metronome");
     quad2 = new Quad(glm::vec3(0.0f, 0.0f, 0.0f), max);
-    quad2->setTexture("square-red.png", "../assets/HUD/metronome");
+    quad2->setTexture("square-red-thick.png", "../assets/HUD/metronome");
 
     quad2->enableState(VISIBLE);
 
