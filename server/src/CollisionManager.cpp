@@ -6,6 +6,7 @@
 #include "NetTransform.hpp"
 #include "Transform.hpp"
 #include "Invincible.hpp"
+#include "SkillTraits.hpp"
 
 // four enemy attacks: 
 // 1. jump and stomp, shockwave expanding 
@@ -61,8 +62,7 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderSector(pair.first, attCollider) 
-            && !(pair.second->GetComponent<Invincible>() != nullptr
-                && pair.second->GetComponent<Invincible>()->isInvincible)) {
+            && !(pair.second->isInvincible())) {
             hitObjects.push_back(pair.second);
         }
     }
@@ -70,21 +70,31 @@ std::vector<GameObject*> CollisionManager::moveBossSwipe(Collider* attCollider, 
 }
 
 // return a list of GameObjects that shockwave hits
-std::vector<GameObject*> CollisionManager::moveBossShockwave(GameObject* owner, float newRadius) {
+std::vector<GameObject*> CollisionManager::moveBossStomp(Collider* attOuter, Collider* attInner, float deltaRadius) {
     std::lock_guard<std::mutex> lock(_mutex);
-    Collider* attCollider = owner->GetComponent<Collider>();
-    NetTransform* attTransform = owner->GetComponent<NetTransform>();
     std::vector<GameObject*> hitObjects;
 
-    attCollider->SetRadius(newRadius);
-    attTransform->SetScale(glm::vec3(newRadius, attTransform->GetScale().y, newRadius));
+    attOuter->SetRadius(attOuter->GetRadius() + deltaRadius);
+    float innerRad = attOuter->GetRadius() - WAVE_WIDTH;
+    if(DEBUG_ST) printf("> inner radius is %f\n", innerRad);
+    attInner->SetRadius(innerRad < 0 ? 0 : innerRad);
 
     for (const auto& pair : colliderOwners) {
-        if (collisionCylinderCylinder(pair.first, attCollider) 
-            && !(pair.second->GetComponent<Invincible>() != nullptr
-                && pair.second->GetComponent<Invincible>()->isInvincible)) {
-            hitObjects.push_back(pair.second);
+        // if Player between edges of shockwave and not invincible, take damage
+        // TODO: what if partially overlapped?
+        // TODO: check if Player?
+        if (collisionCylinderCylinder(pair.first, attOuter)){
+            if(DEBUG_ST) printf("> outer collision\n");
+            if(DEBUG_ST) printf("> owner radius is %f\n", pair.first->GetRadius());
+            if(!collisionCylinderCylinder(pair.first, attInner)){
+                if(DEBUG_ST) printf("> no inner collision\n");
+                if(!(pair.second->isInvincible())) {
+                    if(DEBUG_ST) printf("> not invincible\n");
+                    hitObjects.push_back(pair.second);
+                }
+            }
         }
+        if(DEBUG_ST) printf("\n");
     }
     return hitObjects;
 }
@@ -96,8 +106,7 @@ std::vector<GameObject*> CollisionManager::moveBossMark(Collider* attCollider) {
 
     for (const auto& pair : colliderOwners) {
         if (collisionCylinderCylinder(pair.first, attCollider)
-            && !(pair.second->GetComponent<Invincible>() != nullptr
-                && pair.second->GetComponent<Invincible>()->isInvincible)) {
+            && !(pair.second->isInvincible())) {
             hitObjects.push_back(pair.second);
         }
     }
