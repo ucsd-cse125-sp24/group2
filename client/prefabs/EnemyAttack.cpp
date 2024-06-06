@@ -10,6 +10,7 @@
 // as that is where AssetManager initializes its modelpath list
 std::string swipePath = "../assets/swipe-attack-v2/swipe-attack.gltf";
 std::string laserPath = "../assets/laser-attack/laser-beam-model.gltf";
+// std::string laserPath = "../assets/robot/robot.gltf";
 std::string markPath = "../assets/projectile-attack/projectile-attack-manual.gltf";
 std::string stompPath = "../assets/wave-attack-v3/WaveAttack.gltf";
 
@@ -69,13 +70,15 @@ void EnemyAttack::update(float deltaTime) {
             // GetComponent<AnimationPlayer>()->play("swipe-animation");
             break;
         case (int) AttackState::LASER:
-            GetComponent<AnimationPlayer>()->play("laser-spin");
+            r = GetComponent<NetTransform>()->GetRotation();
+            // std::cout << r.x << " " << r.y << " " << r.z << std::endl;
+            GetComponent<AnimationPlayer>()->play("laser-spin", false);
             break;
         case (int) AttackState::MARK:
-            GetComponent<AnimationPlayer>()->play("Key.001Action.002");
+            GetComponent<AnimationPlayer>()->play("Key.001Action.002", false);
             break;
         case (int) AttackState::STOMP:
-            GetComponent<AnimationPlayer>()->play("waveAttack");
+            GetComponent<AnimationPlayer>()->play("waveAttack", false);
             break;
     }
 }

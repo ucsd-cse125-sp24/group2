@@ -25,7 +25,7 @@ public:
     AnimationClip* GetClip(std::string name);
     void update(float dt);
     void play(AnimationClip* clip);
-    void play(std::string name);
+    void play(std::string name, bool zero);
     void calculateBoneTransforms(const AssimpNodeData* node,
                                  glm::mat4 parentTransform);
     const std::vector<glm::mat4>& getFinalBoneMatrices() const;

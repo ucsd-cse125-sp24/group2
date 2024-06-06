@@ -16,38 +16,39 @@ void PlayerComponent::Update(float deltaTime) {
     if (movementStateMachine) {
         switch(movementStateMachine->GetState()) {
             case(IDLE): {
-                animationPlayer->play("idle");
+                animationPlayer->play("idle", false);
                 break;
             }
             case(WALK): {
-                animationPlayer->play("running");
+                animationPlayer->play("running", false);
                 break;
             }
             case(RUN): {
-                animationPlayer->play("running");
+                animationPlayer->play("running", false);
                 break;
             }
             case(DODGE_START): {
-                animationPlayer->play("forward_roll");
+                std::cout << "ayo r u ever in here" << std::endl;
+                animationPlayer->play("forward_roll", true);
                 break;
             }
             case(DODGE): {
-                animationPlayer->play("forward_roll");
+                animationPlayer->play("forward_roll", false);
                 break;
             }
             case(DEAD_START): {
-                animationPlayer->play("dying");
+                animationPlayer->play("dying", false);
                 break;
             }
             case(DEAD): {
-                animationPlayer->play("dead");
+                animationPlayer->play("dead", false);
                 break;
             }
             default: {
-                animationPlayer->play("idle");
+                animationPlayer->play("idle", false);
             }
         }
     } else {
-        animationPlayer->play("idle");
+        animationPlayer->play("idle", false);
     }
 }
