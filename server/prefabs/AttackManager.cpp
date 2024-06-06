@@ -62,7 +62,7 @@ void AttackManager::newStompAttack() {
 
 void AttackManager::newMarkedAttack() {
     for (int i = 0; i < playerList.size(); i++) {
-        MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
+        MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList[i]);
         enemyAttackList.push_back(markedAtt);
         NetworkManager::instance().scene.Instantiate(markedAtt);
         markedAtt->GetComponent<NetTransform>()->position =

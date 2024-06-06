@@ -2,24 +2,16 @@
 #include <iostream>
 #include "CollisionManager.hpp"
 
-MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList)
-    : EnemyAttack(owner) {
-    for (Player* p : playerList) {
-        Collider* attackC = new Collider(this, p->GetComponent<Collider>());
-        colliders.push_back(attackC);
-    }
+MarkedAttack::MarkedAttack(Enemy* owner, Player* player) : EnemyAttack(owner) {
+    collider = new Collider(this, player->GetComponent<Collider>());
     latency = LATENCY;
     lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
 }
 
-MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList,
-                           int networkId)
+MarkedAttack::MarkedAttack(Enemy* owner, Player* player, int networkId)
     : EnemyAttack(owner, networkId) {
-    for (Player* p : playerList) {
-        Collider* attackC = new Collider(this, p->GetComponent<Collider>());
-        colliders.push_back(attackC);
-    }
+    collider = new Collider(this, player->GetComponent<Collider>());
     latency = LATENCY;
     lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
@@ -29,11 +21,9 @@ void MarkedAttack::update(float deltaTime) {
     latency -= deltaTime;
     lifetime -= deltaTime;
     if (latency < 0 && !hasExploded) {
-        for (Collider* attackC : colliders) {
-            std::vector<GameObject*> players_hit =
-                CollisionManager::instance().moveBossMark(attackC);
-            DealDamage(players_hit);
-        }
+        std::vector<GameObject*> players_hit =
+            CollisionManager::instance().moveBossMark(collider);
+        DealDamage(players_hit);
 
         hasExploded = true;
     }
