@@ -24,7 +24,8 @@
 #define ST_DAMAGE 15
 
 /* MarkedAttack Defines (M) */
-#define LATENCY 4
+#define LATENCY 3.1
+#define M_LIFETIME 3.666
 #define M_DAMAGE 25
 
 /* LaserAttack Defines (L) */

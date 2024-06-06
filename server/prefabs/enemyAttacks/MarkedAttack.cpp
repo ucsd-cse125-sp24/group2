@@ -9,6 +9,7 @@ MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList)
         colliders.push_back(attackC);
     }
     latency = LATENCY;
+    lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
 }
 
@@ -20,18 +21,24 @@ MarkedAttack::MarkedAttack(Enemy* owner, std::vector<Player*> playerList,
         colliders.push_back(attackC);
     }
     latency = LATENCY;
+    lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
 }
 
 void MarkedAttack::update(float deltaTime) {
     latency -= deltaTime;
-    if (latency > 0) {
-        return;
+    lifetime -= deltaTime;
+    if (latency < 0 && !hasExploded) {
+        for (Collider* attackC : colliders) {
+            std::vector<GameObject*> players_hit =
+                CollisionManager::instance().moveBossMark(attackC);
+            DealDamage(players_hit);
+        }
+
+        hasExploded = true;
     }
-    for (Collider* attackC : colliders) {
-        std::vector<GameObject*> players_hit =
-            CollisionManager::instance().moveBossMark(attackC);
-        DealDamage(players_hit);
+
+    if (lifetime < 0) {
         exist = false;
     }
 }
