@@ -56,7 +56,7 @@ private:
     int currentPhase = 0;
     int nextPhase = 0;
     int bpm;
-    int interval;
+    float interval;
     int offset_first_beat = 0;
     bool isRunning = true;
     unsigned int position = 0;

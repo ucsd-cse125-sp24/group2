@@ -4,6 +4,7 @@
 #include "Health.hpp"
 #include "LaserAttack.hpp"
 #include "MarkedAttack.hpp"
+#include "StompAttack.hpp"
 #include "SwipeAttack.hpp"
 #include "NetworkManager.hpp"
 #include "EnemyComponent.hpp"
@@ -43,9 +44,7 @@ void AttackManager::addPlayer(Player* p) {
     playerList.push_back(p);
 }
 
-void AttackManager::addEnemy(Enemy* e) {
-    enemyPrefab = e;
-}
+void AttackManager::addEnemy(Enemy* e) { enemyPrefab = e; }
 
 void AttackManager::newLaserAttack() {
     LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
@@ -56,13 +55,10 @@ void AttackManager::newLaserAttack() {
     NetworkManager::instance().scene.Instantiate(laserAtt);
 }
 
-// TODO
-// void AttackManager::newStompAttack() {
-//     StompAttack* stompAtt = new StompAttack();
-//     enemyAttackList.push_back(stompAtt);
-//     NetworkManager::instance().scene.Instantiate(stompAtt);
-//     enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
-// }
+void AttackManager::newStompAttack() {
+    StompAttack* stompAtt = new StompAttack(enemyPrefab);
+    enemyAttackList.push_back(stompAtt);
+}
 
 void AttackManager::newMarkedAttack() {
     MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
@@ -88,7 +84,8 @@ void AttackManager::update(float deltaTime) {
             numAlive++;
         }
         if (enemyPrefab) {
-            glm::vec3 enemyPosition = enemyPrefab->GetComponent<NetTransform>()->GetPosition();
+            glm::vec3 enemyPosition =
+                enemyPrefab->GetComponent<NetTransform>()->GetPosition();
             // J: i guess make sure to set the y to 0
             player->GetComponent<Mover>()->SetCenter(enemyPosition);
         }
@@ -96,29 +93,32 @@ void AttackManager::update(float deltaTime) {
     NetworkManager::instance().numAlive = numAlive;
 
     std::lock_guard<std::mutex> playerlock(_player_attack_mutex);
-    for(int i = playerAttackList.size() - 1; i >= 0; i--) {
-        // iterate from the back to take care of the situ of removing inside loop
-        if(!playerAttackList.at(i)->isExist()) {
+    for (int i = playerAttackList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside
+        // loop
+        if (!playerAttackList.at(i)->isExist()) {
             NetworkManager::instance().scene.Destroy(playerAttackList.at(i));
-            playerAttackList.erase( playerAttackList.begin() + i );
+            playerAttackList.erase(playerAttackList.begin() + i);
             continue;
         }
     }
 
-    for(int i = playerSkillList.size() - 1; i >= 0; i--) {
-        // iterate from the back to take care of the situ of removing inside loop
-        if(!playerSkillList.at(i)->isExist()) {
+    for (int i = playerSkillList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside
+        // loop
+        if (!playerSkillList.at(i)->isExist()) {
             NetworkManager::instance().scene.Destroy(playerSkillList.at(i));
-            playerSkillList.erase( playerSkillList.begin() + i );
+            playerSkillList.erase(playerSkillList.begin() + i);
             continue;
         }
     }
 
-    for(int i = enemyAttackList.size() - 1; i >= 0; i--) {
-        // iterate from the back to take care of the situ of removing inside loop
-        if(!enemyAttackList.at(i)->exist) {
+    for (int i = enemyAttackList.size() - 1; i >= 0; i--) {
+        // iterate from the back to take care of the situ of removing inside
+        // loop
+        if (!enemyAttackList.at(i)->exist) {
             NetworkManager::instance().scene.Destroy(enemyAttackList.at(i));
-            enemyAttackList.erase( enemyAttackList.begin() + i );
+            enemyAttackList.erase(enemyAttackList.begin() + i);
             continue;
         }
     }
