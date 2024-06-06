@@ -27,9 +27,10 @@ Enemy::Enemy() : Entity() {
 
     AddComponent(hitbox);
     CollisionManager::instance().add(this);
-    this->currentPhase = PHASE1;
+    currentPhase = PHASE1;
+    prevPhase = PHASE1;
     Health* h = new Health(this, ENEMY_MAX_HEALTH);
-    this->AddComponent(h);
+    AddComponent(h);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId) {
@@ -40,7 +41,7 @@ Enemy::Enemy(int networkId) : Entity(networkId) {
     hitbox->SetRadius(50);
     hitbox->SetHeight(20);
 
-    AddComponent(hitbox); // TODO: decrement player health if they hit the boss
+    AddComponent(hitbox); // TODO: decrement player health if they hit the boss?
     CollisionManager::instance().add(this);
     currentPhase = PHASE1;
     prevPhase = PHASE1;
@@ -111,28 +112,24 @@ void Enemy::attack() {
         AttackManager::instance().newSwipeAttack();
         std::cout << "SwipeAttack!" << std::endl;
 
-        this->currentPhase = PHASE2;
         break;
 
     case PHASE2: // Stomp / shockwave
         AttackManager::instance().newStompAttack();
         std::cout << "StompAttack!" << std::endl;
 
-        // this->currentPhase = PHASE3;
         break;
 
     case PHASE3: // Mark / projectile
         AttackManager::instance().newMarkedAttack();
         std::cout << "MarkedAttack!" << std::endl;
 
-        this->currentPhase = PHASE4;
         break;
 
     case PHASE4: // Laser beams
         AttackManager::instance().newLaserAttack();
         std::cout << "LaserAttack!" << std::endl;
 
-        this->currentPhase = PHASE1;
         break;
 
     default: // For now, nothing. Possibly a phase 5?
