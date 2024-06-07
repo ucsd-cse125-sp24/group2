@@ -175,6 +175,8 @@ int main(int argc, char** argv) {
     RendererComponent* arenaRender =
         new RendererComponent(arena, ShaderType::STANDARD);
     arena->AddComponent(arenaRender);
+    IComponent* beatForArena = new BeatSyncComponent(1);
+    arena->AddComponent(beatForArena);
     arena->GetComponent<Transform>()->SetScale(glm::vec3(2.0f));
     arena->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
     GameManager::instance().scene.Instantiate(arena);

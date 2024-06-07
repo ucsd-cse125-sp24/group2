@@ -29,6 +29,6 @@ void main()
 	vec3 reflectance = irradiance * objectColor;
 
 	// Gamma correction
-	fragColor = vec4(sqrt(reflectance), 1);
-	//fragColor = texture(texture_diffuse1, TexCoords);
+	//fragColor = vec4(sqrt(reflectance), 1);
+	fragColor = texture(texture_diffuse1, TexCoords);
 }

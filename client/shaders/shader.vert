@@ -44,4 +44,5 @@ void main()
     // for shading
     vec3 norm = normalize(totalNormal * normal);
 	fragNormal = vec3(model * vec4(norm, 0));
+    //fragNormal = norm;
 }
