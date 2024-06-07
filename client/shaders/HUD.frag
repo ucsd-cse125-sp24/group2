@@ -15,7 +15,7 @@ uniform float opacity;
 void main()
 {
 	if(isHealthBar) {
-		if(TexCoords.x > ratio)
+		if(TexCoords.x >= ratio)
 		{
 			fragColor = texture(textures[0], TexCoords);
 		} else {

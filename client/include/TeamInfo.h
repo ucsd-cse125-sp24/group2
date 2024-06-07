@@ -15,8 +15,8 @@ public:
     std::map<int, HealthBar*> teamHealthMap;
 private:
     float yOffset = 0.15f;
-    glm::vec3 startPos = glm::vec3(-0.82f, 0.75f, 0.0f);
-    float width = 0.20f;
-    float height = 0.2f;
+    glm::vec3 startPos = glm::vec3(-0.80f, 0.70f, 0.0f);
+    float width = 0.15f;
+    float height = 0.03f;
     int size = 0;
 };
