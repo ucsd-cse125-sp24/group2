@@ -67,6 +67,8 @@ void AttackManager::newLaserAttack() {
 void AttackManager::newStompAttack() {
     StompAttack* stompAtt = new StompAttack(enemyPrefab);
     enemyAttackList.push_back(stompAtt);
+    enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::STOMP);
+    NetworkManager::instance().scene.Instantiate(stompAtt);
 }
 
 void AttackManager::newMarkedAttack() {

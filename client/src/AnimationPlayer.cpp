@@ -37,7 +37,8 @@ void AnimationPlayer::play(AnimationClip* clip) {
     currentAnimation = clip;
 }
 
-void AnimationPlayer::play(std::string name) {
+void AnimationPlayer::play(std::string name, bool zero) {
+    if (zero) currentTime = 0.0f;
     currentAnimation = animations[name];
 }
 

@@ -21,8 +21,8 @@ Collider::Collider(GameObject* owner, Collider* copyfrom)
 void Collider::makeSector(float angle) {
     if (isSector)
         return;
-    startAngle = rotation.y - 90.0f - angle / 2;
-    endAngle = rotation.y - 90.0f + angle / 2;
+    startAngle = rotation.y + 90.0f - angle / 2;
+    endAngle = rotation.y + 90.0f + angle / 2;
     isPoint = false;
     isSector = true;
 }

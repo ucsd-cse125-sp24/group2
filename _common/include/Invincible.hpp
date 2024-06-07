@@ -11,7 +11,7 @@ public:
 
     Invincible(GameObject* owner);
     void makeInvincible(float time);
-    void update(float deltaTime);
+    void Update(float deltaTime);
     virtual std::string ToString();
 };
 
