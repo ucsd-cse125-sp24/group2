@@ -4,6 +4,7 @@ HUDs::HUDs() {
     healthBar = new HealthBar(glm::vec3(-0.65f, 0.95f, 0.0f), 0.3f, 0.4f);
     teamInfo = new TeamInfo();
     metronome = new Metronome(60.0f);
+    endgame = new Endgame();
 }
 
 HUDs::HUDs(GameObject* owner) : IComponent(owner) {
@@ -12,6 +13,7 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     healthBar->setTexture("full.png", "../assets/HUD/healthBar");
     teamInfo = new TeamInfo(4);
     metronome = new Metronome(60.0f);
+    endgame = new Endgame();
     text = new Quad(glm::vec3(0.0f, 0.1f, 0.0f), 0.2f);
     text->setTexture("perfect.png", "../assets/HUD/text");
     text->setTexture("good.png", "../assets/HUD/text");
@@ -24,8 +26,9 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     hitText->enableState(VISIBLE);
     hitText->setOpacity(opacity);
     float dy = 0.0f;
-    for(int i = 0; i < 4; i++) {
-        musicNotes.push_back(new Quad(glm::vec3(0.9f, -0.5f + dy, 0.0f), 0.07f));
+    for (int i = 0; i < 4; i++) {
+        musicNotes.push_back(
+            new Quad(glm::vec3(0.9f, -0.5f + dy, 0.0f), 0.07f));
         musicNotes[i]->setTexture("music-note2.png", "../assets/HUD");
         musicNotes[i]->enableState(VISIBLE);
         musicNotes[i]->setOpacity(0.2);
@@ -36,7 +39,7 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     bossHealth->setMaxHealth(100.0f);
     bossHealth->setHealth(100.0f);
     bossHealth->disableState(VISIBLE);
-    //bossHealth->disableState(ObjectStates::VISIBLE);
+    // bossHealth->disableState(ObjectStates::VISIBLE);
     bossHealth->setTexture("empty.png", "../assets/HUD/bossHealth");
     bossHealth->setTexture("full.png", "../assets/HUD/bossHealth");
 
@@ -51,14 +54,15 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
 
 void HUDs::draw(float aspectRatio) {
     glEnable(GL_BLEND);
-    if(this->checkState(VISIBLE)) {
+    if (this->checkState(VISIBLE)) {
         healthBar->draw(aspectRatio);
         teamInfo->draw(aspectRatio);
         metronome->draw(aspectRatio);
         text->draw(aspectRatio);
         hitText->draw(aspectRatio);
         bearIcon->draw(aspectRatio);
-        for(int i = 0; i < musicNotes.size(); i++) {
+        endgame->draw(aspectRatio);
+        for (int i = 0; i < musicNotes.size(); i++) {
             musicNotes[i]->draw(aspectRatio);
         }
         bossHealth->draw(aspectRatio);
@@ -68,16 +72,16 @@ float y = 0.1f;
 float hitY = 0.1f;
 void HUDs::update(float dt) {
     // handle beat correctness text
-    if(AudioManager::instance().pressed) {
+    if (AudioManager::instance().pressed) {
         triggleText(AudioManager::instance().GetText());
     }
 
-    if(isFade) {
+    if (isFade) {
         isFade = true;
-        if(opacity <= 0.0f) {
+        if (opacity <= 0.0f) {
             isFade = false;
         }
-        
+
         y += 0.001f;
         opacity -= 0.003f;
     }
@@ -86,26 +90,25 @@ void HUDs::update(float dt) {
     text->setPosition(glm::vec3(0.0f, y, 0.0f));
 
     // handle hit text
-    if(comboCount == 0) {
+    if (comboCount == 0) {
         resetNoteOpacity();
-    } else if(comboCount == 4) {
+    } else if (comboCount == 4) {
         musicNotes[comboCount - 1]->setOpacity(1.0f);
         resetNoteOpacity();
     } else {
         musicNotes[comboCount - 1]->setOpacity(1.0f);
     }
 
-    if(isComboHit) {
+    if (isComboHit) {
         isComboHit = true;
-        if(hitOpacity <= 0.0f) {
-            isComboHit = false;  
-        } 
+        if (hitOpacity <= 0.0f) {
+            isComboHit = false;
+        }
         hitOpacity -= 0.002f;
-        //hitY += 0.001f;
+        // hitY += 0.001f;
     }
 
-
-    //hitText->setPosition(glm::vec3(0.0f, hitY, 0.0f));
+    // hitText->setPosition(glm::vec3(0.0f, hitY, 0.0f));
     hitText->setOpacity(hitOpacity);
 
     healthBar->update();
@@ -116,21 +119,21 @@ void HUDs::update(float dt) {
     bossHealth->update();
     bearIcon->update();
 
-    for(int i = 0; i < musicNotes.size(); i++) {
-            musicNotes[i]->update();
+    for (int i = 0; i < musicNotes.size(); i++) {
+        musicNotes[i]->update();
     }
 }
 
 std::string HUDs::ToString() { return "HUD"; }
 
 void HUDs::triggleText(std::string text) {
-    if(text == "perfect") {
+    if (text == "perfect") {
         this->text->activateTexture(0);
-    } else if(text == "good") {
+    } else if (text == "good") {
         this->text->activateTexture(1);
-    } else if(text == "great") {
+    } else if (text == "great") {
         this->text->activateTexture(2);
-    } else if(text == "offbeat") {
+    } else if (text == "offbeat") {
         this->text->activateTexture(3);
     }
     isFade = true;
@@ -139,14 +142,12 @@ void HUDs::triggleText(std::string text) {
 }
 
 void HUDs::resetNoteOpacity() {
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         musicNotes[i]->setOpacity(0.2f);
     }
 }
 
-void HUDs::setComboCount(int count) {
-    comboCount = count;
-}
+void HUDs::setComboCount(int count) { comboCount = count; }
 
 void HUDs::triggleHitText() {
     isComboHit = true;

@@ -13,13 +13,14 @@ out vec2 TexCoords;
 
 void main()
 {   
+    
     vec3 adjustedPosition = position;
-    adjustedPosition.x *= aspectRatio;
-    adjustedPosition.y /= aspectRatio;
-    if(aspectRatio > 1.34) {
-        adjustedPosition.x = position.x;
-        adjustedPosition.y = position.y;
-    }
+    //adjustedPosition.x *= aspectRatio;
+    //adjustedPosition.y /= aspectRatio;
+    //if(aspectRatio > 1.34) {
+        //adjustedPosition.x = position.x;
+        //adjustedPosition.y = position.y;
+    //}
 
     // for some reason using stbi_set_flip_vertically_on_load(true) messes up the texture of animated model 
     // so I need to flip it manually here

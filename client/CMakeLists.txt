@@ -40,6 +40,7 @@ set(
     # HUD
     src/HealthBar.cpp
     src/Metronome.cpp
+    src/Endgame.cpp
     src/Quad.cpp
     src/TeamInfo.cpp
     src/HUD.cpp
