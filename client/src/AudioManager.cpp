@@ -114,7 +114,7 @@ void AudioManager::Update() {
     // int off = (position % interval < interval / 2)
     //               ? position % interval
     //               : -(interval - (position % interval));
-    if (abs(normalizedOff) <= 0.5f) {
+    if (abs(normalizedOff) <= 0.3f) {
         if (abs(normalizedOff) <= 0.1f) {
             text = "perfect";
             std::cout << "Perfect! ";
