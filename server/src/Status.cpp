@@ -4,13 +4,19 @@
 void Status::AddStatusEffect(IStatusEffect* statusEffect) {
     StatusEffectTypeID typeIndex = statusEffect->TypeID();
     if (typeToStatusEffect.find(typeIndex) == typeToStatusEffect.end()) { // if not found
+        std::cout << "Adding SE" << std::endl;
         typeToStatusEffect.emplace(typeIndex, statusEffect);
         typeToStatusEffect[typeIndex]->OnAdd();
         typeToStatusEffect[typeIndex]->StartTimer();
     } else if (statusEffect->isStackable) { // if found, and can stack
-        typeToStatusEffect[typeIndex]->stacks++;
-        std::cout << "Adding stack" << std::endl;
-        // typeToStatusEffect[typeIndex]->OnAdd();
+        if (typeToStatusEffect[typeIndex]->stacks < 3) {
+            typeToStatusEffect[typeIndex]->stacks++;
+            std::cout << "Adding stack" << std::endl;
+            // typeToStatusEffect[typeIndex]->OnAdd();
+        } else {
+            typeToStatusEffect[typeIndex]->StartTimer();
+            std::cout << "Max: resetting" << std::endl;
+        }
     }
 }
 
