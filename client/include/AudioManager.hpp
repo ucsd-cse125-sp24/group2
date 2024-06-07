@@ -28,10 +28,12 @@ public:
     unsigned int getPosition() const;
     std::string GetText() const;
     EventHandler<EventArgs> Beat;
+    void AddHit(const char* filename);
     void AddNote(const char* filename, char key);
     void AddPhase(const char* filename);
     void SetBpm(int b);
     void SetOffFirst(int off);
+    void PlayHit();
     void Play();
     void Update();
     void GoToNextAudioPhase();
@@ -44,12 +46,15 @@ public:
     void CheckPhase(int syncPoint);
 
     bool pressed;
+
 private:
     FMOD_SYSTEM* system;
     FMOD_CHANNEL* mainChannel = nullptr;
     std::vector<FMOD_CHANNEL*> musicPhaseChannels;
     std::vector<FMOD_SOUND*> musicPhases;
     FMOD_CHANNEL* noteChannel = nullptr;
+    FMOD_CHANNEL* hitChannel = nullptr;
+    FMOD_SOUND* hitSound;
     FMOD_RESULT result;
     std::unordered_map<char, FMOD_SOUND*> noteMap;
 

@@ -10,7 +10,7 @@ public:
 
     PlayerComponent(GameObject* owner) : IComponent(owner) {
         isLocalPlayer = false;
-        prevHealth = owner->GetComponent<Health>()->hp;
+        prevHealth = owner->GetComponent<Health>()->maxHp;
     }
 
     void Update(float deltaTime) override;

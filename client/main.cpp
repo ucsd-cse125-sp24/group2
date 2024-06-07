@@ -109,6 +109,8 @@ int main(int argc, char** argv) {
     AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
     AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
 
+    AudioManager::instance().AddHit("../assets/audio/playertakedamage.wav");
+
     AudioManager::instance().AddPhase(
         "../assets/audio/futuristic02-116bpm-Gbm.wav");
     AudioManager::instance().SetBpm(232);

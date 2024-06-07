@@ -7,6 +7,7 @@
 
 #include <MovementStateMachine.hpp>
 #include <GameManager.hpp>
+#include <AudioManager.hpp>
 
 void PlayerComponent::Update(float deltaTime) {
     MovementStateMachine* movementStateMachine =
@@ -15,8 +16,9 @@ void PlayerComponent::Update(float deltaTime) {
     glm::vec2 moverDirection = owner->GetComponent<Mover>()->input;
 
     int currHp = owner->GetComponent<Health>()->hp;
-    if (currHp < prevHealth) {
+    if (currHp != prevHealth) {
         GameManager::instance().cam->Shake(0.15f, 0.4f, 0.25f);
+        AudioManager::instance().PlayHit();
         prevHealth = currHp;
     }
 
