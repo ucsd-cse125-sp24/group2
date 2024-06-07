@@ -10,7 +10,7 @@ void PlayerCombat::Update(float deltaTime) {
         ResetAllCombos();
         shouldResetCombo = false;
 
-        NetworkManager::instance().send_combo(((Player*)owner)->clientId, 0);
+        NetworkManager::instance().send_combo(((Player*)owner)->clientId, 0, 0);
     }
 }
 
@@ -49,7 +49,7 @@ std::vector<int> PlayerCombat::CheckCombo(int input) {
         if (combo.comboIndex == combo.sequence.size()) {
             ResetAllCombos();
             NetworkManager::instance().send_combo(
-                ((Player*)owner)->clientId, combo.comboType maxComboIndex);
+                ((Player*)owner)->clientId, combo.comboType, maxComboIndex);
             return combo.sequence;
         }
     }

@@ -162,7 +162,7 @@ void NetworkManager::process_input() {
                     ->p->GetComponent<PlayerCombat>()
                     ->ResetAllCombos();
                 printf(RED "MISSED\n" RST);
-                send_combo(client_id, 0);
+                send_combo(client_id, 0, 0);
                 break;
             }
 
