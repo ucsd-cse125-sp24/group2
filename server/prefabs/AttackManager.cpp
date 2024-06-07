@@ -61,10 +61,14 @@ void AttackManager::newStompAttack() {
 }
 
 void AttackManager::newMarkedAttack() {
-    MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList);
-    enemyAttackList.push_back(markedAtt);
+    for (int i = 0; i < playerList.size(); i++) {
+        MarkedAttack* markedAtt = new MarkedAttack(enemyPrefab, playerList[i]);
+        enemyAttackList.push_back(markedAtt);
+        NetworkManager::instance().scene.Instantiate(markedAtt);
+        markedAtt->GetComponent<NetTransform>()->position =
+            playerList[i]->GetComponent<NetTransform>()->position;
+    }
     enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::MARK);
-    NetworkManager::instance().scene.Instantiate(markedAtt);
 }
 
 void AttackManager::newSwipeAttack() {

@@ -49,15 +49,6 @@ Player::Player(glm::vec3 position, int clientId) : Entity() {
     AddComponent(movementStateMachine);
 }
 
-void Player::update(float deltaTime) {
-    if (GetComponent<Mover>() != nullptr)
-        GetComponent<Mover>()->Update(deltaTime);
-    if (GetComponent<Invincible>() != nullptr)
-        GetComponent<Invincible>()->update(deltaTime);
-    if (GetComponent<CooldownComponent>())
-        GetComponent<CooldownComponent>()->Update(deltaTime);
-    if (GetComponent<Status>())
-        GetComponent<Status>()->Update(deltaTime);
-}
+void Player::update(float deltaTime) {}
 
 void Player::onDestroy() { CollisionManager::instance().remove(this); }
