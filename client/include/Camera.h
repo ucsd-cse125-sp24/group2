@@ -14,9 +14,14 @@
 class Camera {
 public:
     glm::vec3 position = glm::vec3();
+    glm::vec3 basePosition = glm::vec3();
+    glm::vec3 cameraShakeOffset = glm::vec3();
+    float cameraShakeTime = 0.0f;
+    float shakePowerX = 1.0f;
+    float shakePowerY = 1.0f;
     Camera();
 
-    void Update();
+    void Update(float deltaTime);
     void Reset();
 
     // Access functions
@@ -26,6 +31,12 @@ public:
     void SetIncline(float i) { Incline = i; }
     void SetPosition(glm::vec3 pos) { position = pos; }
     void SetTarget(glm::vec3 t) { target = t; }
+
+    void Shake(float time, float powerX, float powerY) {
+        cameraShakeTime = time;
+        shakePowerX = powerX;
+        shakePowerY = powerY;
+    }
 
     float GetDistance() { return Distance; }
     float GetAzimuth() { return Azimuth; }

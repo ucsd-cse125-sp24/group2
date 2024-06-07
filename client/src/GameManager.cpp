@@ -116,7 +116,7 @@ void GameManager::update(Packet* pkt) {
             // which is like 1000 or something rn
             glm::vec3 bossPos =
                 boss->GetComponent<NetTransform>()->GetPosition();
-            cam->SetTarget(glm::vec3(bossPos.x, 0.0f, bossPos.z));
+            cam->SetTarget(glm::vec3(bossPos.x, 6.5f, bossPos.z));
 
             break;
         }
@@ -146,7 +146,6 @@ void GameManager::update(Packet* pkt) {
                     client.send(pkt);
                 }
                 if (localPlayerObject == network_id) {
-                    std::cout << "HERE" << std::endl;
                     HUDs* hudComponent = new HUDs(playerPrefab);
                     playerPrefab->AddComponent(hudComponent);
                 }
@@ -191,10 +190,10 @@ void GameManager::update(Packet* pkt) {
                 auto playerRightVector = glm::normalize(glm::cross(
                     cam->GetTarget() - playerPos, glm::vec3(0, 1, 0)));
 
-                cam->SetPosition(
+                cam->basePosition =
                     playerPos +
-                    glm::normalize(playerPos - cam->GetTarget()) * 3.0f +
-                    glm::vec3(0, 2.0f, 0) + playerRightVector * 0.7f);
+                    glm::normalize(playerPos - cam->GetTarget()) * 5.0f +
+                    glm::vec3(0, 2.0f, 0) + playerRightVector * 1.35f;
             }
 
             // std::cout <<
@@ -234,6 +233,7 @@ void GameManager::update(Packet* pkt) {
 
                 enemyAttacks[network_id] = enemyAttackPrefab;
                 scene.Instantiate(enemyAttackPrefab);
+                cam->Shake(0.15f, 0.4f, 0.25f);
             }
 
             enemyAttacks[network_id]->deserialize(pkt);
