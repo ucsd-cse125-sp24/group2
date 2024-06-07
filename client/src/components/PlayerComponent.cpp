@@ -28,7 +28,6 @@ void PlayerComponent::Update(float deltaTime) {
                 break;
             }
             case(DODGE_START): {
-                std::cout << "ayo r u ever in here" << std::endl;
                 animationPlayer->play("forward_roll", true);
                 break;
             }
