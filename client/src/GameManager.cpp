@@ -101,7 +101,6 @@ void GameManager::update(Packet* pkt) {
             if (!boss) {
                 boss = new Enemy(enemyPath, network_id);
                 std::vector<AnimationClip*> prefabClips =
-                std::vector<AnimationClip*> prefabClips =
                     AssetManager::Instance().GetClips(enemyPath);
                 for (int i = 0; i < prefabClips.size(); i++) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
