@@ -16,6 +16,7 @@ public:
     void update(float dt);
     std::string ToString() override;
     void setComboCount(int count);
+    void setComboType(int type);
     // private:
     TeamInfo* teamInfo;
     Metronome* metronome;
@@ -24,7 +25,7 @@ public:
     Quad* text;
     std::vector<Quad*> musicNotes;
     HealthBar* bossHealth;
-    Quad* hitText;
+    Quad* attackTypeText;
     Quad* bearIcon;
 
 private:
@@ -37,4 +38,12 @@ private:
     int comboCount = 0;
     float hitOpacity = 0.0f;
     bool isComboHit = false;
+
 };
+/*
+    playerCombat->AddCombo(attack1, 1);
+    playerCombat->AddCombo(attack2, 2);
+    playerCombat->AddCombo(heal, 3);
+    playerCombat->AddCombo(revive, 4);
+    playerCombat->AddCombo(speedBoost, 5);
+*/

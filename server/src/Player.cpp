@@ -33,7 +33,6 @@ Player::Player(glm::vec3 position, int clientId) : Entity() {
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
     playerCombat->AddCombo(attack1, 1);
-    playerCombat->AddCombo(attack2, 2);
     playerCombat->AddCombo(heal, 3);
     playerCombat->AddCombo(revive, 4);
     playerCombat->AddCombo(speedBoost, 5);
