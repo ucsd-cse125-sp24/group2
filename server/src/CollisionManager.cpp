@@ -237,7 +237,10 @@ bool CollisionManager::checkCollisionCylinder(Collider* cyl) {
     if (collisionCylinderBoundary(cyl)) {
         return true;
     }
-    GameObject* cylOwner = colliderOwners.at(cyl);
+    GameObject* cylOwner = nullptr;
+    if (colliderOwners.find(cyl) != colliderOwners.end()) {
+        cylOwner = colliderOwners.at(cyl);
+    }
     for (const auto& pair : colliderOwners) {
         if (cylOwner != pair.second) {
             if (!pair.first->GetIsSector() && !pair.first->GetIsPoint() &&

@@ -9,6 +9,12 @@
 
 std::string playerAttackPath =
     "../assets/player-note-attack/player-note-attack.gltf";
+std::string playerHealPath =
+    "../assets/heal-ring/heal-ring.gltf";
+std::string playerRevivePath =
+    "../assets/revive-ring/revive-ring.gltf";
+std::string playerSpeedBoostPath =
+    "../assets/speedup-ring/speedup-ring.gltf";
 
 PlayerSkill::PlayerSkill() : Entity() {
     PlayerSkillType* skillType = new PlayerSkillType(this);
@@ -31,15 +37,21 @@ void PlayerSkill::initComponent(int skillType) {
         printf("PlayerAttack!\n");
         break;
     case (int)SkillType::HEAL:
-        // model = new Model(AssetManager::Instance().GetModel(path));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(1.0f));
+        meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
+        model = new Model(AssetManager::Instance().GetModel(playerHealPath));
         printf("PlayerHeal!\n");
         break;
     case (int)SkillType::REVIVE:
-        // model = new Model(AssetManager::Instance().GetModel(path));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(1.0f));
+        meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
+        model = new Model(AssetManager::Instance().GetModel(playerRevivePath));
         printf("PlayerRevive!\n");
         break;
     case (int)SkillType::SPEED_BOOST:
-        // model = new Model(AssetManager::Instance().GetModel(path));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(1.0f));
+        meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
+        model = new Model(AssetManager::Instance().GetModel(playerSpeedBoostPath));
         printf("PlayerSpeedBoost!\n");
         break;
     }

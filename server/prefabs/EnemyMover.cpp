@@ -3,6 +3,8 @@
 #include "Client.hpp"
 #include "Enemy.hpp"
 #include "CollisionManager.hpp"
+#include "Health.hpp"
+#include <limits>
 
 
 EnemyMover::EnemyMover(GameObject* owner) : 
@@ -27,9 +29,12 @@ void EnemyMover::Update(float deltaTime) {
         return;
     }
 
-    targetPlayer = clients[0]->p;
-    float minDistance = glm::distance(clients[0]->p->GetComponent<NetTransform>()->GetPosition(), position);
-    for (int i = 1; i < clients.size(); ++i) {
+    float minDistance = std::numeric_limits<float>::infinity();
+    for (int i = 0; i < clients.size(); ++i) {
+        // only target alive players
+        if (clients[i]->p->GetComponent<Health>()->GetDead()) {
+            continue;
+        }
         Player* currPlayer = clients[i]->p;
         float currDistance = glm::distance(currPlayer->GetComponent<NetTransform>()->GetPosition(), position);
         if (currDistance < minDistance) {
@@ -56,6 +61,17 @@ void EnemyMover::Update(float deltaTime) {
     } else {
         position = glm::vec3();
         collider->SetPosition(glm::vec3());
+        if (CollisionManager::instance().checkCollisionCylinder(collider)) {
+            if (transparent) {
+                CollisionManager::instance().remove(owner);
+            }
+        }
+        else {
+            if (transparent) {
+                CollisionManager::instance().add(owner);
+                transparent = false;
+            }
+        }
     }
 }
 

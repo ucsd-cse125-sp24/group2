@@ -12,6 +12,7 @@ class EnemyMover : public IComponent {
         float baseSpeed = 0.66f;
         glm::vec3& position;
         glm::vec3& rotation;
+        bool transparent = true;
 
         EnemyMover(GameObject* owner);
 
