@@ -40,7 +40,6 @@ void EnemyMover::Update(float deltaTime) {
 
     glm::vec3 closestPlayerPosition = targetPlayer->GetComponent<NetTransform>()->GetPosition();
     glm::vec3 bossHeading = glm::normalize(closestPlayerPosition - position);
-    std::cout << "rotation before" << glm::to_string(rotation) << std::endl;
     rotation.y = 90.0f + glm::degrees(glm::acos(glm::dot(bossHeading, glm::vec3(0,0,-1))));
     if (bossHeading.x > 0) rotation.y = -rotation.y + 180.0f;
     Collider* collider = owner->GetComponent<Collider>();
