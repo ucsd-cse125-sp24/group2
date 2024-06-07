@@ -27,9 +27,9 @@ Server server;
 bool isServerReady = false;
 int playersReady = 0;
 Enemy* enemyPrefab;
-std::vector<glm::vec3> spawnPoints = {
-    glm::vec3(60, 0, 0), glm::vec3(0, 0, 60), glm::vec3(-60, 0, 0),
-    glm::vec3(0, 0, -60)};
+std::vector<glm::vec3> spawnPoints = {glm::vec3(60, 0, 0), glm::vec3(0, 0, 60),
+                                      glm::vec3(-60, 0, 0),
+                                      glm::vec3(0, 0, -60)};
 int spawnIndex = 0;
 union FloatUnion {
     float f;
@@ -162,14 +162,17 @@ void NetworkManager::process_input() {
                     ->p->GetComponent<PlayerCombat>()
                     ->ResetAllCombos();
                 printf(RED "MISSED\n" RST);
+                send_combo(client_id, 0);
                 break;
             }
 
-            std::vector<int> comboSeq = clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(key);
+            std::vector<int> comboSeq =
+                clients[client_id]->p->GetComponent<PlayerCombat>()->CheckCombo(
+                    key);
             if (!comboSeq.empty()) {
                 printf(YLW "COMBO HIT\n" RST);
-                
-                if (comboSeq == clients[client_id]->p->attack1 || 
+
+                if (comboSeq == clients[client_id]->p->attack1 ||
                     comboSeq == clients[client_id]->p->attack2) {
                     AttackManager::instance().newPlayerAttack(
                         clients[client_id]->p);
@@ -226,7 +229,8 @@ void NetworkManager::process_input() {
 
 void NetworkManager::update(float deltaTime) {
     // AttackManager update goes first so that whatever needs to be destroyed
-    // gets destroyed in the next tick, to account for effects that happen instantaneously
+    // gets destroyed in the next tick, to account for effects that happen
+    // instantaneously
     AttackManager::instance().update(deltaTime);
     scene.Update(deltaTime);
 }
@@ -298,6 +302,13 @@ void NetworkManager::send_next_phase() {
     }
 }
 
+void NetworkManager::send_combo(int clientId, int comboIndex) {
+    Packet* p = new Packet();
+    p->write_int((int)PacketType::COMBO_INDEX);
+    p->write_int(comboIndex);
+    server.send(clientId, p);
+}
+
 // FIXME handle incomplete packets or multiple packets per send() call
 // thread-safe
 void NetworkManager::on_message_received(const EventArgs* e) {
@@ -316,7 +327,7 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
 
     // Give client control over player
     glm::vec3 position = spawnPoints[spawnIndex++ % spawnPoints.size()];
-    Player* p = new Player(position);
+    Player* p = new Player(position, args->clientId);
     server.clients[args->clientId]->p = p;
     AttackManager::instance().addPlayer(p);
     numAlive++;

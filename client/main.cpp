@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
     GameManager::instance().Init();
     printf(YLW "Done loading!n" RST);
 
-    // Setup camera
+    // // Setup camera
     GameManager::instance().cam = new Camera();
     GameManager::instance().cam->SetAspect(float(width) / float(height));
 

@@ -14,12 +14,17 @@ public:
     ~HealthBar();
     void draw(float aspectRatio);
     void setHealth(float health) { currHealth = health; }
-    float getHealth() const { return currHealth; }   
+    void setMaxHealth(float health) { maxHealth = health; }
+    float getHealth() const { return currHealth; }  
+    void enableState(ObjectStates state);
+    void disableState(ObjectStates state);
+    bool checkState(ObjectStates state); 
     void update();
+    void setTexture(const char* path, const std::string& directory);
     float currHealth = 100.0f;
 private:
     Quad* quad;
     // float currHealth = 100.0f;
     float maxHealth = 100.0f;
-    float ratio = 0.0f;
+    float ratio = 1.0f;
 };

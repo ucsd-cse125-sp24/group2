@@ -25,6 +25,7 @@ enum class PacketType {
     CLIENT_READY,
     END_GAME,
     NEXT_PHASE,
+    COMBO_INDEX,
 };
 class Packet {
 private:

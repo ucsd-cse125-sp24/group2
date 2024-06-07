@@ -16,6 +16,9 @@ void InputManager::setDefaultKeys() {
     keys[GLFW_KEY_Q] = (KeyState)0;
     keys[GLFW_KEY_E] = (KeyState)0;
     keys[GLFW_KEY_R] = (KeyState)0;
+
+    //for testing
+    keys[GLFW_KEY_P] = (KeyState)0;
 }
 
 void InputManager::setUpCallback(GLFWwindow* window) {
