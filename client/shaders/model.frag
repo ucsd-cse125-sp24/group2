@@ -34,7 +34,7 @@ void main()
 	// Gamma correction
 	//fragColor = vec4(sqrt(reflectance), 1);
 	//if(hasEmission)
-	//	fragColor = texture(texture_diffuse1, TexCoords) + texture(texture_emissive1, TexCoords);
+		fragColor = texture(texture_diffuse1, TexCoords) + texture(texture_emissive1, TexCoords);
 	//else 
-		fragColor = texture(texture_diffuse1, TexCoords);
+		//fragColor = texture(texture_diffuse1, TexCoords);
 }
