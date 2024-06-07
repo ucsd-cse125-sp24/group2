@@ -6,7 +6,7 @@
 class PlayerComponent : public IComponent {
 public:
     bool isLocalPlayer;
-    int prevHealth;
+    int prevHealth = 100;
 
     PlayerComponent(GameObject* owner) : IComponent(owner) {
         isLocalPlayer = false;
