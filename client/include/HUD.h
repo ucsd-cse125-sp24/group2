@@ -1,6 +1,7 @@
 #pragma once
 #include "TeamInfo.h"
 #include "Metronome.h"
+#include "Endgame.h"
 #include "../../_common/include/States.hpp"
 #include "../../_common/include/IComponent.hpp"
 #include "AudioManager.hpp"
@@ -15,15 +16,17 @@ public:
     void update(float dt);
     std::string ToString() override;
     void setComboCount(int count);
-// private:
+    // private:
     TeamInfo* teamInfo;
     Metronome* metronome;
     HealthBar* healthBar;
+    Endgame* endgame;
     Quad* text;
     std::vector<Quad*> musicNotes;
     HealthBar* bossHealth;
     Quad* hitText;
     Quad* bearIcon;
+
 private:
     void resetNoteOpacity();
     bool isFade = false;

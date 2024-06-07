@@ -53,26 +53,38 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::START_GAME:
         StartGame(packet);
         break;
-    case PacketType::END_GAME:
+    case PacketType::END_GAME: {
         int win;
         packet->read_int(&win);
+        bool didWin = false;
         if (win == (int)GameState::WIN) {
+            didWin = true;
             // TODO: stop updating scene, move to win screen
             std::cout << "YOU WIN" << std::endl;
         } else if (win == (int)GameState::LOSE) {
+            didWin = false;
             // TODO: stop update scene, move to lose scren
             std::cout << "GAME OVER" << std::endl;
         }
+        if (players.find(localPlayerObject) != players.end()) {
+            players[localPlayerObject]
+                ->GetComponent<HUDs>()
+                ->endgame->drawVictory(didWin);
+        }
         break;
+    }
     case PacketType::COMBO_INDEX:
         int index;
         packet->read_int(&index);
-        if(players.find(localPlayerObject) != players.end()) {
-            players[localPlayerObject]->GetComponent<HUDs>()->setComboCount(index);
-            if(index == 4) {
-                players[localPlayerObject]->GetComponent<HUDs>()->triggleHitText();
+        if (players.find(localPlayerObject) != players.end()) {
+            players[localPlayerObject]->GetComponent<HUDs>()->setComboCount(
+                index);
+            if (index == 4) {
+                players[localPlayerObject]
+                    ->GetComponent<HUDs>()
+                    ->triggleHitText();
             }
-        }    
+        }
         printf("combo index: %d\n", index);
         break;
     default:
@@ -104,14 +116,21 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     boss->GetComponent<AnimationPlayer>()->AddClip(clip);
                 }
-                players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setMaxHealth(ENEMY_MAX_HEALTH);
+                players[localPlayerObject]
+                    ->GetComponent<HUDs>()
+                    ->bossHealth->setMaxHealth(ENEMY_MAX_HEALTH);
 
                 scene.Instantiate(boss);
             }
 
             boss->deserialize(pkt);
-            players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->enableState(VISIBLE);
-            players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setHealth(boss->GetComponent<Health>()->GetHealth());
+            players[localPlayerObject]
+                ->GetComponent<HUDs>()
+                ->bossHealth->enableState(VISIBLE);
+            players[localPlayerObject]
+                ->GetComponent<HUDs>()
+                ->bossHealth->setHealth(
+                    boss->GetComponent<Health>()->GetHealth());
             // also look up at the boss, probably needs to be the center of it
             // which is like 1000 or something rn
             glm::vec3 bossPos =
@@ -177,13 +196,22 @@ void GameManager::update(Packet* pkt) {
 
             if (localPlayerObject == network_id) {
 
-                for(int i = 0; i < players.size(); i++) {
-                    if(i == localPlayerObject)
-                        players[localPlayerObject]->GetComponent<HUDs>()->healthBar->setHealth(players[i]->GetComponent<Health>()->GetHealth());
+                for (int i = 0; i < players.size(); i++) {
+                    if (i == localPlayerObject)
+                        players[localPlayerObject]
+                            ->GetComponent<HUDs>()
+                            ->healthBar->setHealth(players[i]
+                                                       ->GetComponent<Health>()
+                                                       ->GetHealth());
                     else
-                        players[localPlayerObject]->GetComponent<HUDs>()->teamInfo->teamHealthMap[i]->setHealth(players[i]->GetComponent<Health>()->GetHealth());
+                        players[localPlayerObject]
+                            ->GetComponent<HUDs>()
+                            ->teamInfo->teamHealthMap[i]
+                            ->setHealth(players[i]
+                                            ->GetComponent<Health>()
+                                            ->GetHealth());
                 }
-            
+
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
