@@ -33,7 +33,7 @@ void Client::receive() {
 
     while (true) {
         int pktSize;
-        int read_bytes = psocket.recv(&pktSize, sizeof(pktSize), 0);
+        int read_bytes = psocket.recv((char*)&pktSize, sizeof(pktSize), 0);
 
         if (read_bytes <= 0) {
             printf("[CLIENT] error in receive\n");
