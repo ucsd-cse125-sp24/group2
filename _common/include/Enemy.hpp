@@ -12,6 +12,7 @@ public:
     std::string ToString() override { return "Enemy"; }
     int32_t TypeID() const override { return NetworkObjectTypeID::ENEMY; }
     float s = 0; // time in milliseconds
+    float attackDuration;
 
 private:
     enum EnemyState { PHASE1, PHASE2, PHASE3, PHASE4, PHASE5 };
