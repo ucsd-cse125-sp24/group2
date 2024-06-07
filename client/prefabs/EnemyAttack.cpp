@@ -46,7 +46,7 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         printf("MarkedAttack!\n");
         break;
     case (int)AttackState::STOMP:
-        GetComponent<NetTransform>()->SetScale(glm::vec3(30.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(stompPath));
         path = stompPath;

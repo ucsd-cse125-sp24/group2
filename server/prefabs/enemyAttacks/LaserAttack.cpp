@@ -41,4 +41,5 @@ void LaserAttack::update(float deltaTime) {
     float newCenterAngle = (attackC->GetStartAngle() + attackC->GetEndAngle())/2;
     glm::vec3 newRotation = glm::vec3(0, newCenterAngle, 0);
     this->GetComponent<NetTransform>()->SetRotation(newRotation);
+    printf("it updates");
 }

@@ -15,11 +15,11 @@
 /* StompAttack Defines (ST) */
 // TODO: test width and height so it's dodgable by jumping
 // TODO: unitless player hitbox radius is 30
-#define WAVE_WIDTH 100   // TODO: not meters - changed for collision testing
+#define WAVE_WIDTH 10   // TODO: not meters - changed for collision testing
 #define START_RADIUS 1   // in meters
-#define END_RADIUS 10000 // TODO: not meters - changed for collision testing
+#define END_RADIUS 200 // TODO: not meters - changed for collision testing
 #define ST_HEIGHT 0.5    // in meters
-#define ST_LIFE 8        // in seconds
+#define ST_LIFE 2.5        // in seconds
 #define ST_SPEED (END_RADIUS - START_RADIUS) / ST_LIFE // delta radius (m/s)
 #define ST_DAMAGE 15
 
