@@ -47,7 +47,8 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         printf("MarkedAttack!\n");
         break;
     case (int)AttackState::STOMP:
-        GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        // GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(0.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(stompPath));
         path = stompPath;
@@ -83,7 +84,12 @@ void EnemyAttack::update(float deltaTime) {
         GetComponent<AnimationPlayer>()->play("projectile-bone-anim", false);
         break;
     case (int)AttackState::STOMP:
-        GetComponent<AnimationPlayer>()->play("waveAttack", false);
+        if (stompAttackDelay <= 0) {
+            GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        } else {
+            GetComponent<AnimationPlayer>()->play("waveAttack", true);
+            stompAttackDelay -= deltaTime;
+        }
         break;
     }
 }
