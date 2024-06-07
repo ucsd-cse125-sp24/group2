@@ -4,9 +4,9 @@
 Health::Health(NetworkObject* owner) 
     : INetworkComponent(owner) {}
 
-Health::Health(NetworkObject* owner, int newHp) 
+Health::Health(NetworkObject* owner, float newHp) 
     : INetworkComponent(owner) {}
 
-void Health::SetHealth(int newHp) {}
+void Health::ChangeHealth(float amount) {}
 
-void Health::ChangeHealth(int amount) {}
+void Health::revive() {}

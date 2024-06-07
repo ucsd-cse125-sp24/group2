@@ -5,9 +5,9 @@
 #include "CollisionManager.hpp"
 #include <iostream>
 
-PlayerAttack::PlayerAttack() : PlayerSkill() { exist = true; }
+PlayerAttack::PlayerAttack() : PlayerSkill() {}
 
-PlayerAttack::PlayerAttack(int networkId) : PlayerSkill(networkId) { exist = true; }
+PlayerAttack::PlayerAttack(int networkId) : PlayerSkill(networkId) {}
 
 void PlayerAttack::init(Player* player) {
     playerOwner = player;
@@ -20,6 +20,7 @@ void PlayerAttack::init(Player* player) {
     attackC->makePoint();
     this->AddComponent(attackC);
     this->GetComponent<NetTransform>()->SetPosition(newPosition);
+    this->GetComponent<NetTransform>()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
     this->GetComponent<PlayerSkillType>()->SetState(SkillType::PLAYER_ATTACK);
 }
 

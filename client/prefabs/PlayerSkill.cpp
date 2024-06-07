@@ -7,6 +7,9 @@
 
 #include <iostream>
 
+std::string playerAttackPath =
+    "../assets/player-note-attack/player-note-attack.gltf";
+
 PlayerSkill::PlayerSkill() : Entity() {
     PlayerSkillType* skillType = new PlayerSkillType(this);
     this->AddComponent(skillType);
@@ -18,21 +21,34 @@ PlayerSkill::PlayerSkill(int networkId) : Entity(networkId) {
 }
 
 void PlayerSkill::initComponent(int skillType) {
-    // RendererComponent* meshRenderer =
-    //     new RendererComponent(this, ShaderType::ANIMATED);
-    // AddComponent(meshRenderer);
-    // Model* model;
+    RendererComponent* meshRenderer = nullptr;
+    Model* model = nullptr;
     switch (skillType) {
-    case (int) SkillType::PLAYER_ATTACK:
-        // model = new Model(AssetManager::Instance().GetModel(path));
+    case (int)SkillType::PLAYER_ATTACK:
+        GetComponent<NetTransform>()->SetScale(glm::vec3(3.0f));
+        meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
+        model = new Model(AssetManager::Instance().GetModel(playerAttackPath));
         printf("PlayerAttack!\n");
         break;
-    case (int) SkillType::HEAL:
+    case (int)SkillType::HEAL:
         // model = new Model(AssetManager::Instance().GetModel(path));
         printf("PlayerHeal!\n");
         break;
+    case (int)SkillType::REVIVE:
+        // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerRevive!\n");
+        break;
+    case (int)SkillType::SPEED_BOOST:
+        // model = new Model(AssetManager::Instance().GetModel(path));
+        printf("PlayerSpeedBoost!\n");
+        break;
     }
-    // AddComponent(model);
+    if (meshRenderer != nullptr) {
+        AddComponent(meshRenderer);
+    }
+    if (model != nullptr) {
+        AddComponent(model);
+    }
     // AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     // AddComponent(animationPlayer);
 }

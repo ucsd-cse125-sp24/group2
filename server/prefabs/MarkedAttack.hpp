@@ -3,6 +3,7 @@
 
 #include "EnemyAttack.hpp"
 #include "Player.hpp"
+#include "SkillTraits.hpp"
 
 class MarkedAttack : public EnemyAttack {
 public:

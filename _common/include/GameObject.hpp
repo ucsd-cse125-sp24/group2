@@ -38,6 +38,8 @@ public:
             return nullptr;
         }
     }
+
+    bool isInvincible();
 };
 
 #endif // GAME_OBJECT_H

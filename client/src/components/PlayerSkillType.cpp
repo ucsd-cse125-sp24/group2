@@ -14,9 +14,18 @@ void PlayerSkillType::Update(float deltaTime) {
             // std::cout << "playing heal" << std::endl;
             break;
         }
+        case ((int) SkillType::REVIVE): {
+            // std::cout << "playing revive" << std::endl;
+            break;
+        }
+        case ((int) SkillType::SPEED_BOOST): {
+            // std::cout << "playing speed_boost" << std::endl;
+            break;
+        }
         default: {
             // No attack just idle
-            animationPlayer->play("idle");
+            std::cout << "default case in PlayerSkillType Update" << std::endl;
+            // animationPlayer->play("idle");
             break;
         }
     }

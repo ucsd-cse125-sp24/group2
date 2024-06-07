@@ -41,7 +41,7 @@ void AudioManager::AddNote(const char* filename, char key) {
 
 void AudioManager::SetBpm(int b) {
     bpm = b;
-    interval = 60000 / b;
+    interval = (float)60000 / b;
 }
 
 void AudioManager::SetOffFirst(int off) { offset_first_beat = off; }
@@ -53,18 +53,19 @@ void AudioManager::Update() {
 
     FMOD_System_Update(system);
 
+    if (currentPhase == 2) {
+        nextPhase = 3;
+    }
+
     result = FMOD_Channel_GetPosition(musicPhaseChannels[0], &position,
                                       FMOD_TIMEUNIT_MS);
     if (result != FMOD_OK) {
         return;
     }
-    // std::cout<<"position: "<< position << std::endl;
-    // position = position - offset_first_beat;
 
-    if (position - lastPosition >= interval) {
-        EventArgs* e = new BeatEventArgs(position / interval);
-        Beat.invoke(e);
-        lastPosition = position;
+    if ((int)(position / interval) != lastPosition) {
+        lastPosition = (int)(position / interval);
+        Beat.invoke(new BeatEventArgs(lastPosition));
     }
 
     FMOD_SOUND* selectedSound = nullptr;
@@ -91,26 +92,31 @@ void AudioManager::Update() {
         return;
     }
 
-    int off = (position % interval < interval - (position % interval))
-                  ? position % interval
-                  : -(interval - (position % interval));
-    if (abs(off) <= 100) {
-        if (abs(off) <= 25) {
+    float normalizedOff = (position / interval - floor(position / interval));
+    if (normalizedOff > 0.5) {
+        normalizedOff -= 1;
+    }
+
+    // int off = (position % interval < interval / 2)
+    //               ? position % interval
+    //               : -(interval - (position % interval));
+    if (abs(normalizedOff) <= 0.3f) {
+        if (abs(normalizedOff) <= 0.1f) {
             text = "perfect";
             std::cout << "Perfect! ";
-        } else if (abs(off) <= 50) {
+        } else if (abs(normalizedOff) <= 0.2f) {
             text = "great";
             std::cout << "Great! ";
         } else {
             text = "good";
             std::cout << "Good! ";
         }
-        std::cout << std::to_string(off) << std::endl;
+        std::cout << std::to_string(normalizedOff) << std::endl;
     } else {
         text = "offbeat";
-        std::cout << "Off Beat! " << std::to_string(off) << std::endl;
+        std::cout << "Off Beat! " << std::to_string(normalizedOff) << std::endl;
     }
-    pkt->write_int(off);
+    pkt->write_float(normalizedOff);
 
     if (selectedSound != nullptr) {
         GameManager::instance().client.send(pkt);
@@ -140,7 +146,7 @@ void AudioManager::Play() {
     result = FMOD_System_PlaySound(system, musicPhases[0], nullptr, false,
                                    &musicPhaseChannels[0]);
     FMODErrorCheck(result);
-    result = FMOD_Channel_SetMode(musicPhaseChannels[0], FMOD_LOOP_OFF);
+    result = FMOD_Channel_SetMode(musicPhaseChannels[0], FMOD_LOOP_NORMAL);
     FMODErrorCheck(result);
 
     FMOD_RESULT result = FMOD_Channel_SetCallback(
@@ -156,8 +162,14 @@ bool AudioManager::isStarted() const { return game_started; }
 
 unsigned int AudioManager::getPosition() const { return position; }
 
+bool x = false;
 void AudioManager::CheckPhase(int syncPoint) {
-    if (syncPoint != currentPhase + 1) {
+    if (syncPoint != (currentPhase + 1) % 7) {
+        return;
+    }
+
+    if (currentPhase == 2 && !x) {
+        x = true;
         return;
     }
 

@@ -9,6 +9,8 @@ enum class StatusEffectTypeID : int32_t {
     // ADD NEW TYPE IDs HERE FOR EACH UNIQUE VARIANT OF A STATUS EFFECT
     DISPLAY_STATUS_EFFECT,
     SPEED_BOOST,
+    HEAL,
+    
 };
 
 class IStatusEffect {

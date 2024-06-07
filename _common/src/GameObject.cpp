@@ -1,5 +1,6 @@
 #include "GameObject.hpp"
 #include "Transform.hpp"
+#include "Invincible.hpp"
 #include <algorithm>
 
 
@@ -29,4 +30,9 @@ void GameObject::RemoveComponent(IComponent* comp) {
 
 std::string GameObject::ToString() {
     return "GameObject";
+}
+
+bool GameObject::isInvincible(){
+    return this->GetComponent<Invincible>() != nullptr
+            && this->GetComponent<Invincible>()->isInvincible;
 }

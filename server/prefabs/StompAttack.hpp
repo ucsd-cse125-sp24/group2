@@ -3,11 +3,19 @@
 
 #include "Enemy.hpp"
 #include "EnemyAttack.hpp"
+#include "Collider.hpp"
+#include "SkillTraits.hpp"
 
 class StompAttack : public EnemyAttack {
+private:
+    float lifetime;
+    Collider* outerC;
+    Collider* innerC;
+    void addColliders();
+
 public:
-    StompAttack(Enemy* owner) : EnemyAttack(owner){};
-    StompAttack(Enemy* owner, int networkId) : EnemyAttack(owner, networkId){};
+    StompAttack(Enemy* owner);
+    StompAttack(Enemy* owner, int networkId);
 
     void update(float deltaTime) override;
 

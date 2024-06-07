@@ -127,6 +127,15 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
     modelPaths.push_back({"../assets/ground/plane.gltf", false});
     modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
+    modelPaths.push_back(
+        {"../assets/laser-attack/laser-beam-model.gltf", true});
+    modelPaths.push_back(
+        {"../assets/projectile-attack/projectile-attack-bone.gltf", true});
+    modelPaths.push_back({"../assets/wave-attack-v3/WaveAttack.gltf", true});
+    modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", true});
+    modelPaths.push_back({"../assets/swipe-attack-v2/swipe-attack.gltf", true});
+    modelPaths.push_back(
+        {"../assets/player-note-attack/player-note-attack.gltf", false});
 
     for (std::pair<string, bool> kv : modelPaths) {
         std::cout << "  path: " << kv.first << std::endl;
@@ -145,6 +154,67 @@ int main(int argc, char** argv) {
             AssetManager::Instance().AddClipToMapping(kv.first, clip);
         }
     }
+
+    // test laser-beamAttack
+    // GameObject* laser = new GameObject();
+    // Model* laserModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/laser-attack/gltf-beam/laser-beam-model.gltf"));
+    // laser->AddComponent(laserModel);
+    // RendererComponent* laserRender = new RendererComponent(laser,
+    // ShaderType::ANIMATED); laser->AddComponent(laserRender); AnimationPlayer*
+    // ap = new AnimationPlayer(laser, laserModel); laser->AddComponent(ap);
+    // ap->play("laser-beamAction");
+    // GameManager::instance().scene.Instantiate(laser);
+
+    // test mark attack
+    // GameObject* mark = new GameObject();
+    // Model* markModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/projectile-attack/projectile-attack-manual.gltf")
+    // );
+    // mark->AddComponent(markModel);
+    // RendererComponent* markRender = new RendererComponent(mark,
+    // ShaderType::ANIMATED); mark->AddComponent(markRender); AnimationPlayer*
+    // markAP = new AnimationPlayer(mark, markModel);
+    // mark->AddComponent(markAP);
+    // GameManager::instance().scene.Instantiate(mark);
+
+    // test stomp attack
+    // GameObject* stomp = new GameObject();
+    // Model* stompModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/wave-attack-v3/WaveAttack.gltf")
+    // );
+    // stomp->AddComponent(stompModel);
+    // RendererComponent* stompRender = new RendererComponent(stomp,
+    // ShaderType::ANIMATED); stomp->AddComponent(stompRender); AnimationPlayer*
+    // stompAP = new AnimationPlayer(stomp, stompModel);
+    // stomp->AddComponent(stompAP);
+    // std::vector<AnimationClip*> prefabClips =
+    //     AssetManager::Instance().GetClips("../assets/wave-attack-v3/WaveAttack.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     stomp->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
+    // stompAP->play("waveAttack");
+    // GameManager::instance().scene.Instantiate(stomp);
+
+    // test swipe attack
+    // GameObject* swipe = new GameObject();
+    // Model* swipeModel = new Model(
+    //     AssetManager::Instance().GetModel("../assets/swipe-attack/swipe-attack.gltf")
+    // );
+    // swipe->AddComponent(swipeModel);
+    // RendererComponent* swipeRender = new RendererComponent(swipe,
+    // ShaderType::ANIMATED); swipe->AddComponent(swipeRender); AnimationPlayer*
+    // swipeAP = new AnimationPlayer(swipe, swipeModel);
+    // swipe->AddComponent(swipeAP);
+    // std::vector<AnimationClip*> prefabClips =
+    //     AssetManager::Instance().GetClips("../assets/swipe-attack/swipe-attack.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     swipe->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
+    // swipeAP->play("swipe-animation");
+    // GameManager::instance().scene.Instantiate(swipe);
 
     // ground
     GameObject* go = new GameObject();
@@ -217,7 +287,6 @@ int main(int argc, char** argv) {
         }
 
         GameManager::instance().scene.Update(deltaTime);
-
     }
 
     Window::cleanUp();

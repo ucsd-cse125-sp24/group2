@@ -18,6 +18,10 @@ void AnimationPlayer::AddClip(AnimationClip* clip) {
     animations.emplace(clip->getName(), clip);
 }
 
+AnimationClip* AnimationPlayer::GetClip(std::string name) {
+    return animations[name];
+}
+
 void AnimationPlayer::update(float dt) {
     deltaTime = dt;
     if (currentAnimation) {

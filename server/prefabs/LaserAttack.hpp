@@ -1,4 +1,5 @@
 #include "EnemyAttack.hpp"
+#include "SkillTraits.hpp"
 
 class LaserAttack : public EnemyAttack {
 private:

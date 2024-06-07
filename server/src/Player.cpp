@@ -10,7 +10,8 @@
 #include "CooldownComponent.hpp"
 #include "MovementStateMachine.hpp"
 
-Player::Player(glm::vec3 position) : Entity() {
+Player::Player(glm::vec3 position, int clientId) : Entity() {
+    this->clientId = clientId;
     this->GetComponent<NetTransform>()->SetPosition(position);
     alive = true;
     Mover* mover = new Mover(this);
@@ -34,8 +35,11 @@ Player::Player(glm::vec3 position) : Entity() {
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos
-    playerCombat->AddCombo({74, 74, 74, 74});
-    playerCombat->AddCombo({74, 75, 76, 73});
+    playerCombat->AddCombo(attack1);
+    playerCombat->AddCombo(attack2);
+    playerCombat->AddCombo(heal);
+    playerCombat->AddCombo(revive);
+    playerCombat->AddCombo(speedBoost);
 
     // CooldownComponent* cooldownComponent = new CooldownComponent(this);
     // cooldownComponent->AddCooldown("dodge", 1.0f);
@@ -54,8 +58,6 @@ void Player::update(float deltaTime) {
         GetComponent<CooldownComponent>()->Update(deltaTime);
     if (GetComponent<Status>())
         GetComponent<Status>()->Update(deltaTime);
-}       
-
-void Player::onDestroy() {
-    CollisionManager::instance().remove(this);
 }
+
+void Player::onDestroy() { CollisionManager::instance().remove(this); }

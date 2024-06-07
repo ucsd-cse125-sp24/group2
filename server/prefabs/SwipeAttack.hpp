@@ -6,6 +6,7 @@
 #include "EnemyAttack.hpp"
 #include "Collider.hpp"
 #include <vector>
+#include "SkillTraits.hpp"
 
 class SwipeAttack : public EnemyAttack {
 private:
