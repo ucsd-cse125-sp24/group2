@@ -13,7 +13,7 @@ uniform vec3 LightColor = vec3(1.0f);
 uniform vec3 DiffuseColor;	// passed in from c++ side NOTE: you can also set the value here and then remove 
 							// color from the c++ side
 uniform sampler2D texture_diffuse1;
-
+uniform bool lightOn;
 // You can output many things. The first vec4 type output determines the color of the fragment
 out vec4 fragColor;
 
@@ -30,6 +30,8 @@ void main()
 
 
 	// Gamma correction
-	fragColor = vec4(sqrt(reflectance), 1);
-	//fragColor = texture(texture_diffuse1, TexCoords);
+	if(lightOn)
+		fragColor = vec4(sqrt(reflectance), 1);
+	else
+		fragColor = texture(texture_diffuse1, TexCoords);
 }

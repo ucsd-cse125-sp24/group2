@@ -54,6 +54,7 @@ public:
     void setScale(glm::vec3 scale);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     void update(float dt, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale);
+    void setLightOn(bool lightOn) { this->lightOn = lightOn; }
 private:
     GLuint VBO, EBO;
     glm::mat4 modelMtx;
@@ -61,5 +62,6 @@ private:
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
+    bool lightOn = false;
     // glm::quat rotation;
 };

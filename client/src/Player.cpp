@@ -23,6 +23,7 @@ Player::Player(std::string path, int networkId) : Entity(networkId) {
         new RendererComponent(this, ShaderType::ANIMATED);
     AddComponent(meshRenderer);
     Model* model = new Model(AssetManager::Instance().GetModel(path));
+    model->setLightOn(true);
     AddComponent(model);
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);

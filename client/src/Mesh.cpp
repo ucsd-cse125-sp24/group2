@@ -88,6 +88,7 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    glUniform1i(glGetUniformLocation(shader, "lightOn"), lightOn);
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false,
                        (float*)&viewProjMtx);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,

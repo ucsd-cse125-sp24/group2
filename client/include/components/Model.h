@@ -25,6 +25,7 @@ private:
     int boneCounter = 0;
     bool hasAnimation = false;
     const aiScene* scene;
+    bool lightOn = false;
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
@@ -42,7 +43,7 @@ private:
 public:
     Model(GameObject* owner);
     Model(Model* other);
-    Model(GameObject* owner, std::string path, bool hasAnimation);
+    Model(GameObject* owner, std::string path, bool hasAnimation, bool lightOn = false);
     void draw(const glm::mat4& viewProjMtx, GLuint shader);
     int getBoneCount() const;
     const aiScene* getScene() const;
@@ -52,6 +53,7 @@ public:
     void setPosition(glm::vec3 pos);
     void setRotation(glm::vec3 rot);
     void setScale(glm::vec3 scale);
+    void setLightOn(bool lightOn) { this->lightOn = lightOn; }
 
     std::string ToString() override;
 };

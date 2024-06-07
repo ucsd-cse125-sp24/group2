@@ -16,7 +16,7 @@ BeatSyncComponent::BeatSyncComponent(bool scaleYOnly) {
         AudioManager::instance().Beat += [this](EventArgs* e) {
             BeatEventArgs* args = (BeatEventArgs*)e;
             if (args->beat % 2 == 0)
-                owner->GetComponent<Transform>()->SetScale(glm::vec3(0, 15, 0));
+                owner->GetComponent<Transform>()->SetScale(glm::vec3(0, 30, 0));
         };
         scaleYOnly = true;
     }
@@ -26,9 +26,9 @@ BeatSyncComponent::BeatSyncComponent(bool scaleYOnly) {
 void BeatSyncComponent::Update(float deltaTime) {
      glm::vec3 newScale = owner->GetComponent<Transform>()->GetScale();
     if(scaleYOnly) {
-        newScale -= glm::vec3(1, 1, 1) * deltaTime * 50.0f;
+        newScale -= glm::vec3(1, 30, 1) * deltaTime;
         newScale =
-            glm::clamp(newScale, glm::vec3(0, 5, 0), glm::vec3(0, 15, 0));
+            glm::clamp(newScale, glm::vec3(0, 15, 0), glm::vec3(0, 30, 0));
 
     } else {
     newScale -= glm::vec3(1, 1, 1) * deltaTime * 50.0f;

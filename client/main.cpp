@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", false});
     modelPaths.push_back(
         {"../assets/player-note-attack/player-note-attack.gltf", false});
-    modelPaths.push_back({"../assets/arena/arena.gltf", false});
+    modelPaths.push_back({"../assets/arena2/arena.gltf", false});
 
     for (std::pair<string, bool> kv : modelPaths) {
         std::cout << "  path: " << kv.first << std::endl;
@@ -165,12 +165,12 @@ int main(int argc, char** argv) {
         new RendererComponent(go, ShaderType::STANDARD);
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
-    go->GetComponent<Transform>()->SetScale(glm::vec3(0.0f));
+    go->GetComponent<Transform>()->SetScale(glm::vec3(2.0f));
 
     // arena
     GameObject* arena = new GameObject();
     Model* arenaModel = new Model(
-        AssetManager::Instance().GetModel("../assets/arena/arena.gltf"));
+        AssetManager::Instance().GetModel("../assets/arena2/arena.gltf"));
     arena->AddComponent(arenaModel);
     RendererComponent* arenaRender =
         new RendererComponent(arena, ShaderType::STANDARD);

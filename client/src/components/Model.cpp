@@ -4,8 +4,8 @@
 
 Model::Model(GameObject* owner) : IComponent(owner) {}
 
-Model::Model(GameObject* owner, std::string path, bool hasAnimation)
-    : IComponent(owner), hasAnimation(hasAnimation) {
+Model::Model(GameObject* owner, std::string path, bool hasAnimation, bool lightOn)
+    : IComponent(owner), hasAnimation(hasAnimation), lightOn(lightOn) {
     loadModel(path);
 }
 
@@ -67,6 +67,7 @@ void Model::update(float dt) {
 void Model::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].draw(viewProjMtx, shader);
+        meshes[i].setLightOn(lightOn);
     }
 }
 
