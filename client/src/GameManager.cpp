@@ -126,7 +126,7 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 1) {
+                if (players.size() == 4) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -169,10 +169,10 @@ void GameManager::update(Packet* pkt) {
                 auto playerRightVector = glm::normalize(glm::cross(
                     cam->GetTarget() - playerPos, glm::vec3(0, 1, 0)));
 
-                cam->SetPosition(
+                cam->basePosition =
                     playerPos +
                     glm::normalize(playerPos - cam->GetTarget()) * 5.0f +
-                    glm::vec3(0, 2.0f, 0) + playerRightVector * 1.35f);
+                    glm::vec3(0, 2.0f, 0) + playerRightVector * 1.35f;
             }
 
             // std::cout <<
@@ -212,6 +212,7 @@ void GameManager::update(Packet* pkt) {
 
                 enemyAttacks[network_id] = enemyAttackPrefab;
                 scene.Instantiate(enemyAttackPrefab);
+                cam->Shake(0.15f, 0.4f, 0.25f);
             }
 
             enemyAttacks[network_id]->deserialize(pkt);
