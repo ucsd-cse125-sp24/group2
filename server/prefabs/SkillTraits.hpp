@@ -25,9 +25,9 @@
 
 /* MarkedAttack Defines (M) */
 #define LATENCY 3.1
-#define M_RADIUS 20
+#define M_RADIUS 25
 #define M_LIFETIME 3.666
-#define M_DAMAGE 25
+#define M_DAMAGE 35
 
 /* LaserAttack Defines (L) */
 #define ANGRANGE 1

@@ -40,7 +40,7 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         printf("LaserAttack!\n");
         break;
     case (int)AttackState::MARK:
-        GetComponent<NetTransform>()->SetScale(glm::vec3(20.0f, 1.0f, 20.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(25.0f, 1.0f, 25.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(markPath));
         path = markPath;
