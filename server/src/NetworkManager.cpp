@@ -350,3 +350,14 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
     // Create player model
     scene.Instantiate(p);
 }
+
+std::vector<Client*> NetworkManager::get_clients() {
+    std::vector<Client*> result;
+    std::map<int, Client*> clients = server.get_clients();
+
+    for (const auto& kv : clients) {
+        result.push_back(kv.second);
+    }
+
+    return result;
+}

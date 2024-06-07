@@ -15,6 +15,10 @@
 #include "AttackManager.hpp"
 #include <iostream>
 #include <NetworkManager.hpp>
+#include "EnemyMover.hpp"
+
+#define SWIPE_STOP_MOVEMENT_TIMER 7.0f
+
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
@@ -32,6 +36,8 @@ Enemy::Enemy() : Entity() {
     AddComponent(h);
     EnemyComponent* ec = new EnemyComponent(this);
     this->AddComponent(ec);
+    EnemyMover* enemyMover = new EnemyMover(this);
+    AddComponent(enemyMover);
 }
 
 Enemy::Enemy(int networkId) : Entity(networkId) {
@@ -49,11 +55,11 @@ Enemy::Enemy(int networkId) : Entity(networkId) {
     Health* h = new Health(this, ENEMY_MAX_HEALTH);
     AddComponent(h);
     EnemyComponent* ec = new EnemyComponent(this);
-    this->AddComponent(ec);
+    AddComponent(ec);
 }
 
 void Enemy::update(float deltaTime) {
-    s += deltaTime;
+    
 
     // TODO: use colliderManager.move
     int health = GetComponent<Health>()->hp;
@@ -88,7 +94,38 @@ void Enemy::update(float deltaTime) {
         }
     }
 
+
+    // bool isChasedown = currentPhase == PHASE1; // include any phase where u want boss to chase player
+    // stopMovementTimer->UpdateTimer(deltaTime);
+    // if (isChasedown) {
+    //     glm::vec3 currPosition = GetComponent<NetTransform>()->GetPosition();
+    //     if (Player* targetPlayer = GetComponent<EnemyMover>()->targetPlayer) {
+    //         float distanceToTarget = glm::distance(targetPlayer->GetComponent<NetTransform>()->position, currPosition);
+    //         if (distanceToTarget < SW_RADIUS - 2) {
+    //             attack();
+    //             stopMovementTimer->StartTimer();
+    //         }
+    //     }
+    // } else {
+    //     // every 5 seconds, attack
+    //     s += deltaTime;
+    //     if (std::fmod(s, 5.0) <= deltaTime) {
+    //         attack();
+    //         attackDuration = 2.0f;
+    //         s = std::fmod(s, 5.0);
+    //     } else {
+    //         if (attackDuration > 0) {
+    //             attackDuration -= deltaTime;
+    //         } else {
+    //             // J: want to play idle animation when we are not attacking
+    //             GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
+    //         }
+    //     }
+    // }
+
     // every 5 seconds, attack
+
+    s += deltaTime;
     if (currentPhase != (EnemyState)99) {
         if (std::fmod(s, 5.0) <= deltaTime) {
             attack();
