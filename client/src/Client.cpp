@@ -68,6 +68,8 @@ void Client::receive() {
                 delete[] buf;
                 return;
             }
+
+            totalBytesRead += read_bytes;
         }
 
         Packet* pkt = new Packet();
