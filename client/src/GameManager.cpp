@@ -82,10 +82,11 @@ void GameManager::update(Packet* pkt) {
         case NetworkObjectTypeID::ENEMY: {
             // std::cout << "    ObjTypeID: Enemy" << std::endl;
             int network_id;
-            pkt->read_int(&network_id); // J: I did not thoroughly check if the packet is read correctly
+            pkt->read_int(&network_id); // J: I did not thoroughly check if the
+                                        // packet is read correctly
             if (!boss) {
                 boss = new Enemy(enemyPath, network_id);
-                std::vector<AnimationClip*> prefabClips = 
+                std::vector<AnimationClip*> prefabClips =
                     AssetManager::Instance().GetClips(enemyPath);
                 for (int i = 0; i < prefabClips.size(); i++) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
@@ -97,8 +98,10 @@ void GameManager::update(Packet* pkt) {
 
             boss->deserialize(pkt);
 
-            // also look up at the boss, probably needs to be the center of it which is like 1000 or something rn
-            glm::vec3 bossPos = boss->GetComponent<NetTransform>()->GetPosition();
+            // also look up at the boss, probably needs to be the center of it
+            // which is like 1000 or something rn
+            glm::vec3 bossPos =
+                boss->GetComponent<NetTransform>()->GetPosition();
             cam->SetTarget(glm::vec3(bossPos.x, 0.0f, bossPos.z));
 
             break;
@@ -116,13 +119,14 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     // std::cout << "Adding clip: " << clip->getName()
                     //           << std::endl;
-                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(clip);
+                    playerPrefab->GetComponent<AnimationPlayer>()->AddClip(
+                        clip);
                 }
 
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 2) {
+                if (players.size() == 4) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
@@ -159,7 +163,7 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->deserialize(pkt);
 
             if (localPlayerObject == network_id) {
-               
+
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
@@ -172,7 +176,9 @@ void GameManager::update(Packet* pkt) {
                     glm::vec3(0, 2.0f, 0) + playerRightVector * 0.7f);
             }
 
-            // std::cout << players[network_id]->GetComponent<Status>()->ToString() << std::endl;
+            // std::cout <<
+            // players[network_id]->GetComponent<Status>()->ToString() <<
+            // std::endl;
 
             break;
         }
@@ -184,14 +190,15 @@ void GameManager::update(Packet* pkt) {
             if (playerSkills.find(network_id) == playerSkills.end()) {
                 PlayerSkill* playerSkillPrefab = new PlayerSkill(network_id);
                 playerSkillPrefab->deserialize(pkt);
-                playerSkillPrefab->initComponent(playerSkillPrefab->GetComponent<PlayerSkillType>()->GetState());
+                playerSkillPrefab->initComponent(
+                    playerSkillPrefab->GetComponent<PlayerSkillType>()
+                        ->GetState());
                 playerSkills[network_id] = playerSkillPrefab;
                 scene.Instantiate(playerSkillPrefab);
-            }
-            else {
+            } else {
                 playerSkills[network_id]->deserialize(pkt);
             }
-            
+
             break;
         }
         case NetworkObjectTypeID::ENEMY_ATTACK: {
@@ -200,7 +207,9 @@ void GameManager::update(Packet* pkt) {
             pkt->read_int(&network_id);
             // Could not find object, create it
             if (enemyAttacks.find(network_id) == enemyAttacks.end()) {
-                EnemyAttack* enemyAttackPrefab = new EnemyAttack(boss->GetComponent<EnemyComponent>()->GetState(), network_id);
+                EnemyAttack* enemyAttackPrefab = new EnemyAttack(
+                    boss->GetComponent<EnemyComponent>()->GetState(),
+                    network_id);
 
                 enemyAttacks[network_id] = enemyAttackPrefab;
                 scene.Instantiate(enemyAttackPrefab);

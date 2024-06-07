@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
     }
 
     // Create the GLFW window.
-    float width = 800;
-    float height = 600;
+    float width = 1366;
+    float height = 768;
     GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
