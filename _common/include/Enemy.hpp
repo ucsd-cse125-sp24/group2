@@ -2,6 +2,8 @@
 #define ENEMY_H
 #include "Entity.hpp"
 
+#define ENEMY_MAX_HEALTH 2000
+
 class Enemy : public Entity {
 public:
     Enemy();
