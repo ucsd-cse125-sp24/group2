@@ -21,13 +21,13 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     text->setTexture("miss.png", "../assets/HUD/text");
     text->enableState(VISIBLE);
     text->setOpacity(opacity);
-    hitText = new Quad(glm::vec3(0.0f, 0.3f, 0.0f), 0.2f);
-    hitText->setTexture("hit.png", "../assets/HUD/text");
-    hitText->setTexture("heal.png", "../assets/HUD/text");
-    hitText->setTexture("revive.png", "../assets/HUD/text");
-    hitText->setTexture("speed.png", "../assets/HUD/text");
-    hitText->enableState(VISIBLE);
-    hitText->setOpacity(opacity);
+    attackTypeText = new Quad(glm::vec3(0.0f, 0.3f, 0.0f), 0.2f);
+    attackTypeText->setTexture("hit.png", "../assets/HUD/text");
+    attackTypeText->setTexture("heal.png", "../assets/HUD/text");
+    attackTypeText->setTexture("revive.png", "../assets/HUD/text");
+    attackTypeText->setTexture("speed.png", "../assets/HUD/text");
+    attackTypeText->enableState(VISIBLE);
+    attackTypeText->setOpacity(opacity);
     float dy = 0.0f;
     for (int i = 0; i < 4; i++) {
         musicNotes.push_back(
@@ -52,7 +52,7 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
 
     bearIcon->update();
     text->update();
-    hitText->update();
+    attackTypeText->update();
 }
 
 void HUDs::draw(float aspectRatio) {
@@ -62,7 +62,7 @@ void HUDs::draw(float aspectRatio) {
         teamInfo->draw(aspectRatio);
         metronome->draw(aspectRatio);
         text->draw(aspectRatio);
-        hitText->draw(aspectRatio);
+        attackTypeText->draw(aspectRatio);
         bearIcon->draw(aspectRatio);
         endgame->draw(aspectRatio);
         for (int i = 0; i < musicNotes.size(); i++) {
@@ -112,13 +112,13 @@ void HUDs::update(float dt) {
     }
 
     // hitText->setPosition(glm::vec3(0.0f, hitY, 0.0f));
-    hitText->setOpacity(hitOpacity);
+    attackTypeText->setOpacity(hitOpacity);
 
     healthBar->update();
     teamInfo->update();
     metronome->update();
     text->update();
-    hitText->update();
+    attackTypeText->update();
     bossHealth->update();
     bearIcon->update();
 
@@ -154,7 +154,28 @@ void HUDs::setComboCount(int count) { comboCount = count; }
 
 void HUDs::triggleHitText(int comboType) {
     isComboHit = true;
-    hitText->activateTexture(comboType <= 2 ? 0 : comboType - 2);
+    attackTypeText->activateTexture(comboType <= 2 ? 0 : comboType - 2);
+    hitY = 0.1f;
+    hitOpacity = 1.0f;
+}
+
+void HUDs::setComboType(int type) {
+    isComboHit = true;
+    switch(type){
+        case 1:
+        case 2:
+            attackTypeText->activateTexture(0);
+            break;
+        case 3:
+            attackTypeText->activateTexture(1);
+            break;
+        case 4:
+            attackTypeText->activateTexture(2);
+            break;
+        case 5:
+            attackTypeText->activateTexture(3);
+            break;
+    }
     hitY = 0.1f;
     hitOpacity = 1.0f;
 }
