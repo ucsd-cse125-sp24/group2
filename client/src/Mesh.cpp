@@ -61,10 +61,11 @@ void Mesh::binding() {
 void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
     // bind appropriate textures
     glUseProgram(shader);
+    bool hasEmission = false;
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
-    unsigned int heightNr = 1;
+    unsigned int emissiveNr = 1;
     for (unsigned int i = 0; i < textures.size(); i++) {
         // active proper texture unit before binding
         glActiveTexture(GL_TEXTURE0 + i);
@@ -79,15 +80,19 @@ void Mesh::draw(const glm::mat4& viewProjMtx, GLuint shader) {
         else if (name == "texture_normal")
             number =
                 std::to_string(normalNr++); // transfer unsigned int to string
-        else if (name == "texture_height")
+        else if (name == "texture_emissive") {
             number =
-                std::to_string(heightNr++); // transfer unsigned int to string
-
+                std::to_string(emissiveNr++); // transfer unsigned int to string
+            hasEmission = true;
+            std::cout<<"HAS EMISSION" <<std::endl;
+        }
+          std::cout<<"texture type name in Mesh::draw: " << name << std::endl;
         // now set the sampler to the correct texture unit
         glUniform1i(glGetUniformLocation(shader, (name + number).c_str()), i);
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    glUniform1i(glGetUniformLocation(shader, "hasEmission"), hasEmission);
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false,
                        (float*)&viewProjMtx);
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,

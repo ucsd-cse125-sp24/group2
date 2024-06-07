@@ -155,6 +155,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         std::vector<Texture> normalMaps = loadMaterialTextures(
             material, aiTextureType_NORMALS, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+        //4. emissive
+        std::vector<Texture> emissiveMap = loadMaterialTextures(
+            material, aiTextureType_EMISSIVE, "texture_emissive");
+        textures.insert(textures.end(), emissiveMap.begin(), emissiveMap.end());
+        
     }
     extractBoneWeightForVertices(vertices, mesh, scene);
 
@@ -168,7 +174,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat,
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
-        // std::cout<<"texture name: "<< str.C_Str()<<std::endl;
         // check if texture was loaded before and if so, continue to next
         // iteration: skip loading a new texture
         bool skip = false;

@@ -2,7 +2,11 @@
 
 Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) {
     // Model matrix.
-    model = glm::mat4(1.0f);
+    modelMtx = glm::mat4(1.0f);
+
+    position = glm::vec3(0.0f);
+    rotation = glm::vec3(0.0f);
+    scale = glm::vec3(1.0f);
 
     // The color of the cube. Try setting it to something else!
     color = glm::vec3(1.0f, 0.95f, 0.1f);
@@ -137,7 +141,7 @@ void Cube::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, (float*)&viewProjMtx);
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&model);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (float*)&modelMtx);
     glUniform3fv(glGetUniformLocation(shader, "DiffuseColor"), 1, &color[0]);
 
     // Bind the VAO
@@ -153,10 +157,19 @@ void Cube::draw(const glm::mat4& viewProjMtx, GLuint shader) {
 
 void Cube::update() {
     // Spin the cube
-    spin(0.05f);
+    getModelMtx();
 }
 
 void Cube::spin(float deg) {
     // Update the model matrix by multiplying a rotation matrix
-    model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+   // model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+const glm::mat4& Cube::getModelMtx () {
+    modelMtx = glm::translate(position) * glm::scale(glm::mat4(1.0f), this->scale);
+    // modelMtx = glm::translate(position);
+    // std::cout<<"position matrix" << glm::to_string(modelMtx) << std::endl;
+    modelMtx = glm::rotate(modelMtx, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+    modelMtx = glm::rotate(modelMtx, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+    modelMtx = glm::rotate(modelMtx, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 }

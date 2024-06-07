@@ -8,7 +8,6 @@
 int Window::width;
 int Window::height;
 const char* Window::windowTitle = "Model Environment";
-
 // Interaction Variables
 bool LeftDown, RightDown;
 int MouseX, MouseY;
@@ -93,8 +92,7 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
     GameManager::instance().cam->SetAspect(float(width) / float(height));
     //std::cout<<"Window size: " << width << ", " << height<<std::endl;
 }
-int h = 100;
-int dh = 5;
+
 void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
                     float deltaTime) {
     // Clear the color and depth buffers.
@@ -133,7 +131,6 @@ void Window::Render(GLFWwindow* window, Scene* scene, Camera* camera,
             renderer->Render(camera->GetViewProjectMtx());
         }
     }
-
     skybox->draw(camera->GetViewMtx(), camera->GetProjMtx());
 
     // Render 2D screen

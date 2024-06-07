@@ -72,8 +72,6 @@ int main(int argc, char** argv) {
     // Create the GLFW window.
     float width = 1366;
     float height = 768;
-    
-    // set up camera
     GameManager::instance().cam = new Camera();
     GameManager::instance().cam->SetAspect(float(width) / float(height));
     GLFWwindow* window = Window::createWindow(width, height);
@@ -117,9 +115,6 @@ int main(int argc, char** argv) {
 
     std::cout << "Updating AssetManager" << std::endl;
     std::vector<std::pair<std::string, bool>> modelPaths;
-    modelPaths.push_back(
-        {"../assets/male_basic_walk_30_frames_loop/scene.gltf", true});
-    modelPaths.push_back({"../assets/animation/model.gltf", true});
     modelPaths.push_back({"../assets/robot/robot.gltf", true});
     modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
     modelPaths.push_back({"../assets/ground/plane.gltf", false});
@@ -133,7 +128,7 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", false});
     modelPaths.push_back(
         {"../assets/player-note-attack/player-note-attack.gltf", false});
-    modelPaths.push_back({"../assets/arena/arena.gltf", false});
+    modelPaths.push_back({"../assets/testing/arena.gltf", false});
 
     for (std::pair<string, bool> kv : modelPaths) {
         std::cout << "  path: " << kv.first << std::endl;
@@ -166,7 +161,7 @@ int main(int argc, char** argv) {
 
     // arena
     GameObject* arena = new GameObject();
-    Model* arenaModel = new Model(AssetManager::Instance().GetModel("../assets/arena/arena.gltf"));
+    Model* arenaModel = new Model(AssetManager::Instance().GetModel("../assets/testing/arena.gltf"));
     arena->AddComponent(arenaModel);
     RendererComponent* arenaRender = new RendererComponent(arena, ShaderType::STANDARD);
     arena->AddComponent(arenaRender);
