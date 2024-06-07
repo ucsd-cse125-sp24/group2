@@ -4,12 +4,13 @@
 #define DEBUG_ST false
 
 /* SwipeAttack Defines (SW) */
+#define SW_LATENCY 1.0f // accounts for animation delay
 #define FULL_RANGE (2 * UNIT / 3) // full attack range
 #define ACTIVE_RANGE (UNIT / 3)   // attack range in effect
 #define SW_ANGSPEED (UNIT / 3)
 #define SW_RADIUS 30
 #define SW_HEIGHT 5
-#define SW_LIFE ((FULL_RANGE - ACTIVE_RANGE) / SW_ANGSPEED) 
+#define SW_LIFE ((FULL_RANGE - ACTIVE_RANGE) / SW_ANGSPEED) + SW_LATENCY
 #define SW_DAMAGE 10
 
 /* StompAttack Defines (ST) */
