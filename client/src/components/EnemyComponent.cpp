@@ -22,6 +22,7 @@ void EnemyComponent::Update(float deltaTime) {
             break;
         }
         case ((int) AttackState::STOMP): {
+            // TODO:
             // owner->GetComponent<AnimationPlayer>()->play("");
             // animationDuration = owner->GetComponent<AnimationPlayer>()->GetClip("attack2")->getDuration() / 1000.0f;
             break;
