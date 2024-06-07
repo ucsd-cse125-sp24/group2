@@ -102,7 +102,7 @@ void GameManager::update(Packet* pkt) {
             // which is like 1000 or something rn
             glm::vec3 bossPos =
                 boss->GetComponent<NetTransform>()->GetPosition();
-            cam->SetTarget(glm::vec3(bossPos.x, 0.0f, bossPos.z));
+            cam->SetTarget(glm::vec3(bossPos.x, 6.5f, bossPos.z));
 
             break;
         }
@@ -126,13 +126,12 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 4) {
+                if (players.size() == 1) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);
                 }
                 if (localPlayerObject == network_id) {
-                    std::cout << "HERE" << std::endl;
                     HUDs* hudComponent = new HUDs(playerPrefab);
                     playerPrefab->AddComponent(hudComponent);
                 }
@@ -172,8 +171,8 @@ void GameManager::update(Packet* pkt) {
 
                 cam->SetPosition(
                     playerPos +
-                    glm::normalize(playerPos - cam->GetTarget()) * 3.0f +
-                    glm::vec3(0, 2.0f, 0) + playerRightVector * 0.7f);
+                    glm::normalize(playerPos - cam->GetTarget()) * 5.0f +
+                    glm::vec3(0, 2.0f, 0) + playerRightVector * 1.35f);
             }
 
             // std::cout <<
