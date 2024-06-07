@@ -29,9 +29,9 @@ void InputManager::setUpCallback(GLFWwindow* window) {
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode,
                                int action, int mods) {
-    if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
+    // if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
+    //     glfwSetWindowShouldClose(window, GL_TRUE);
+    // }
 
     if (action == GLFW_PRESS) {
         keys[key] = (KeyState)(keys[key] | KeyState::PRESSED);
