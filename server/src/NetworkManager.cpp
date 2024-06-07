@@ -172,8 +172,7 @@ void NetworkManager::process_input() {
             if (!comboSeq.empty()) {
                 printf(YLW "COMBO HIT\n" RST);
 
-                if (comboSeq == clients[client_id]->p->attack1 ||
-                    comboSeq == clients[client_id]->p->attack2) {
+                if (comboSeq == clients[client_id]->p->attack1) {
                     AttackManager::instance().newPlayerAttack(
                         clients[client_id]->p);
                 }
