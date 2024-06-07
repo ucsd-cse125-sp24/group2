@@ -88,20 +88,24 @@ void AudioManager::Update() {
     if (InputManager::IsKeyPressed(GLFW_KEY_J)) {
         pressed = true;
         pkt->write_int(GLFW_KEY_J);
-        selectedSound = noteMap.at('j');
+        selectedSound = isPhaseOne ? noteMap.at('J') : noteMap.at('j');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_K)) {
         pressed = true;
         pkt->write_int(GLFW_KEY_K);
-        selectedSound = noteMap.at('k');
+        selectedSound = isPhaseOne ? noteMap.at('K') : noteMap.at('k');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_I)) {
         pressed = true;
         pkt->write_int(GLFW_KEY_I);
-        selectedSound = noteMap.at('i');
+        selectedSound = isPhaseOne ? noteMap.at('I') : noteMap.at('i');
     } else if (InputManager::IsKeyPressed(GLFW_KEY_L)) {
         pressed = true;
         pkt->write_int(GLFW_KEY_L);
-        selectedSound = noteMap.at('l');
-    } else {
+        selectedSound = isPhaseOne ? noteMap.at('L') : noteMap.at('l');
+    } else if(InputManager::IsKeyPressed(GLFW_KEY_SPACE)){
+        pressed = false;
+        isPhaseOne = !isPhaseOne;
+        // TODO: change based on music phase
+     } else {
         pressed = false;
         return;
     }
@@ -147,10 +151,12 @@ void AudioManager::Update() {
             FMOD_Channel_Stop(noteChannel);
         }
 
-        result = FMOD_System_PlaySound(system, selectedSound, nullptr, false,
-                                       &noteChannel);
+        result = FMOD_System_PlaySound(system, selectedSound, nullptr, true,
+                                        &noteChannel);
         FMODErrorCheck(result);
         result = FMOD_Channel_SetVolume(noteChannel, 0.2f);
+        FMODErrorCheck(result);
+        result = FMOD_Channel_SetPaused(noteChannel, false);
         FMODErrorCheck(result);
     }
 }
