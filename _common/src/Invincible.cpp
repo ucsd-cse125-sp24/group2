@@ -10,7 +10,7 @@ void Invincible::makeInvincible(float time) {
     duration = time;
 }
 
-void Invincible::update(float deltaTime) {
+void Invincible::Update(float deltaTime) {
     if (!isInvincible) {
         return;
     }

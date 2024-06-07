@@ -128,8 +128,7 @@ int main(int argc, char** argv) {
     modelPaths.push_back(
         {"../assets/projectile-attack/projectile-attack-bone.gltf", true});
     modelPaths.push_back({"../assets/wave-attack-v3/WaveAttack.gltf", true});
-    modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", true});
-    modelPaths.push_back({"../assets/swipe-attack-v2/swipe-attack.gltf", true});
+    modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", false});
     modelPaths.push_back(
         {"../assets/player-note-attack/player-note-attack.gltf", false});
 
@@ -154,24 +153,39 @@ int main(int argc, char** argv) {
     // test laser-beamAttack
     // GameObject* laser = new GameObject();
     // Model* laserModel = new Model(
-    //     AssetManager::Instance().GetModel("../assets/laser-attack/gltf-beam/laser-beam-model.gltf"));
+    //     AssetManager::Instance().GetModel("../assets/laser-attack/laser-beam-model.gltf"));
     // laser->AddComponent(laserModel);
     // RendererComponent* laserRender = new RendererComponent(laser,
     // ShaderType::ANIMATED); laser->AddComponent(laserRender); AnimationPlayer*
     // ap = new AnimationPlayer(laser, laserModel); laser->AddComponent(ap);
-    // ap->play("laser-beamAction");
+    // std::vector<AnimationClip*> prefabClips =
+    //     AssetManager::Instance().GetClips("../assets/laser-attack/laser-beam-model.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     laser->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
+    // laser->GetComponent<Transform>()->SetScale(glm::vec3(30.0f));
+    // laser->GetComponent<Transform>()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+    // ap->play("laser-spin", true);
     // GameManager::instance().scene.Instantiate(laser);
 
     // test mark attack
     // GameObject* mark = new GameObject();
     // Model* markModel = new Model(
-    //     AssetManager::Instance().GetModel("../assets/projectile-attack/projectile-attack-manual.gltf")
+    //     AssetManager::Instance().GetModel("../assets/projectile-attack/projectile-attack-bone.gltf")
     // );
     // mark->AddComponent(markModel);
-    // RendererComponent* markRender = new RendererComponent(mark,
-    // ShaderType::ANIMATED); mark->AddComponent(markRender); AnimationPlayer*
-    // markAP = new AnimationPlayer(mark, markModel);
+    // RendererComponent* markRender = new RendererComponent(mark, ShaderType::ANIMATED); 
+    // mark->AddComponent(markRender); 
+    // AnimationPlayer* markAP = new AnimationPlayer(mark, markModel);
+    // std::vector<AnimationClip*> prefabClips =
+    //     AssetManager::Instance().GetClips("../assets/projectile-attack/projectile-attack-bone.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     mark->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
     // mark->AddComponent(markAP);
+    // mark->GetComponent<Transform>()->SetScale(glm::vec3(10.0f));
     // GameManager::instance().scene.Instantiate(mark);
 
     // test stomp attack
@@ -199,9 +213,8 @@ int main(int argc, char** argv) {
     //     AssetManager::Instance().GetModel("../assets/swipe-attack/swipe-attack.gltf")
     // );
     // swipe->AddComponent(swipeModel);
-    // RendererComponent* swipeRender = new RendererComponent(swipe,
-    // ShaderType::ANIMATED); swipe->AddComponent(swipeRender); AnimationPlayer*
-    // swipeAP = new AnimationPlayer(swipe, swipeModel);
+    // RendererComponent* swipeRender = new RendererComponent(swipe, ShaderType::STANDARD); 
+    // swipe->AddComponent(swipeRender); AnimationPlayer* swipeAP = new AnimationPlayer(swipe, swipeModel);
     // swipe->AddComponent(swipeAP);
     // std::vector<AnimationClip*> prefabClips =
     //     AssetManager::Instance().GetClips("../assets/swipe-attack/swipe-attack.gltf");
@@ -209,8 +222,27 @@ int main(int argc, char** argv) {
     //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
     //     swipe->GetComponent<AnimationPlayer>()->AddClip(clip);
     // }
-    // swipeAP->play("swipe-animation");
+    // swipe->GetComponent<Transform>()->SetScale(glm::vec3(50.0f));
+    // swipe->GetComponent<Transform>()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+    // // swipeAP->play("swipe-animation");
     // GameManager::instance().scene.Instantiate(swipe);
+
+    // test player
+    // GameObject* player = new GameObject();
+    // Model* playerModel = new Model(AssetManager::Instance().GetModel("../assets/robot/robot.gltf"));
+    // player->AddComponent(playerModel);
+    // RendererComponent* playerRender = new RendererComponent(player, ShaderType::ANIMATED);
+    // player->AddComponent(playerRender);
+    // AnimationPlayer* playerAP = new AnimationPlayer(player, playerModel);
+    // player->AddComponent(playerAP);
+    // std::vector<AnimationClip*> prefabClips = AssetManager::Instance().GetClips("../assets/robot/robot.gltf");
+    // for (int i = 0; i < prefabClips.size(); ++i) {
+    //     AnimationClip* clip = new AnimationClip(prefabClips[i]);
+    //     player->GetComponent<AnimationPlayer>()->AddClip(clip);
+    // }
+    // GameManager::instance().scene.Instantiate(player);
+    // player->GetComponent<Transform>()->SetScale(glm::vec3(100.0f));
+    // player->GetComponent<Transform>()->SetRotation(glm::vec3(0.0f, 90.0f, 0.0f));
 
     // ground
     GameObject* go = new GameObject();

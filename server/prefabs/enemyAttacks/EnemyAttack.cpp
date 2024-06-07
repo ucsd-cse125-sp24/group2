@@ -29,7 +29,7 @@ bool takesDamage(GameObject* subject) {
         msm != nullptr && (msm->GetState() == MovementState::DODGE ||
                            msm->GetState() == MovementState::DODGE_START);
     // if(dodged) printf("dodged!\n");
-    return (!(subject->isInvincible()) && !dodged);
+    return (!dodged && !(subject->isInvincible()));
 }
 
 void EnemyAttack::DealDamage(std::vector<GameObject*> entity_hit) {
