@@ -13,12 +13,7 @@
 #include "NetTransform.hpp"
 #include "Mover.hpp"
 
-enum Keys {
-    I = 73,
-    J = 74,
-    K = 75,
-    L = 76
-};
+enum Keys { I = 73, J = 74, K = 75, L = 76 };
 
 class Player : public Entity {
 public:
@@ -26,6 +21,7 @@ public:
     // glm::vec3 velocity = glm::vec3();
     // float speed = 0.2f;
     bool alive;
+    int clientId = -1;
 
     // I = 73, J = 74, K = 75, L = 76
     std::vector<int> attack1 = {J, J, J, J};
@@ -37,7 +33,7 @@ public:
     int32_t TypeID() const override { return PLAYER; }
 
     // Used by server
-    Player(glm::vec3 position);
+    Player(glm::vec3 position, int clientId);
     void onDestroy();
 
     virtual void update(float deltaTime) override;

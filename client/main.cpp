@@ -72,17 +72,19 @@ int main(int argc, char** argv) {
     // Create the GLFW window.
     float width = 1366;
     float height = 768;
+    
+    // set up camera
+    GameManager::instance().cam = new Camera();
+    GameManager::instance().cam->SetAspect(float(width) / float(height));
     GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
+    
 
     printf(YLW "Loading...\n" RST);
     GameManager::instance().Init();
     printf(YLW "Done loading!n" RST);
 
-    // Setup camera
-    GameManager::instance().cam = new Camera();
-    GameManager::instance().cam->SetAspect(float(width) / float(height));
 
     // Print OpenGL and GLSL versions.
     print_versions();

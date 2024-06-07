@@ -4,8 +4,8 @@
 HealthBar::HealthBar() {}
 HealthBar::HealthBar(glm::vec3 pos, float width, float height) {
     quad = new Quad(pos, width, height);
-    quad->setTexture("emptyBar.png", "../assets/HUD/healthBar");
-    quad->setTexture("fullBar.png", "../assets/HUD/healthBar");
+    //quad->setTexture("empty.png", "../assets/HUD/healthBar");
+    //quad->setTexture("full.png", "../assets/HUD/healthBar");
 
     ratio = currHealth / maxHealth;
 }
@@ -13,8 +13,8 @@ HealthBar::HealthBar(glm::vec3 pos, float width, float height) {
 HealthBar::HealthBar(glm::vec3 pos, float size) {
     quad = new Quad(pos, size);
     ratio = currHealth / maxHealth;
-    quad->setTexture("emptyBar.png", "../assets/HUD/healthBar");
-    quad->setTexture("fullBar.png", "../assets/HUD/healthBar");
+    // quad->setTexture("empty.png", "../assets/HUD/healthBar");
+    // quad->setTexture("full.png", "../assets/HUD/healthBar");
     quad->update();
     
     quad->enableState(VISIBLE);
@@ -34,7 +34,11 @@ void HealthBar::draw(float aspectRatio) {
         currHealth = maxHealth;
     }
     GLuint shader = quad->getShader();
-    ratio = currHealth / maxHealth;
+    
+    ratio = ((currHealth) / (maxHealth));
+
+    //std::cout<<"ratio" << ratio << std::endl;
+    //std::cout<<"heath: " << currHealth <<std::endl;
     glUseProgram(shader);
     glUniform1i(glGetUniformLocation(shader, "isHealthBar"), 1);
     glUniform1f(glGetUniformLocation(shader, "ratio"), ratio);
@@ -42,3 +46,19 @@ void HealthBar::draw(float aspectRatio) {
 }
 
 void HealthBar::update() { quad->update(); }
+
+void HealthBar::enableState(ObjectStates state) {
+    quad->enableState(state);
+}
+
+void HealthBar::disableState(ObjectStates state) {
+    quad->disableState(state);
+}
+
+bool HealthBar::checkState(ObjectStates state) {
+    return quad->checkState(state);
+}
+
+void HealthBar::setTexture(const char* path, const std::string& directory) {
+    quad->setTexture(path, directory);
+}

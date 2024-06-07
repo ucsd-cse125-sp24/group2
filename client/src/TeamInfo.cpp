@@ -32,6 +32,8 @@ void TeamInfo::update() {
 void TeamInfo::addTeamMember(int id) {
     teamHealthMap[id] = new HealthBar(
         glm::vec3(startPos.x, startPos.y - yOffset, startPos.z), width, height);
+    teamHealthMap[id]->setTexture("empty.png", "../assets/HUD/healthBar");
+    teamHealthMap[id]->setTexture("full.png", "../assets/HUD/healthBar");
     yOffset += 0.1f;
     size++;
     teamHealthMap[id]->update();
