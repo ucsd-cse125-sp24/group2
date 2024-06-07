@@ -14,7 +14,7 @@
 #include "Camera.h"
 #include "AnimationPlayer.h"
 
-#define MAX_CLIENTS 2
+#define MAX_CLIENTS 4
 
 class Model;
 class GameManager {
