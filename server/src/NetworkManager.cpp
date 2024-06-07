@@ -27,7 +27,7 @@ Server server;
 bool isServerReady = false;
 int playersReady = 0;
 Enemy* enemyPrefab;
-std::vector<glm::vec3> spawnPoints = {glm::vec3(60, 0, 0), glm::vec3(0, 0, 60),
+std::vector<glm::vec3> spawnPoints = {glm::vec3(30, 0, 0), glm::vec3(0, 0, 60),
                                       glm::vec3(-60, 0, 0),
                                       glm::vec3(0, 0, -60)};
 int spawnIndex = 0;

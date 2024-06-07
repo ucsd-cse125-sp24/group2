@@ -9,6 +9,7 @@
 class StompAttack : public EnemyAttack {
 private:
     float lifetime;
+    float latency;
     Collider* outerC;
     Collider* innerC;
     void addColliders();

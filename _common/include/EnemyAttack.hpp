@@ -10,6 +10,8 @@ class EnemyAttack : public Entity {
 private:
     int damage;
     Enemy* enemy;
+    float stompDelay = 2.0f;
+    float swipeDelay = 1.0f;
 
 public:
     // used by server

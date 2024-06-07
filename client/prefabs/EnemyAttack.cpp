@@ -26,27 +26,28 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
     switch (attackType) {
     case (int)AttackState::SWIPE:
         meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
-        GetComponent<NetTransform>()->SetScale(glm::vec3(3.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(0.0f));
         model = new Model(AssetManager::Instance().GetModel(swipePath));
         path = swipePath;
         printf("SwipeAttack!\n");
         break;
     case (int)AttackState::LASER:
-        // we probably need to tune down stomp attack
-        GetComponent<NetTransform>()->SetScale(glm::vec3(30.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(10.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(laserPath));
         path = laserPath;
         printf("LaserAttack!\n");
         break;
     case (int)AttackState::MARK:
+        GetComponent<NetTransform>()->SetScale(glm::vec3(25.0f, 1.0f, 25.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(markPath));
         path = markPath;
         printf("MarkedAttack!\n");
         break;
     case (int)AttackState::STOMP:
-        GetComponent<NetTransform>()->SetScale(glm::vec3(30.0f));
+        // GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(0.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(stompPath));
         path = stompPath;
@@ -54,6 +55,7 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         break;
     default:
         printf("Wrong AttackState!\n");
+        return;
         break;
     }
     AddComponent(meshRenderer);
@@ -73,6 +75,11 @@ void EnemyAttack::update(float deltaTime) {
     switch (attackType) {
     case (int)AttackState::SWIPE:
         // GetComponent<AnimationPlayer>()->play("swipe-animation");
+        if (swipeDelay <= 0) {
+            GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        } else {
+            swipeDelay -= deltaTime;
+        }
         break;
     case (int)AttackState::LASER:
         GetComponent<AnimationPlayer>()->play("laser-spin", false);
@@ -81,7 +88,12 @@ void EnemyAttack::update(float deltaTime) {
         GetComponent<AnimationPlayer>()->play("projectile-bone-anim", false);
         break;
     case (int)AttackState::STOMP:
-        GetComponent<AnimationPlayer>()->play("waveAttack", false);
+        if (stompDelay <= 0) {
+            GetComponent<NetTransform>()->SetScale(glm::vec3(5.0f));
+        } else {
+            GetComponent<AnimationPlayer>()->play("waveAttack", true);
+            stompDelay -= deltaTime;
+        }
         break;
     }
 }

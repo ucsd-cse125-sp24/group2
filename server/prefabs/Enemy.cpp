@@ -25,7 +25,7 @@ Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetRotation(glm::vec3(0, 0, 0));
     Collider* hitbox = new Collider(this, this->GetComponent<NetTransform>());
     // TODO: test size values
-    hitbox->SetRadius(5);
+    hitbox->SetRadius(10);
     hitbox->SetHeight(20);
 
     AddComponent(hitbox);
@@ -89,6 +89,7 @@ void Enemy::update(float deltaTime) {
         currentPhase = (EnemyState)99;
 
         if (prevPhase == PHASE4) {
+            GetComponent<EnemyComponent>()->SetState(AttackState::DEAD);
             NetworkManager::instance().send_next_phase();
         }
     }
@@ -123,17 +124,20 @@ void Enemy::update(float deltaTime) {
     // }
 
     // every 5 seconds, attack
+
     s += deltaTime;
-    if (std::fmod(s, 5.0) <= deltaTime) {
-        attack();
-        attackDuration = 2.0f;
-        s = std::fmod(s, 5.0);
-    } else {
-        if (attackDuration > 0) {
-            attackDuration -= deltaTime;
+    if (currentPhase != (EnemyState)99) {
+        if (std::fmod(s, 5.0) <= deltaTime) {
+            attack();
+            attackDuration = 2.0f;
+            s = std::fmod(s, 5.0);
         } else {
-            // J: want to play idle animation when we are not attacking
-            GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
+            if (attackDuration > 0) {
+                attackDuration -= deltaTime;
+            } else {
+                // J: want to play idle animation when we are not attacking
+                GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
+            }
         }
     }
 

@@ -4,7 +4,8 @@
 
 MarkedAttack::MarkedAttack(Enemy* owner, Player* player) : EnemyAttack(owner) {
     collider = new Collider(this, player->GetComponent<Collider>());
-    latency = LATENCY;
+    collider->SetRadius(M_RADIUS);
+    latency = M_LATENCY;
     lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
 }
@@ -12,7 +13,8 @@ MarkedAttack::MarkedAttack(Enemy* owner, Player* player) : EnemyAttack(owner) {
 MarkedAttack::MarkedAttack(Enemy* owner, Player* player, int networkId)
     : EnemyAttack(owner, networkId) {
     collider = new Collider(this, player->GetComponent<Collider>());
-    latency = LATENCY;
+    collider->SetRadius(M_RADIUS);
+    latency = M_LATENCY;
     lifetime = M_LIFETIME;
     SetDamage(M_DAMAGE);
 }

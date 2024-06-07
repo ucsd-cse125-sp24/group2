@@ -7,12 +7,14 @@ enum class AttackState {
     LASER,
     MARK,
     STOMP,
-    IDLE
+    IDLE,
+    DEAD
 };
 
 class EnemyComponent : public INetworkComponent {
     private:
         float animationDuration = 0.0f;
+        float deadAnimation = 2.0f;
     protected:
         int atk;
     public:

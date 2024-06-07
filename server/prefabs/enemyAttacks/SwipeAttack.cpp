@@ -21,6 +21,7 @@ SwipeAttack::SwipeAttack(Enemy* owner) : EnemyAttack(owner) {
     GetComponent<NetTransform>()->SetPosition(owner->GetComponent<NetTransform>()->GetPosition());
     GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     this->SetDamage(SW_DAMAGE);
+    latency = SW_LATENCY;
     lifetime = SW_LIFE;
     addCollider(owner);
 };
@@ -31,6 +32,7 @@ SwipeAttack::SwipeAttack(Enemy* owner, int networkId)
     GetComponent<NetTransform>()->SetPosition(owner->GetComponent<NetTransform>()->GetPosition());
     GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     this->SetDamage(SW_DAMAGE);
+    latency = SW_LATENCY;
     lifetime = SW_LIFE;
     addCollider(owner);
 };
@@ -41,21 +43,24 @@ void SwipeAttack::update(float deltaTime) {
         return;
     }
     lifetime -= deltaTime;
+    latency -= deltaTime;
 
-    Collider* EnemyAttackCollider = this->GetComponent<Collider>();
-    std::vector<GameObject*> playersHit =
-        CollisionManager::instance().moveBossSwipe(EnemyAttackCollider,
-                                                   deltaTime * SW_ANGSPEED);
-    float newCenterAngle = (EnemyAttackCollider->GetStartAngle() +
-                            EnemyAttackCollider->GetEndAngle()) /
-                           2;
-    this->GetComponent<NetTransform>()->SetRotation(
-        glm::vec3(0, newCenterAngle, 0));
-    // std::cout << "damage range: " << EnemyAttackCollider->GetStartAngle() <<
-    // " to " << EnemyAttackCollider->GetEndAngle() << std::endl; std::cout <<
-    // "attack rotation: " <<
-    // glm::to_string(this->GetComponent<NetTransform>()->GetRotation()) <<
-    // std::endl;
+    if (latency <= 0) {
+        Collider* EnemyAttackCollider = this->GetComponent<Collider>();
+        std::vector<GameObject*> playersHit =
+            CollisionManager::instance().moveBossSwipe(EnemyAttackCollider,
+                                                    deltaTime * SW_ANGSPEED);
+        float newCenterAngle = (EnemyAttackCollider->GetStartAngle() +
+                                EnemyAttackCollider->GetEndAngle()) /
+                            2;
+        this->GetComponent<NetTransform>()->SetRotation(
+            glm::vec3(0, newCenterAngle, 0));
+        // std::cout << "damage range: " << EnemyAttackCollider->GetStartAngle() <<
+        // " to " << EnemyAttackCollider->GetEndAngle() << std::endl; std::cout <<
+        // "attack rotation: " <<
+        // glm::to_string(this->GetComponent<NetTransform>()->GetRotation()) <<
+        // std::endl;
 
-    DealDamage(playersHit);
+        DealDamage(playersHit);
+    }
 }
