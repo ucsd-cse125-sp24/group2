@@ -84,7 +84,7 @@ void GameManager::handle_packet(Packet* packet) {
             if (index == 4) {
                 players[localPlayerObject]
                     ->GetComponent<HUDs>()
-                    ->triggleHitText();
+                    ->triggleHitText(comboType);
             }
         }
         printf("combo index: %d\n", index);

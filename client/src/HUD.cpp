@@ -23,6 +23,10 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     text->setOpacity(opacity);
     hitText = new Quad(glm::vec3(0.0f, 0.3f, 0.0f), 0.2f);
     hitText->setTexture("hit.png", "../assets/HUD/text");
+    hitText->setTexture("hit.png", "../assets/HUD/text");
+    hitText->setTexture("heal.png", "../assets/HUD/text");
+    hitText->setTexture("revive.png", "../assets/HUD/text");
+    hitText->setTexture("speed.png", "../assets/HUD/text");
     hitText->enableState(VISIBLE);
     hitText->setOpacity(opacity);
     float dy = 0.0f;
@@ -149,8 +153,9 @@ void HUDs::resetNoteOpacity() {
 
 void HUDs::setComboCount(int count) { comboCount = count; }
 
-void HUDs::triggleHitText() {
+void HUDs::triggleHitText(int comboType) {
     isComboHit = true;
+    hitText->activateTexture(comboType - 1);
     hitY = 0.1f;
     hitOpacity = 1.0f;
 }

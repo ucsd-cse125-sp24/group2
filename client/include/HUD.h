@@ -12,7 +12,7 @@ public:
     HUDs(GameObject* owner);
     void draw(float aspectRatio);
     void triggleText(std::string text);
-    void triggleHitText();
+    void triggleHitText(int comboType);
     void update(float dt);
     std::string ToString() override;
     void setComboCount(int count);
