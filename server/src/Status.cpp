@@ -8,9 +8,15 @@ void Status::AddStatusEffect(IStatusEffect* statusEffect) {
         typeToStatusEffect[typeIndex]->OnAdd();
         typeToStatusEffect[typeIndex]->StartTimer();
     } else if (statusEffect->isStackable) { // if found, and can stack
-        typeToStatusEffect[typeIndex]->stacks++;
-        std::cout << "Adding stack" << std::endl;
-        // typeToStatusEffect[typeIndex]->OnAdd();
+        if (typeToStatusEffect[typeIndex]->stacks < 3) {
+            typeToStatusEffect[typeIndex]->stacks++;
+            std::cout << "Adding stack" << std::endl;
+            // typeToStatusEffect[typeIndex]->OnAdd();
+        } else {
+            typeToStatusEffect[typeIndex]->StartTimer();
+            std::cout << "Max, resetting timer instead" << std::endl;
+        }
+        
     }
 }
 
