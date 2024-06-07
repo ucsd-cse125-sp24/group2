@@ -26,7 +26,7 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
     switch (attackType) {
     case (int)AttackState::SWIPE:
         meshRenderer = new RendererComponent(this, ShaderType::STANDARD);
-        GetComponent<NetTransform>()->SetScale(glm::vec3(50.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(3.0f));
         model = new Model(AssetManager::Instance().GetModel(swipePath));
         path = swipePath;
         printf("SwipeAttack!\n");

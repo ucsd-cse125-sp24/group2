@@ -18,6 +18,8 @@ void SwipeAttack::addCollider(Enemy* owner) {
 
 // Note: enemy should be facing target player
 SwipeAttack::SwipeAttack(Enemy* owner) : EnemyAttack(owner) {
+    GetComponent<NetTransform>()->SetPosition(owner->GetComponent<NetTransform>()->GetPosition());
+    GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     this->SetDamage(SW_DAMAGE);
     lifetime = SW_LIFE;
     addCollider(owner);
@@ -26,6 +28,8 @@ SwipeAttack::SwipeAttack(Enemy* owner) : EnemyAttack(owner) {
 // Note: enemy should be facing target player
 SwipeAttack::SwipeAttack(Enemy* owner, int networkId)
     : EnemyAttack(owner, networkId) {
+    GetComponent<NetTransform>()->SetPosition(owner->GetComponent<NetTransform>()->GetPosition());
+    GetComponent<NetTransform>()->SetRotation(owner->GetComponent<NetTransform>()->GetRotation());
     this->SetDamage(SW_DAMAGE);
     lifetime = SW_LIFE;
     addCollider(owner);
