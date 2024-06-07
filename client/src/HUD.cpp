@@ -7,7 +7,7 @@ HUDs::HUDs() {
 }
 
 HUDs::HUDs(GameObject* owner) : IComponent(owner) {
-    healthBar = new HealthBar(glm::vec3(-0.70f, 0.95f, 0.0f), 0.45f, 0.3f);
+    healthBar = new HealthBar(glm::vec3(-0.70f, 0.95f, 0.0f), 0.3f, 0.05f);
     teamInfo = new TeamInfo(4);
     metronome = new Metronome(60.0f);
     text = new Quad(glm::vec3(0.0f, 0.1f, 0.0f), 0.2f);

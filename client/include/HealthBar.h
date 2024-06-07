@@ -22,5 +22,5 @@ private:
     Quad* quad;
     // float currHealth = 100.0f;
     float maxHealth = 100.0f;
-    float ratio = 0.0f;
+    float ratio = 1.0f;
 };
