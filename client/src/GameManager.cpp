@@ -18,7 +18,7 @@ const std::string path = "../assets/robot/robot.gltf";
 const std::string enemyPath = "../assets/Bear2/bear.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
 
-Enemy* boss;
+Enemy* boss = nullptr;
 void StartGame(Packet*);
 
 int localPlayerObject = -1;
@@ -67,6 +67,12 @@ void GameManager::handle_packet(Packet* packet) {
     case PacketType::COMBO_INDEX:
         int index;
         packet->read_int(&index);
+        if(players.find(localPlayerObject) != players.end()) {
+            players[localPlayerObject]->GetComponent<HUDs>()->setComboCount(index);
+            if(index == 4) {
+                players[localPlayerObject]->GetComponent<HUDs>()->triggleHitText();
+            }
+        }    
         printf("combo index: %d\n", index);
         break;
     default:
@@ -103,7 +109,8 @@ void GameManager::update(Packet* pkt) {
             }
 
             boss->deserialize(pkt);
-
+            players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->enableState(VISIBLE);
+            players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setHealth(boss->GetComponent<Health>()->GetHealth());
             // also look up at the boss, probably needs to be the center of it
             // which is like 1000 or something rn
             glm::vec3 bossPos =
@@ -175,7 +182,7 @@ void GameManager::update(Packet* pkt) {
                     else
                         players[localPlayerObject]->GetComponent<HUDs>()->teamInfo->teamHealthMap[i]->setHealth(players[i]->GetComponent<Health>()->GetHealth());
                 }
-                
+            
                 auto playerPos = players[localPlayerObject]
                                      ->GetComponent<NetTransform>()
                                      ->position;
