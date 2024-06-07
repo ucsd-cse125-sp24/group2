@@ -28,8 +28,8 @@ HUDs::HUDs(GameObject* owner) : IComponent(owner) {
     float dy = 0.0f;
     for (int i = 0; i < 4; i++) {
         musicNotes.push_back(
-            new Quad(glm::vec3(0.9f, -0.5f + dy, 0.0f), 0.07f));
-        musicNotes[i]->setTexture("music-note2.png", "../assets/HUD");
+            new Quad(glm::vec3(0.9f, -0.5f + dy, 0.0f), 0.09f));
+        musicNotes[i]->setTexture("music-note3.png", "../assets/HUD");
         musicNotes[i]->enableState(VISIBLE);
         musicNotes[i]->setOpacity(0.2);
         dy += 0.2f;
