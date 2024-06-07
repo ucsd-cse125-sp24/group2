@@ -8,6 +8,8 @@
 #include "Entity.hpp"
 #include "NetworkObject.hpp"
 #include "engine/Scene.hpp"
+#include "Client.hpp"
+
 class NetworkManager {
 private:
     std::mutex _mutex;
@@ -24,6 +26,8 @@ public:
     void send_combo(int clientId, int comboType, int comboIndex);
     void on_message_received(const EventArgs* e);
     void on_client_joined(const EventArgs* e);
+    std::vector<Client*> get_clients();
+
     static NetworkManager& instance() {
         static NetworkManager s;
         return s;

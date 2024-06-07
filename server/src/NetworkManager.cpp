@@ -27,7 +27,7 @@ Server server;
 bool isServerReady = false;
 int playersReady = 0;
 Enemy* enemyPrefab;
-std::vector<glm::vec3> spawnPoints = {glm::vec3(60, 0, 0), glm::vec3(0, 0, 60),
+std::vector<glm::vec3> spawnPoints = {glm::vec3(30, 0, 0), glm::vec3(0, 0, 60),
                                       glm::vec3(-60, 0, 0),
                                       glm::vec3(0, 0, -60)};
 int spawnIndex = 0;
@@ -349,4 +349,15 @@ void NetworkManager::on_client_joined(const EventArgs* e) {
 
     // Create player model
     scene.Instantiate(p);
+}
+
+std::vector<Client*> NetworkManager::get_clients() {
+    std::vector<Client*> result;
+    std::map<int, Client*> clients = server.get_clients();
+
+    for (const auto& kv : clients) {
+        result.push_back(kv.second);
+    }
+
+    return result;
 }

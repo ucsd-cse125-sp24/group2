@@ -22,6 +22,7 @@ set(SERVER_SOURCES
     prefabs/AttackManager.cpp
     src/MovementStateMachine.cpp
     src/Status.cpp
+    prefabs/EnemyMover.cpp
     )
 FILE(GLOB COMMON_SOURCES ../_common/src/components/*.cpp ../_common/src/engine/*.cpp ../_common/src/*.cpp)
 FILE(GLOB ENEMY_ATTACKS prefabs/enemyAttacks/*.cpp)

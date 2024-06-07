@@ -8,6 +8,7 @@ void Scene::Update(float deltaTime) {
     for (auto const& entity : entities) {
         entity->update(deltaTime);
         for (int i = 0; i < entity->components.size(); i++) {
+            // std::cout << entity->TypeID() << std::endl;
             // std::cout << "Updating component: " << entity->components[i]->ToString() << std::endl;
             entity->components[i]->Update(deltaTime);
         }
