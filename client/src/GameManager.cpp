@@ -15,7 +15,7 @@
 #include "Health.hpp"
 
 const std::string path = "../assets/robot/robot.gltf";
-const std::string enemyPath = "../assets/Bear2/bear.gltf";
+const std::string enemyPath = "../assets/bear_v5/bear.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
 
 Enemy* boss = nullptr;
