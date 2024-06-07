@@ -12,7 +12,7 @@
 #include "Collider.hpp"
 #include "GameObject.hpp"
 
-#define BOUNDARY_LEN 500
+#define BOUNDARY_LEN 120
 
 // Cylinder is used for player and boss
 // CylindricalSector is used for attack range

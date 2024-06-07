@@ -21,6 +21,7 @@ void StompAttack::addColliders() {
 StompAttack::StompAttack(Enemy* owner) : EnemyAttack(owner) {
     addColliders();
     lifetime = ST_LIFE;
+    latency = ST_LATENCY;
     SetDamage(ST_DAMAGE);
 };
 
@@ -28,6 +29,7 @@ StompAttack::StompAttack(Enemy* owner, int networkId)
     : EnemyAttack(owner, networkId) {
     addColliders();
     lifetime = ST_LIFE;
+    latency = ST_LATENCY;
     SetDamage(ST_DAMAGE);
 };
 
@@ -36,18 +38,21 @@ void StompAttack::update(float deltaTime) {
         exist = false;
         return;
     }
+    latency -= deltaTime;
     lifetime -= deltaTime;
-    if (DEBUG_ST)
-        printf("> lifetime is %f\n", lifetime);
+    if (latency <= 0) {
+        if (DEBUG_ST)
+            printf("> lifetime is %f\n", lifetime);
 
-    Collider* EnemyAttackCollider = this->GetComponent<Collider>();
-    std::vector<GameObject*> playersHit =
-        CollisionManager::instance().moveBossStomp(
-            outerC, innerC,
-            ST_SPEED * deltaTime); // get players hit at this instant
+        Collider* EnemyAttackCollider = this->GetComponent<Collider>();
+        std::vector<GameObject*> playersHit =
+            CollisionManager::instance().moveBossStomp(
+                outerC, innerC,
+                ST_SPEED * deltaTime); // get players hit at this instant
 
-    if (DEBUG_ST)
-        printf("> %d players hit\n\n", playersHit.size());
+        if (DEBUG_ST)
+            printf("> %d players hit\n\n", playersHit.size());
 
-    DealDamage(playersHit);
+        DealDamage(playersHit);
+    }
 }

@@ -17,13 +17,13 @@ public:
     void OnAdd() {
         std::cout << "OnAdd(): Updating speed from: " << status->baseSpeed
                   << std::endl;
-        status->baseSpeed += 5.0f;
+        status->baseSpeed += 0.33f;
         std::cout << "To: " << status->baseSpeed << std::endl;
     }
     void OnRemove() {
         std::cout << "OnRemove(): Updating speed from: " << status->baseSpeed
                   << std::endl;
-        status->baseSpeed -= 5.0f;
+        status->baseSpeed -= 0.33f;
         std::cout << "To: " << status->baseSpeed << std::endl;
     }
 };
