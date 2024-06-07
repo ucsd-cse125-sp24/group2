@@ -15,7 +15,7 @@
 #include "Health.hpp"
 
 const std::string path = "../assets/robot/robot.gltf";
-const std::string enemyPath = "../assets/Bear2/bear.gltf";
+const std::string enemyPath = "../assets/bear_v5/bear.gltf";
 const std::string robotPath = "../assets/robot/robot.gltf";
 
 Enemy* boss = nullptr;
@@ -140,7 +140,7 @@ void GameManager::update(Packet* pkt) {
                 players[network_id] = playerPrefab;
                 scene.Instantiate(playerPrefab);
 
-                if (players.size() == 4) {
+                if (players.size() == 1) {
                     Packet* pkt = new Packet();
                     pkt->write_int((int)PacketType::CLIENT_READY);
                     client.send(pkt);

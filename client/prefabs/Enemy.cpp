@@ -12,7 +12,7 @@ Enemy::Enemy(std::string path, int networkId) : Entity(networkId) {
     // Model* model = new Model(this, path, true);
     Model* model = new Model(AssetManager::Instance().GetModel(path));
     AddComponent(model);
-    GetComponent<NetTransform>()->SetScale(glm::vec3(50.0f));
+    GetComponent<NetTransform>()->SetScale(glm::vec3(10.0f));
     AnimationPlayer* animationPlayer = new AnimationPlayer(this, model);
     AddComponent(animationPlayer);
     RendererComponent* renderer =

@@ -29,9 +29,6 @@ Player::Player(glm::vec3 position, int clientId) : Entity() {
     AddComponent(invinc);
     Status* status = new Status(this);
     AddComponent(status);
-    status->AddStatusEffect(new SpeedBoost(status)); // test
-    status->AddStatusEffect(new SpeedBoost(status)); // test
-    status->AddStatusEffect(new SpeedBoost(status)); // test
 
     // I = 73, J = 74, K = 75, L = 76
     // TODO make player-specific combos

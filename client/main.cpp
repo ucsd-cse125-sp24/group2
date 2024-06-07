@@ -124,7 +124,8 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/sphere/sphere.gltf", false});
     modelPaths.push_back({"../assets/ground/plane.gltf", false});
     modelPaths.push_back({"../assets/floor/floor.gltf", false});
-    modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
+    // modelPaths.push_back({"../assets/Bear2/bear.gltf", true});
+    modelPaths.push_back({"../assets/bear_v5/bear.gltf", true});
     modelPaths.push_back(
         {"../assets/laser-attack/laser-beam-model.gltf", true});
     modelPaths.push_back(
@@ -162,7 +163,7 @@ int main(int argc, char** argv) {
         new RendererComponent(go, ShaderType::STANDARD);
     go->AddComponent(renderer);
     GameManager::instance().scene.Instantiate(go);
-    go->GetComponent<Transform>()->SetScale(glm::vec3(10.0f));
+    go->GetComponent<Transform>()->SetScale(glm::vec3(0.0f));
 
     // arena
     GameObject* arena = new GameObject();
@@ -170,6 +171,7 @@ int main(int argc, char** argv) {
     arena->AddComponent(arenaModel);
     RendererComponent* arenaRender = new RendererComponent(arena, ShaderType::STANDARD);
     arena->AddComponent(arenaRender);
+    arena->GetComponent<Transform>()->SetScale(glm::vec3(2.0f));
     arena->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
     GameManager::instance().scene.Instantiate(arena);
 
