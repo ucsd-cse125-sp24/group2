@@ -170,9 +170,9 @@ bool CollisionManager::collisionCylinderSector(const Collider* cyl,
     if (z1Max < z2Min || z2Max < z1Min)
         return false;
 
-    Vector2 edge1 = {-sec->GetRadius() * sin(glm::radians(sec->GetStartAngle())),
+    Vector2 edge1 = {sec->GetRadius() * sin(glm::radians(sec->GetStartAngle())),
                      sec->GetRadius() * cos(glm::radians(sec->GetStartAngle()))};
-    Vector2 edge2 = {-sec->GetRadius() * sin(glm::radians(sec->GetEndAngle())),
+    Vector2 edge2 = {sec->GetRadius() * sin(glm::radians(sec->GetEndAngle())),
                      sec->GetRadius() * cos(glm::radians(sec->GetEndAngle()))};
     Vector2 conn = {position1.x - position2.x, position1.z - position2.z};
     if (conn.isBetween(edge1, edge2)) {

@@ -47,12 +47,21 @@ void AttackManager::addPlayer(Player* p) {
 void AttackManager::addEnemy(Enemy* e) { enemyPrefab = e; }
 
 void AttackManager::newLaserAttack() {
-    LaserAttack* laserAtt = new LaserAttack(enemyPrefab);
-    enemyAttackList.push_back(laserAtt);
+    LaserAttack* laserFront = new LaserAttack(enemyPrefab, 0);
+    enemyAttackList.push_back(laserFront);
+    NetworkManager::instance().scene.Instantiate(laserFront);
+    LaserAttack* laserLeft = new LaserAttack(enemyPrefab, 1);
+    enemyAttackList.push_back(laserLeft);
+    NetworkManager::instance().scene.Instantiate(laserLeft);
+    LaserAttack* laserBack = new LaserAttack(enemyPrefab, 2);
+    enemyAttackList.push_back(laserBack);
+    NetworkManager::instance().scene.Instantiate(laserBack);
+    LaserAttack* laserRight = new LaserAttack(enemyPrefab, 3);
+    enemyAttackList.push_back(laserRight);
+    NetworkManager::instance().scene.Instantiate(laserRight);
     // J: this functionality could be placed in the attack initializations
     // idk this seems a bit more centralized and is less work
     enemyPrefab->GetComponent<EnemyComponent>()->SetState(AttackState::LASER);
-    NetworkManager::instance().scene.Instantiate(laserAtt);
 }
 
 void AttackManager::newStompAttack() {
