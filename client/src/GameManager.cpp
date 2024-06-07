@@ -74,6 +74,8 @@ void GameManager::handle_packet(Packet* packet) {
         break;
     }
     case PacketType::COMBO_INDEX:
+        int comboType;
+        packet->read_int(&comboType);
         int index;
         packet->read_int(&index);
         if (players.find(localPlayerObject) != players.end()) {

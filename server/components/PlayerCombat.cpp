@@ -14,10 +14,11 @@ void PlayerCombat::Update(float deltaTime) {
     }
 }
 
-void PlayerCombat::AddCombo(const std::vector<int>& sequence) {
+void PlayerCombat::AddCombo(const std::vector<int>& sequence, int comboNumber) {
     Combo combo;
     combo.comboIndex = 0;
     combo.sequence = sequence;
+    combo.comboType = comboNumber;
     combos.push_back(combo);
 }
 
@@ -47,13 +48,13 @@ std::vector<int> PlayerCombat::CheckCombo(int input) {
         // Reached end of combo, success
         if (combo.comboIndex == combo.sequence.size()) {
             ResetAllCombos();
-            NetworkManager::instance().send_combo(((Player*)owner)->clientId,
-                                                  maxComboIndex);
+            NetworkManager::instance().send_combo(
+                ((Player*)owner)->clientId, combo.comboType maxComboIndex);
             return combo.sequence;
         }
     }
 
-    NetworkManager::instance().send_combo(((Player*)owner)->clientId,
+    NetworkManager::instance().send_combo(((Player*)owner)->clientId, 0,
                                           maxComboIndex);
 
     return {};

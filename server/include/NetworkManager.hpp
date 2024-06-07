@@ -21,7 +21,7 @@ public:
     void send_state();
     void process_input();
     void send_next_phase();
-    void send_combo(int clientId, int comboIndex);
+    void send_combo(int clientId, int comboType, int comboIndex);
     void on_message_received(const EventArgs* e);
     void on_client_joined(const EventArgs* e);
     static NetworkManager& instance() {

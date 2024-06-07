@@ -302,9 +302,10 @@ void NetworkManager::send_next_phase() {
     }
 }
 
-void NetworkManager::send_combo(int clientId, int comboIndex) {
+void NetworkManager::send_combo(int clientId, int comboType, int comboIndex) {
     Packet* p = new Packet();
     p->write_int((int)PacketType::COMBO_INDEX);
+    p->write_int(comboType);
     p->write_int(comboIndex);
     server.send(clientId, p);
 }
