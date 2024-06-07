@@ -63,6 +63,11 @@ void GameManager::handle_packet(Packet* packet) {
             std::cout << "GAME OVER" << std::endl;
         }
         break;
+    case PacketType::COMBO_INDEX:
+        int index;
+        packet->read_int(&index);
+        printf("combo index: %d\n", index);
+        break;
     default:
         std::cout << "  PacketType: ERROR" << std::endl;
         break;
