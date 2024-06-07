@@ -9,6 +9,7 @@
 #include "EnemyComponent.hpp"
 #include "PlayerSkillType.hpp"
 #include "Status.hpp"
+#include "EnemyAttackState.hpp"
 
 int NetworkObject::nextNetworkId = 0;
 
@@ -118,6 +119,17 @@ void NetworkObject::deserialize(Packet* packet) {
                 if (!status) {
                     std::cout << "ERROR in NetworkObject::deserialize(): No "
                                 "Status found in current NetworkObject"
+                            << std::endl;
+                    std::cout << networkId() << std::endl;
+                }
+                status->Deserialize(packet);
+                break;
+            }
+            case NetworkComponentTypeID::ENEMY_ATTACK_STATE: {
+                EnemyAttackState* eas = GetComponent<EnemyAttackState>();
+                if (!eas) {
+                    std::cout << "ERROR in NetworkObject::deserialize(): No "
+                                "EnemyAttackState found in current NetworkObject"
                             << std::endl;
                     std::cout << networkId() << std::endl;
                 }

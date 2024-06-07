@@ -16,7 +16,8 @@ enum NetworkComponentTypeID : int32_t {
     MOVEMENT_STATE_MACHINE,
     STATUS,
     ENEMY_COMPONENT,
-    SKILL_TYPE
+    SKILL_TYPE,
+    ENEMY_ATTACK_STATE
 };
 
 class INetworkComponent : public IComponent {

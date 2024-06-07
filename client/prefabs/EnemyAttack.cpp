@@ -69,19 +69,5 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
 }
 
 void EnemyAttack::update(float deltaTime) {
-    glm::vec3 r;
-    switch (attackType) {
-    case (int)AttackState::SWIPE:
-        // GetComponent<AnimationPlayer>()->play("swipe-animation");
-        break;
-    case (int)AttackState::LASER:
-        GetComponent<AnimationPlayer>()->play("laser-spin", false);
-        break;
-    case (int)AttackState::MARK:
-        GetComponent<AnimationPlayer>()->play("projectile-bone-anim", false);
-        break;
-    case (int)AttackState::STOMP:
-        GetComponent<AnimationPlayer>()->play("waveAttack", false);
-        break;
-    }
+    
 }

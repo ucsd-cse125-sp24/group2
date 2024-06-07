@@ -3,13 +3,11 @@
 #include "INetworkComponent.hpp"
 #include "AttackState.hpp"
 
-class EnemyComponent : public INetworkComponent {
-    private:
-        float animationDuration = 0.0f;
+class EnemyAttackState : public INetworkComponent {
     protected:
         int atk;
     public:
-        EnemyComponent(NetworkObject* owner) : INetworkComponent(owner) {}
+        EnemyAttackState(NetworkObject* owner) : INetworkComponent(owner) {}
         void Update(float deltaTime) override;
         void SetState(AttackState atk_state) { atk = (int) atk_state; }
         int GetState() { return atk; }
@@ -19,8 +17,7 @@ class EnemyComponent : public INetworkComponent {
         virtual void Deserialize(Packet* pkt) {
             pkt->read_int(&atk);
         }
+        int32_t TypeID() const override { return ENEMY_ATTACK_STATE; }
 
-        int32_t TypeID() const override { return ENEMY_COMPONENT; }
-
-        std::string ToString() override { return "EnemyComponent"; }
-};
+        std::string ToString() override { return "EnemyAttackState"; }
+}
