@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
     }
 
     // Create the GLFW window.
-    float width = 800;
-    float height = 600;
+    float width = 1366;
+    float height = 768;
     GLFWwindow* window = Window::createWindow(width, height);
     if (!window)
         exit(EXIT_FAILURE);
@@ -103,7 +103,6 @@ int main(int argc, char** argv) {
         task_queue.push_back(
             [&, params]() { GameManager::instance().handle_packet(params); });
     });
-    GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
     AudioManager::instance().AddNote("../assets/audio/Fsharp.wav", 'i');
     AudioManager::instance().AddNote("../assets/audio/Gsharp.wav", 'j');
@@ -188,6 +187,8 @@ int main(int argc, char** argv) {
                       glm::sin(2 * i * glm::pi<float>() / 20) * 2000));
         GameManager::instance().scene.Instantiate(sphereObject);
     }
+
+    GameManager::instance().client.connect(argv[1], atoi(argv[2]));
 
     // Loop while GLFW window should stay open.
     float deltaTime = 0;

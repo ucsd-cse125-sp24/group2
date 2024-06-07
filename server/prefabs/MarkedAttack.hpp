@@ -7,12 +7,14 @@
 
 class MarkedAttack : public EnemyAttack {
 public:
-    std::vector<Collider*> colliders;
+    Collider* collider;
     float latency;
+    float lifetime;
+    bool hasExploded = false;
 
-    MarkedAttack(Enemy* owner, std::vector<Player*> playerList);
-    MarkedAttack(Enemy* owner, std::vector<Player*> playerList, int networkId);
-    
+    MarkedAttack(Enemy* owner, Player*);
+    MarkedAttack(Enemy* owner, Player* playerList, int networkId);
+
     void update(float deltaTime) override;
     std::string ToString() override { return "EnemyAttack - Marked"; }
 };

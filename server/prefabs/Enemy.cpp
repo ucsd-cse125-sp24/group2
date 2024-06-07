@@ -16,7 +16,7 @@
 #include <iostream>
 #include <NetworkManager.hpp>
 
-#define ENEMY_MAX_HEALTH 100
+#define ENEMY_MAX_HEALTH 2000
 
 Enemy::Enemy() : Entity() {
     this->GetComponent<NetTransform>()->SetPosition(glm::vec3(0, 0, 0));
@@ -92,10 +92,15 @@ void Enemy::update(float deltaTime) {
     // every 5 seconds, attack
     if (std::fmod(s, 5.0) <= deltaTime) {
         attack();
+        attackDuration = 2.0f;
         s = std::fmod(s, 5.0);
     } else {
-        // J: want to play idle animation when we are not attacking
-        GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
+        if (attackDuration > 0) {
+            attackDuration -= deltaTime;
+        } else {
+            // J: want to play idle animation when we are not attacking
+            GetComponent<EnemyComponent>()->SetState(AttackState::IDLE);
+        }
     }
 
     // TODO: enemy phase logic

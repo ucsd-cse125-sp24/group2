@@ -12,6 +12,7 @@ private:
 public:
     std::mutex mutex;
     Socket psocket;
+    Packet receivedData;
     void connect(const char*, uint16_t);
     void receive(void);
     void send(Packet*);

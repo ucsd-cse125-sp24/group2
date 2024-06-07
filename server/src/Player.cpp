@@ -48,10 +48,6 @@ Player::Player(glm::vec3 position) : Entity() {
     AddComponent(movementStateMachine);
 }
 
-void Player::update(float deltaTime) {
-    
-}       
+void Player::update(float deltaTime) {}
 
-void Player::onDestroy() {
-    CollisionManager::instance().remove(this);
-}
+void Player::onDestroy() { CollisionManager::instance().remove(this); }

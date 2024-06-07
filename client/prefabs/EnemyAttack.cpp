@@ -52,6 +52,9 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         path = stompPath;
         printf("StompAttack!\n");
         break;
+    default:
+        printf("Wrong AttackState!\n");
+        break;
     }
     AddComponent(meshRenderer);
     AddComponent(model);
