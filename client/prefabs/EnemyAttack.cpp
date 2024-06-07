@@ -33,7 +33,7 @@ EnemyAttack::EnemyAttack(int attackType, int networkId) : Entity(networkId) {
         break;
     case (int)AttackState::LASER:
         // we probably need to tune down stomp attack
-        GetComponent<NetTransform>()->SetScale(glm::vec3(30.0f));
+        GetComponent<NetTransform>()->SetScale(glm::vec3(10.0f));
         meshRenderer = new RendererComponent(this, ShaderType::ANIMATED);
         model = new Model(AssetManager::Instance().GetModel(laserPath));
         path = laserPath;

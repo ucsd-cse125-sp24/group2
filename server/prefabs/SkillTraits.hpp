@@ -33,6 +33,6 @@
 #define ANGRANGE 1
 #define L_RADIUS 500
 #define L_HEIGHT 3
-#define L_ANGSPEED (UNIT / 16)
+#define L_ANGSPEED (UNIT / 8)
 #define L_LIFE 4
 #define L_DAMAGE 40
