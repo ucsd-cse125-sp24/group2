@@ -68,6 +68,7 @@ private:
     unsigned int lastPosition = 0;
     bool waspressed = false;
     bool game_started = false;
+    bool isPhaseOne = false;
     std::string text;
 
     void FMODErrorCheck(FMOD_RESULT result, std::string s = "") {

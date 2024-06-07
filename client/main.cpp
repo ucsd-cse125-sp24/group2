@@ -109,6 +109,11 @@ int main(int argc, char** argv) {
     AudioManager::instance().AddNote("../assets/audio/A.wav", 'l');
     AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'i');
 
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newFs.wav", 'J');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newGs.wav", 'K');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newA.wav", 'L');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newCs.wav", 'I');
+
     AudioManager::instance().AddHit("../assets/audio/playertakedamage.wav");
 
     AudioManager::instance().AddPhase(
