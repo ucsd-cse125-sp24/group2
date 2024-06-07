@@ -96,8 +96,6 @@ void GameManager::update(Packet* pkt) {
             int network_id;
             pkt->read_int(&network_id); // J: I did not thoroughly check if the
                                         // packet is read correctly
-            pkt->read_int(&network_id); // J: I did not thoroughly check if the
-                                        // packet is read correctly
             if (!boss) {
                 boss = new Enemy(enemyPath, network_id);
                 std::vector<AnimationClip*> prefabClips =
@@ -106,6 +104,7 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     boss->GetComponent<AnimationPlayer>()->AddClip(clip);
                 }
+                players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setHealth(ENEMY_MAX_HEALTH);
 
                 scene.Instantiate(boss);
             }
@@ -178,6 +177,7 @@ void GameManager::update(Packet* pkt) {
             players[network_id]->deserialize(pkt);
 
             if (localPlayerObject == network_id) {
+
                 for(int i = 0; i < players.size(); i++) {
                     if(i == localPlayerObject)
                         players[localPlayerObject]->GetComponent<HUDs>()->healthBar->setHealth(players[i]->GetComponent<Health>()->GetHealth());
