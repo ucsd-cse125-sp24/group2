@@ -14,7 +14,12 @@ EnemyMover::EnemyMover(GameObject* owner) :
 /**
  * Boss moves towards closest player
 */
-void EnemyMover::Update(float deltaTime) {    
+void EnemyMover::Update(float deltaTime) {
+    Enemy::EnemyState currEnemyState = static_cast<Enemy*>(owner)->GetEnemyState();
+    if (currEnemyState == Enemy::PHASE5) {
+        return;
+    }
+
     std::vector<Client*> clients = NetworkManager::instance().get_clients();
 
     if (clients.size() == 0) {
@@ -41,7 +46,6 @@ void EnemyMover::Update(float deltaTime) {
     Collider* collider = owner->GetComponent<Collider>();
     collider->SetRotation(rotation);
 
-    Enemy::EnemyState currEnemyState = static_cast<Enemy*>(owner)->GetEnemyState();
     bool isChasedown = currEnemyState == Enemy::PHASE1; // NOTE: can include any phase u want with a cheeky lil ||
     if (isChasedown) {
         if (minDistance - baseSpeed > (float)SW_RADIUS - 3.0f) { // stop when player is 3 m deep in your attack range
