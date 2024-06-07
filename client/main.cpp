@@ -136,6 +136,9 @@ int main(int argc, char** argv) {
     modelPaths.push_back({"../assets/swipe-attack/swipe-attack.gltf", false});
     modelPaths.push_back(
         {"../assets/player-note-attack/player-note-attack.gltf", false});
+    modelPaths.push_back({"../assets/heal-ring/heal-ring.gltf", false});
+    modelPaths.push_back({"../assets/revive-ring/revive-ring.gltf", false});
+    modelPaths.push_back({"../assets/speedup-ring/speedup-ring.gltf", false});
     modelPaths.push_back({"../assets/arena/arena.gltf", false});
 
     for (std::pair<string, bool> kv : modelPaths) {

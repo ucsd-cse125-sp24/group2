@@ -12,6 +12,8 @@ public:
     int amount;
     Collider* range;
     float radius = 10.0f;
+    float life = 0.3f;
+    bool dealt = false;
 
     Revive(Player* p);
     Revive(Player* p, int networkId);

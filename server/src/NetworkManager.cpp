@@ -157,7 +157,7 @@ void NetworkManager::process_input() {
             // printf("  judgment: %d\n", judgment);
             std::map<int, Client*> clients = server.get_clients();
             // TODO set miss time to variable
-            if (abs(judgment) > 0.3f) {
+            if (abs(judgment) > 0.5f) {
                 clients[client_id]
                     ->p->GetComponent<PlayerCombat>()
                     ->ResetAllCombos();
