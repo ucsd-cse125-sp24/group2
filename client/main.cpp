@@ -106,15 +106,15 @@ int main(int argc, char** argv) {
             [&, params]() { GameManager::instance().handle_packet(params); });
     });
 
-    AudioManager::instance().AddNote("../assets/audio/Fsharp.wav", 'i');
-    AudioManager::instance().AddNote("../assets/audio/Gsharp.wav", 'j');
-    AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
-    AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
+    AudioManager::instance().AddNote("../assets/audio/Fsharp.wav", 'j');
+    AudioManager::instance().AddNote("../assets/audio/Gsharp.wav", 'k');
+    AudioManager::instance().AddNote("../assets/audio/A.wav", 'l');
+    AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'i');
 
-    AudioManager::instance().AddNote("../assets/audio/NewAudio/newFs.wav", 'I');
-    AudioManager::instance().AddNote("../assets/audio/NewAudio/newGs.wav", 'J');
-    AudioManager::instance().AddNote("../assets/audio/NewAudio/newA.wav", 'K');
-    AudioManager::instance().AddNote("../assets/audio/NewAudio/newCs.wav", 'L');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newFs.wav", 'J');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newGs.wav", 'K');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newA.wav", 'L');
+    AudioManager::instance().AddNote("../assets/audio/NewAudio/newCs.wav", 'I');
 
     AudioManager::instance().AddHit("../assets/audio/playertakedamage.wav");
 
