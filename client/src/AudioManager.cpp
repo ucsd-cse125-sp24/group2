@@ -31,6 +31,20 @@ void AudioManager::AddPhase(const char* filename) {
 
 void AudioManager::GoToNextAudioPhase() { nextPhase++; }
 
+void AudioManager::AddHit(const char* filename) {
+    result = FMOD_System_CreateSound(system, filename, FMOD_DEFAULT, nullptr,
+                                     &hitSound);
+    FMODErrorCheck(result);
+}
+
+void AudioManager::PlayHit() {
+    result =
+        FMOD_System_PlaySound(system, hitSound, nullptr, false, &hitChannel);
+    FMODErrorCheck(result);
+    result = FMOD_Channel_SetVolume(hitChannel, 0.2f);
+    FMODErrorCheck(result);
+}
+
 void AudioManager::AddNote(const char* filename, char key) {
     FMOD_SOUND* note;
     result =

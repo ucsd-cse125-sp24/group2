@@ -9,6 +9,7 @@ private:
     float timeSinceLastInput = 0;
     bool shouldResetCombo = true;
     struct Combo {
+        int comboType;
         int comboIndex;
         std::vector<int> sequence;
     };
@@ -16,7 +17,7 @@ private:
     std::vector<Combo> combos;
 
 public:
-    void AddCombo(const std::vector<int>& sequence);
+    void AddCombo(const std::vector<int>& sequence, int comboType);
     std::vector<int> CheckCombo(int input);
     void ResetCombo(Combo& combo);
     void ResetAllCombos();

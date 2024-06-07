@@ -111,6 +111,8 @@ int main(int argc, char** argv) {
     AudioManager::instance().AddNote("../assets/audio/A.wav", 'k');
     AudioManager::instance().AddNote("../assets/audio/Csharp.wav", 'l');
 
+    AudioManager::instance().AddHit("../assets/audio/playertakedamage.wav");
+
     AudioManager::instance().AddPhase(
         "../assets/audio/futuristic02-116bpm-Gbm.wav");
     AudioManager::instance().SetBpm(232);
@@ -166,9 +168,11 @@ int main(int argc, char** argv) {
 
     // arena
     GameObject* arena = new GameObject();
-    Model* arenaModel = new Model(AssetManager::Instance().GetModel("../assets/arena/arena.gltf"));
+    Model* arenaModel = new Model(
+        AssetManager::Instance().GetModel("../assets/arena/arena.gltf"));
     arena->AddComponent(arenaModel);
-    RendererComponent* arenaRender = new RendererComponent(arena, ShaderType::STANDARD);
+    RendererComponent* arenaRender =
+        new RendererComponent(arena, ShaderType::STANDARD);
     arena->AddComponent(arenaRender);
     arena->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
     GameManager::instance().scene.Instantiate(arena);
@@ -225,7 +229,7 @@ int main(int argc, char** argv) {
         }
 
         // Main render display callback. Rendering of objects is done here.
-        GameManager::instance().cam->Update();
+        GameManager::instance().cam->Update(deltaTime);
         Window::Render(window, &GameManager::instance().scene,
                        GameManager::instance().cam, deltaTime);
 
