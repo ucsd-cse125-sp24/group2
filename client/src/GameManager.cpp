@@ -104,7 +104,7 @@ void GameManager::update(Packet* pkt) {
                     AnimationClip* clip = new AnimationClip(prefabClips[i]);
                     boss->GetComponent<AnimationPlayer>()->AddClip(clip);
                 }
-                players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setHealth(ENEMY_MAX_HEALTH);
+                players[localPlayerObject]->GetComponent<HUDs>()->bossHealth->setMaxHealth(ENEMY_MAX_HEALTH);
 
                 scene.Instantiate(boss);
             }
