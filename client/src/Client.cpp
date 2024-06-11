@@ -112,8 +112,15 @@ void Client::receive() {
 }
 
 void Client::send(Packet* pkt) {
+    Packet* newPkt = new Packet();
+    newPkt->write_int(pkt->size());
+    newPkt->write(pkt->getBytes(), pkt->size());
+
     int sent_bytes =
-        psocket.send((const char*)(pkt->getBytes()), pkt->size(), 0);
+        psocket.send((const char*)(newPkt->getBytes()), newPkt->size(), 0);
+
+    delete pkt;
+    delete newPkt;
     if (sent_bytes < 0) {
         printf("[CLIENT] failed to send\n");
     }

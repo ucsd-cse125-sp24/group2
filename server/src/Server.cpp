@@ -91,6 +91,64 @@ std::map<int, Client*> Server::get_clients() {
 
 // new thread per client
 void Server::receive(Client* client) {
+    while (1) {
+        int pktSize;
+        int read_bytes =
+            client->clientsock->recv((char*)&pktSize, sizeof(pktSize), 0);
+
+        if (read_bytes <= 0) {
+            printf("[SERVER] error in receive\n");
+            break;
+        }
+
+        pktSize = ntohl(pktSize);
+        int reversed;
+        uint8_t *n1, *n2;
+        n1 = (uint8_t*)&pktSize;
+        n2 = (uint8_t*)&reversed;
+
+        n2[0] = n1[3];
+        n2[1] = n1[2];
+        n2[2] = n1[1];
+        n2[3] = n1[0];
+
+        pktSize = reversed;
+        uint8_t* buf = new uint8_t[4096];
+
+        int totalBytesRead = 0;
+        int clientId = client->id;
+        while (totalBytesRead < pktSize) {
+            read_bytes = client->clientsock->recv((char*)(buf + totalBytesRead),
+                                                  pktSize - totalBytesRead, 0);
+
+            if (read_bytes < 0) {
+                printf("[SERVER] error in receive\n");
+                delete[] buf;
+                return;
+            } else if (read_bytes == 0) {
+                auto args = new ClientEventArgs(clientId);
+                client_disconnected.invoke(args);
+                std::cout << "[SERVER " << getThread() << "] Client "
+                          << clientId << " disconnected." << std::endl;
+                std::lock_guard<std::mutex> lock(_mutex);
+                delete client;
+                clients.erase(clientId);
+                delete[] buf;
+                return;
+            }
+
+            totalBytesRead += read_bytes;
+        }
+
+        Packet* pkt = new Packet();
+        pkt->write((uint8_t*)buf, totalBytesRead);
+
+        MessageReceivedEventArgs* args =
+            new MessageReceivedEventArgs(client->id, buf, read_bytes);
+        message_received.invoke(args);
+    }
+
+    /*
     uint8_t buffer[4096];
     int expected_data_len = sizeof(buffer);
 
@@ -109,10 +167,8 @@ void Server::receive(Client* client) {
             break;
         } else {
             // TODO handle multiple packets per receive call
-            /*
             printf("[SERVER %lu] Received %d bytes from client %d\n",
                    getThread(), read_bytes, client->id);
-                   */
             uint8_t* recvd_bytes = new uint8_t[read_bytes];
             memcpy(recvd_bytes, buffer, read_bytes);
 
@@ -131,6 +187,7 @@ void Server::receive(Client* client) {
     std::lock_guard<std::mutex> lock(_mutex);
     delete client;
     clients.erase(clientId);
+    */
 }
 
 int Server::send(int client_id, Packet* pkt) {
